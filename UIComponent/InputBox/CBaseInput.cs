@@ -13,7 +13,7 @@ namespace Caspian.UI
 {
     public class CBaseInput<TValue>: ComponentBase, IValidate, IControl
     {
-        string _FieldName;
+        protected string _FieldName;
         ValidationMessageStore _messageStore;
         bool valueIsChanged, reseting;
         EditContext oldContext;
@@ -334,84 +334,84 @@ namespace Caspian.UI
             CaspianForm?.ClearFirstControl(this);
         }
 
-        private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
-        {
-            _messageStore = new ValidationMessageStore(CurrentEditContext);
-            var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
-            var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
-            foreach (dynamic state in states)
-            {
-                var fieldName = state.Key.FieldName as string;
-                if (fieldName == _FieldName)
-                {
-                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
-                    var list = CurrentEditContext.GetValidationMessages();
-                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                    ErrorMessage = result.FirstOrDefault();
-                    if (ErrorMessage == null)
-                        break;
-                }
-                else if (fieldName.EndsWith("]." + _FieldName))
-                {
-                    var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
-                    mainField = mainField.Split('[')[0];
-                    var model = CurrentEditContext.Model;
-                    var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
-                    var expr = ValueExpression.Body;
-                    FieldInfo info = null;
-                    while (expr.NodeType != ExpressionType.Constant)
-                    {
-                        switch (expr.NodeType)
-                        {
-                            case ExpressionType.MemberAccess:
-                                var member = (expr as MemberExpression).Member;
-                                if (member.MemberType == MemberTypes.Field)
-                                    info = member as FieldInfo;
-                                expr = (expr as MemberExpression).Expression;
-                                break;
-                            case ExpressionType.Call:
-                                expr = (expr as MethodCallExpression).Arguments[0];
-                                break;
-                            default:
-                                throw new NotImplementedException("عدم پیاده سازی");
-                        }
-                    }
-                    var value = info.GetValue((expr as ConstantExpression).Value);
-                    if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
-                        value = value.GetType().GetProperty("Data").GetValue(value);
-                    else
-                    {
-                        var str = fieldName.Replace("[0]", '[' + value.ToString() + ']');
-                        var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                        var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                        ErrorMessage = result.FirstOrDefault();
-                    }
-                    var index = 0;
-                    foreach (var detail in details)
-                    {
-                        if (detail == value)
-                        {
-                            var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
-                            var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                            var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                            ErrorMessage = result.FirstOrDefault();
-                        }
-                        index++;
-                    }
-                    break;
-                }
-            }
-            if (ErrorMessage == null && !Validate())
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-            }
-        }
+        //private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
+        //{
+        //    _messageStore = new ValidationMessageStore(CurrentEditContext);
+        //    var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
+        //    var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
+        //    foreach (dynamic state in states)
+        //    {
+        //        var fieldName = state.Key.FieldName as string;
+        //        if (fieldName == _FieldName)
+        //        {
+        //            var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
+        //            var list = CurrentEditContext.GetValidationMessages();
+        //            var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+        //            ErrorMessage = result.FirstOrDefault();
+        //            if (ErrorMessage == null)
+        //                break;
+        //        }
+        //        else if (fieldName.EndsWith("]." + _FieldName))
+        //        {
+        //            var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
+        //            mainField = mainField.Split('[')[0];
+        //            var model = CurrentEditContext.Model;
+        //            var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
+        //            var expr = ValueExpression.Body;
+        //            FieldInfo info = null;
+        //            while (expr.NodeType != ExpressionType.Constant)
+        //            {
+        //                switch (expr.NodeType)
+        //                {
+        //                    case ExpressionType.MemberAccess:
+        //                        var member = (expr as MemberExpression).Member;
+        //                        if (member.MemberType == MemberTypes.Field)
+        //                            info = member as FieldInfo;
+        //                        expr = (expr as MemberExpression).Expression;
+        //                        break;
+        //                    case ExpressionType.Call:
+        //                        expr = (expr as MethodCallExpression).Arguments[0];
+        //                        break;
+        //                    default:
+        //                        throw new NotImplementedException("عدم پیاده سازی");
+        //                }
+        //            }
+        //            var value = info.GetValue((expr as ConstantExpression).Value);
+        //            if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
+        //                value = value.GetType().GetProperty("Data").GetValue(value);
+        //            else
+        //            {
+        //                var str = fieldName.Replace("[0]", '[' + value.ToString() + ']');
+        //                var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
+        //                var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+        //                ErrorMessage = result.FirstOrDefault();
+        //            }
+        //            var index = 0;
+        //            foreach (var detail in details)
+        //            {
+        //                if (detail == value)
+        //                {
+        //                    var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
+        //                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
+        //                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+        //                    ErrorMessage = result.FirstOrDefault();
+        //                }
+        //                index++;
+        //            }
+        //            break;
+        //        }
+        //    }
+        //    if (ErrorMessage == null && !Validate())
+        //    {
+        //        FormAppState.AllControlsIsValid = false;
+        //        FormAppState.Control = this;
+        //    }
+        //    if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+        //    {
+        //        FormAppState.AllControlsIsValid = false;
+        //        FormAppState.Control = this;
+        //    }
+        //}
 
         protected override void OnAfterRender(bool firstRender)
         {

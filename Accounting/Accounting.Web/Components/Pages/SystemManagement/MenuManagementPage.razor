@@ -1,0 +1,15 @@
+﻿@page "/Accounting/SystemManagement/MenuManagement"
+@attribute [Source(1, "مدیریت منو")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-4">
+    <MenuManagementComponent Subsystem="SubSystemKind.Accounting" />
+</div>
+
+@code
+{
+
+}

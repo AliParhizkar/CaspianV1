@@ -1,0 +1,11 @@
+﻿@page "/Accounting/UserManagement/UserMembership/{RoleId:int}"
+@attribute [Source(7, "عضویت کاربران")]
+<div class="p-3">
+    <UserMembershipComponent RoleId="RoleId" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

@@ -148,6 +148,12 @@
                             <span>Warehouse</span>
                         </div>
                     </a>
+                    <a href="/investment/">
+                        <div class="c-subsystem">
+                            <span class="fa fa-code"></span>
+                            <span>Investment</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -156,7 +162,7 @@
 
 @if (MultiLanguage.CanDefineLanguage)
 {
-    <Window @bind-Status="status" Style="width:400px" Title="عنوان">
+    <Window @bind-Status="status" Style="width:400px" Title="عنوان" Modal>
         <div class="row c-controls">
             @if (ctrId.HasValue())
             {

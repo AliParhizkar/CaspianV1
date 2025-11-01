@@ -1,15 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @namespace Caspian.Engine.Shared
 @inject NavigationManager NavigationManager
-
-    <div class="main">
-        <div class="content">
-            <CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
-                @Body
-            </CaspianExceptionComponent>
-        </div>
-    </div>
-
+<CaspianExceptionComponent SystemKind="SubSystemKind.Engine" UserId="userId">
+    @Body
+</CaspianExceptionComponent>
 
 @code
 {

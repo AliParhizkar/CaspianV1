@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,10 +11,12 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
+        [DisplayName("Title")]
         public string Title { get; set; }
 
         public SubSystemKind SubSystemKind { get; set; }
 
+        [DisplayName("ICon")]
         public string IconFont { get; set; }
 
         public int Ordering { get; set; }

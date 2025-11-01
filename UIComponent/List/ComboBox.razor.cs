@@ -16,17 +16,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
-    public partial class ComboBox<TEntity, TValue>: ComponentBase, IComboBox<TEntity>, IControl, IListValueInitializer, 
+    public partial class ComboBox<TEntity, TValue>: CBaseInput<TValue>, IComboBox<TEntity>, IControl, IListValueInitializer, 
         IEnableLoadData where TEntity: class
     {
-        bool LoadData, setToDefault, shouldRender = true, focused, fieldsAdd, disabled;
+        bool LoadData, setToDefault, shouldRender = true, fieldsAdd;
         int pageNumber = 1;
-        string text, title, _FieldName;
+        string text;
         Expression cascadeExpression;
         Dictionary<string, object> attrs;
         WindowStatus? Status = WindowStatus.Close;
         WindowStatus? oldStatus = WindowStatus.Close;
-        TValue OldValue = default(TValue);
+        TValue OldValue = default;
         ValidationMessageStore _messageStore;
         IList items;
         IList<Expression> fieldsExpression;
@@ -34,50 +34,22 @@ namespace Caspian.UI
 
         internal int SelectedIndex { get; set; }
 
-        public ElementReference? InputElement { get; private set; }
-
         [Parameter]
         public ICascadeService<TEntity> CascadeService { get; set; }
-
-        [CascadingParameter]
-        internal IEntitySearch EntitySearch { get; set; }
 
         public Expression<Func<TEntity, bool>> InternalConditionExpression { get; set; }
 
         [Parameter]
         public IEnumerable<SelectListItem> Source { get; set; }
 
-        [CascadingParameter]
-        public EditContext CurrentEditContext { get; set; }
-
-        public string ErrorMessage { get; set; }
-
-        [Parameter]
-        public string Style { get; set; }
-
-        [CascadingParameter(Name = "ParentForm")]
-        internal ICaspianForm CaspianForm { get; set; }
-
-        [Parameter]
-        public int? ColSpan { get; set; }
-
-        [Parameter]
-        public int? TotalSpan { get; set; }
-
         [Parameter]
         public bool Pageable { get; set; } = true;
-
-        [CascadingParameter]
-        internal CaspianContainer CaspianContainer { get; set; }
 
         [Parameter]
         public int PageSize { get; set; } = 30;
 
         [Parameter]
         public Func<IQueryable<TEntity>, string, IQueryable<TEntity>> OnDataBinding { get; set; }
-
-        [Parameter]
-        public EventCallback OnChanged { get; set; }
 
         [Parameter]
         public Expression<Func<TEntity, object>> OrderByExpression { get; set; }
@@ -90,84 +62,6 @@ namespace Caspian.UI
 
         [Parameter]
         public RenderFragment<TEntity> Template { get; set; }
-
-        [Parameter]
-        public TValue Value { get; set; }
-
-        [Parameter]
-        public EventCallback<TValue> ValueChanged { get; set; }
-
-        [Parameter]
-        public Expression<Func<TValue>> ValueExpression { get; set; }
-
-        [Parameter]
-        public string Id { get; set; }
-
-        [Parameter]
-        public bool Disabled { get; set; }
-
-        [Parameter]
-        public EventCallback OnChange { get; set; }
-
-        [Parameter]
-        public string Title { get; set; }
-
-        public void Dispose()
-        {
-            InputElement = null;
-            CaspianForm?.ClearFirstControl(this);
-        }
-
-        protected IDictionary<string, object> LabelAttributes
-        {
-            get
-            {
-                if (PageData?.OnClick != null && Title.HasValue())
-                {
-                    var attrs = new Dictionary<string, object>();
-                    attrs["onclick"] = new Action(() =>
-                    {
-                        PageData.OnClick(id, Title);
-                    });
-                    attrs["class"] = "c-supervisor";
-                    return attrs;
-                }
-                return null;
-            }
-        }
-
-        protected string GetTitle()
-        {
-            if (Title != null)
-            {
-                return Title;
-            }
-            if (ValueExpression != null)
-            {
-                var member = (ValueExpression.Body as MemberExpression).Member;
-                return member.DeclaringType.GetTitle(member.Name) ?? member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
-                    member.Name;
-            }
-            throw new NotImplementedException();
-        }
-
-        string GetLabelCSSClassName()
-        {
-            if (TotalSpan.HasValue)
-            {
-                var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
-                className += " col-md-";
-                return className + (TotalSpan.Value - ColSpan);
-            }
-            var container = EntitySearch as ICaspianContainer ?? CaspianForm as ICaspianContainer ?? CaspianContainer;
-            return container.GetLabelContainerCSSClassName(ColSpan.Value);
-        }
-
-        string GetControlCSSClassName()
-        {
-            var str = $"col-md-{ColSpan} ";
-            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
-        }
 
         async Task ToggleDropdownList()
         {
@@ -191,11 +85,6 @@ namespace Caspian.UI
         }
 
         public EventCallback<object> OnInternalValueChanged { get; set; }
-
-        public bool HasError()
-        {
-            return ErrorMessage != null;
-        }
 
         public async Task SetValueAndClose(object item)
         {
@@ -304,23 +193,7 @@ namespace Caspian.UI
         {
             CascadeService?.Initialize(this);
             text = "";
-            if (ValueExpression != null)
-            {
-                var info = (ValueExpression.Body as MemberExpression).Member;
-                title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? info.Name;
-            }
             base.OnInitialized();
-        }
-
-        protected override void OnParametersSet()
-        {
-            if (Title != null)
-                title = Title;
-            CaspianForm?.SetFirstControl(this);
-            CaspianForm?.AddControl(this);
-            CaspianContainer?.SetControl(this);
-            disabled = CaspianContainer?.Disabled == true ? true : Disabled;
-            base.OnParametersSet();
         }
 
         public void AddDataField(Expression expression)
@@ -329,154 +202,153 @@ namespace Caspian.UI
             fieldsExpression.Add(expression);
         }
 
-        protected async override Task OnParametersSetAsync()
-        {
-            CaspianContainer?.SetControl(this);
-            if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
-            {
-                var expr = ValueExpression.Body;
-                string str = "";
-                while (expr.NodeType == ExpressionType.MemberAccess)
-                {
-                    var memberExpr = expr as MemberExpression;
-                    if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
-                        break;
-                    else
-                    {
-                        if (str.Length > 0)
-                            str = $".{str}";
-                        str = memberExpr.Member.Name + str;
-                        expr = memberExpr.Expression;
-                    }
-                }
-                _FieldName = str;
-                _messageStore = new ValidationMessageStore(CurrentEditContext);
-                CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
-                CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
-                oldContext = CurrentEditContext;
-            }
-            attrs = new Dictionary<string, object>();
-            if (disabled)
-                attrs.Add("disabled", "disabled");
-            if (Source != null)
-                items = Source.ToList();
-            SelectedIndex = -1;
-            if (items == null)
-            {
-                if (Value == null || Value.Equals(default(TEntity)))
-                {
-                    text = "";
-                }
-                else if (!Value.Equals(OldValue))
-                {
-                    if (OnInternalValueChanged.HasDelegate)
-                        await OnInternalValueChanged.InvokeAsync(Value);
-                    OldValue = Value;
-                    if (Source == null)
-                    {
-                        using var scope = ServiceScopeFactory.CreateScope();
-                        var query = new BaseService<TEntity>(scope.ServiceProvider).GetAll();
-                        var parameter = Expression.Parameter(typeof(TEntity));
-                        Expression expr = Expression.Property(parameter, typeof(TEntity).GetPrimaryKey());
-                        expr = Expression.Equal(expr, Expression.Constant(Value));
-                        expr = Expression.Lambda(expr, parameter);
-                        query = query.Where(expr).OfType<TEntity>();
-                        string str = query.ToQueryString();
-                        var list = new ExpressionSurvey().Survey(TextExpression);
-                        var entity = (await query.GetValuesAsync(list)).FirstOrDefault();
-                        if (entity == null)
-                            text = null;
-                        else
-                            text = TextExpression.Compile().Invoke(entity);
-                    }
-                    else
-                        text = Source.SingleOrDefault(t => t.Value == Value.ToString())?.Text;
-                }
-            }
-            else
-            {
-                var index = 0;
-                foreach (var item in items)
-                {
-                    var value = Template == null ? (item as SelectListItem).Value : typeof(TEntity).GetPrimaryKey().GetValue(item).ToString();
-                    if (Value != null && Value.ToString() == value)
-                    {
-                        SelectedIndex = index;
-                        break;
-                    }
-                    index++;
-                }
-                if (SelectedIndex >= 0 && SelectedIndex < items.Count)
-                {
-                    if (Template == null)
-                        text = (items[SelectedIndex] as SelectListItem).Text;
-                    else
-                        text = TextExpression.Compile().Invoke(items[SelectedIndex] as TEntity).ToString();
-                }
-                else
-                    text = "";
-            }
-            attrs["value"] = text;
-            if (Id.HasValue())
-            {
-                attrs.Add("id", Id.Replace('.', '_'));
-                attrs.Add("name", Id.Replace('.', '_'));
-            }
-            await base.OnParametersSetAsync();
-        }
+        //protected async override Task OnParametersSetAsync()
+        //{
+        //    if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
+        //    {
+        //        var expr = ValueExpression.Body;
+        //        string str = "";
+        //        while (expr.NodeType == ExpressionType.MemberAccess)
+        //        {
+        //            var memberExpr = expr as MemberExpression;
+        //            if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
+        //                break;
+        //            else
+        //            {
+        //                if (str.Length > 0)
+        //                    str = $".{str}";
+        //                str = memberExpr.Member.Name + str;
+        //                expr = memberExpr.Expression;
+        //            }
+        //        }
+        //        _FieldName = str;
+        //        _messageStore = new ValidationMessageStore(CurrentEditContext);
+        //        CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
+        //        CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
+        //        oldContext = CurrentEditContext;
+        //    }
+        //    attrs = new Dictionary<string, object>();
+        //    if (disabled)
+        //        attrs.Add("disabled", "disabled");
+        //    if (Source != null)
+        //        items = Source.ToList();
+        //    SelectedIndex = -1;
+        //    if (items == null)
+        //    {
+        //        if (Value == null || Value.Equals(default(TEntity)))
+        //        {
+        //            text = "";
+        //        }
+        //        else if (!Value.Equals(OldValue))
+        //        {
+        //            if (OnInternalValueChanged.HasDelegate)
+        //                await OnInternalValueChanged.InvokeAsync(Value);
+        //            OldValue = Value;
+        //            if (Source == null)
+        //            {
+        //                using var scope = ServiceScopeFactory.CreateScope();
+        //                var query = new BaseService<TEntity>(scope.ServiceProvider).GetAll();
+        //                var parameter = Expression.Parameter(typeof(TEntity));
+        //                Expression expr = Expression.Property(parameter, typeof(TEntity).GetPrimaryKey());
+        //                expr = Expression.Equal(expr, Expression.Constant(Value));
+        //                expr = Expression.Lambda(expr, parameter);
+        //                query = query.Where(expr).OfType<TEntity>();
+        //                string str = query.ToQueryString();
+        //                var list = new ExpressionSurvey().Survey(TextExpression);
+        //                var entity = (await query.GetValuesAsync(list)).FirstOrDefault();
+        //                if (entity == null)
+        //                    text = null;
+        //                else
+        //                    text = TextExpression.Compile().Invoke(entity);
+        //            }
+        //            else
+        //                text = Source.SingleOrDefault(t => t.Value == Value.ToString())?.Text;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var index = 0;
+        //        foreach (var item in items)
+        //        {
+        //            var value = Template == null ? (item as SelectListItem).Value : typeof(TEntity).GetPrimaryKey().GetValue(item).ToString();
+        //            if (Value != null && Value.ToString() == value)
+        //            {
+        //                SelectedIndex = index;
+        //                break;
+        //            }
+        //            index++;
+        //        }
+        //        if (SelectedIndex >= 0 && SelectedIndex < items.Count)
+        //        {
+        //            if (Template == null)
+        //                text = (items[SelectedIndex] as SelectListItem).Text;
+        //            else
+        //                text = TextExpression.Compile().Invoke(items[SelectedIndex] as TEntity).ToString();
+        //        }
+        //        else
+        //            text = "";
+        //    }
+        //    attrs["value"] = text;
+        //    if (Id.HasValue())
+        //    {
+        //        attrs.Add("id", Id.Replace('.', '_'));
+        //        attrs.Add("name", Id.Replace('.', '_'));
+        //    }
+        //    await base.OnParametersSetAsync();
+        //}
 
-        private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
-        {
-            if (_FieldName != null)
-            {
-                if (CurrentEditContext.Properties["ValidationType"].ToString() == "FieldChanged")
-                {
-                    object obj;
-                    if (CurrentEditContext.Properties.TryGetValue("PropertyName", out obj))
-                    {
-                        var propertyName = obj.ToString();
-                        if (propertyName != null && propertyName == _FieldName)
-                        {
+        //private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
+        //{
+        //    if (_FieldName != null)
+        //    {
+        //        if (CurrentEditContext.Properties["ValidationType"].ToString() == "FieldChanged")
+        //        {
+        //            object obj;
+        //            if (CurrentEditContext.Properties.TryGetValue("PropertyName", out obj))
+        //            {
+        //                var propertyName = obj.ToString();
+        //                if (propertyName != null && propertyName == _FieldName)
+        //                {
 
-                            var identifier = CurrentEditContext.Field(propertyName);
-                            var errorMessage = CurrentEditContext.GetValidationMessages(identifier).FirstOrDefault();
-                            if (ErrorMessage != errorMessage)
-                            {
-                                ErrorMessage = errorMessage;
-                                StateHasChanged();
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    var identifire = CurrentEditContext.Field(_FieldName);
-                    ErrorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
-                }
-            }
-            if (Validate != null )
-            {
-                if (Validate != null)
-                    ErrorMessage = Validate();
-                if (!ErrorMessage.HasValue())
-                    ErrorMessage = null;
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-                FormAppState.ErrorMessage = ErrorMessage;
-            }
-        }
+        //                    var identifier = CurrentEditContext.Field(propertyName);
+        //                    var errorMessage = CurrentEditContext.GetValidationMessages(identifier).FirstOrDefault();
+        //                    if (ErrorMessage != errorMessage)
+        //                    {
+        //                        ErrorMessage = errorMessage;
+        //                        StateHasChanged();
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var identifire = CurrentEditContext.Field(_FieldName);
+        //            ErrorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
+        //        }
+        //    }
+        //    if (Validate != null )
+        //    {
+        //        if (Validate != null)
+        //            ErrorMessage = Validate();
+        //        if (!ErrorMessage.HasValue())
+        //            ErrorMessage = null;
+        //    }
+        //    if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+        //    {
+        //        FormAppState.AllControlsIsValid = false;
+        //        FormAppState.Control = this;
+        //        FormAppState.ErrorMessage = ErrorMessage;
+        //    }
+        //}
 
-        protected override void OnAfterRender(bool firstRender)
-        {
-            CaspianForm?.SetFirstControl(this);
-            base.OnAfterRender(firstRender);
-        }
+        //protected override void OnAfterRender(bool firstRender)
+        //{
+        //    CaspianForm?.SetFirstControl(this);
+        //    base.OnAfterRender(firstRender);
+        //}
 
-        [CascadingParameter]
-        internal PageData PageData { get; set; }
+        //[CascadingParameter]
+        //internal PageData PageData { get; set; }
 
         async Task DataBinding()
         {
@@ -504,19 +376,15 @@ namespace Caspian.UI
                         else
                             query = query.OrderBy(OrderByExpression);
                     }
-
+                    if (OnDataBinding != null)
+                        query = OnDataBinding.Invoke(query, text);
                     if (text.HasValue() && Status == WindowStatus.Open)
                     {
-                        if (OnDataBinding == null)
-                        {
-                            var param = TextExpression.Parameters[0];
-                            var method = typeof(string).GetMethod("Contains", new Type[] { typeof(string) });
-                            var expr = Expression.Call(TextExpression.Body, method, Expression.Constant(text));
-                            var lambdaExpr = Expression.Lambda(expr, param);
-                            query = query.Where(lambdaExpr).OfType<TEntity>();
-                        }
-                        else
-                            query = OnDataBinding.Invoke(query, text);
+                        var param = TextExpression.Parameters[0];
+                        var method = typeof(string).GetMethod("Contains", new Type[] { typeof(string) });
+                        var expr = Expression.Call(TextExpression.Body, method, Expression.Constant(text));
+                        var lambdaExpr = Expression.Lambda(expr, param);
+                        query = query.Where(lambdaExpr).OfType<TEntity>();
                     }
                     IList<MemberExpression> list = null;
                     if (Template == null)
@@ -576,21 +444,6 @@ namespace Caspian.UI
         [Parameter]
         public SortType SortType { get; set; }
 
-        public async Task ResetAsync()
-        {
-            await SetValue(default(TValue));
-            ErrorMessage = null;
-        }
-
-        [Parameter]
-        public Func<string> Validate { get; set; }
-
-        public async Task FocusAsync()
-        {
-            if (InputElement.HasValue)
-                await InputElement.Value.FocusAsync();
-        }
-
         public async Task IncPageNumber()
         {
             if (items.Count >= PageSize)
@@ -615,58 +468,18 @@ namespace Caspian.UI
                 var dotnet = DotNetObjectReference.Create(this);
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindComboBox", InputElement, Pageable, dotnet);
             }
-            if (focused)
-            {
-                focused = false;
-                await InputElement.Value.FocusAsync();
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-                FormAppState.ErrorMessage = ErrorMessage;
-            }
+            //if (focused)
+            //{
+            //    focused = false;
+            //    await InputElement.Value.FocusAsync();
+            //}
+            //if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+            //{
+            //    FormAppState.AllControlsIsValid = false;
+            //    FormAppState.Control = this;
+            //    FormAppState.ErrorMessage = ErrorMessage;
+            //}
             await base.OnAfterRenderAsync(firstRender);
-        }
-
-        public async Task SetValue(object value)
-        {
-            var valueChanged = false;
-            if (value != null)
-            {
-                var type = typeof(TValue).GetUnderlyingType();
-                var convertedValue = (TValue)Convert.ChangeType(value, type);
-                Value = convertedValue;
-                await ValueChanged.InvokeAsync(convertedValue);
-                valueChanged = true;
-            }
-            else
-            {
-                Value = default(TValue);
-                await ValueChanged.InvokeAsync(default(TValue));
-                valueChanged = true;
-            }
-            if (valueChanged)
-            {
-                if (OnChange.HasDelegate)
-                    await OnChange.InvokeAsync();
-                if (OnInternalValueChanged.HasDelegate)
-                    await OnInternalValueChanged.InvokeAsync(Value);
-
-            }
-            if (CurrentEditContext != null && _FieldName.HasValue())
-            {
-                var model = CurrentEditContext.Model;
-                var info = model.GetType().GetProperty(_FieldName);
-                if (info == null)
-                    FormAppState.AllControlsIsValid = false;
-                else if (info != null)
-                {
-                    var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
-                    info.SetValue(model, Value);
-                    CurrentEditContext.NotifyFieldChanged(field);
-                }
-            }
         }
 
         public async Task<int?> UpdateCascadeComboBox()

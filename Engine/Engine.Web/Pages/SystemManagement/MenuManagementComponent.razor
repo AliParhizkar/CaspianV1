@@ -2,6 +2,7 @@
 @inherits BasePage
 @inject SingletonMenuService service
 @inject IUIService<Menu> Service
+@inject IUIService<MenuCategory> CategoryService
 <EntitySearch Service="Service" ColumnsCount="2">
     <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="4"
               TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
@@ -15,10 +16,12 @@
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await LoadMenus()" IconType="IconType.Refresh" title="Load menus" />
     </div>
+    <div class="col-md-3 text-center">
+        <IconButton @onclick="() => categoryWindowStatus = WindowStatus.Open" IconType="IconType.Refresh" title="Menu Category" />
+    </div>
 </EntitySearch>
 
 <div class="row c-controls">
-
     <div class="pt-4">
         <DataGrid TEntity="Menu" Service="Service" ContentHeight="300" ShowInsertIcon="false" ConditionExpr='t => (!onlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
             <Columns>
@@ -45,8 +48,30 @@
             </div>
         </CaspianForm>
     </Window>
-
 </div>
+
+<Window @bind-Status="categoryWindowStatus" Style="width:750px;" Title="Menu Category">
+    <EntitySearch Service="CategoryService" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <StringTextBox @bind-Value="context.IconFont" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid Service="CategoryService" TEntity="MenuCategory" ConditionExpr="t => t.SubSystemKind == Subsystem">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.IconFont" >
+                <span class="c-icon @(context.Data.IconFont)"></span>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="CategoryService" Title="Category" Style="width:400px;">
+        <CaspianForm TEntity="MenuCategory" Service="CategoryService" OnSubmit="t => t.Entity.SubSystemKind = Subsystem">
+            <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+            <StringTextBox @bind-Value="context.IconFont" ColSpan="9" />
+            <FormCommandButton ColSpan="9" />
+        </CaspianForm>
+    </Window>
+</Window>
 
 @code
 {

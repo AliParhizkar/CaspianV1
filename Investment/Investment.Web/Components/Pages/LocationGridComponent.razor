@@ -1,0 +1,53 @@
+﻿<div class="p-3 pb0 pe-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Location" Service="Service" ContentHeight="250">
+        <Columns>
+            <GridColumn Field="t => t.ParentLocation.Title" Title="موقعیت جغرافیایی بالاتر" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Code" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="موقعیت جفرافیایی" Style="width:450px">
+    <CaspianForm TEntity="Location" Service="Service">
+        <ComboBox @bind-Value="context.ParentId" TValue="int?" TEntity="Location" TextExpression="t => t.Title" ColSpan="8"
+                  ConditionExpression="t => t.LocationType != LocationType.Region"OnChange="async () => await SetParentLocation(context.ParentId)" />
+        @if (parent?.LocationType == LocationType.Country)
+        {
+            <DropdownList @bind-Value="context.LocationType" ColSpan="8" FilterFunc="t => t == LocationType.Province || t == LocationType.City" />
+        }
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    Location parent;
+
+    async Task SetParentLocation(int? parentId)
+    {
+        if (parentId > 0)
+        {
+            var location = Service.UpsertData;
+            location.LocationType = LocationType.Country;
+            using var service = Page.CreateScope().GetService<LocationService>();
+            parent = await service.SingleAsync(parentId.Value);
+            location.LocationType = (parent.LocationType + 1);
+            StateHasChanged();
+        }
+        else
+            parent = null;
+    }
+
+    [Parameter]
+    public IUIService<Location> Service { get; set; }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+}

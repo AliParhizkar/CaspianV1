@@ -12,6 +12,7 @@ namespace Caspian.Engine.SystemManagement
     {
         bool onlyUntitledMenus;
         IList<SelectListItem> source = new List<SelectListItem>();
+        WindowStatus categoryWindowStatus;
 
         [Parameter]
         public SubSystemKind Subsystem { get; set; }

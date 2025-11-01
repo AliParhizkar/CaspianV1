@@ -1,0 +1,11 @@
+﻿@page "/Investment/UserManagement/UserAccess/{UserId:int}"
+
+<div class="p-3">
+    <UserAccessComponent SelectedUserId="UserId" SubSystem="SubSystemKind.Investment" />
+</div>
+
+@code 
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

@@ -68,6 +68,8 @@
                                             className = "t-state-selected";
                                         if (item == selectedEntity)
                                             className += " t-upsert-inline";
+                                        if (RowDataBindingCssClass != null)
+                                            className += " " + RowDataBindingCssClass.Invoke(item);
                                         if (className.HasValue())
                                             attrs.Add("class", className);
                                         if (SelectType != SelectType.None)

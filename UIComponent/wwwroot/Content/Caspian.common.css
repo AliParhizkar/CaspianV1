@@ -1,4 +1,7 @@
-﻿.c-header {
+﻿.fa.c-selected{
+    background-color:navajowhite;
+}
+.c-header {
     border: 1px solid #bdbdbd;
     margin: 5px;
     border-radius: 8px;

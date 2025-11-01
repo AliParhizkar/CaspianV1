@@ -1,0 +1,30 @@
+﻿@page "/Investment/Location"
+@inject IUIService<Location> Service
+@attribute [Source(2, "موفعیت جغراقیایی")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+    var gridClassName = "fa fa-outdent c-small-icon";
+    var treeClassName = "fa fa-tree c-small-icon";
+    if (treeView)
+        treeClassName += " c-selected";
+    else
+        gridClassName += " c-selected";
+}
+<div class="p-3 pb-1 pt-1">
+    <span class="@gridClassName" @onclick="() => treeView = false"></span>
+    <span class="@treeClassName" @onclick="() => treeView = true"></span>
+</div>
+@if (treeView)
+{
+    <LocationTreeComponenet Page="this" />
+}
+else
+{
+    <LocationGridComponent Service="Service" Page="this" />
+}
+
+@code
+{
+    bool treeView;
+}

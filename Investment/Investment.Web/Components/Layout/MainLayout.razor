@@ -1,0 +1,17 @@
+﻿@namespace Investment.Web
+@inherits LayoutComponentBase
+@using Caspian.Engine.Shared
+@using System.Reflection
+<MainLayoutComponent RightToLeft PageId="pageId">
+    @Body
+</MainLayoutComponent>
+@code 
+{
+    int? pageId;
+    protected override void OnParametersSet()
+    {
+        pageId = (Body.Target as RouteView)?.RouteData.PageType.GetCustomAttribute<SourceAttribute>()?.Id;
+        
+        base.OnParametersSet();
+    }
+}

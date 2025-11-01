@@ -1,0 +1,11 @@
+﻿
+.l-entities{
+    border:1PX solid gray;
+    margin-left:5px;
+}
+    .l-entities div {
+        padding: 5px;
+    }
+    .l-entities div:nth-child(4n+1), .l-entities div:nth-child(4n+2) {
+        background-color: #ececec;
+    }

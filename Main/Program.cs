@@ -2,7 +2,6 @@ using Caspian.UI;
 using UIComponent;
 using Engine.Model;
 using Caspian.Common;
-using Main.Components;
 using Caspian.UI.Service;
 using System.Globalization;
 using Caspian.Engine.Model;
@@ -67,6 +66,7 @@ namespace Main
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<Caspian.Common.Client.CaspianDataService>();
             builder.Services.AddScoped<Caspian.UI.Client.BasePageService>();
+            builder.Services.AddScoped<CaspianDataService>();
 
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
@@ -82,16 +82,22 @@ namespace Main
                     Menus = context.Set<Menu>().ToList()
                 };
             });
-            builder.Services.AddScoped<CaspianDataService>();
+            #region Inject Service for each entity service
             typeof(Demo.Service.CityService).Assembly.InjectServices(builder.Services);
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
+            typeof(Investment.Service.InvestmentUnitService).Assembly.InjectServices(builder.Services);
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
             typeof(Warehouse.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
+            #endregion
             builder.Services.AddControllers();
+            #region Inject Context For each entity model
+            builder.Services.AddScoped<Accounting.Model.Context>();
             builder.Services.AddScoped<Demo.Model.Context>();
+            builder.Services.AddScoped<Caspian.Engine.Model.Context>();
+            builder.Services.AddScoped<Investment.Model.Context>();
             builder.Services.AddScoped<Marketing.Model.MarketingContext>();
             builder.Services.AddScoped<Warehouse.Model.Context>();
-            builder.Services.AddScoped<Caspian.Engine.Model.Context>();
+            #endregion
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
             builder.Services.AddAuthenticationCore();
@@ -119,23 +125,26 @@ namespace Main
             app.UseAuthorization();
             app.UseAntiforgery();
 
-            app.MapRazorComponents<App>()
+            app.MapRazorComponents<Main.Components.App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(ReportGenerator.Client._Imports).Assembly);
-
-            app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
-                httpContext.Request.Path.StartsWithSegments("/Demo"));
-            app.MapCaspianProjectWhen<Warehouse.Web.App>(httpContext =>
-                httpContext.Request.Path.StartsWithSegments("/Warehouse"));
-            app.MapCaspianProjectWhen<Marketing.Web.App>(httpContext =>
-                httpContext.Request.Path.StartsWithSegments("/Marketing"));
-            app.MapCaspianProjectWhen<Accounting.Web.App>(httpContext =>
-                httpContext.Request.Path.StartsWithSegments("/Accounting"));
-
+            #region Rout mapping  for all subsystem
             app.MapCaspianProjectWhen<Engine.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Engine") ||
                 httpContext.Request.Path.StartsWithSegments("/Account"));
+            app.MapCaspianProjectWhen<Accounting.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Accounting"));
+            app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Demo"));
+            app.MapCaspianProjectWhen<Investment.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Investment"));
+            app.MapCaspianProjectWhen<Marketing.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Marketing"));
+            app.MapCaspianProjectWhen<Warehouse.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Warehouse"));
+            #endregion
+
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
             ////if (!builder.Environment.IsDevelopment())

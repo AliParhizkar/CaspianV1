@@ -24,10 +24,13 @@ namespace Caspian.Common
         Warehouse,
 
         [Display(Name = "حسابداری")]
-        Accounting
+        Accounting,
+
+        [Display(Name = "اموال و دارایی ثابت")]
+        Investment
     }
 
-    public static class SubSystemExt
+public static class SubSystemExt
     {
         private static Assembly GetAssembly(SubSystemKind subSystemKind, bool isModel)
         {

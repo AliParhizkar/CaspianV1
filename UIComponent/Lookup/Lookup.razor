@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
 @typeparam TValue
+@inherits CBaseInput<TValue>
 @attribute [CascadingTypeParameter(nameof(TValue))]
 @inject IJSRuntime jsRuntime
 @inject IServiceScopeFactory ServiceScopeFactory
@@ -8,7 +9,7 @@
 @if (ColSpan.HasValue)
 {
     <div class="@(GetLabelCSSClassName())">
-        <label>@(Title ?? title)</label>
+        <label @attributes="LabelAttributes">@(GetTitle())</label>
     </div>
     <div class="@(GetControlCSSClassName())">
         @RenderLookup()
@@ -18,7 +19,6 @@ else
 {
     @RenderLookup()
 }
-
 
 @code
 {

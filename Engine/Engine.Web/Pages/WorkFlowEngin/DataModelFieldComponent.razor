@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-md-8">
                     <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="field.EntityFullName"
-                              Source="workflowEntityTypes" Disabled="field.FieldType.HasValue" OnChanged="() => SetFieldData(field)" />
+                              Source="workflowEntityTypes" Disabled="field.FieldType.HasValue" OnChange="() => SetFieldData(field)" />
                 </div>
                 <div class="col-md-4">
                     <label>Field type</label>

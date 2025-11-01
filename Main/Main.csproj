@@ -28,6 +28,8 @@
     <ProjectReference Include="..\Engine\Engine.Model\Engine.Model.csproj" />
     <ProjectReference Include="..\Engine\Engine.Service\Engine.Service.csproj" />
     <ProjectReference Include="..\Engine\Engine.Web\Engine.Web.csproj" />
+    <ProjectReference Include="..\Investment\Investment.Service\Investment.Service.csproj" />
+    <ProjectReference Include="..\Investment\Investment.Web\Investment.Web.csproj" />
     <ProjectReference Include="..\Marketing\Marketing.Model\Marketing.Model.csproj" />
     <ProjectReference Include="..\Marketing\Marketing.Service\Marketing.Service.csproj" />
     <ProjectReference Include="..\Marketing\Marketing.Web\Marketing.Web.csproj" />

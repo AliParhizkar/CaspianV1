@@ -1,0 +1,124 @@
+﻿<div class="row align-items-center">
+    <div class="col-md-1 d-tree-icon text-center pb-1">
+        <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+    </div>
+    <div class="col-md-6 pb-1 ps-3 pe-3">
+        <StringTextBox @bind-Value="@titleSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو عنوان" />
+    </div>
+    <div class="col-md-5 pb-1 ps-3 pe-3">
+        <StringTextBox @bind-Value="@codeSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو کذ" />
+    </div>
+    <div class="ps-3 pe-3">
+        <TreeView @ref="tree" TEntity="Location" style="height: calc(100vh - 135px) " TextFunc="t => t.Code + ' ' + t.Title"
+                  FilterFunc="t => (!titleSearch.HasValue() || t.Title.Contains(titleSearch)) && (!codeSearch.HasValue() || t.Code?.StartsWith(codeSearch) == true)">
+            <AfterNodeTemplate>
+                <span class="d-tree-icon">
+                    <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                    <span class="fa fa-pencil"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await DeleteLocation(context)">
+                    <span class="fa fa-trash"></span>
+                </span>
+            </AfterNodeTemplate>
+        </TreeView>
+    </div>
+</div>
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="موقعیت مکانی">
+    <CaspianForm Model="location" TEntity="Location" OnValidSubmit="UpsertLocation">
+        @if (parentLocation != null)
+        {
+            <div class="col-md-4">
+                <label>@("کد " + (parentLocation.LocationType.EnumText()) )</label>
+            </div>
+            <div class="col-md-8">
+                <StringTextBox Value="@parentLocation.Code" Style="direction:ltr" />
+            </div>
+            @if (parentLocation.LocationType == LocationType.Country)
+            {
+                <DropdownList @bind-Value="context.LocationType" FilterFunc="t => t == LocationType.City || t == LocationType.Province" ColSpan="8" />
+            }
+        }
+        <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    string titleSearch, codeSearch;
+    Location location;
+    WindowStatus status;
+    TreeView<Location> tree;
+    Location parentLocation;
+    IControl firstControl;
+
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    {
+        parentLocation = null;
+        if (isUpdate)
+        {
+            ///Edit mode
+            var organUnitId = Convert.ToInt32(nodeView.Value);
+            using var service = Page.CreateScope().GetService<LocationService>();
+            location = await service.SingleAsync(organUnitId);
+        }
+        else
+        {
+            ///Insert mode
+            int? parentId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            location = new Location();
+            if (parentId == null)
+                location.LocationType = LocationType.Continent;
+            else
+            {
+                using var service = Page.CreateScope().GetService<LocationService>();
+                parentLocation = (await service.SingleAsync(parentId.Value));
+                var parentLocationType = parentLocation.LocationType;
+                if (parentLocationType == LocationType.Continent)
+                    location.LocationType = LocationType.Country;
+                else if (parentLocationType == LocationType.Province)
+                    location.LocationType = LocationType.City;
+                else if (parentLocationType == LocationType.City)
+                    location.LocationType = LocationType.Region;
+            }
+            location.ParentId = parentId;
+        }
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteLocation(NodeView node)
+    {
+        var locationId = Convert.ToInt32(node.Value);
+        using var service = Page.CreateScope().GetService<LocationService>();
+        var location = await service.SingleAsync(locationId);
+        var result = await service.ValidateRemoveAsync(location);
+        if (result.IsValid)
+        {
+            service.Remove(location);
+            await service.SaveChangesAsync();
+            tree.RemoveFromTree(location);
+        }
+        else
+            Page.ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task<bool> UpsertLocation()
+    {
+        using var service = Page.CreateScope().GetService<LocationService>();
+        if (location.Id == 0)
+            await service.AddAsync(location);
+        else
+            await service.UpdateAsync(location);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(location);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+}

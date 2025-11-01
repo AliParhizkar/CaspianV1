@@ -1,0 +1,12 @@
+﻿@page "/Accounting/UserManagement/RoleAccess/{RoleId:int}"
+@attribute [Source(2, "دستیابی به نقشها")]
+<div class="p-3">
+    <RoleAccessComponent RoldId="RoleId" SubSystem="SubSystemKind.Accounting" />
+</div>
+
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

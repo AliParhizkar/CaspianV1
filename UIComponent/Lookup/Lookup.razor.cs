@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using System.Reflection;
 using Microsoft.JSInterop;
+using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
@@ -9,12 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel;
 
 namespace Caspian.UI
 {
-    public partial class Lookup<TEntity, TValue> : ComponentBase, IControl, ILookup<TEntity> where TEntity: class
+    public partial class Lookup<TEntity, TValue> : CBaseInput<TValue>, ILookup<TEntity> where TEntity: class
     {
         string Text, title;
         string oldText;
@@ -22,13 +21,50 @@ namespace Caspian.UI
         bool mustClear;
         string SearchStr;
         bool shouldRender;
-        string _FieldName;
         EditContext oldContext;
         DataGrid<TEntity> grid;
         ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         WindowStatus status;
         bool valueUpdated, advanceSearch;
+
+        internal Action<TEntity> OnSelect { get; set; }
+
+        [Parameter]
+        public bool HideHeader { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public string WindowTitle { get; set; } = "حستجو ...";
+
+        [Parameter]
+        public bool HideIcon { get; set; }
+
+        [Parameter]
+        public bool AutoHide { get; set; }
+
+        [Parameter]
+        public Expression<Func<TEntity, string>> TextExpression { get; set; }
+
+        [Parameter]
+        public bool OpenOnFocus { get; set; }
+
+        [Parameter]
+        public bool CloseOnBlur { get; set; }
+
+        [CascadingParameter]
+        public CaspianContainer Container { get; set; }
+
+        [Parameter]
+        public string PlaceHolder { get; set; }
+
+        [Parameter]
+        public Func<TEntity, bool> CloseFunc { get; set; }
+
+        [Parameter]
+        public bool AlwaysAdvanceSearch { get; set; }
 
         IDictionary<string, object> GetMainAttribute()
         {
@@ -71,122 +107,6 @@ namespace Caspian.UI
             }
         }
 
-        public ElementReference? InputElement { get; private set; }
-
-        [Parameter]
-        public bool HideHeader { get; set; }
-
-        [Parameter]
-        public int? ColSpan { get; set; }
-
-        [Parameter]
-        public int? TotalSpan { get; set; }
-
-        [CascadingParameter]
-        internal PageData PageData { get; set; }
-
-        [CascadingParameter(Name = "ParentForm")]
-        internal ICaspianForm CaspianForm { get; set; }
-
-        [CascadingParameter]
-        internal CaspianContainer CaspianContainer { get; set; }
-
-        protected string GetLabelCSSClassName()
-        {
-            if (TotalSpan.HasValue)
-            {
-                var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
-                className += " col-md-";
-                return className + (TotalSpan.Value - ColSpan);
-            }
-            var container = EntitySearch as ICaspianContainer ?? CaspianForm as ICaspianContainer ?? CaspianContainer;
-            return container.GetLabelContainerCSSClassName(ColSpan.Value);
-        }
-
-        protected string GetControlCSSClassName()
-        {
-            var str = $"col-md-{ColSpan} ";
-            return str + (PageData?.RightToLeft == true ? "ps-2" : "pe-2");
-        }
-
-        [Parameter]
-        public string Style { get; set; }
-
-        [Parameter]
-        public RenderFragment ChildContent { get; set; }
-
-        [Parameter]
-        public string WindowTitle { get; set; } = "حستجو ...";
-
-
-        [Parameter]
-        public string Title { get; set; }
-
-        [Parameter]
-        public bool HideIcon { get; set; }
-
-        [Parameter]
-        public bool AutoHide { get; set; }
-
-        [CascadingParameter]
-        internal IEntitySearch EntitySearch { get; set; }
-
-        public bool HasError()
-        {
-            return ErrorMessage != null;
-        }
-
-        public void Dispose()
-        {
-            InputElement = null;
-        }
-
-        [Parameter]
-        public bool Disabled { get; set; }
-
-        [Parameter]
-        public BindingType BindingType { get; set; } = BindingType.OnInput;
-
-        [CascadingParameter]
-        public EditContext CurrentEditContext { get; set; }
-
-        [Parameter]
-        public TValue Value { get; set; }
-
-        [Parameter]
-        public EventCallback<TValue> ValueChanged { get; set; }
-
-        [Parameter]
-        public Expression<Func<TValue>> ValueExpression { get; set; }
-
-        [Parameter]
-        public Expression<Func<TEntity, string>> TextExpression { get; set; }
-
-        public string Id { get; set; }
-
-        [Parameter]
-        public bool OpenOnFocus { get; set; }
-
-        [Parameter]
-        public bool CloseOnBlur { get; set; }
-
-        public string ErrorMessage { get; set; }
-
-        [Parameter]
-        public bool Required { get; set; }
-
-        [Inject]
-        public FormAppState FormAppState { get; set; }
-
-        [CascadingParameter]
-        public CaspianContainer Container { get; set; }
-
-        [Parameter]
-        public EventCallback OnChange { get; set; }
-
-        [Parameter]
-        public string PlaceHolder { get; set; }
-
         protected override void OnInitialized()
         {
             shouldRender = true;
@@ -199,144 +119,6 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-        private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
-        {
-            _messageStore = new ValidationMessageStore(CurrentEditContext);
-            var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
-            var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
-            foreach (dynamic state in states)
-            {
-                var fieldName = state.Key.FieldName as string;
-                if (fieldName == _FieldName)
-                {
-                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
-                    var list = CurrentEditContext.GetValidationMessages();
-                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                    ErrorMessage = result.FirstOrDefault();
-                }
-                else if (fieldName.EndsWith("]." + _FieldName))
-                {
-                    var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
-                    mainField = mainField.Split('[')[0];
-                    var model = CurrentEditContext.Model;
-                    var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
-                    var expr = ValueExpression.Body;
-                    FieldInfo info = null;
-                    while (expr.NodeType != ExpressionType.Constant)
-                    {
-                        if (expr.NodeType == ExpressionType.MemberAccess)
-                        {
-                            var member = (expr as MemberExpression).Member;
-                            if (member.MemberType == MemberTypes.Field)
-                                info = member as FieldInfo;
-                            expr = (expr as MemberExpression).Expression;
-                        }
-                    }
-                    var value = info.GetValue((expr as ConstantExpression).Value);
-                    if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
-                        value = value.GetType().GetProperty("Data").GetValue(value);
-                    var index = 0;
-                    foreach (var detail in details)
-                    {
-                        if (detail == value)
-                        {
-                            var str = index == 0 ? fieldName : fieldName.Replace("[0]", '[' + index.ToString() + ']');
-                            var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                            var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                            ErrorMessage = result.FirstOrDefault();
-                        }
-                        index++;
-                    }
-                    break;
-                }
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-                FormAppState.ErrorMessage = ErrorMessage;
-            }
-        }
-
-        private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
-        {
-            _messageStore = new ValidationMessageStore(CurrentEditContext);
-            var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
-            var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
-            foreach (dynamic state in states)
-            {
-                var fieldName = state.Key.FieldName as string;
-                if (fieldName == _FieldName)
-                {
-                    var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
-                    var list = CurrentEditContext.GetValidationMessages();
-                    var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                    ErrorMessage = result.FirstOrDefault();
-                    if (ErrorMessage == null)
-                        break;
-                }
-                else if (fieldName.EndsWith("]." + _FieldName))
-                {
-                    var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
-                    mainField = mainField.Split('[')[0];
-                    var model = CurrentEditContext.Model;
-                    var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
-                    var expr = ValueExpression.Body;
-                    FieldInfo info = null;
-                    while (expr.NodeType != ExpressionType.Constant)
-                    {
-                        switch (expr.NodeType)
-                        {
-                            case ExpressionType.MemberAccess:
-                                var member = (expr as MemberExpression).Member;
-                                if (member.MemberType == MemberTypes.Field)
-                                    info = member as FieldInfo;
-                                expr = (expr as MemberExpression).Expression;
-                                break;
-                            case ExpressionType.Call:
-                                expr = (expr as MethodCallExpression).Arguments[0];
-                                break;
-                            default:
-                                throw new NotImplementedException("خطای عدم پیاده سازی");
-                        }
-                    }
-                    var value = info.GetValue((expr as ConstantExpression).Value);
-                    if (info.FieldType == typeof(RowData<>).MakeGenericType(details.ToDynamicList()[0].GetType()))
-                        value = value.GetType().GetProperty("Data").GetValue(value);
-                    else
-                    {
-                        var str = fieldName.Replace("[0]", '[' + value.ToString() + ']');
-                        var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, str);
-                        var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
-                        ErrorMessage = result.FirstOrDefault();
-                    }
-                    break;
-                }
-            }
-            if (ErrorMessage == null && !Validate())
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-            }
-            if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-            }
-        }
-
-        internal Action<TEntity> OnSelect { get; set; }
-
-        public bool Validate()
-        {
-            if (Required && (Value == null || Value.ToString() == ""))
-            {
-                ErrorMessage = "مقدار این فیلد اجباری است.";
-                return false;
-            }
-            return true;
-        }
-
         protected override bool ShouldRender()
         {
             if (shouldRender)
@@ -344,9 +126,6 @@ namespace Caspian.UI
             shouldRender = true;
             return false;
         }
-
-        [Parameter]
-        public Func<TEntity, bool> CloseFunc { get; set; }
 
         public bool CloseHelpForm(TEntity selectedEntity, bool shouldRender = false)
         {
@@ -456,13 +235,6 @@ namespace Caspian.UI
 
         }
 
-        public async Task ResetAsync()
-        {
-            ErrorMessage = null;
-            await SetValue(0);
-            
-        }
-
         void ILookup<TEntity>.SetAndInitializeGrid(DataGrid<TEntity> grid)
         {
             this.grid = grid;
@@ -480,51 +252,16 @@ namespace Caspian.UI
             
         }
 
-        bool ILookup<TEntity>.AdvanceSearch{get{ return advanceSearch; }}
-
-        public async Task FocusAsync()
-        {
-            await InputElement.Value.FocusAsync();
-        }
+        bool ILookup<TEntity>.AdvanceSearch { get { return advanceSearch; } }
 
         protected override void OnParametersSet()
         {
-            if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
-            {
-                var expr = ValueExpression.Body;
-                string str = "";
-                while(expr.NodeType == ExpressionType.MemberAccess)
-                {
-                    var memberExpr = expr as MemberExpression;
-                    if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
-                    {
-                        if (str.Length == 0)
-                            str = memberExpr.Member.Name;
-                        break;
-                    }
-                    else
-                    {
-                        if (str.Length > 0)
-                            str = $".{str}";
-                        str = memberExpr.Member.Name + str;
-                        expr = memberExpr.Expression;
-                    }
-                }
-                _FieldName = str;
-                _messageStore = new ValidationMessageStore(CurrentEditContext);
-                CurrentEditContext.OnValidationRequested -= CurrentEditContext_OnValidationRequested;
-                CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
-                CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
-                CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
-                oldContext = CurrentEditContext;
-            }
-            CaspianForm?.AddControl(this);
+            if (AlwaysAdvanceSearch)
+                advanceSearch = true;
             inputAttrs = new Dictionary<string, object>();
             inputAttrs["class"] = AutoHide ? "t-input auto-hide" : "t-input";
             if (PlaceHolder.HasValue())
                 inputAttrs.Add("placeholder", PlaceHolder);
-            if (Container?.Disabled == true)
-                Disabled = true;
             Container?.SetControl(this);
             if (OpenOnFocus)
             {
@@ -534,14 +271,6 @@ namespace Caspian.UI
                     SearchStr = "";
                 }));
             }
-            //if (CloseOnBlur)
-            //{
-            //    inputAttrs.Add("onblur", new Action(async () =>
-            //    {
-            //        await Task.Delay(200);
-            //        status = WindowStatus.Close;
-            //    }));
-            //}
             if (Disabled)
                 inputAttrs.Add("disabled", true);
             if (HideHeader)
@@ -557,13 +286,6 @@ namespace Caspian.UI
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            if ((ErrorMessage != null || !Validate()) && FormAppState.AllControlsIsValid)
-            {
-                FormAppState.AllControlsIsValid = false;
-                FormAppState.Control = this;
-                FormAppState.ErrorMessage = ErrorMessage;
-            }
-
             if (firstRender)
             {
                 var dotnet = DotNetObjectReference.Create(this);

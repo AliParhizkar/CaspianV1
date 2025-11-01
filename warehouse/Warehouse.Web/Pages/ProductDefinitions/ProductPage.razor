@@ -23,7 +23,7 @@
 <Window Service="Service" Title="کالا - ویژگی های کالا" Style="width:850px;">
     <CaspianForm Service="Service" ColumnsCount="2">
         <Lookup TValue="int" TEntity="ProductCategory" @bind-Value="context.CategoryId" TextExpression='t => t.Code + " : " + t.Title'
-                CloseFunc="t => t.Code.Length == 8" ColSpan="4">
+                CloseFunc="t => t.Code.Length == 8" ColSpan="4" Title="گروه محصول">
             <CategoryCodingLookup TValue="int" />
         </Lookup>
         <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="4" />
@@ -36,7 +36,7 @@
         <StringTextBox @bind-Value="context.TechnicalCode" ColSpan="4" Style="direction:ltr" />
         <NumericTextBox @bind-Value="context.WarningDate" ColSpan="2" TotalSpan="4" />
         <div class="col-md-2">روز قبل</div>
-        <NumericTextBox @bind-Value="context.StandardPrice" ColSpan="4" />
+        <NumericTextBox @bind-Value="context.StandardPrice" ColSpan="4" Title="قیمت استاندارد" />
         <FormCommandButton ColSpan="6" TotalSpan="6" />
     </CaspianForm>
     <DataGrid TEntity="ProductDescription" DetailsService="Service" PageSize="5" ContentHeight="150" Inline AutoHide>

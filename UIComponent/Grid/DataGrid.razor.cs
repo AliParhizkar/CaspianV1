@@ -27,6 +27,9 @@ namespace Caspian.UI
         [Parameter]
         public bool HidePageSize { get; set; }
 
+        [Parameter]
+        public Func<TEntity, string> RowDataBindingCssClass { get; set; }
+
         internal void AddColumnData(GridColumn<TEntity> column)
         {
             var columnData = new ColumnData();

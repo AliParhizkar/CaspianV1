@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI
 @typeparam TEntity
 @typeparam TValue
+@inherits CBaseInput<TValue>
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @implements IListViewer<TEntity>
 @inject IJSRuntime jsRuntime

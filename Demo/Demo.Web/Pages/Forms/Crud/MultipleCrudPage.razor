@@ -78,27 +78,25 @@
                     </DataGrid>
                     <Window Service="ProductService" Title="Product" Style="width:650px">
                         <CaspianForm TEntity="Product" Service="ProductService" OnSubmit="t => SetCategory(t.Entity)">
-                            <Content Context="product">
-                                <div class="row pt-1">
-                                    <div class="col-md-8 row c-controls pe-2">
-                                        <StringTextBox @bind-Value="product.Title" ColSpan="8" />
-                                        <NumericTextBox @bind-Value="product.Price" ColSpan="8" />
-                                        <NumericTextBox @bind-Value="product.TakeoutPrice" ColSpan="8" />
-                                        <MultiSelectBox @bind-Value="product.Meal" ColSpan="8" />
-                                        <NumericTextBox @bind-Value="product.Code" ColSpan="8" />
-                                        <DropdownList @bind-Value="product.ActiveType" ColSpan="8" />
-                                        <CheckBox @bind-Value="product.Discountable" ColSpan="8" />
-                                    </div>
-                                    <div class="col-md-4 ps-2 pt-4">
-                                        <div class="col-md-12 justify-content-center d-flex">
-                                            <Fileupload OnChange="e => SetImage(e, product)">
-                                                <PictureBox Data="product.Image" style="width:200px;height:200px" />
-                                            </Fileupload>
-                                        </div>
-                                        <WindowCommandButtons ColSpan="12" TotalSpan="12" />
-                                    </div>
+                            <div class="row pt-1">
+                                <div class="col-md-8 row c-controls pe-2">
+                                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                                    <NumericTextBox @bind-Value="context.Price" ColSpan="8" />
+                                    <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" />
+                                    <MultiSelectBox @bind-Value="context.Meal" ColSpan="8" />
+                                    <NumericTextBox @bind-Value="context.Code" ColSpan="8" />
+                                    <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+                                    <CheckBox @bind-Value="context.Discountable" ColSpan="8" />
                                 </div>
-                            </Content>
+                                <div class="col-md-4 ps-2 pt-4">
+                                    <div class="col-md-12 justify-content-center d-flex">
+                                        <Fileupload OnChange="e => SetImage(e, context)">
+                                            <PictureBox Data="context.Image" style="width:200px;height:200px" />
+                                        </Fileupload>
+                                    </div>
+                                    <WindowCommandButtons ColSpan="12" TotalSpan="12" />
+                                </div>
+                            </div>
                         </CaspianForm>
                     </Window>
                 }
