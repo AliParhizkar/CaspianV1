@@ -10,28 +10,28 @@ namespace Caspian.UI
         ViewType viewType = ViewType.Month;
         ElementReference element;
         string[] months;
-        DateTime date = DateTime.Now;
+        DateOnly date = DateTime.Now.GetDateOnly();
         string navigateDownClassName;
         string headerTitle;
         int[] monthConvertor = new int[] { 4, 8, 12, 3, 7, 11, 2, 6, 10, 1, 5, 9 };
         //PersianDate pDate;
 
         [Parameter]
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
 
         [Parameter]
-        public EventCallback<DateTime> DateChanged { get; set; }
+        public EventCallback<DateOnly> DateChanged { get; set; }
 
         [Parameter]
         public bool PersianCalendar { get; set; }
 
         [Parameter]
-        public DateTime? FromDate { get; set; }
+        public DateOnly? FromDate { get; set; }
 
         [Parameter]
-        public DateTime? ToDate { get; set; }
+        public DateOnly? ToDate { get; set; }
 
-        async Task ChangeDate(DateTime dateTime)
+        async Task ChangeDate(DateOnly dateTime)
         {
             Date = dateTime;
             await DateChanged.InvokeAsync(dateTime);
@@ -91,7 +91,7 @@ namespace Caspian.UI
             navigateDownClassName = $"c-down-to-state c-left-{index % 4} c-top-{index / 4}";
         }
 
-        async Task NavigateDown(DateTime dateTime)
+        async Task NavigateDown(DateOnly dateTime)
         {
             vNavigation = VNavigation.Down;
             date = dateTime;

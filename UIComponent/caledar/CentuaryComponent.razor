@@ -37,10 +37,10 @@
         {
             var pDate = Date.ToPersianDate();
             pDate = new PersianDate(decade * 10, pDate.Month.Value, pDate.Day.Value);
-            Date = pDate.GetMiladyDate().Value;
+            Date = pDate.GetMiladyDate().Value.ToDateOnly();
         }
         else
-            Date = new DateTime(decade * 10, Date.Month, Date.Day);
+            Date = new DateOnly(decade * 10, Date.Month, Date.Day);
         await DateChanged.InvokeAsync(Date);
     }
 
@@ -89,17 +89,17 @@
     }
 
     [Parameter]
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     [Parameter]
     public bool PersianCalendar { get; set; }
 
     [Parameter]
-    public EventCallback<DateTime> DateChanged { get; set; }
+    public EventCallback<DateOnly> DateChanged { get; set; }
 
     [Parameter]
-    public DateTime? FromDate { get; set; }
+    public DateOnly? FromDate { get; set; }
 
     [Parameter]
-    public DateTime? ToDate { get; set; }
+    public DateOnly? ToDate { get; set; }
 }

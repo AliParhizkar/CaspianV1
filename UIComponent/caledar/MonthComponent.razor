@@ -21,7 +21,7 @@
                 var month = MonthDates == null ? PersianMonthDates[i, j].Month.ConvertToInt().Value : MonthDates[i, j].Month;
                 var isActive = isActiveDate[i, j];
                 className = isActive ? "t-item" : "t-disable";
-                var date = MonthDates == null ? PersianMonthDates[i, j].GetMiladyDate().Value : MonthDates[i, j];
+                var date = MonthDates == null ? PersianMonthDates[i, j].GetMiladyDate().Value.ToDateOnly() : MonthDates[i, j];
                 if (month != curentMonth)
                 {
                     className += " t-other-month";
@@ -42,11 +42,11 @@
 {
     string[] WeekDays;
     int[,] MonthDays;
-    DateTime[,] MonthDates;
+    DateOnly[,] MonthDates;
     PersianDate[,] PersianMonthDates;
     bool[,] isActiveDate;
 
-    async Task DateSelected(DateTime date, bool isActive)
+    async Task DateSelected(DateOnly date, bool isActive)
     {
         if (isActive)
         {
@@ -75,7 +75,7 @@
             PersianMonthDates = new PersianDate[6, 7];
             isActiveDate = new bool[6, 7];
             var pdate = Date.ToPersianDate().FirstDayInCalendar();
-            var date = pdate.GetMiladyDate().Value;
+            var date = pdate.GetMiladyDate().Value.ToDateOnly();
             for (int i = 0; i < 6; i++)
                 for (int j = 0; j < 7; j++)
                 {
@@ -94,7 +94,7 @@
         else
         {
             MonthDays = new int[6, 7];
-            MonthDates = new DateTime[6, 7];
+            MonthDates = new DateOnly[6, 7];
             isActiveDate = new bool[6, 7];
             var date = Date.FirstDayInCalendar();
             for (int i = 0; i < 6; i++)
@@ -115,14 +115,14 @@
     }
 
     [Parameter]
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     [Parameter]
-    public DateTime? FromDate { get; set; }
+    public DateOnly? FromDate { get; set; }
 
     [Parameter]
-    public DateTime? ToDate { get; set; }
+    public DateOnly? ToDate { get; set; }
 
     [Parameter]
-    public EventCallback<DateTime> DateChanged { get; set; }
+    public EventCallback<DateOnly> DateChanged { get; set; }
 }

@@ -113,7 +113,7 @@ namespace Caspian.Common
             return str;
         }
 
-        public static DateTime FirstDayInCalendar(this DateTime  date)
+        public static DateOnly FirstDayInCalendar(this DateOnly  date)
         {
             var day = date.Day;
             date = date.AddDays(-day);

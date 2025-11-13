@@ -1,17 +1,41 @@
 ﻿@page "/Demo/Test"
+@inject IHostEnvironment host
 @attribute [Source(81, "Test")]
 @inherits BasePage
 @inject ISearchService<Customer> Service
+@using Syncfusion.Blazor.DocumentEditor
 @namespace Demo.Web.Pages
 @{
     base.BuildRenderTree(__builder);
 }
+<DocumentGeneratorComponent FolderName="BasePage" FileName="Message" />
 
 
 
 @code
-{ 
-    protected override async Task OnInitializedAsync()
+{
+    SfDocumentEditorContainer Container;
+
+    public async void OnCreated(object args)
     {
-        await base.OnInitializedAsync();
-    }}
+        SfDocumentEditor documentEditor = Container.DocumentEditor;
+        if (documentEditor != null)
+        {
+            var path = host.ContentRootPath;
+            path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+            if (FolderName.HasValue())
+                path += FolderName + '\\';
+            path += FileName + ".docx";
+            var array = await System.IO.File.ReadAllBytesAsync(path);
+            using var stream = new MemoryStream(array);
+            await Container.DocumentEditor.OpenAsync(stream, ImportFormatType.Docx);
+        }
+    }
+
+    [Parameter]
+    public string FolderName { get; set; } = "BasePage";
+
+    [Parameter]
+    public string FileName { get; set; } = "Message";
+
+}

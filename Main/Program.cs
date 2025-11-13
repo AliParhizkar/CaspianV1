@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Syncfusion.Blazor;
+using Syncfusion.Licensing;
 
 namespace Main
 {
@@ -19,13 +21,14 @@ namespace Main
     {
         static void Main(string[] args)
         {
+            var licenseKey = "MDAxQDMyMzkyZTMwMmUzMDNiMzIzOTNiS3EzNUFpVVNSREpUNXVJYUZ6UkNySldEbzdnS1VLSDFSd2I2akgrV1g0bz0=";
             var builder = WebApplication.CreateBuilder();
             
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
-            //builder.Services.AddControllers();
+            SyncfusionLicenseProvider.RegisterLicense(licenseKey);
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddCaspianConsoleLogger(builder);
@@ -45,6 +48,24 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
                 domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
+
+            if (!builder.Environment.IsProduction())
+            {
+                #region Localization
+                // Set the resx file folder path to access
+                builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+                builder.Services.AddSyncfusionBlazor();
+                // Register the Syncfusion locale service to customize the  SyncfusionBlazor component locale culture
+                builder.Services.AddSingleton(typeof(ISyncfusionStringLocalizer), typeof(SyncfusionLocalizer));
+
+                var supportedCultures = new[] { "en-US", "de-DE", "fr-CH", "zh-CN" };
+                var localizationOptions = new RequestLocalizationOptions()
+                            .SetDefaultCulture("en-US")
+                            .AddSupportedCultures(supportedCultures)
+                            .AddSupportedUICultures(supportedCultures);
+                #endregion
+            }
+
             MultiLanguage.CanDefineLanguage = Convert.ToBoolean(builder.Configuration.GetSection("ChangePage").Value);
             if (builder.Environment.IsStaging())
             {

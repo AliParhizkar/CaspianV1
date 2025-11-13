@@ -1,0 +1,48 @@
+﻿@page "/Demo/DocumentGenerator/{FileName}/{FolderName}"
+@attribute [Source(86, "Document Generator")]
+
+@using Syncfusion.Blazor.DocumentEditor
+@inject IHostEnvironment host
+
+<style type="text/css">
+    .c-content-main {
+        padding: .25rem !important;
+        overflow: hidden !important;
+    }
+</style>
+<link href="_content/Syncfusion.Blazor.Themes/material.css" rel="stylesheet" />
+<script src="_content/UIComponent/syncfusion-blazor-documenteditor.min.js" type="text/javascript"></script>
+
+<div class="main-container">
+    <SfDocumentEditorContainer @ref="Container" Height="calc(100vh + 10px)" LayoutType="LayoutType.Continuous" ShowPropertiesPane="false" EnableToolbar="false">
+        <DocumentEditorContainerEvents Created="OnCreated"></DocumentEditorContainerEvents>
+    </SfDocumentEditorContainer>
+</div>
+
+@code
+{
+    SfDocumentEditorContainer Container;
+
+    public async void OnCreated(object args)
+    {
+        SfDocumentEditor documentEditor = Container.DocumentEditor;
+        if (documentEditor != null)
+        {
+            var path = host.ContentRootPath;
+            path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+            if (FolderName.HasValue())
+                path += FolderName + '\\';
+            path += FileName + ".docx";
+            var array = await System.IO.File.ReadAllBytesAsync(path);
+            using var stream = new MemoryStream(array);
+            await Container.DocumentEditor.OpenAsync(stream, ImportFormatType.Docx);
+        }
+    }
+
+    [Parameter]
+    public string FolderName { get; set; }
+
+    [Parameter]
+    public string FileName { get; set; }
+
+}

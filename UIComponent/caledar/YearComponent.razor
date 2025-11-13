@@ -39,10 +39,10 @@
         if (PersianCalendar)
         {
             var year = Date.ToPersianDate().Year.Value;
-            Date = new PersianDate(year, (PersianMonth)month, 1).GetMiladyDate().Value;
+            Date = new PersianDate(year, (PersianMonth)month, 1).GetMiladyDate().Value.ToDateOnly();
         }
         else
-            Date = new DateTime(Date.Year, month, 1);
+            Date = new DateOnly(Date.Year, month, 1);
         await DateChanged.InvokeAsync(Date);
     }
 
@@ -75,16 +75,16 @@
     }
 
     [Parameter]
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
     [Parameter]
-    public EventCallback<DateTime> DateChanged { get; set; }
+    public EventCallback<DateOnly> DateChanged { get; set; }
 
     [Parameter]
-    public DateTime? FromDate { get; set; }
+    public DateOnly? FromDate { get; set; }
 
     [Parameter]
-    public DateTime? ToDate { get; set; }
+    public DateOnly? ToDate { get; set; }
 
     protected override void OnParametersSet()
     {

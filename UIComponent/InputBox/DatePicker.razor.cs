@@ -19,7 +19,7 @@ namespace Caspian.UI
                 Status = WindowStatus.Open;
         }
 
-        async Task ChangeDate(DateTime date)
+        async Task ChangeDate(DateOnly date)
         {
             if (!disabled)
             {
@@ -71,10 +71,10 @@ namespace Caspian.UI
         public bool OpenOnFocus { get; set; }
 
         [Parameter]
-        public DateTime? FromDate { get; set; }
+        public DateOnly? FromDate { get; set; }
 
         [Parameter]
-        public DateTime? ToDate { get; set; }
+        public DateOnly? ToDate { get; set; }
 
         [Parameter]
         public bool DefaultMode { get; set; }

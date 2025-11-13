@@ -1,17 +1,31 @@
 ﻿@inject IHostEnvironment host
-<div class="d-document">
+@inject NavigationManager NavigationManager
+<div class="d-document" @ondblclick="OpenDocumentGeneratorPage">
     @((MarkupString)content)
 </div>
 @{
     content = null;
 }
-@code 
+
+@code
 {
+    void OpenDocumentGeneratorPage(MouseEventArgs e)
+    {
+        if (e.CtrlKey)
+        {
+            var url = $"/Demo/DocumentGenerator/{FileName}";
+            if (FolderName.HasValue())
+                url += $"/{FolderName}";
+            NavigationManager.NavigateTo(url, true, true);
+        }
+    }
+
     string content;
     protected override async Task OnInitializedAsync()
     {
+        var fileName = FileName;
         if (!FileName.EndsWith(".htm", StringComparison.CurrentCultureIgnoreCase))
-            FileName += ".htm";
+            fileName += ".htm";
         var path = host.ContentRootPath;
         if (host.IsDevelopment())
             path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
@@ -19,7 +33,7 @@
             path += "\\Help\\";
         if (FolderName.HasValue())
             path += FolderName + '\\';
-        path += FileName;
+        path += fileName;
         if (File.Exists(path))
         {
             content = await File.ReadAllTextAsync(path);

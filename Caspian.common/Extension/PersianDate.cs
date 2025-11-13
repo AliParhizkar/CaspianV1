@@ -229,10 +229,9 @@ namespace Caspian.Common
             return day;
         }
 
-        public DateTime? GetMiladyDate()
-        {
-            return MiladyDate;
-        }
+        public DateOnly? ToDateOnly() => MiladyDate?.ToDateOnly();
+
+        public DateTime? GetMiladyDate() => MiladyDate;
 
         /// <summary>
         /// این متد تاریخ میلادی معادل شمسی را برمی پرداند

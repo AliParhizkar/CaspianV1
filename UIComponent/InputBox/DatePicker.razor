@@ -55,13 +55,13 @@ else
                 </div>
                 @if (Status == WindowStatus.Open && !DefaultMode)
                 {
-                    DateTime date = DateTime.Today;
+                    DateOnly date = DateTime.Today.ToDateOnly();
                     if (Value != null && !Value.Equals(default(TValue)))
                     {
                         if (typeof(TValue).GetUnderlyingType() == typeof(DateOnly))
-                            date = ((DateOnly)Convert.ChangeType(Value, typeof(DateOnly))).ToDateTime(new TimeOnly());
+                            date = ((DateOnly)Convert.ChangeType(Value, typeof(DateOnly)));
                         else
-                            date = Convert.ToDateTime(Value);
+                            date = Convert.ToDateTime(Value).ToDateOnly();
                     }
                     <div class="t-animation-container">
                         <CalendarComponent PersianCalendar="PersianCalendar" Date="date" DateChanged="async d => await ChangeDate(d)"
