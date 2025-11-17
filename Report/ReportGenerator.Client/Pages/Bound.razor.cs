@@ -91,9 +91,10 @@ namespace Caspian.Report
                 {
                     control.BondType = bond.Data.BondType;
                     /// Convert Absolute Position to relative Position
-                    control.Left = control.Left - Bound.Left;
-                    control.Top = control.Top - bond.Top;
-                    
+                    control.Left = (control.Left - Bound.Left).ConvertToMiliMeter();
+                    control.Top = (control.Top - bond.Top).ConvertToMiliMeter();
+                    control.Width = control.Width.ConvertToMiliMeter();
+                    control.Height = control.Height.ConvertToMiliMeter();
                     bond.Data.Controls.Add(control);
                     control.Id = Page.GetId();
                     Page.Stack.Push(control.Id);

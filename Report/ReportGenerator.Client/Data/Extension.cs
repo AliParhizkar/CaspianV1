@@ -21,5 +21,7 @@ namespace Caspian.Report.Data
             d = Convert.ToInt32(d);
             return d / Math.Pow(10, digits);
         }
+
+        public static double ConvertToMiliMeter(this double value) => Math.Round(value / Page.Pixelsinmilimetre) * Page.Pixelsinmilimetre;
     }
 }

@@ -21,7 +21,7 @@ HTMLCollection.prototype.indexOf = function (element) {
 HTMLElement.prototype.getPosition = function () {
     let parent = this, left = 0, top = 0;
     let rect = parent.getBoundingClientRect();
-    while (parent != document.body) {
+    while (parent != document.body && parent != null) {
         left += parent.offsetLeft;
         top += parent.offsetTop;
         parent = parent.offsetParent;
@@ -1296,6 +1296,11 @@ var caspian;
                             return __awaiter(this, void 0, void 0, function* () {
                                 let lookup = Lookup.lookups[Lookup.lookups.length - 1];
                                 let target = e.target.closest('.t-HelpWindow');
+                                if (target == null) {
+                                    let lookup = e.target.closest('.c-lookup');
+                                    if (lookup)
+                                        target = lookup.getElementsByClassName('t-HelpWindow')[0];
+                                }
                                 if (target == null || target != lookup.lookupWindow)
                                     yield lookup.dotnetInvoker.invokeMethodAsync('Close');
                             });

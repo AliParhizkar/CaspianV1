@@ -1,0 +1,11 @@
+﻿@page "/Demo/DocumentTest/{FileName}/{FolderName}"
+@attribute [Source(87, "Document Generator")]
+<Document FileName="@FileName" FolderName="@FolderName" /> 
+@code 
+{
+    [Parameter]
+    public string FolderName { get; set; }
+
+    [Parameter]
+    public string FileName { get; set; }
+}

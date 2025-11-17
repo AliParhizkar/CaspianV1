@@ -1,8 +1,12 @@
 ﻿@page "/Demo/DocumentGenerator/{FileName}/{FolderName}"
 @attribute [Source(86, "Document Generator")]
+@inherits BasePage
+
+@inject IJSRuntime JSRuntime
+@inject IHostEnvironment host
+
 
 @using Syncfusion.Blazor.DocumentEditor
-@inject IHostEnvironment host
 
 <style type="text/css">
     .c-content-main {
@@ -11,32 +15,76 @@
     }
 </style>
 <link href="_content/Syncfusion.Blazor.Themes/material.css" rel="stylesheet" />
-<script src="_content/UIComponent/syncfusion-blazor-documenteditor.min.js" type="text/javascript"></script>
-
+@*<script src="_content/UIComponent/syncfusion-blazor-documenteditor.min.js" type="text/javascript"></script>*@
+<script src="_content/Syncfusion.Blazor.WordProcessor/scripts/syncfusion-blazor-documenteditor.min.js" type="text/javascript"></script>
+<button title="Click to SAVE" @onclick="async () => await Save()">S</button>
+<a href="/Demo/DocumentTest/@(FileName)/@(FolderName)" target="_blank">
+    <span>T</span>
+</a>
+<button title="Click to clear Bottom Margin" @onclick="SetHeight">H</button>
+<button title="Click to set Method format" @onclick="setMethodFormat">F</button>
 <div class="main-container">
     <SfDocumentEditorContainer @ref="Container" Height="calc(100vh + 10px)" LayoutType="LayoutType.Continuous" ShowPropertiesPane="false" EnableToolbar="false">
         <DocumentEditorContainerEvents Created="OnCreated"></DocumentEditorContainerEvents>
+        @*<CascadingValue Value="Container.DocumentEditor">
+                <DocumentEditorEvents OnKeyDown="Save" />
+            </CascadingValue>*@
     </SfDocumentEditorContainer>
 </div>
 
 @code
 {
     SfDocumentEditorContainer Container;
+    string path;
+    bool heightUpdating;
+
+    protected override void OnInitialized()
+    {
+        path = host.ContentRootPath;
+        path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+        if (FolderName.HasValue())
+            path += FolderName + '\\';
+        path += FileName;
+        base.OnInitialized();
+    }
+
 
     public async void OnCreated(object args)
     {
         SfDocumentEditor documentEditor = Container.DocumentEditor;
         if (documentEditor != null)
         {
-            var path = host.ContentRootPath;
-            path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
-            if (FolderName.HasValue())
-                path += FolderName + '\\';
-            path += FileName + ".docx";
-            var array = await System.IO.File.ReadAllBytesAsync(path);
-            using var stream = new MemoryStream(array);
-            await Container.DocumentEditor.OpenAsync(stream, ImportFormatType.Docx);
+            using var document = new Syncfusion.DocIO.DLS.WordDocument(path + ".docx");
+            var editor = WordDocument.Load(document);
+            var sfdt = System.Text.Json.JsonSerializer.Serialize(editor);
+            editor.Dispose();
+            await documentEditor.OpenAsync(sfdt);
         }
+    }
+
+    void SetHeight()
+    {
+        var format = Container.DocumentEditor.Selection.ParagraphFormat;
+        format.SetAfterSpacingAsync(0);
+        format.SetBeforeSpacingAsync(0);
+    }
+
+    void setMethodFormat()
+    {
+        var format = Container.DocumentEditor.Selection.CharacterFormat;
+        format.SetFontColorAsync("#745534");
+        format.SetBoldAsync(true);
+    }
+
+    public async Task Save()
+    {
+        var base64 = await Container.DocumentEditor.SaveAsBlobAsync(FormatType.Docx);
+
+        var array = Convert.FromBase64String(base64);
+        using var stream = new MemoryStream(array);
+        using var document = new Syncfusion.DocIO.DLS.WordDocument(stream, Syncfusion.DocIO.FormatType.Docx);
+        document.Save($"{path}.docx", Syncfusion.DocIO.FormatType.Dotx);
+        ShowMessage("ثبت با موفقیت انجام شد");
     }
 
     [Parameter]

@@ -26,7 +26,7 @@
 </div>
 <Window Service="Service" Title="فروشنده" Style="width:800px">
     <CaspianForm TEntity="Seller" Service="Service" ColumnsCount="2">
-        @{ 
+        @{
             var isReal = context.SellerType == SellerType.Real;
         }
 
@@ -34,19 +34,23 @@
         <StringTextBox @bind-Value="context.Name" ColSpan="4" Disabled="isReal" />
         <StringTextBox @bind-Value="context.EconomicCode" Style="direction:ltr" ColSpan="4" Disabled="isReal" />
         <StringTextBox @bind-Value="context.RegistrationNo" Style="direction:ltr" ColSpan="4" Disabled="isReal" />
-        <RadioList @bind-Value="context.Citizenship" ColSpan="4"Disabled="!isReal" />
+        <RadioList @bind-Value="context.Citizenship" ColSpan="4" Disabled="!isReal" />
         <StringTextBox @bind-Value="context.IdCard" Style="direction:ltr" ColSpan="4" />
-        <ComboBox TEntity="Province" TValue="int?" @bind-Value="context.ProvinceId"  ColSpan="4" TextExpression="t => t.Title"
-                  CascadeService="CascadeService"  />
+        <ComboBox TEntity="Province" TValue="int?" @bind-Value="context.ProvinceId" ColSpan="4" TextExpression="t => t.Title"
+                  CascadeService="CascadeService" />
+        <StringTextBox @bind-Value="context.PreCode" Style="direction:ltr" ColSpan="4" />
         <ComboBox TEntity="City" TValue="int?" @bind-Value="context.CityId" ColSpan="4" TextExpression="t => t.Title"
                   CascadeService="CascadeService" />
-        <StringTextBox @bind-Value="context.Address" ColSpan="10" />
-        <StringTextBox @bind-Value="context.Zipcode" Style="direction:ltr" ColSpan="4" />
-        <StringTextBox @bind-Value="context.PreCode" Style="direction:ltr" ColSpan="4" />
         <StringTextBox @bind-Value="context.Tel1" Style="direction:ltr" ColSpan="4" />
-        <StringTextBox @bind-Value="context.Tel2" Style="direction:ltr" ColSpan="4" />
-        <StringTextBox @bind-Value="context.Address" ColSpan="10" />
-        <FormCommandButton ColSpan="8" />
+
+        <div class="col-md-6 row">
+            <StringTextBox @bind-Value="context.Address" ColSpan="8" MultiLine TotalSpan="12" />
+        </div>
+        <div class="col-md-6 row">
+            <StringTextBox @bind-Value="context.Tel2" Style="direction:ltr" ColSpan="8" TotalSpan="12" />
+            <StringTextBox @bind-Value="context.Zipcode" Style="direction:ltr" ColSpan="8" TotalSpan="12" />
+        </div>
+        <FormCommandButton ColSpan="6" />
     </CaspianForm>
 </Window>
 

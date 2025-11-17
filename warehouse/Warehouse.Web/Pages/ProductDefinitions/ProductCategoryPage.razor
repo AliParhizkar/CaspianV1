@@ -67,13 +67,16 @@
     {
         var categoryId = Convert.ToInt32(node.Value);
         using var service = CreateScope().GetService<ProductCategoryService>();
-        var scope = await service.SingleAsync(categoryId);
-        var result = await service.ValidateRemoveAsync(scope);
+        var old = await service.SingleAsync(categoryId);
+        var result = await service.ValidateRemoveAsync(old);
         if (result.IsValid)
         {
-            service.Remove(scope);
-            await service.SaveChangesAsync();
-            tree.RemoveFromTree(category);
+            if (await Confirm("آیا با حذف گروه محصول موافقید؟"))
+            {
+                await service.RemoveAsync(categoryId);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(category);
+            }
         }
         else
             ShowMessage(result.Errors.First().ErrorMessage);

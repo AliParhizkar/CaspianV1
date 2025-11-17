@@ -57,6 +57,11 @@ namespace Caspian.Report
             Page.OpenTextWindow();
         }
 
+        public void Drop(double x, double y)
+        {
+
+        }
+
         public string GetCursor(double x, double y)
         {
             x = x - Bound.Left;
@@ -141,7 +146,6 @@ namespace Caspian.Report
                 y = y - BoundItem.Top;
             }
             double difX = xStart - x, difY = yStart - y;
-            Console.WriteLine("{0},{1}", heightStart - difY, widthStart - difX);
             switch (changeType)
             {
                 case ChangeType.Move:

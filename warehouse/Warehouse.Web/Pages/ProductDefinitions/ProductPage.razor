@@ -23,7 +23,7 @@
 <Window Service="Service" Title="کالا - ویژگی های کالا" Style="width:850px;">
     <CaspianForm Service="Service" ColumnsCount="2">
         <Lookup TValue="int" TEntity="ProductCategory" @bind-Value="context.CategoryId" TextExpression='t => t.Code + " : " + t.Title'
-                CloseFunc="t => t.Code.Length == 8" ColSpan="4" Title="گروه محصول">
+                OnSelecting="CheckStatus" ColSpan="4" Title="گروه محصول">
             <CategoryCodingLookup TValue="int" />
         </Lookup>
         <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="4" />
@@ -79,5 +79,9 @@
 
 @code
 {
-
+    async Task CheckStatus(SelectStatus status)
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        status.Cancel = await service.GetAll().AnyAsync(t => t.CategoryId == status.Id);
+    }
 }

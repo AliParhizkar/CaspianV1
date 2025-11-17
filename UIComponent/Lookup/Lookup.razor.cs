@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -61,7 +62,7 @@ namespace Caspian.UI
         public string PlaceHolder { get; set; }
 
         [Parameter]
-        public Func<TEntity, bool> CloseFunc { get; set; }
+        public EventCallback<SelectStatus> OnSelecting { get; set; }
 
         [Parameter]
         public bool AlwaysAdvanceSearch { get; set; }
@@ -127,12 +128,20 @@ namespace Caspian.UI
             return false;
         }
 
-        public bool CloseHelpForm(TEntity selectedEntity, bool shouldRender = false)
+        public async Task<bool> CloseHelpForm(TEntity selectedEntity, bool shouldRender = false)
         {
-            if (selectedEntity == null || CloseFunc == null || CloseFunc(selectedEntity))
+            var flag = selectedEntity == null || !OnSelecting.HasDelegate;
+            if (!flag)
+            {
+                var selectStatus = new SelectStatus();
+                selectStatus.Id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(selectedEntity));
+                await OnSelecting.InvokeAsync(selectStatus);
+                flag = !selectStatus.Cancel;
+            }
+            if (flag)
             {
                 status = WindowStatus.Close;
-                if (CloseFunc != null && grid != null)
+                if (grid != null)
                 {
                     shouldRender = true;
                     grid.EnableLoading();
@@ -145,9 +154,9 @@ namespace Caspian.UI
         }
 
         [JSInvokable]
-        public void Close()
+        public async Task Close()
         {
-            CloseHelpForm(null, true);
+            await CloseHelpForm(null, true);
         }
 
         async Task OnKeyUp(KeyboardEventArgs e)
@@ -183,7 +192,7 @@ namespace Caspian.UI
             {
                 if (OnSelect != null)
                     OnSelect(grid.GetSelectedData());
-                var result = CloseHelpForm(grid.GetSelectedData());
+                var result = await CloseHelpForm(grid.GetSelectedData());
                 if (result)
                 {
                     var value = grid.SelectedRowId.Value;
@@ -243,7 +252,7 @@ namespace Caspian.UI
             {
                 if (OnSelect != null)
                     OnSelect(entity);
-                if(CloseHelpForm(entity))
+                if(await CloseHelpForm(entity))
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                     await SetValue(id);
@@ -352,5 +361,12 @@ namespace Caspian.UI
         Task SelectOnLookup(bool changeState);
 
         bool AdvanceSearch { get; }
+    }
+
+    public class SelectStatus
+    {
+        public int Id { get; internal set; }
+
+        public bool Cancel { get; set; }
     }
 }

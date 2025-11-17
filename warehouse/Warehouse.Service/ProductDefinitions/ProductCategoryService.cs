@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using Warehouse.Model;
 using Caspian.Common.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Warehouse.Service
 {
@@ -20,6 +21,28 @@ namespace Warehouse.Service
                         return null;
                     return $"کد باید با {parent.Code} شروع شود";
                 });
+        }
+
+        public override async Task<ProductCategory> AddAsync(ProductCategory category)
+        {
+            if (category.CategoryId.HasValue)
+            {
+                var parent = await SingleAsync(category.CategoryId.Value);
+                if (!parent.HasChild)
+                    parent.HasChild = true;
+            }
+            return await base.AddAsync(category);
+        }
+
+        public override async Task RemoveAsync(int id)
+        {
+            var old = await SingleAsync(id);
+            if (old.CategoryId.HasValue)
+            {
+                var parent = await SingleAsync(old.CategoryId.Value);
+                parent.HasChild = await GetAll().AnyAsync(t => t.CategoryId == parent.Id && t.Id != id);
+            }
+            await base.RemoveAsync(id);
         }
     }
 }

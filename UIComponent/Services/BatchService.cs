@@ -18,11 +18,11 @@ namespace Caspian.UI
 
         PropertyInfo ISimpleBatchService.ThirdLevelProperty { get; set; }
 
-        public DataView<TDetail> DetailDataView { get; set; }
+        public DataView<TDetail> DetailDataView { get; private set; }
 
-        public TypeWindow<TDetail> TypeWindow { get; set; }
+        public TypeWindow<TDetail> TypeWindow { get; private set; }
 
-        public CaspianForm<TDetail> DetailForm { get; set; }
+        public CaspianForm<TDetail> DetailForm { get; private set; }
 
         public CaspianValidationValidator<TDetail> DetailValidator { get; set; }
 

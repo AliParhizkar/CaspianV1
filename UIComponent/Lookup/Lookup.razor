@@ -41,7 +41,7 @@ else
                             {
                                 <div class="t-header">
                                     <div class="t-window-title">@(WindowTitle)</div>
-                                    <div class="t-window-action t-link" @onclick="() => CloseHelpForm(null)">
+                                    <div class="t-window-action t-link" @onclick="async() => await CloseHelpForm(null)">
                                         <i class="fa fa-close"></i>
                                     </div>
                                 </div>

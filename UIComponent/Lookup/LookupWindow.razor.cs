@@ -1,5 +1,8 @@
 ﻿using System.Linq.Expressions;
+using Caspian.Common;
+using Caspian.Engine.Model;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
@@ -13,6 +16,16 @@ namespace Caspian.UI
         protected virtual void InitialSearchExpression(Expression<Func<TEntity, bool>> expr)
         {
             SearchExpression = expr;
+        }
+
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
+        public IServiceScope CreateScope()
+        {
+            var scope = ServiceScopeFactory.CreateScope();
+            scope.SetUserId(PageData?.UserId ?? 0);
+            return scope;
         }
 
         protected override void OnInitialized()

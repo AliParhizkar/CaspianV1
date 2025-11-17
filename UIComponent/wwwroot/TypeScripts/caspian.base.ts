@@ -23,7 +23,7 @@ HTMLCollection.prototype.indexOf = function (element: HTMLElement): number {
 HTMLElement.prototype.getPosition = function () {
     let parent: HTMLElement = this, left = 0, top = 0;
     let rect = parent.getBoundingClientRect();
-    while (parent != document.body) {
+    while (parent != document.body && parent != null) {
         left += parent.offsetLeft;
         top += parent.offsetTop;
         parent = parent.offsetParent as HTMLElement;

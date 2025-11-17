@@ -11,6 +11,8 @@ namespace Caspian.Report
 {
     public partial class Page: ComponentBase
     {
+        static double pixelsPerCentimetre;
+
         WindowStatus status;
         ElementReference element;
         bool controlAdding, tableAdding, isTextWindow;
@@ -22,8 +24,9 @@ namespace Caspian.Report
         ControlData controlData;
         MessageBox messageBox;
         int windowWidth, controlId;
-        double pixelsPerCentimetre;
-        
+
+        public static double Pixelsinmilimetre => pixelsPerCentimetre / 2;
+
         public ReportPageData Data { get; private set; }
         
         public ToolsBar ToolsBar { get; private set; }

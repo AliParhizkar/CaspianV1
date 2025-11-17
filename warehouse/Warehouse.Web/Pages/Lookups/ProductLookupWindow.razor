@@ -4,7 +4,7 @@
 <div class="c-lookup-page" style="width:800px;">
     <EntitySearch TEntity="Product" Service="Service">
         <Lookup TValue="int" TEntity="ProductCategory" @bind-Value="context.CategoryId" TextExpression='t => t.Code + " : " + t.Title'
-                CloseFunc="t => t.Code.Length == 8" ColSpan="10" TotalSpan="12" HideHeader>
+                OnSelecting="CheckSelectStatus" ColSpan="10" TotalSpan="12" HideHeader>
             <CategoryCodingLookup TValue="int" />
         </Lookup>
         <StringTextBox @bind-Value="context.Name" ColSpan="6" TotalSpan="8" />
@@ -21,5 +21,9 @@
 
 @code
 {
-
+    async Task CheckSelectStatus(SelectStatus status)
+    {
+        using var service = CreateScope().GetService<ProductCategoryService>();
+        status.Cancel = await service.GetAll().AnyAsync(t => t.CategoryId == status.Id);
+    }
 }

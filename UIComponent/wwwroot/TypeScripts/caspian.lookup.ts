@@ -89,6 +89,11 @@
                         window.onclick = async function (e: MouseEvent) {
                             let lookup = Lookup.lookups[Lookup.lookups.length - 1];
                             let target = (e.target as HTMLElement).closest('.t-HelpWindow');
+                            if (target == null) {
+                                let lookup = (e.target as HTMLElement).closest('.c-lookup');
+                                if (lookup)
+                                    target = lookup.getElementsByClassName('t-HelpWindow')[0];
+                            }
                             if (target == null || target != lookup.lookupWindow)
                                 await lookup.dotnetInvoker.invokeMethodAsync('Close');
                         };

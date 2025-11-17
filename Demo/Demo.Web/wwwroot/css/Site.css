@@ -553,9 +553,15 @@ html {
 }
 .d-document{
     background-color:white;
-    padding:8px;
+    height:calc(100vh - 88px);
 }
-    .d-document span{
+.d-document iframe{
+    height:calc(100vh - 88px)
+}
+.d-document iframe {
+    width: 100%;
+}
+    .d-document span {
         user-select: auto;
     }
     p:not(.d-document p) {

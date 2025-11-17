@@ -1,6 +1,9 @@
-﻿.c-supervisor{
-    color:red!important;
-    background-color:yellowgreen!important;
+﻿.c-disabled label {
+    color: #9d9d9d;
+}
+.c-supervisor {
+    color: red !important;
+    background-color: yellowgreen !important;
 }
 .c-packages-container {
     position: absolute;

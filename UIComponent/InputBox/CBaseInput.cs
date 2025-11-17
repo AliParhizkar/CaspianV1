@@ -147,12 +147,13 @@ namespace Caspian.UI
         {
             if (TotalSpan.HasValue)
             {
-                var className = PageData?.RightToLeft == true ? "pe-2" : "ps-2";
+                var className = disabled ? "c-disabled " : "";
+                className += PageData?.RightToLeft == true ? "pe-2" : "ps-2";
                 className += " col-md-";
                 return className + (TotalSpan.Value - ColSpan);
             }
             var container = EntitySearch as ICaspianContainer ?? CaspianForm as ICaspianContainer ?? CaspianContainer;
-            return container.GetLabelContainerCSSClassName(ColSpan.Value);
+            return (disabled ? "c-disabled " : "") + container.GetLabelContainerCSSClassName(ColSpan.Value);
         }
 
         public bool Validate()

@@ -1,14 +1,28 @@
 ﻿@inject IHostEnvironment host
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+<script type="text/javascript">
+    function setContent(iframe, htmlContent){
+        iframe.contentDocument.open();
+        iframe.contentDocument.write(htmlContent);
+        iframe.contentDocument.close();
+    }
+</script>
 <div class="d-document" @ondblclick="OpenDocumentGeneratorPage">
-    @((MarkupString)content)
+    <iframe @ref="iframe" frameborder="0" >
+    </iframe>
 </div>
-@{
-    content = null;
-}
 
 @code
 {
+    ElementReference iframe;
+
+    [Parameter]
+    public string FileName { get; set; }
+
+    [Parameter]
+    public string FolderName { get; set; }
+
     void OpenDocumentGeneratorPage(MouseEventArgs e)
     {
         if (e.CtrlKey)
@@ -23,9 +37,6 @@
     string content;
     protected override async Task OnInitializedAsync()
     {
-        var fileName = FileName;
-        if (!FileName.EndsWith(".htm", StringComparison.CurrentCultureIgnoreCase))
-            fileName += ".htm";
         var path = host.ContentRootPath;
         if (host.IsDevelopment())
             path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
@@ -33,20 +44,29 @@
             path += "\\Help\\";
         if (FolderName.HasValue())
             path += FolderName + '\\';
-        path += fileName;
-        if (File.Exists(path))
-        {
-            content = await File.ReadAllTextAsync(path);
-            content = content.Replace("�", "&nbsp;");
-        }
-        else
-            content = $"File Not exist";
+        path += FileName;
+        //if (File.Exists(path))
+        //{
+        //    content = await File.ReadAllTextAsync(path);
+        //    content = content.Replace("�", "&nbsp;");
+        //}
+        //else
+        //    content = $"File Not exist";
+        var document = new Syncfusion.DocIO.DLS.WordDocument($"{path}.docx");
+        using var straem = new MemoryStream();
+        document.Save(straem, Syncfusion.DocIO.FormatType.Html);
+        document.Clone();
+        straem.Position = 0;
+        using var reader = new StreamReader(straem);
+        content = await reader.ReadToEndAsync();
+
         await base.OnInitializedAsync();
     }
 
-    [Parameter]
-    public string FileName { get; set; }
-
-    [Parameter]
-    public string FolderName { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("setContent", iframe, content);
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }
