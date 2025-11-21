@@ -2,9 +2,10 @@
 @if (!SimpleMode)
 {
     <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Name" ColSpan="10" TotalSpan="12" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4"  />
         <StringTextBox @bind-Value="context.MobileNumber" Style="direction:ltr" MaxLength="11" ColSpan="4" />
-        <StringTextBox @bind-Value="customerNumber" ColSpan="4" TotalSpan="6" Title="شماره مشتری" Style="direction:ltr" />
+        <StringTextBox @bind-Value="customerNumber" ColSpan="4"  Title="شماره مشتری" Style="direction:ltr" />
+        <CheckBox @bind-Value="context.IsSpecial" ColSpan="4" />
     </EntitySearch>
 
     <DataGrid TEntity="Customer" Service="Service" DeleteMessage="با حذف مشتری گروههای وی نیز حذف می شود آیا با حذف موافقید؟"

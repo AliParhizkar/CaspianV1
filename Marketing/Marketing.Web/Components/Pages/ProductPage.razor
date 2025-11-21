@@ -1,5 +1,4 @@
-﻿@page "/Marketing/Product"
-@page  "/Marketing/Product/{CategoryId:int}"
+﻿@page  "/Marketing/Product/{CategoryId:int?}"
 @attribute [Source(1, "محصول")]
 @inject UIService<Product, ProductTopping, ProductDescription> Service
 @inherits BasePage
@@ -7,7 +6,7 @@
         base.BuildRenderTree(__builder);
 }
 <div class="p-4 pt-2 pb-2">
-    @if (productCategory != null)
+    @if (productCategory != null && CategoryId.HasValue)
     {
         <div class="row c-controls">
             <div class="col-md-2">
@@ -26,20 +25,24 @@
             </div>
         </div>
     }
+    else
+    {
+        <div>No No No</div>
+    }
     <hr />
     <EntitySearch TEntity="Product" Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Title" ColSpan="4" />
-        @if (CategoryId == 0)
+        @if (CategoryId == null)
         {
             <ComboBox TEntity="ProductCategory" TValue="int" TextExpression="t => t.Name" @bind-Value="context.CategoryId" ColSpan="4" />
         }
     </EntitySearch>
     <DataGrid TEntity="Product" Service="Service" ConditionExpr="t => CategoryId == 0 || t.CategoryId == CategoryId">
         <Columns>
-            @if (CategoryId == 0)
+            @if (CategoryId == null)
             {
-                <GridColumn Field="t=> t.Category.Category.Name ?? t.Category.Name" Title="گروه اصلی" />
-                <GridColumn Field="t=> t.Category.Name" Title="گروه فرعی" />
+                <GridColumn Field="t=> t.Category.Category.Name ?? t.Category.Name" Title="گروه اصلی" Hidden="CategoryId.HasValue" />
+                <GridColumn Field="t=> t.Category.Name" Title="گروه فرعی" Hidden="CategoryId.HasValue" />
             }
             <GridColumn Field="t=> t.Title" Title="عنوان" />
             <GridColumn Field="t=> t.Price.DigitGrouping()" />
@@ -159,12 +162,14 @@
         base.OnInitialized();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         using var service = CreateScope().GetService<ProductCategoryService>();
         if (CategoryId > 0)
             productCategory = await service.GetAll().Include(t => t.Category).SingleAsync(t => t.Id == CategoryId);
-        await base.OnInitializedAsync();
+        else
+            productCategory = null;
+        await base.OnParametersSetAsync();
     }
 
     string ValidateSubCategory()
@@ -186,8 +191,8 @@
 
     async Task FormSubmitted(CancelableEvent<Product> e)
     {
-        if (CategoryId > 0)
-            e.Entity.CategoryId = CategoryId;
+        if (CategoryId.HasValue)
+            e.Entity.CategoryId = CategoryId.Value;
         else if (ConfigService.Config.CategoryType == CategoryType.Couple)
         {
             using var service = CreateScope().GetService<ProductCategoryService>();
@@ -222,5 +227,5 @@
     }
 
     [Parameter]
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
 }

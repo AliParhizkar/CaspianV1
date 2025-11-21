@@ -19,7 +19,7 @@
                     <Template>
                         <div class="m-quantity">
                             <span @onclick="async async => await ChangeQuantity(context.Data.ToppingId, context.Data.Quantity + 1)" class="fa fa-plus c-small-icon ms-1"></span>
-                            <NumericTextBox TValue="decimal" Value="context.Data.Quantity" ValueChanged="async value => await ChangeQuantity(context.Data.OrderDetailId, value)" Style="width:50px;" maxlength="3" />
+                            <NumericTextBox TValue="decimal" Value="context.Data.Quantity" ValueChanged="async value => await ChangeQuantity(context.Data.ToppingId, value)" Style="width:50px;" maxlength="3" />
                             <span @onclick="async async => await ChangeQuantity(context.Data.ToppingId, context.Data.Quantity - 1)" class="fa fa-minus c-small-icon me-1"></span>
                         </div>
                     </Template>

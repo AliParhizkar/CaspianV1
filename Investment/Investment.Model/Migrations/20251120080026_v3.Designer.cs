@@ -4,6 +4,7 @@ using Investment.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investment.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20251120080026_v3")]
+    partial class v3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,39 +75,6 @@ namespace Investment.Model.Migrations
                     b.ToTable("Locations", "ivm");
                 });
 
-            modelBuilder.Entity("Investment.Model.OrganPost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("ActiveStatus")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("OrganUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganUnitId");
-
-                    b.ToTable("OrganPost");
-                });
-
             modelBuilder.Entity("Investment.Model.OrganUnit", b =>
                 {
                     b.Property<int>("Id")
@@ -144,17 +114,6 @@ namespace Investment.Model.Migrations
                     b.Navigation("ParentLocation");
                 });
 
-            modelBuilder.Entity("Investment.Model.OrganPost", b =>
-                {
-                    b.HasOne("Investment.Model.OrganUnit", "OrganUnit")
-                        .WithMany("OrganPosts")
-                        .HasForeignKey("OrganUnitId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("OrganUnit");
-                });
-
             modelBuilder.Entity("Investment.Model.OrganUnit", b =>
                 {
                     b.HasOne("Investment.Model.OrganUnit", "ParentOrganUnit")
@@ -172,8 +131,6 @@ namespace Investment.Model.Migrations
 
             modelBuilder.Entity("Investment.Model.OrganUnit", b =>
                 {
-                    b.Navigation("OrganPosts");
-
                     b.Navigation("SubOrganUnits");
                 });
 #pragma warning restore 612, 618

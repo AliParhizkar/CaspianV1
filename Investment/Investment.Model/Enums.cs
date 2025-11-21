@@ -19,4 +19,13 @@ namespace Investment.Model
         [Display(Name = "محله")]
         Region
     }
+
+    public enum ActiveStatus: byte
+    {
+        [Display(Name = "فعال")]
+        Active,
+
+        [Display(Name = "غیرفعال")]
+        Deactivate
+    }
 }

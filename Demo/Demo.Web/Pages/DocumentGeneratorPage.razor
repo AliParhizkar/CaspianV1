@@ -67,6 +67,11 @@
         var format = Container.DocumentEditor.Selection.ParagraphFormat;
         format.SetAfterSpacingAsync(0);
         format.SetBeforeSpacingAsync(0);
+        format.SetContextualSpacingAsync(false);
+        format.SetLineSpacingAsync(1);
+        format.SetLineSpacingTypeAsync(LineSpacingType.AtLeast);
+        
+        var format1 = Container.DocumentEditor.Selection.CharacterFormat;
     }
 
     void setMethodFormat()
@@ -79,11 +84,9 @@
     public async Task Save()
     {
         var base64 = await Container.DocumentEditor.SaveAsBlobAsync(FormatType.Docx);
-
         var array = Convert.FromBase64String(base64);
-        using var stream = new MemoryStream(array);
-        using var document = new Syncfusion.DocIO.DLS.WordDocument(stream, Syncfusion.DocIO.FormatType.Docx);
-        document.Save($"{path}.docx", Syncfusion.DocIO.FormatType.Dotx);
+        await File.WriteAllBytesAsync("d:\\aaaa.docx", array);
+        await File.WriteAllBytesAsync($"{path}.docx", array);
         ShowMessage("ثبت با موفقیت انجام شد");
     }
 

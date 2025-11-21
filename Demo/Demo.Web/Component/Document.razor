@@ -8,8 +8,9 @@
         iframe.contentDocument.close();
     }
 </script>
-<div class="d-document" @ondblclick="OpenDocumentGeneratorPage">
-    <iframe @ref="iframe" frameborder="0" >
+<button @ondblclick="OpenDocumentGeneratorPage">+</button>
+<div class="d-document" >
+    <iframe @ref="iframe" frameborder="0">
     </iframe>
 </div>
 
@@ -54,6 +55,7 @@
         //    content = $"File Not exist";
         var document = new Syncfusion.DocIO.DLS.WordDocument($"{path}.docx");
         using var straem = new MemoryStream();
+        document.SaveOptions.UseContextualSpacing = false;
         document.Save(straem, Syncfusion.DocIO.FormatType.Html);
         document.Clone();
         straem.Position = 0;

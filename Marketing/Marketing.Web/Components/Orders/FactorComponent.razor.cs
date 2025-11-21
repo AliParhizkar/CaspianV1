@@ -45,7 +45,7 @@ namespace Marketing.Web.OrderComponents
             if (value >= 0)
             {
                 var grid = OrderService.DetailDataView;
-                var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == orderDetail.ProductId);
+                var old = grid.GetBatchEntities().SingleOrDefault(t => t.Id == orderDetail.Id);
                 if (value == 0)
                 {
                     /// Count of toppings that inserted for order-detail
@@ -124,7 +124,7 @@ namespace Marketing.Web.OrderComponents
         public async Task AddToOrder(Product product)
         {
             var grid = OrderService.DetailDataView;
-            var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == product.Id);
+            var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == product.Id && (t.OrderDetailToppings?.Count ?? 0) == 0);
            
             if (old == null)
             {
