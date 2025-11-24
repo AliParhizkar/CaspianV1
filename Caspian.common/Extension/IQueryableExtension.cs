@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common.Service;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Caspian.Common.Extension
 {

@@ -4,7 +4,7 @@
 @attribute [Source(2, "آدرس کالا در انبار")]
 
 @{
-    base.BuildRenderTree(__builder);
+base.BuildRenderTree(__builder);
 }
 
 <div style="width:600px;margin:10px auto">
@@ -51,10 +51,12 @@
 
 <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="آدرس کالا">
     <CaspianForm Model="materialAddress" TEntity="MaterialAddress" OnValidSubmit="UpsertAddress">
+        <div class="p-3 text-center">@(parentNodeTitle)</div>
         <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
         <WindowCommandButtons ColSpan="9" />
     </CaspianForm>
 </Window>
+
 @code
 {
     int? stockroomId;
@@ -63,6 +65,7 @@
     MaterialAddress materialAddress;
     TreeView<MaterialAddress> tree;
     IControl firstControl;
+    string parentNodeTitle;
 
     async Task ReloadData()
     {
@@ -72,18 +75,24 @@
 
     async Task ShowEditForm(NodeView nodeView, bool isUpdate)
     {
+        using var service = CreateScope().GetService<MaterialAddressService>();
         if (isUpdate)
         {
             ///Edit mode
             var addressId = Convert.ToInt32(nodeView.Value);
-            using var service = CreateScope().GetService<MaterialAddressService>();
-            materialAddress = await service.SingleAsync(addressId);
+            materialAddress = await service.GetAll().Include(t => t.ParentAddress).SingleAsync(addressId);
+            parentNodeTitle = materialAddress.ParentAddress?.Title;
+
         }
         else
         {
             ///Insert mode
             materialAddress = new MaterialAddress();
             materialAddress.ParentAddressId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            if (materialAddress.ParentAddressId.HasValue)
+                parentNodeTitle = (await service.SingleAsync(materialAddress.ParentAddressId.Value)).Title;
+            else
+                parentNodeTitle = null;
         }
         materialAddress.StockroomId = stockroomId.Value;
         status = WindowStatus.Open;
@@ -97,9 +106,12 @@
         var result = await service.ValidateRemoveAsync(address);
         if (result.IsValid)
         {
-            service.Remove(address);
-            await service.SaveChangesAsync();
-            tree.RemoveFromTree(address);
+            if (await Confirm("آیا با حذف موافقید؟"))
+            {
+                service.Remove(address);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(address);
+            }
         }
         else
             ShowMessage(result.Errors.First().ErrorMessage);

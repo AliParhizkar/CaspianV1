@@ -1,12 +1,13 @@
 ﻿@namespace Caspian.UI
+
 <div class="t-grid-header">
     <div class="t-grid-header-wrap">
         <table @attributes="tableAttrs">
             <thead>
                 <tr>
-                    @foreach (var col in ColumnsData.Where(t => !t.DataField))
+                    @foreach (var col in ColumnsData.Where(t => !t.DataField && !t.Hidden))
                     {
-                        <th style="@(col.Width)" data-resizeable="@(col.Resizeable)" class="t-header">
+                        <th style="@(col.Width)" data-resizeable="@(col.Resizable)" class="t-header">
                             <span @onclick="(MouseEventArgs e) =>
                                       {
                                           OrderByChanged(!e.CtrlKey, col);
@@ -41,10 +42,6 @@
             {
                 foreach (var col in ColumnsData)
                     col.SortType = null;
-            }
-            else
-            {
-                
             }
             switch (ordering)
             {

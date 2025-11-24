@@ -10,9 +10,7 @@ namespace Caspian.UI
     public partial class GridColumn<TEntity>:ComponentBase where TEntity: class
     {
         object value;
-
         int? AggregateIndex;
-
         bool isAggregate;
 
         public bool IsCheckBox { get; private set; }
@@ -55,6 +53,12 @@ namespace Caspian.UI
         [CascadingParameter(Name = "RowData")]
         public RowData<TEntity> RowData { get; set; }
 
+        [Parameter]
+        public string Id { get; set; }
+
+        [Parameter]
+        public bool Hidden { get; set; }
+
         protected override void OnInitialized()
         {
             if (Attributes != null && Attributes.ContainsKey("style"))
@@ -67,8 +71,8 @@ namespace Caspian.UI
                     if (temp.StartsWith("width") || temp.StartsWith("min-width") || temp.StartsWith("max-width"))
                         Width += item + ';';
                 }
-
             }
+
             if (AggregateField != null)
             {
                 var tempExpr = AggregateField.Body;
@@ -123,6 +127,12 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
+            if (Hidden)
+            {
+                if (!Id.HasValue())
+                    throw new CaspianException("For dynamic column (Hidden is true) is must specify");
+                Grid.UpdateColumnData(Id, Hidden);
+            }
             if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
                 if (Field != null)
@@ -138,7 +148,6 @@ namespace Caspian.UI
                         if (tempValue != null)
                             value = Convert.ToInt32(tempValue).DigitGrouping();
                     }
-                    
                 }
             }
             base.OnParametersSet();

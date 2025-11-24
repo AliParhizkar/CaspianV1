@@ -123,6 +123,51 @@
                             </Columns>
                         </DataGrid>
                     </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="pe-3">
+                            <h4>Dynamic columns</h4>
+                            <span class="pe-4 c-demo-description">
+                                In this example, we are selectively displaying three grid columns (<b>Customer Type, Gender, Mobile number</b>).
+                            </span>
+                            <div>
+                                <span class="pe-4 c-demo-description">
+                                    Because the grid must be <b>recreated</b> with every <b>change in the number of grid columns</b>, we should change the value of <b>@@key</b> to force the Blazor Engine to recreate the grid.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <div class="row pb-3">
+                            <div class="col-md-6">
+                                <CheckBox @bind-Value="showCustomerTypeColumn" OnChange="EnforceGridToReGenert" Title="Show customer type column" />
+                            </div>
+                            <div class="col-md-6">
+                                <CheckBox @bind-Value="showGenderColumn" OnChange="EnforceGridToReGenert" Title="Show gender column" />
+                            </div>
+                            <div class="col-md-6">
+                                <CheckBox @bind-Value="showMobileNumberColumn" OnChange="EnforceGridToReGenert" Title="Show mobile number column" />
+                            </div>
+                        </div>
+                        <DataGrid @key="gridKey" TEntity="Customer">
+                            <Columns>
+                                <GridColumn Field='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Name" />
+                                @if (showCustomerTypeColumn)
+                                {
+                                    <GridColumn Field="t => t.CustomerType" />
+                                }
+                                @if (showGenderColumn)
+                                {
+                                    <GridColumn Field="t => t.Gender" />
+                                }
+                                @if (showMobileNumberColumn)
+                                {
+                                    <GridColumn Field="t => t.MobileNumber" />
+                                }
+                            </Columns>
+                        </DataGrid>
+                    </div>
                 </div>
             </div>
         </TabPanelItem>
@@ -131,5 +176,13 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
+
+@code
+{ 
+    bool showCustomerTypeColumn = true, showGenderColumn = true, showMobileNumberColumn = true;
+    string gridKey;
+
+    void EnforceGridToReGenert() => gridKey = Guid.NewGuid().ToString().Replace("-", "");
+}
 
 

@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Caspian.UI
@@ -17,8 +18,12 @@ namespace Caspian.UI
 
         public bool Sortable { get; set; }
 
-        public bool Resizeable { get; set; }
+        public bool Resizable { get; set; }
 
         public bool DataField { get; set; }
+
+        public string Id { get; set; }
+
+        public bool Hidden { get; set; }
     }
 }

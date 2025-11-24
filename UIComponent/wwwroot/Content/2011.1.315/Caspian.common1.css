@@ -2385,9 +2385,10 @@ html body .t-button-bare {
 }
 
 .t-icon, .t-sprite, .t-editor-button .t-tool-icon {
-    width: 21px;
+    width: 30px;
     height: 19px;
     vertical-align: middle;
+    text-align: center;
 }
 
 * html .t-icon, * html .t-sprite, * html .t-editor-button .t-tool-icon {
@@ -3721,10 +3722,6 @@ html body .t-grid tbody .t-button-icon {
             .t-calendar .t-link .t-icon {
                 color: #e7eaea;
             }
-            .t-calendar .t-link {
-                text-decoration: none;
-                color: #191919;
-            }
 
     .t-calendar .t-action-link {
         text-decoration: underline;
@@ -3734,7 +3731,9 @@ html body .t-grid tbody .t-button-icon {
                 background-color: chocolate;
                 font-size: 15px;
                 font-weight: bold;
-                height:35px;
+                height: 35px;
+                vertical-align: middle;
+                line-height: 32px;
             }
 
     .t-calendar .t-nav-prev,

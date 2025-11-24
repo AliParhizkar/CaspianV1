@@ -1,8 +1,8 @@
-﻿/// <reference path="index.ts" />
-
-namespace caspian {
-    export class common {
-        public static showMessage(message: string) {
+/// <reference path="index.ts" />
+var caspian;
+(function (caspian) {
+    class common {
+        static showMessage(message) {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);
             let box = document.getElementById('outMessage');
@@ -12,9 +12,9 @@ namespace caspian {
             odv.id = 'outMessage';
             odv.className = 't-widget t-message';
             odv.innerHTML = `<div class="t-window-titlebar"><span class="t-title">Info</span><span class="t-close"><i class="fa fa-close"></i></span></div><div class="c-content">${message}</div><div class="c-progress"></div>`;
-            (odv.getElementsByClassName('t-close')[0] as HTMLElement).onclick = () => {
+            odv.getElementsByClassName('t-close')[0].onclick = () => {
                 this.hideMessage();
-            }
+            };
             let main = document.getElementsByClassName('c-content-main')[0];
             if (main == null)
                 document.body.appendChild(odv);
@@ -30,13 +30,12 @@ namespace caspian {
                 clearInterval(this.intervalId);
             let value = 250;
             this.intervalId = setInterval(() => {
-                let progress = odv.lastElementChild as HTMLDivElement;
+                let progress = odv.lastElementChild;
                 progress.style.width = value + 'px';
                 value -= 0.5;
             }, 11);
         }
-
-        public static getPixelsPerCentimetre() {
+        static getPixelsPerCentimetre() {
             let div = document.createElement("div");
             div.style.width = "1cm";
             document.body.appendChild(div);
@@ -44,52 +43,42 @@ namespace caspian {
             document.body.removeChild(div);
             return result;
         }
-
-        public static hideMessage() {
+        static hideMessage() {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);
             setTimeout(() => {
                 document.getElementById('outMessage').remove();
             }, 300);
         }
-
-        public static BindWindowClickForMainLayout(dotnet) {
-            let container = document.getElementsByClassName('c-packages-container')[0] as HTMLElement;
+        static BindWindowClickForMainLayout(dotnet) {
+            let container = document.getElementsByClassName('c-packages-container')[0];
             container.style.display = '';
             setTimeout(() => {
                 debugger;
-                let menu = container.getElementsByClassName('c-packages')[0] as HTMLElement;
+                let menu = container.getElementsByClassName('c-packages')[0];
                 var rect = menu.getBoundingClientRect();
                 container.style.width = `${rect.width}px`;
                 container.style.height = `${rect.height}px`;
             }, 100);
-            let main = document.getElementsByClassName('page')[0] as HTMLElement;
-            main.onmousedown = async e => {
+            let main = document.getElementsByClassName('page')[0];
+            main.onmousedown = async (e) => {
                 await dotnet.invokeMethodAsync('CloseSubsystem');
                 container.style.display = 'none';
                 container.style.width = container.style.height = '0';
-
                 main.onmousedown = null;
             };
         }
-
-        public static setValueOnClient(input: HTMLInputElement, value: string) {
+        static setValueOnClient(input, value) {
             input.value = value;
         }
-
-        static RightToLeft(): boolean {
+        static RightToLeft() {
             return document.body.classList.contains('t-rtl');
         }
-
-        static infoTimer;
-        static intervalId;
-
-        public static getSelection(input: HTMLInputElement) {
+        static getSelection(input) {
             let data = { start: input.selectionStart, end: input.selectionEnd };
             return data;
         }
-
-        public static bindErrorMessage(target: HTMLElement, activeElement: HTMLElement, top:number = 0) {
+        static bindErrorMessage(target, activeElement, top = 0) {
             const mutationObserver = new MutationObserver(t => {
                 t.forEach(u => {
                     if (u.type == 'attributes' && u.attributeName == 'error-message') {
@@ -104,30 +93,27 @@ namespace caspian {
                 subtree: false
             });
         }
-
-        public static setSelection(input: HTMLInputElement, start: number, end: number) {
+        static setSelection(input, start, end) {
             input.focus();
             input.setSelectionRange(start, end || start);
         }
-
-        public static bindCheckbox(element: HTMLElement) {
+        static bindCheckbox(element) {
             element.onfocus = e => {
-                caspian.common.showErrorMessage(e.target as HTMLElement);
+                caspian.common.showErrorMessage(e.target);
             };
             element.onblur = e => {
-                caspian.common.hideErrorMessage(e.target as HTMLElement);
-            }
+                caspian.common.hideErrorMessage(e.target);
+            };
         }
-
-        public static bindCheclistDropdown(element: HTMLElement, dotnet: dotnetInvoker) {
+        static bindCheclistDropdown(element, dotnet) {
             const mutationObserver = new MutationObserver(t => {
-                let element = t[0].target as HTMLElement;
+                let element = t[0].target;
                 let width = element.closest('.t-dropdown').getBoundingClientRect().width;
                 if (element.classList.contains('c-checkbox-list'))
                     element = element.parentElement;
                 if (element.classList.contains('t-checkbox-list')) {
                     let loc = element.getBoundingClientRect();
-                    let animate = element.closest('.t-animation-container') as HTMLDivElement;
+                    let animate = element.closest('.t-animation-container');
                     animate.style.height = `${loc.height + 6}px`;
                     animate.style.width = `${width + 6}px`;
                     if (loc.top > window.outerHeight / 2) {
@@ -139,7 +125,6 @@ namespace caspian {
                         animate.classList.add('c-animation-down');
                         setTimeout(() => element.style.top = '0', 20);
                     }
-
                 }
             });
             mutationObserver.observe(element, {
@@ -148,72 +133,59 @@ namespace caspian {
                 subtree: true
             });
             let windowElement = element;
-            window.addEventListener("click", async (e: Event): Promise<void> => {
-                let elem = (e.target as HTMLElement).closest('.t-dropdown');
+            window.addEventListener("click", async (e) => {
+                let elem = e.target.closest('.t-dropdown');
                 if (elem == null || elem != windowElement)
                     await dotnet.invokeMethodAsync('CloseWindow');
             });
         }
-
-        public static bindWindowClick(dotnet: dotnetInvoker) {
-            let main = document.getElementsByClassName('c-content-main')[0] as HTMLElement;
+        static bindWindowClick(dotnet) {
+            let main = document.getElementsByClassName('c-content-main')[0];
             main = main || document.body;
-            main.onmousedown = async e => {
-                if ((e.target as HTMLElement).closest('.auto-hide') == null)
+            main.onmousedown = async (e) => {
+                if (e.target.closest('.auto-hide') == null)
                     await dotnet.invokeMethodAsync('WindowClick');
-            }
+            };
             window.addEventListener("locationchange", this.onMousedownHandler);
         }
-
-        public static async bindSlider(element: HTMLElement, dotnet: dotnetInvoker) {
+        static async bindSlider(element, dotnet) {
             let containerWidth = element.getBoundingClientRect().width;
             let slide = element.getElementsByClassName('c-slider-slide')[0];
             let slideWidth = slide.getBoundingClientRect().width;
-            (element.getElementsByClassName('c-slider-body')[0] as HTMLElement).style.width = `${slideWidth}px`;
-            (element.getElementsByClassName('c-slider-content')[0] as HTMLElement).style.left = `${-slideWidth}px`;
+            element.getElementsByClassName('c-slider-body')[0].style.width = `${slideWidth}px`;
+            element.getElementsByClassName('c-slider-content')[0].style.left = `${-slideWidth}px`;
             await dotnet.invokeMethodAsync('SetData', containerWidth, slideWidth);
             //window.addEventListener('resize', async () => {
-
             //});
             //window.addEventListener('locationchange', () => window.removeEventListener('loc'))
         }
-
-        public static scrollIntoViewSelectedRow(grid: HTMLElement) {
+        static scrollIntoViewSelectedRow(grid) {
             let selectedRows = grid.getElementsByClassName('t-state-selected');
             if (selectedRows.length == 1)
                 selectedRows[0].scrollIntoView();
         }
-
-        public static bindTree(tree: HTMLElement) {
-
+        static bindTree(tree) {
         }
-
-        public static bindTooltip() {
-
+        static bindTooltip() {
         }
-
-        public static async onWindowResizeHandler(element: HTMLElement, dotnet: dotnetInvoker) {
+        static async onWindowResizeHandler(element, dotnet) {
             let containerWidth = element.getBoundingClientRect().width;
             let slide = element.getElementsByClassName('c-slider-slide')[0];
             let slideWidth = slide.getBoundingClientRect().width;
             await dotnet.invokeMethodAsync('SetData', containerWidth, slideWidth);
         }
-
-        public static onMousedownHandler() {
-            let main = document.getElementsByClassName('c-content-main')[0] as HTMLElement;
+        static onMousedownHandler() {
+            let main = document.getElementsByClassName('c-content-main')[0];
             if (main == null)
                 document.body.onmousedown = null;
             else
                 main.onmousedown = null;
             window.removeEventListener("locationchange", this.onMousedownHandler);
         }
-
-        public static bindDatePicker(element: HTMLElement, dotnet: dotnetInvoker) {
-            
-            new DatePicker(element, dotnet);
+        static bindDatePicker(element, dotnet) {
+            new caspian.DatePicker(element, dotnet);
         }
-
-        public static showErrorMessage(element: HTMLElement, top: number = 0) {
+        static showErrorMessage(element, top = 0) {
             let error = element.getElementsByClassName('errorMessage')[0];
             if (error)
                 error.remove();
@@ -231,33 +203,31 @@ namespace caspian {
                 //pointer.style.top = `${height - 6}px`;
             }
         }
-
-        public static hideErrorMessage(element: HTMLElement) {
+        static hideErrorMessage(element) {
             let ctr = element.getElementsByClassName('errorMessage')[0];
             if (ctr)
                 ctr.remove();
         }
-
-        public static setListHeaderPadding(list: HTMLElement) {
-            let content = list.getElementsByClassName('c-dataview-content')[0] as HTMLDivElement;
+        static setListHeaderPadding(list) {
+            let content = list.getElementsByClassName('c-dataview-content')[0];
             let height = content.getBoundingClientRect().height;
             content.style.overflow = 'visible';
             content.style.height = 'auto';
-            let realHeight = content.getBoundingClientRect().height;;
+            let realHeight = content.getBoundingClientRect().height;
+            ;
             content.style.overflow = 'auto';
             content.style.height = `${height}px`;
-            let header = list.getElementsByClassName('c-dataview-header')[0] as HTMLDivElement;
+            let header = list.getElementsByClassName('c-dataview-header')[0];
             if (realHeight > height)
                 header.style.paddingRight = '10px';
             else
                 header.style.paddingRight = '0';
         }
-
-        public static bindListView(list: HTMLElement) {
+        static bindListView(list) {
             caspian.common.setListHeaderPadding(list);
             const mutationObserver = new MutationObserver(t => {
                 if (t.length > 0) {
-                    let ctr = (t[t.length - 1].target as HTMLElement).closest('.c-widget.c-data-view') as HTMLElement;
+                    let ctr = t[t.length - 1].target.closest('.c-widget.c-data-view');
                     caspian.common.setListHeaderPadding(ctr);
                 }
             });
@@ -267,91 +237,79 @@ namespace caspian {
                 subtree: true
             });
         }
-
-        public static bindTabpanel(tabpanel: HTMLElement) {
+        static bindTabpanel(tabpanel) {
             let basePos = tabpanel.getBoundingClientRect();
             let activeTab = tabpanel.getElementsByClassName('t-state-active')[0];
             if (activeTab) {
                 let pos = activeTab.getBoundingClientRect();
                 if (tabpanel.classList.contains('t-vertical'))
-                    (tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement).style.top = `${pos.top - basePos.top + 8}px`;
+                    tabpanel.getElementsByClassName('c-selected-panel')[0].style.top = `${pos.top - basePos.top + 8}px`;
                 else {
-                    let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0] as HTMLElement;
+                    let seledtedPanel = tabpanel.getElementsByClassName('c-selected-panel')[0];
                     if (common.RightToLeft()) {
-                        console.log(basePos.left)
+                        console.log(basePos.left);
                         seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
-                    } else
+                    }
+                    else
                         seledtedPanel.style.left = `${pos.left - basePos.left + 3}px`;
                     seledtedPanel.style.width = `${pos.width - 8}px`;
                 }
             }
         }
-
-        public static enableDefaultShortKey(status: boolean, dotnet: dotnetInvoker) {
+        static enableDefaultShortKey(status, dotnet) {
             if (status) {
-                document.body.onkeyup = async e => {
+                document.body.onkeyup = async (e) => {
                     let key = e.keyCode;
                     if (key == 13 || key == 27)
-                        await dotnet.invokeMethodAsync("HideConfirm", key == 13)
-                }
+                        await dotnet.invokeMethodAsync("HideConfirm", key == 13);
+                };
             }
             else
                 document.body.onkeyup = null;
         }
-
-        public static bindDataGrid(grid: HTMLElement) {
-            new DataGrid(grid);
+        static bindDataGrid(grid) {
+            new caspian.DataGrid(grid);
         }
-
-        public static bindBox() {
-
+        static bindBox() {
         }
-
-        public static bindWindow(win: HTMLElement) {
-            new Window(win);
+        static bindWindow(win) {
+            new caspian.Window(win);
         }
-
-        public static bindLookup(input: HTMLElement, dotnet: dotnetInvoker) {
-            new Lookup(input, dotnet);
+        static bindLookup(input, dotnet) {
+            new caspian.Lookup(input, dotnet);
         }
-
-        public static bindTimepicker(element: HTMLElement, dotnet: dotnetInvoker) {
-            new TimePicker(element, dotnet);
+        static bindTimepicker(element, dotnet) {
+            new caspian.TimePicker(element, dotnet);
         }
-
-        public static bindColorPicker(element: HTMLElement) {
-            new ColorPicker(element);
+        static bindColorPicker(element) {
+            new caspian.ColorPicker(element);
         }
-
-        public static bindInputCollorPicker(element: HTMLElement, dotnet: dotnetInvoker) {
-            new InputCollorPicker(element, dotnet);
+        static bindInputCollorPicker(element, dotnet) {
+            new caspian.InputCollorPicker(element, dotnet);
         }
-
-        public static bindDropdownList(element: HTMLElement, dotnet: dotnetInvoker) {
-            new DropdownList(element, dotnet);
+        static bindDropdownList(element, dotnet) {
+            new caspian.DropdownList(element, dotnet);
         }
-
-        public static bindMultiSelect(element: HTMLElement) {
+        static bindMultiSelect(element) {
             caspian.common.bindErrorMessage(element, element, 33);
             element.onfocus = () => {
                 this.showErrorMessage(element, 33);
-            }
+            };
             element.onblur = () => {
                 this.hideErrorMessage(element);
-            }
+            };
         }
-
-        public static bindContextMenu(element: HTMLElement, dotnet: dotnetInvoker) {
-            document.body.onclick = async e => {
-                if ((e.target as HTMLElement).closest('.c-context-menu-container') == null) {
+        static bindContextMenu(element, dotnet) {
+            document.body.onclick = async (e) => {
+                if (e.target.closest('.c-context-menu-container') == null) {
                     document.body.onclick = null;
                     await dotnet.invokeMethodAsync('Close');
                 }
-            }
+            };
             const mutationObserver = new MutationObserver(list => {
                 list.every(t => {
                     if (t.addedNodes.length == 1) {
-                        let ctr = t.addedNodes[0] as HTMLElement;
+                        let ctr = t.addedNodes[0];
                         let parentLoc = ctr.parentElement.getBoundingClientRect();
                         let right = parentLoc.left + parentLoc.width + ctr.getBoundingClientRect().width + 10;
                         let list = ctr.classList;
@@ -363,7 +321,7 @@ namespace caspian {
                             list.add('c-context-menu-right');
                             list.remove('c-context-menu-left');
                         }
-                        setTimeout(() => ctr.style.marginTop = '-28px' , 1);
+                        setTimeout(() => ctr.style.marginTop = '-28px', 1);
                     }
                 });
             });
@@ -373,27 +331,23 @@ namespace caspian {
                 subtree: true,
             });
         }
-
-        public static bindPopupWindow(element: HTMLInputElement, target: HTMLElement, json: string, dotnet: dotnetInvoker) {
-            (element as any).popupWindow = new PopupWindow(element, target, json, dotnet);
+        static bindPopupWindow(element, target, json, dotnet) {
+            element.popupWindow = new caspian.PopupWindow(element, target, json, dotnet);
         }
-
-        public static updatePopupWindow(element: HTMLInputElement, json: string) {
-            ((element as any).popupWindow as PopupWindow).updateLocation(element, json,);
+        static updatePopupWindow(element, json) {
+            element.popupWindow.updateLocation(element, json);
         }
-
-        public static bindComboBox(input: HTMLElement, pageable: boolean, dotnet: dotnetInvoker) {
-            new ComboBox(input, pageable, dotnet);
+        static bindComboBox(input, pageable, dotnet) {
+            new caspian.ComboBox(input, pageable, dotnet);
         }
-
-        public static bindLookupTree(input: HTMLElement, dotnet: dotnetInvoker) {
+        static bindLookupTree(input, dotnet) {
             const mutationObserver = new MutationObserver(t => {
-                let target = t[0].target as HTMLElement;
+                let target = t[0].target;
                 let targetLoc = target.getBoundingClientRect();
-                let content = target.getElementsByClassName('c-tree-content')[0] as HTMLElement;
+                let content = target.getElementsByClassName('c-tree-content')[0];
                 if (content != null) {
                     let loc = target.getBoundingClientRect();
-                    let tree = content.getElementsByClassName('c-treeview')[0] as HTMLElement;
+                    let tree = content.getElementsByClassName('c-treeview')[0];
                     content.style.width = `${loc.width + 3}px`;
                     if (targetLoc.top > window.innerHeight / 2) {
                         content.style.height = `${targetLoc.top - 25}px`;
@@ -406,12 +360,12 @@ namespace caspian {
                         content.classList.add('c-animate-down');
                         setTimeout(() => tree.style.top = '0', 10);
                     }
-                    document.body.onmousedown = async e => {
-                        if ((e.target as HTMLElement).closest('.auto-hide') == null) {
+                    document.body.onmousedown = async (e) => {
+                        if (e.target.closest('.auto-hide') == null) {
                             document.body.onmousedown = null;
                             await dotnet.invokeMethodAsync("Close");
                         }
-                    }
+                    };
                 }
             });
             mutationObserver.observe(input.closest('.c-lookup-tree'), {
@@ -422,33 +376,28 @@ namespace caspian {
             let lookup = input.closest('.c-content');
             input.onfocus = e => {
                 lookup.classList.add('c-state-focus');
-                caspian.common.showErrorMessage((e.target as HTMLElement).parentElement.parentElement);
-            }
+                caspian.common.showErrorMessage(e.target.parentElement.parentElement);
+            };
             input.onblur = e => {
                 lookup.classList.remove('c-state-focus');
-                caspian.common.hideErrorMessage((e.target as HTMLElement).parentElement.parentElement);
-            }
+                caspian.common.hideErrorMessage(e.target.parentElement.parentElement);
+            };
         }
-
-        public static bindMenu() {
-            new Accordion(document.getElementById('accordion'), false);
+        static bindMenu() {
+            new caspian.Accordion(document.getElementById('accordion'), false);
         }
-
-        public static convertToInt(value: string):number {
+        static convertToInt(value) {
             if (!value)
                 return null;
             return parseFloat(value.substring(0, value.length - 2));
         }
-
-        public static bindTextBox(input: HTMLInputElement) {
-            new TextBox(input, 'numeric');
+        static bindTextBox(input) {
+            new caspian.TextBox(input, 'numeric');
         }
-
-        public static bindStringbox(input: HTMLInputElement) {
-            new TextBox(input, 'string');
+        static bindStringbox(input) {
+            new caspian.TextBox(input, 'string');
         }
-
-        public static async bindFileDownload(fileName: string, contentStreamReference) {
+        static async bindFileDownload(fileName, contentStreamReference) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
             const blob = new Blob([arrayBuffer]);
             const url = URL.createObjectURL(blob);
@@ -459,40 +408,29 @@ namespace caspian {
             anchorElement.remove();
             URL.revokeObjectURL(url);
         }
-
-        public static bindMask(el: HTMLInputElement, patern: string) {
-            const pattern = patern,
-                slots = new Set(el.dataset.slots || "_"),
-                prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
-                first = [...pattern].findIndex(c => slots.has(c)),
-                accept = new RegExp(el.dataset.accept || "\\d", "g"),
-                clean = input => {
-                    input = input.match(accept) || [];
-                    return Array.from(pattern, c =>
-                        input[0] === c || slots.has(c) ? input.shift() || c : c
-                    );
-                },
-                format = () => {
-                    const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
-                        i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
-                        return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
-                    });
-                    el.value = clean(el.value).join('');
-                    el.setSelectionRange(i, j);
-                    back = false;
-                };
+        static bindMask(el, patern) {
+            const pattern = patern, slots = new Set(el.dataset.slots || "_"), prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0), first = [...pattern].findIndex(c => slots.has(c)), accept = new RegExp(el.dataset.accept || "\\d", "g"), clean = input => {
+                input = input.match(accept) || [];
+                return Array.from(pattern, c => input[0] === c || slots.has(c) ? input.shift() || c : c);
+            }, format = () => {
+                const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
+                    i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
+                    return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
+                });
+                el.value = clean(el.value).join('');
+                el.setSelectionRange(i, j);
+                back = false;
+            };
             let back = false;
             el.addEventListener("keydown", (e) => back = e.key === "Backspace");
             el.addEventListener("input", format);
             el.addEventListener("focus", format);
             el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
         }
-
-        public static focus(element: HTMLElement) {
+        static focus(element) {
             element.focus();
         }
-
-        public static async bindImage(pic: HTMLImageElement, imageStream) {
+        static async bindImage(pic, imageStream) {
             if (imageStream) {
                 const arrayBuffer = await imageStream.arrayBuffer();
                 const blob = new Blob([arrayBuffer]);
@@ -502,12 +440,6 @@ namespace caspian {
                 pic.src = '';
         }
     }
-
-    export interface dotnetInvoker {
-        invokeMethodAsync(methodName: string);
-        _id: string;
-        invokeMethodAsync(methodName: string, argr: any);
-        invokeMethodAsync(methodName: string, argr: any, arg1:any);
-    }
-}
-
+    caspian.common = common;
+})(caspian || (caspian = {}));
+//# sourceMappingURL=caspian.common.js.map

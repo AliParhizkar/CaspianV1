@@ -387,7 +387,7 @@ var caspian;
                 var rect = menu.getBoundingClientRect();
                 container.style.width = `${rect.width}px`;
                 container.style.height = `${rect.height}px`;
-            }, 25);
+            }, 1000);
             let main = document.getElementsByClassName('page')[0];
             main.onmousedown = (e) => __awaiter(this, void 0, void 0, function* () {
                 yield dotnet.invokeMethodAsync('CloseSubsystem');

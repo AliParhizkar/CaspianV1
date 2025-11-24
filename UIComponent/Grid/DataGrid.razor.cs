@@ -1,6 +1,5 @@
 ﻿using Caspian.Common;
 using System.Text.Json;
-using System.Reflection;
 using Microsoft.JSInterop;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
@@ -15,7 +14,6 @@ namespace Caspian.UI
 {
     public partial class DataGrid<TEntity>: DataView<TEntity>, IEnableLoadData, IGridRowSelect where TEntity: class
     {
-        string jsonOldSearch;
         bool mustRender = true;
         bool commandColumnAdded;
         int aggregateColumnIndex;
@@ -30,11 +28,21 @@ namespace Caspian.UI
         [Parameter]
         public Func<TEntity, string> RowDataBindingCssClass { get; set; }
 
+        internal void UpdateColumnData(string id, bool hidden)
+        {
+            var columnData = columnsData.SingleOrDefault(t => t.Id == id);
+            if (columnData != null)
+                columnData.Hidden = hidden;
+        }
+
         internal void AddColumnData(GridColumn<TEntity> column)
         {
+            if (column.Hidden && !column.Id.HasValue())
+                throw new CaspianException("For dynamic column (Hidden is true) is must specify");
             var columnData = new ColumnData();
             columnData.Expression = column.Field?.Body;
             columnData.DataField = column.DataField;
+            columnData.Id = column.Id;
             if (!column.DataField)
             {
                 columnData.Width = column.Width;
@@ -42,7 +50,7 @@ namespace Caspian.UI
                 columnData.AggregateExpression = column.AggregateField?.Body;
                 columnData.Sortable = column.Field?.Body as BinaryExpression == null;
                 columnData.SortType = column.SortType;
-                columnData.Resizeable = column.Template == null && !column.IsCheckBox;
+                columnData.Resizable = column.Template == null && !column.IsCheckBox;
             }
             columnsData.Add(columnData);
             StateHasChanged();
@@ -189,7 +197,7 @@ namespace Caspian.UI
                 {
                     Title = title,
                     Width = width,
-                    Resizeable = false
+                    Resizable = false
                 });
                 commandColumnAdded = true;
                 StateHasChanged();
@@ -300,19 +308,6 @@ namespace Caspian.UI
             }
             return query;
         }
-
-        //IList<Expression> ConvertExpressionForGroupBy(IList<Expression> list, ParameterExpression parameter)
-        //{
-        //    var exprList = new List<Expression>();
-        //    foreach(var item in list)
-        //    {
-        //        var path = item.ToString();
-        //        var index = path.IndexOf('.');
-        //        path = "Key." + path.Substring(index + 1);
-        //        exprList.Add(parameter.CreateMemberExpresion(path));
-        //    }
-        //    return exprList;
-        //}
 
         internal void SetDeleteMessage(string message)
         {
@@ -438,7 +433,7 @@ namespace Caspian.UI
                 SelectRow(rowIndex);
                 return items[rowIndex];
             }
-            return default(TEntity);
+            return default;
         }
 
         protected override void OnInitialized()
@@ -466,12 +461,6 @@ namespace Caspian.UI
 
         protected async override Task OnParametersSetAsync()
         {
-            var jsonSearch = Search == null ? "{}" : JsonSerializer.Serialize(Search, Search.GetType());
-            if (jsonOldSearch != jsonSearch)
-            {
-                shouldFetchData = true;
-                jsonOldSearch = jsonSearch;
-            }
             if (columnsData != null && !Batch)
                 await DataBind();
             if (shouldFetchData && columnsData?.Count > 0 && Batch)
