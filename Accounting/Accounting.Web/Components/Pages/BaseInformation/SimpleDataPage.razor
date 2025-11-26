@@ -1,0 +1,68 @@
+﻿@page "/Accounting/SimpleData"
+@inherits BasePage
+@attribute [Source(22, "اطلاعات پایه")]
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject IUIService<SimpleData> Service
+<div class="d-main">
+    <div class="d-menu">
+        <div class="d-search">
+            <StringTextBox @bind-Value="search" placeholder="Search" OnChange="() => {}" BindingType="BindingType.OnInput" />
+        </div>
+        <div style="overflow:auto">
+            @foreach (var item in dictionary.Where(t => !search.HasValue() || t.Value.Contains(search)))
+            {
+                var className = "d-item";
+                if (item.Key == selectedDataType)
+                    className += " d-selected";
+                <div class="@className" @onclick="() => SelectMenu(item.Key)">
+                    <span>@item.Value</span>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="d-body">
+        <div class="d-title-head">
+            <span>@selectedDataType.EnumText()</span>
+        </div>
+        <DataGrid TEntity="SimpleData" Service="Service" ConditionExpr="t => t.DataType == selectedDataType">
+            <Columns>
+                <GridColumn Field="t => t.Title" />
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+<Window Title="@(selectedDataType.EnumText())" Style="width:400px;" Service="Service">
+    <CaspianForm Service="Service" TEntity="SimpleData" OnSubmit="t => t.Entity.DataType = selectedDataType">
+        <Content Context="data">
+            <div class="row c-controls p-2 pt-1 pb-3">
+                <StringTextBox @bind-Value="data.Title" ColSpan="8" />
+            </div>
+            <div>
+                <FormCommandButton />
+            </div>
+        </Content>
+    </CaspianForm>
+</Window>
+
+@code
+{
+    SimpleDataType selectedDataType = SimpleDataType.FinancialUnit;
+    IDictionary<SimpleDataType, string> dictionary;
+    string search;
+
+    void SelectMenu(SimpleDataType menu)
+    {
+        selectedDataType = menu;
+        Service.DataView.EnableLoading();
+    }
+
+    protected override void OnInitialized()
+    {
+        dictionary = SimpleDataType.FinancialUnit.GetEnumFields();
+        base.OnInitialized();
+    }
+}

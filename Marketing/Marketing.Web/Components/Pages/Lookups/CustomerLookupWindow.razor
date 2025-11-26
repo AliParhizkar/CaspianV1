@@ -3,7 +3,9 @@
 @inherits LookupWindow<Customer, TValue>
 <div class="c-lookup-page" style="width:550px;">
     <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" BindingType="BindingType.OnChange" />
+        <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" Style="direction:ltr" SearchType="SearchType.StartWith" />
+        <NumericTextBox @bind-Value="context.CustomerNumber" ColSpan="4"  />
         @if (ConfigService.Config.CustomerHasManyAddresses)
         {
             <StringTextBox @bind-Value="address" ColSpan="4" Title="آدرس" />

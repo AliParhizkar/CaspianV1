@@ -46,7 +46,7 @@
                 <label>سفارش</label>
             </div>
             <div class="col-md-2 text-center pt-5">
-                <OrderComponent Page="this" OnChange="InitializeOrder" />
+                <span @onclick="() => ordersStatus= WindowStatus.Open" class="fa fa-bars c-small-icon"></span>
             </div>
             <div class="col-md-3 text-center pt-5">
                 <button class="c-btn c-primary">ثبت<span class="me-1 ms-1 fa fa-save"></span></button>
@@ -66,6 +66,11 @@
 <SimpleCustomerComponent @ref="customerComponent" Page="this" CustomerId="OrderService.UpsertData.CustomerId" CustomerService="CustomerService"
                          CustomerAddressService="CustomerAddressService" CustomerGroupService="CustomerGroupService"
                          CustomerAddressGroupsService="CustomerAddressGroupsService" />
+@if (ordersStatus == WindowStatus.Open)
+{
+    <OrderComponent @bind-Status="ordersStatus" Page="this" OnChange="InitializeOrder" />
+}
+
 @code
 {
     WindowStatus status;
@@ -73,6 +78,7 @@
     IList<Product> products;
     ProductComponent productComponent;
     SimpleCustomerComponent customerComponent;
+    WindowStatus ordersStatus;
 
     async Task ChangeCustomer(int? customerId)
     {

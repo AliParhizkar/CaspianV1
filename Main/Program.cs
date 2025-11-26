@@ -109,6 +109,7 @@ namespace Main
             typeof(Investment.Service.InvestmentUnitService).Assembly.InjectServices(builder.Services);
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
             typeof(Warehouse.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
+            typeof(Accounting.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
             #endregion
             builder.Services.AddControllers();
             #region Inject Context For each entity model

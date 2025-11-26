@@ -1,16 +1,10 @@
 ﻿@page "/Test"
 @inject IUIService<Customer> Service
-<div style="width:80%;margin: 10px auto">
-    <DataGrid TEntity="Customer">
-        <Columns>
-            <GridColumn Field='t => t.CustomerType.EnumText() + (t.CustomerType == CustomerType.Real ?  "(" + t.Gender.EnumText() + ")" : "")' Title="Customer type" />
-            <GridColumn Field="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName" Title="Customer name" />
-
-        </Columns>
-    </DataGrid>
+<div style="width:200px;margin:5px auto">
+    <StringTextBox @bind-Value="value" InputRegularExpression="^(\d+)?$" />
 </div>
-
 @code
 {
+    string value;
     bool showCustomerTypeColumn, showGenderColumn, showMobileNumberColumn;
 }

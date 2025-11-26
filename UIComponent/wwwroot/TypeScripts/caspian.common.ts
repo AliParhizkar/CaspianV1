@@ -441,11 +441,11 @@ namespace caspian {
         }
 
         public static bindTextBox(input: HTMLInputElement) {
-            new TextBox(input, 'numeric');
+            new TextBox(input, 'numeric', null);
         }
 
-        public static bindStringbox(input: HTMLInputElement) {
-            new TextBox(input, 'string');
+        public static bindStringbox(input: HTMLInputElement, regularExpression: string) {
+            new TextBox(input, 'string', regularExpression);
         }
 
         public static async bindFileDownload(fileName: string, contentStreamReference) {

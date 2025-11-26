@@ -89,6 +89,9 @@ namespace Caspian.UI
         [Parameter]
         public bool DisableAutoSelect { get; set; }
 
+        [Parameter]
+        public string InputRegularExpression { get; set; }
+
         public async Task SetValueOnClientAsync(string value)
         {
             Value = value;
@@ -178,7 +181,7 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement, InputRegularExpression);
             if (focused)
             {
                 focused = false;

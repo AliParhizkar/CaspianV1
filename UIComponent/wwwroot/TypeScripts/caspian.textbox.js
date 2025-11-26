@@ -1,7 +1,9 @@
 var caspian;
 (function (caspian) {
     class TextBox {
-        constructor(input, type) {
+        constructor(input, type, regularExpression) {
+            if (regularExpression)
+                this.regularExpression = new RegExp(regularExpression);
             caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
             this.total ||= 8;
@@ -41,43 +43,19 @@ var caspian;
             //        }, 300);
             //    };
             //}
-            if (type != 'string') {
-                input.onkeypress = e => this.bindKeypress(e);
-                if (this.digitGrouping)
-                    input.oninput = e => this.bindOnInput(e);
+            if (type != 'string' || this.regularExpression) {
+                input.addEventListener('keydown', e => this.bindKeydown(e));
+                input.oninput = e => this.bindOnInput(e);
             }
         }
-        bindOnInput(e) {
-            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
-            let count = input.value.substring(0, start).split(',').length - 1;
-            input.value = this.sepreate3Digit(input.value);
-            let count1 = input.value.substring(0, start).split(',').length - 1;
-            if (count != count1) {
-                input.selectionStart = start + 1;
-                input.selectionEnd = end + 1;
-            }
-            else {
-                input.selectionStart = start;
-                input.selectionEnd = end;
-            }
-        }
-        sepreate3Digit(value) {
-            let isNegativ = value.length > 0 && value[0] == '-';
-            if (isNegativ)
-                value = value.replace('-', '');
-            value = value.replace(/,/g, '');
-            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
-            for (let index in value) {
-                str += value[index];
-                counter++;
-                if (counter % 3 == 0 && counter <= value.length) {
-                    str += ',';
-                }
-            }
-            return str;
-        }
-        bindKeypress(e) {
+        bindKeydown(e) {
             let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
+            if (this.regularExpression) {
+                this.oldValue = value;
+                this.selectionStart = start;
+                this.selectionEnd = end;
+                return;
+            }
             if (code == 46 && this.numberDigit) {
                 let remain = value.length - end;
                 if (remain <= this.numberDigit && value.indexOf('.') == -1)
@@ -97,6 +75,44 @@ var caspian;
                 isValid = false;
             if (!isValid)
                 e.preventDefault();
+        }
+        bindOnInput(e) {
+            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
+            if (this.regularExpression) {
+                if (!this.regularExpression.test(input.value)) {
+                    input.value = this.oldValue;
+                    input.selectionStart = this.selectionStart;
+                    input.selectionEnd = this.selectionEnd;
+                }
+            }
+            else {
+                let count = input.value.substring(0, start).split(',').length - 1;
+                input.value = this.sepreate3Digit(input.value);
+                let count1 = input.value.substring(0, start).split(',').length - 1;
+                if (count != count1) {
+                    input.selectionStart = start + 1;
+                    input.selectionEnd = end + 1;
+                }
+                else {
+                    input.selectionStart = start;
+                    input.selectionEnd = end;
+                }
+            }
+        }
+        sepreate3Digit(value) {
+            let isNegativ = value.length > 0 && value[0] == '-';
+            if (isNegativ)
+                value = value.replace('-', '');
+            value = value.replace(/,/g, '');
+            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
+            for (let index in value) {
+                str += value[index];
+                counter++;
+                if (counter % 3 == 0 && counter <= value.length) {
+                    str += ',';
+                }
+            }
+            return str;
         }
         bindAttributes() {
             const mutationObserver = new MutationObserver((mutationList) => {
@@ -119,8 +135,6 @@ var caspian;
                 this.total = attrs['total'].value;
             if (attrs['number-digit'] != null)
                 this.numberDigit = attrs['number-digit'].value;
-            if (attrs['search'] != null)
-                this.search = true;
             this.digitGrouping = attrs['digit-grouping'] != null;
         }
     }

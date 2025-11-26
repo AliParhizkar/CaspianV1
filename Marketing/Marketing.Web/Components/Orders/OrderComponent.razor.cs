@@ -10,24 +10,26 @@ namespace Marketing.Web.OrderComponents
 {
     public partial class OrderComponent: ComponentBase
     {
-        WindowStatus statusLevel1, statusLevel2;
+        WindowStatus statusLevel2;
         double Level2Top;
         int? selectedOrderId;
         IList<Order> orders;
 
-        async Task SelectOrder(Order order)
-        {
-            statusLevel1 = statusLevel2 = WindowStatus.Close;
-            await OnChange.InvokeAsync(order.Id);
-        }
+        async Task SelectOrder(Order order) => await OnChange.InvokeAsync(order.Id);
 
-        async Task OpenLevel1(MouseEventArgs e)
+        protected override async Task OnInitializedAsync()
         {
             using var service = Page.CreateScope().GetService<OrderService>();
             var date = DateTime.Now.ToDateOnly();
             orders = await service.GetAll().Where(t => !t.IsSettled && t.OrderDate == date).ToListAsync();
-            statusLevel1 = WindowStatus.Open;
+            await base.OnInitializedAsync();
         }
+
+        [Parameter]
+        public WindowStatus Status { get; set; }
+
+        [Parameter]
+        public EventCallback<WindowStatus> StatusChanged { get; set; }
 
         void OpenLevel2(MouseEventArgs e, int orderId)
         {
@@ -42,11 +44,5 @@ namespace Marketing.Web.OrderComponents
 
         [Parameter]
         public BasePage Page { get; set; }
-
-        [Parameter]
-        public int? OrderId { get; set; }
-
-        [Parameter]
-        public EventCallback<int?> OrderIdChanged { get; set; }
     }
 }

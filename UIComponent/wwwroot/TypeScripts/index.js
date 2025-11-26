@@ -1,3 +1,4 @@
+/// <reference path="./caspian.base.ts" />
 /// <reference path="./caspian.datagrid.ts" />
 /// <reference path="./caspian.datepicker.ts" />
 /// <reference path="./caspian.window.ts" />

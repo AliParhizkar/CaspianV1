@@ -2384,8 +2384,8 @@ html body .t-button-bare {
     border-radius: 4px;
 }
 
-.t-icon, .t-sprite, .t-editor-button .t-tool-icon {
-    width: 30px;
+.t-sprite, .t-editor-button .t-tool-icon {
+     width: 30px;
     height: 19px;
     vertical-align: middle;
     text-align: center;
