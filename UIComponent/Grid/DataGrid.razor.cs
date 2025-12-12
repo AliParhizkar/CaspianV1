@@ -28,17 +28,9 @@ namespace Caspian.UI
         [Parameter]
         public Func<TEntity, string> RowDataBindingCssClass { get; set; }
 
-        internal void UpdateColumnData(string id, bool hidden)
-        {
-            var columnData = columnsData.SingleOrDefault(t => t.Id == id);
-            if (columnData != null)
-                columnData.Hidden = hidden;
-        }
 
         internal void AddColumnData(GridColumn<TEntity> column)
         {
-            if (column.Hidden && !column.Id.HasValue())
-                throw new CaspianException("For dynamic column (Hidden is true) is must specify");
             var columnData = new ColumnData();
             columnData.Expression = column.Field?.Body;
             columnData.DataField = column.DataField;
@@ -54,6 +46,17 @@ namespace Caspian.UI
             }
             columnsData.Add(columnData);
             StateHasChanged();
+        }
+
+        internal void UpdateColumnData(string id, string title)
+        {
+
+            var old = columnsData.SingleOrDefault(t => t.Id == id);
+            if (old != null && old.Title != title)
+            {
+                old.Title = title;
+                StateHasChanged();
+            }
         }
 
         public override async Task DataBind()

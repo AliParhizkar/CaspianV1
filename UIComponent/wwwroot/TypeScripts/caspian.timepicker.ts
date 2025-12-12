@@ -5,7 +5,7 @@
         constructor(element: HTMLElement, dotnet: dotnetInvoker) {
             this.dotnet = dotnet;
             let input = element.getElementsByTagName('input')[0];
-            caspian.common.bindMask(input, '__:__');
+            caspian.common.bindMaskedText(input, '__:__');
             element.onmouseenter = () => {
                 let wrap = element.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!wrap.classList.contains('t-state-selected') && !wrap.classList.contains('t-state-disabled'))

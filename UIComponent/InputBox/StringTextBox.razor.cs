@@ -89,9 +89,6 @@ namespace Caspian.UI
         [Parameter]
         public bool DisableAutoSelect { get; set; }
 
-        [Parameter]
-        public string InputRegularExpression { get; set; }
-
         public async Task SetValueOnClientAsync(string value)
         {
             Value = value;
@@ -148,15 +145,9 @@ namespace Caspian.UI
             base.OnParametersSet();
         }
 
-        public async Task<Selection> GetSelectionAsync()
-        {
-            return await jsRuntime.InvokeAsync<Selection>("caspian.common.getSelection", InputElement);
-        }
+        public async Task<Selection> GetSelectionAsync() => await jsRuntime.InvokeAsync<Selection>("caspian.common.getSelection", InputElement);
 
-        public async Task SetSelection(int start, int? end = null)
-        {
-            await jsRuntime.InvokeVoidAsync("caspian.common.setSelection", InputElement, start, end);
-        }
+        public async Task SetSelection(int start, int? end = null) =>  await jsRuntime.InvokeVoidAsync("caspian.common.setSelection", InputElement, start, end);
 
         [Parameter]
         public int? MaxLength { get; set; }
@@ -181,7 +172,7 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement, InputRegularExpression);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement);
             if (focused)
             {
                 focused = false;

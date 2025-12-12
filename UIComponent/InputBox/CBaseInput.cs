@@ -416,7 +416,7 @@ namespace Caspian.UI
 
         protected override void OnAfterRender(bool firstRender)
         {
-            if (firstRender)
+            if (firstRender && !disabled )
                 CaspianForm?.SetFirstControl(this);
             base.OnAfterRender(firstRender);
         }

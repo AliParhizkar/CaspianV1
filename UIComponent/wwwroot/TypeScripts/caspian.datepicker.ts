@@ -2,7 +2,7 @@
     export class DatePicker {
         constructor(element: HTMLElement, dotnet: dotnetInvoker) {
             let input = element.getElementsByTagName('input')[0] as HTMLInputElement;
-            caspian.common.bindMask(input, '____/__/__')
+            caspian.common.bindMaskedText(input, '____/__/__')
             element.onmouseenter = e => {
                 let elem = (e.target as HTMLElement).getElementsByClassName('t-inputbox-wrap')[0] as HTMLElement;
                 if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))

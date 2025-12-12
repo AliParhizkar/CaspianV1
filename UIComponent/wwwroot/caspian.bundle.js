@@ -360,7 +360,8 @@ var caspian;
                 let insert = this.grid.querySelector('.c-grid-insert');
                 if (insert != null) {
                     insert.querySelector('tbody tr').querySelectorAll('td').forEach((t, index) => {
-                        t.style.width = this.headerColumns[index].attributes['default-size'];
+                        if (index < this.headerColumns.length)
+                            t.style.width = this.headerColumns[index].attributes['default-size'];
                     });
                 }
                 let tr = this.content.querySelector('.c-grid-items tbody tr');
@@ -530,7 +531,7 @@ var caspian;
     class DatePicker {
         constructor(element, dotnet) {
             let input = element.getElementsByTagName('input')[0];
-            caspian.common.bindMask(input, '____/__/__');
+            caspian.common.bindMaskedText(input, '____/__/__');
             element.onmouseenter = e => {
                 let elem = e.target.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!elem.classList.contains('t-state-selected') || !elem.classList.contains('t-state-disabled'))
@@ -758,7 +759,7 @@ var caspian;
         }
         bindObserver(lookup) {
             let lookupComponenet = this;
-            const mutationObserver = new MutationObserver(list => {
+            const mutationObserver = new MutationObserver((list) => __awaiter(this, void 0, void 0, function* () {
                 let sidebar = document.getElementsByClassName('sidebar')[0];
                 let sidebarWidth = sidebar == null ? 0 : sidebar.getBoundingClientRect().width;
                 let target = list[0].target.closest('.c-lookup');
@@ -776,6 +777,11 @@ var caspian;
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top - 38;
+                        let gridContainer = target.closest('.t-grid-content');
+                        if (gridContainer) {
+                            yield waite(10);
+                            scrollTop = gridContainer.scrollTop;
+                        }
                         if (locTarget.top - 40 >= locHelpWindow.height)
                             helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop - 40}px`;
                         if (caspian.common.RightToLeft()) {
@@ -835,7 +841,7 @@ var caspian;
                         window.onkeydown = null;
                     }
                 }
-            });
+            }));
             mutationObserver.observe(lookup.getElementsByClassName('c-content')[0], {
                 attributes: true,
                 childList: true,
@@ -851,7 +857,7 @@ var caspian;
         constructor(element, dotnet) {
             this.dotnet = dotnet;
             let input = element.getElementsByTagName('input')[0];
-            caspian.common.bindMask(input, '__:__');
+            caspian.common.bindMaskedText(input, '__:__');
             element.onmouseenter = () => {
                 let wrap = element.getElementsByClassName('t-inputbox-wrap')[0];
                 if (!wrap.classList.contains('t-state-selected') && !wrap.classList.contains('t-state-disabled'))
@@ -1221,9 +1227,7 @@ var caspian;
 var caspian;
 (function (caspian) {
     class TextBox {
-        constructor(input, type, regularExpression) {
-            if (regularExpression)
-                this.regularExpression = new RegExp(regularExpression);
+        constructor(input, type) {
             caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
             this.total || (this.total = 8);
@@ -1253,29 +1257,43 @@ var caspian;
             };
             this.readAttributes();
             this.bindAttributes();
-            //if (this.search) {
-            //    input.oninput = e => {
-            //        if (caspian.common.infoTimer != null)
-            //            clearTimeout(caspian.common.infoTimer);
-            //        caspian.common.infoTimer = caspian.common.infoTimer = setTimeout(() => {
-            //            let event = new Event('change');
-            //            e.target.dispatchEvent(event);
-            //        }, 300);
-            //    };
-            //}
-            if (type != 'string' || this.regularExpression) {
-                input.addEventListener('keydown', e => this.bindKeydown(e));
-                input.oninput = e => this.bindOnInput(e);
+            if (type != 'string') {
+                input.onkeypress = e => this.bindKeypress(e);
+                if (this.digitGrouping)
+                    input.oninput = e => this.bindOnInput(e);
             }
         }
-        bindKeydown(e) {
-            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
-            if (this.regularExpression) {
-                this.oldValue = value;
-                this.selectionStart = start;
-                this.selectionEnd = end;
-                return;
+        bindOnInput(e) {
+            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
+            let count = input.value.substring(0, start).split(',').length - 1;
+            input.value = this.sepreate3Digit(input.value);
+            let count1 = input.value.substring(0, start).split(',').length - 1;
+            if (count != count1) {
+                input.selectionStart = start + 1;
+                input.selectionEnd = end + 1;
             }
+            else {
+                input.selectionStart = start;
+                input.selectionEnd = end;
+            }
+        }
+        sepreate3Digit(value) {
+            let isNegativ = value.length > 0 && value[0] == '-';
+            if (isNegativ)
+                value = value.replace('-', '');
+            value = value.replace(/,/g, '');
+            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
+            for (let index in value) {
+                str += value[index];
+                counter++;
+                if (counter % 3 == 0 && counter <= value.length) {
+                    str += ',';
+                }
+            }
+            return str;
+        }
+        bindKeypress(e) {
+            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
             if (code == 46 && this.numberDigit) {
                 let remain = value.length - end;
                 if (remain <= this.numberDigit && value.indexOf('.') == -1)
@@ -1296,44 +1314,6 @@ var caspian;
             if (!isValid)
                 e.preventDefault();
         }
-        bindOnInput(e) {
-            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
-            if (this.regularExpression) {
-                if (!this.regularExpression.test(input.value)) {
-                    input.value = this.oldValue;
-                    input.selectionStart = this.selectionStart;
-                    input.selectionEnd = this.selectionEnd;
-                }
-            }
-            else {
-                let count = input.value.substring(0, start).split(',').length - 1;
-                input.value = this.sepreate3Digit(input.value);
-                let count1 = input.value.substring(0, start).split(',').length - 1;
-                if (count != count1) {
-                    input.selectionStart = start + 1;
-                    input.selectionEnd = end + 1;
-                }
-                else {
-                    input.selectionStart = start;
-                    input.selectionEnd = end;
-                }
-            }
-        }
-        sepreate3Digit(value) {
-            let isNegativ = value.length > 0 && value[0] == '-';
-            if (isNegativ)
-                value = value.replace('-', '');
-            value = value.replace(/,/g, '');
-            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
-            for (let index in value) {
-                str += value[index];
-                counter++;
-                if (counter % 3 == 0 && counter <= value.length) {
-                    str += ',';
-                }
-            }
-            return str;
-        }
         bindAttributes() {
             const mutationObserver = new MutationObserver((mutationList) => {
                 let name = mutationList[0].attributeName;
@@ -1342,6 +1322,12 @@ var caspian;
                     this.total = attrs['total'].value;
                 if (name == 'number-digit')
                     this.numberDigit = attrs['number-digit'].value;
+                if (name == 'masked-text') {
+                    if (attrs['masked-text'].value != this.maskedText) {
+                        this.maskedText = attrs['masked-text'].value;
+                        caspian.common.bindMaskedText(this.input, this.maskedText);
+                    }
+                }
             });
             mutationObserver.observe(this.input.closest('.t-widget'), {
                 attributes: true,
@@ -1355,6 +1341,12 @@ var caspian;
                 this.total = attrs['total'].value;
             if (attrs['number-digit'] != null)
                 this.numberDigit = attrs['number-digit'].value;
+            if (attrs['search'] != null)
+                this.search = true;
+            if (this.maskedText != attrs['masked-text']) {
+                this.maskedText = attrs['masked-text'].value;
+                caspian.common.bindMaskedText(this.input, this.maskedText);
+            }
             this.digitGrouping = attrs['digit-grouping'] != null;
         }
     }
@@ -1490,7 +1482,6 @@ var caspian;
             let container = document.getElementsByClassName('c-packages-container')[0];
             container.style.display = '';
             setTimeout(() => {
-                debugger;
                 let menu = container.getElementsByClassName('c-packages')[0];
                 var rect = menu.getBoundingClientRect();
                 container.style.width = `${rect.width}px`;
@@ -1832,10 +1823,10 @@ var caspian;
             return parseFloat(value.substring(0, value.length - 2));
         }
         static bindTextBox(input) {
-            new caspian.TextBox(input, 'numeric', null);
+            new caspian.TextBox(input, 'numeric');
         }
-        static bindStringbox(input, regularExpression) {
-            new caspian.TextBox(input, 'string', regularExpression);
+        static bindStringbox(input) {
+            new caspian.TextBox(input, 'string');
         }
         static bindFileDownload(fileName, contentStreamReference) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -1850,7 +1841,7 @@ var caspian;
                 URL.revokeObjectURL(url);
             });
         }
-        static bindMask(el, patern) {
+        static bindMaskedText(el, patern) {
             const pattern = patern, slots = new Set(el.dataset.slots || "_"), prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0), first = [...pattern].findIndex(c => slots.has(c)), accept = new RegExp(el.dataset.accept || "\\d", "g"), clean = input => {
                 input = input.match(accept) || [];
                 return Array.from(pattern, c => input[0] === c || slots.has(c) ? input.shift() || c : c);
@@ -1886,4 +1877,13 @@ var caspian;
     }
     caspian.common = common;
 })(caspian || (caspian = {}));
+function waite(delay) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, delay);
+        });
+    });
+}
 //# sourceMappingURL=caspian.bundle.js.map

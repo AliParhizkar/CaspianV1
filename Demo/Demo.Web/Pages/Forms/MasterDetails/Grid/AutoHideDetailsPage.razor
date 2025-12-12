@@ -143,11 +143,12 @@
                                         <span>@(con.Data?.Material?.Subunit?.Title)</span>
                                     </Template>
                                 </GridColumn>
-                                <GridColumn Field="t => t.Description" Title="Comment" style="width:60px">
+                                <GridColumn Field="t => t.Description" Title="Comment" style="width:80px">
                                     <Template>
                                         @if (con.UpsertMode == null)
                                         {
                                             <button class="c-btn c-primary" disabled="disabled">...</button>
+                                            <IconButton IconType="IconType.Plus" @onclick="OpenInsert" />
                                         }
                                         else
                                         {
@@ -218,6 +219,13 @@
     int? receiptId;
     double? left;
     IList<WarehouseReceipt> receipts;
+    async Task OpenInsert()
+    {
+        await Service.DetailDataView.OpenForInsert(new ReceiptDetail() 
+        {
+            QuantityMain = 5
+        });
+    }
 
     async Task InitializeReciept(int reciptId)
     {

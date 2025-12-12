@@ -50,7 +50,7 @@ else
                                         name += " t-state-selected";
                                     if (item.Disabled)
                                         name += " t-disable";
-                                    @if (EntitySearch == null)
+                                    @if (EntitySearch == null || SingleSelect)
                                     {
                                         <li @onmousedown="async () => await SetValueForActiveItem(item)" class="@name">@item.Text</li>
                                     }

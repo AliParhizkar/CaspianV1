@@ -109,25 +109,6 @@ namespace Caspian.UI
             }
         }
 
-        async Task UpdateValue(ChangeEventArgs arg)
-        {
-            TValue value = default;
-            var str = Convert.ToString(arg.Value);
-            if (Source == null)
-            {
-                if (this.DynamicType != null)
-                    value = (TValue)Enum.Parse(DynamicType.GetUnderlyingType(), str);
-                else if (str.HasValue())
-                    value = (TValue)Enum.Parse(typeof(TValue).GetUnderlyingType(), str);
-            }
-            else if (str.HasValue())
-                value = (TValue)Convert.ChangeType(str, typeof(TValue).GetUnderlyingType());
-            Value = value;
-            await ValueChanged.InvokeAsync(Value);
-            if (OnChange.HasDelegate)
-                await OnChange.InvokeAsync();
-        }
-
         [Parameter]
         public IList<SelectListItem> Source { get; set; }
 
@@ -137,11 +118,14 @@ namespace Caspian.UI
         [Parameter]
         public Func<TValue, bool> DisableFunc { get; set; }
 
+        [Parameter]
+        public string NoSelectText { get; set; }
+
         protected override void OnParametersSet()
         {
             if (Source == null)
             {
-                string str = PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+                string str = NoSelectText ?? (PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...");
                 items = new ();
                 if (typeof(TValue).IsNullableType())
                     items.Add(new SelectListItem(null, str));
@@ -177,7 +161,7 @@ namespace Caspian.UI
                     }
                 }
             }
-            text = PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...";
+            text = NoSelectText ?? (PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...");
             if (Value != null)
             {
                 if (Source == null)
@@ -201,7 +185,7 @@ namespace Caspian.UI
             }
             if (EntitySearch != null)
             {
-                var path = GetProppertyPath();
+                var path = GetPropertyPath();
                 if (path != null)
                 {
                     var values = EntitySearch.GetFieldValues(path);
@@ -266,11 +250,13 @@ namespace Caspian.UI
             await base.OnAfterRenderAsync(firstRender);
         }
 
+        [Parameter]
+        public bool SingleSelect { get; set; }
+
         [JSInvokable]
         public async Task CloseWindow()
         {
-            status = WindowStatus.Close;
-            if (EntitySearch != null)
+            if (EntitySearch != null && !SingleSelect)
             {
                 text = string.Empty;
                 foreach (var value in values)
@@ -281,10 +267,10 @@ namespace Caspian.UI
                 }
             }
             if (text == string.Empty)
-                text = "Please Select ...";
-            if (EntitySearch != null)
+                text = NoSelectText ?? (PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ..."); ;
+            if (EntitySearch != null && !SingleSelect)
             {
-                var path = GetProppertyPath();
+                var path = GetPropertyPath();
                 if (path != null)
                 {
                     var type = typeof(TValue).GetUnderlyingType();
@@ -298,13 +284,17 @@ namespace Caspian.UI
                     }
                 }
             }
+            if (status == WindowStatus.Open)
+            {
+                status = WindowStatus.Close;
             StateHasChanged();
+            }
         }
 
         [Parameter]
         public EventCallback<IEnumerable<TValue>> OnSearch {  get; set; }
 
-        string GetProppertyPath()
+        string GetPropertyPath()
         {
             if (propertyPath == null)
             {
@@ -333,7 +323,7 @@ namespace Caspian.UI
         {
             if (EntitySearch != null)
             {
-                var path = GetProppertyPath();
+                var path = GetPropertyPath();
                 if (path != null)
                     EntitySearch.ChangEnumValues(path, new object[] { });
             }

@@ -57,7 +57,6 @@ namespace caspian {
             let container = document.getElementsByClassName('c-packages-container')[0] as HTMLElement;
             container.style.display = '';
             setTimeout(() => {
-                debugger;
                 let menu = container.getElementsByClassName('c-packages')[0] as HTMLElement;
                 var rect = menu.getBoundingClientRect();
                 container.style.width = `${rect.width}px`;
@@ -441,11 +440,11 @@ namespace caspian {
         }
 
         public static bindTextBox(input: HTMLInputElement) {
-            new TextBox(input, 'numeric', null);
+            new TextBox(input, 'numeric');
         }
 
-        public static bindStringbox(input: HTMLInputElement, regularExpression: string) {
-            new TextBox(input, 'string', regularExpression);
+        public static bindStringbox(input: HTMLInputElement) {
+            new TextBox(input, 'string');
         }
 
         public static async bindFileDownload(fileName: string, contentStreamReference) {
@@ -460,7 +459,7 @@ namespace caspian {
             URL.revokeObjectURL(url);
         }
 
-        public static bindMask(el: HTMLInputElement, patern: string) {
+        public static bindMaskedText(el: HTMLInputElement, patern: string) {
             const pattern = patern,
                 slots = new Set(el.dataset.slots || "_"),
                 prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
@@ -511,3 +510,10 @@ namespace caspian {
     }
 }
 
+async function waite(delay: number): Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, delay);
+    })
+}

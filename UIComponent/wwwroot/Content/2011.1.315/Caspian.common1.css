@@ -1686,16 +1686,16 @@ span, label, td, th {
     .c-icon-button.c-simple {
         border-radius: 50%;
         min-width: 0;
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
         background-color: transparent;
-        border: 1px solid #423d96;
     }
         .c-icon-button.c-simple:hover {
-            background-color: #fbebfb;
+            background-color: aliceblue;
+            border: 1px solid rgba(0, 0, 0, .24);
         }
         .c-icon-button.c-simple .fa {
-            font-size: 24px;
+            font-size: 23px;
         }
 .c-messagebox .c-content{
     display:table-row;
@@ -2993,7 +2993,6 @@ div.t-grid-footer {
     border-style: solid;
     border-color: rgba(0,0,0,0.2);
     background-color: white;
-    scroll-behavior: smooth;
 }
     .t-grid-content td:not(.t-calendar td), .c-grid-inline td:not(.t-calendar td) {
         border-width: 0 1px 1px 0;
@@ -5853,11 +5852,4 @@ fieldset.t-widget {
 .t-combobox .t-state-disabled{
     cursor:not-allowed;
 }
-.c-icon-button .fa-plus {
-    font-size: 18px!important;
-    padding-top:8px;
-}
-.c-icon-button .fa-minus {
-    font-size: 18px !important;
-    padding-top: 9px;
-}
+

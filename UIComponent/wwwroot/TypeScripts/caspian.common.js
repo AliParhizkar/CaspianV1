@@ -54,7 +54,6 @@ var caspian;
             let container = document.getElementsByClassName('c-packages-container')[0];
             container.style.display = '';
             setTimeout(() => {
-                debugger;
                 let menu = container.getElementsByClassName('c-packages')[0];
                 var rect = menu.getBoundingClientRect();
                 container.style.width = `${rect.width}px`;
@@ -392,10 +391,10 @@ var caspian;
             return parseFloat(value.substring(0, value.length - 2));
         }
         static bindTextBox(input) {
-            new caspian.TextBox(input, 'numeric', null);
+            new caspian.TextBox(input, 'numeric');
         }
-        static bindStringbox(input, regularExpression) {
-            new caspian.TextBox(input, 'string', regularExpression);
+        static bindStringbox(input) {
+            new caspian.TextBox(input, 'string');
         }
         static async bindFileDownload(fileName, contentStreamReference) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();
@@ -408,7 +407,7 @@ var caspian;
             anchorElement.remove();
             URL.revokeObjectURL(url);
         }
-        static bindMask(el, patern) {
+        static bindMaskedText(el, patern) {
             const pattern = patern, slots = new Set(el.dataset.slots || "_"), prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0), first = [...pattern].findIndex(c => slots.has(c)), accept = new RegExp(el.dataset.accept || "\\d", "g"), clean = input => {
                 input = input.match(accept) || [];
                 return Array.from(pattern, c => input[0] === c || slots.has(c) ? input.shift() || c : c);
@@ -442,4 +441,11 @@ var caspian;
     }
     caspian.common = common;
 })(caspian || (caspian = {}));
+async function waite(delay) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, delay);
+    });
+}
 //# sourceMappingURL=caspian.common.js.map

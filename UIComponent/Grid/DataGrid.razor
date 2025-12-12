@@ -131,7 +131,7 @@
                                 buttonClassName += " c-hidden";
                             }
                             <div>
-                                <button disabled="@disableInsertIcon" @ref="inertButton" type="button" class="@buttonClassName" @onclick="CreateInsert">
+                                <button disabled="@disableInsertIcon" @ref="inertButton" type="button" class="@buttonClassName" @onclick="async() => await CreateInsert()">
                                     <span class="fa fa-plus"></span>
                                 </button>
                             </div>

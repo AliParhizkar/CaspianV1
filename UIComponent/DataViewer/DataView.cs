@@ -726,13 +726,15 @@ namespace Caspian.UI
             StateHasChanged();
         }
 
-        public async Task CreateInsert()
+        public async Task OpenForInsert(TEntity entity) => await CreateInsert(entity);
+
+        internal async Task CreateInsert(TEntity entity = default)
         {
             if (!disableInsertIcon)
             {
                 insertedEntity = new RowData<TEntity>();
                 insertedEntity.UpsertMode = UpsertMode.Insert;
-                insertedEntity.Data = Activator.CreateInstance<TEntity>();
+                insertedEntity.Data = entity ?? Activator.CreateInstance<TEntity>();
                 if (DetailsService.MasterId > 0)
                     typeof(TEntity).GetForeignKey(DetailsService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
                 if (OnOpen.HasDelegate)

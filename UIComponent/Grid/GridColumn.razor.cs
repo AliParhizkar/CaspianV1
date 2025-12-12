@@ -56,9 +56,6 @@ namespace Caspian.UI
         [Parameter]
         public string Id { get; set; }
 
-        [Parameter]
-        public bool Hidden { get; set; }
-
         protected override void OnInitialized()
         {
             if (Attributes != null && Attributes.ContainsKey("style"))
@@ -127,12 +124,8 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
-            if (Hidden)
-            {
-                if (!Id.HasValue())
-                    throw new CaspianException("For dynamic column (Hidden is true) is must specify");
-                Grid.UpdateColumnData(Id, Hidden);
-            }
+            if (Id.HasValue())
+                Grid.UpdateColumnData(Id, Title);
             if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
                 if (Field != null)
@@ -151,6 +144,13 @@ namespace Caspian.UI
                 }
             }
             base.OnParametersSet();
+        }
+
+        protected override Task OnParametersSetAsync()
+        {
+            if (Id.HasValue())
+                Grid.UpdateColumnData(Id, Title);
+            return base.OnParametersSetAsync();
         }
     }
 

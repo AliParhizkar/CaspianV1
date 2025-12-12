@@ -357,9 +357,8 @@ html input[disabled], textarea[disabled] {
     font-family: iranyekan;
     text-align: center;
     font-size: 13px;
-    line-height: 38px;
-    height: 38px;
     box-sizing: border-box;
+    padding:3px 0;
 }
 
 .t-footer-template td

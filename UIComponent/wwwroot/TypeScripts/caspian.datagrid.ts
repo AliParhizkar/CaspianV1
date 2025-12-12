@@ -43,7 +43,8 @@
                 let insert = this.grid.querySelector('.c-grid-insert');
                 if (insert != null) {
                     insert.querySelector('tbody tr').querySelectorAll('td').forEach((t, index) => {
-                        (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
+                        if (index < this.headerColumns.length)
+                            (t as HTMLElement).style.width = this.headerColumns[index].attributes['default-size'];
                     });
                 }
                 let tr = this.content.querySelector('.c-grid-items tbody tr');

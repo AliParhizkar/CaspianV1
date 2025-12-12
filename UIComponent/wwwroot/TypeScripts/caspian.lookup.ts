@@ -30,7 +30,7 @@
 
         bindObserver(lookup: HTMLElement) {
             let lookupComponenet = this;
-            const mutationObserver = new MutationObserver(list => {
+            const mutationObserver = new MutationObserver(async list => {
                 let sidebar = document.getElementsByClassName('sidebar')[0];
                 let sidebarWidth = sidebar == null ?0 : sidebar.getBoundingClientRect().width;
                 let target = (list[0].target as HTMLElement).closest('.c-lookup') as HTMLElement;
@@ -48,6 +48,11 @@
                         let locHelpWindow = helpWindow.getBoundingClientRect();
                         let posTarget = target.getPosition();
                         let scrollTop = helpWindow.getBoundingClientRect().top - locTarget.top - 38;
+                        let gridContainer = target.closest('.t-grid-content') as HTMLElement;
+                        if (gridContainer) {
+                            await waite(10);
+                            scrollTop = gridContainer.scrollTop;
+                        }
                         if (locTarget.top - 40 >= locHelpWindow.height)
                             helpWindow.style.marginTop = `${-locHelpWindow.height - scrollTop - 40}px`;
                         if (caspian.common.RightToLeft()) {

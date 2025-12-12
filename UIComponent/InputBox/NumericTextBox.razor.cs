@@ -7,6 +7,8 @@ namespace Caspian.UI
 {
     public partial class NumericTextBox<TValue>: CBaseInput<TValue>
     {
+        int numberDigit;
+
         [Parameter]
         public int Total { get; set; } = 8;
 
@@ -79,13 +81,21 @@ namespace Caspian.UI
                 InputAttributes["id"] = Id.Replace('.', '_');
                 InputAttributes["name"] = Id.Replace('.', '_');
             }
+            var type = typeof(TValue).GetUnderlyingType();
+            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long))
+                numberDigit = 0;
+            else
+                numberDigit = NumberDigit ?? 2;
             base.OnParametersSet();
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender && (EntitySearch == null || ParentControlIsValueSearch))
-                await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement);
+            {
+                var regular = numberDigit > 0 ? "" : "^-?\\d{0," + Total + "}$";
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement, regular);
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
     }

@@ -37,14 +37,8 @@
 
 <Window Title="@(selectedDataType.EnumText())" Style="width:400px;" Service="Service">
     <CaspianForm Service="Service" TEntity="SimpleData" OnSubmit="t => t.Entity.DataType = selectedDataType">
-        <Content Context="data">
-            <div class="row c-controls p-2 pt-1 pb-3">
-                <StringTextBox @bind-Value="data.Title" ColSpan="8" />
-            </div>
-            <div>
-                <FormCommandButton />
-            </div>
-        </Content>
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
     </CaspianForm>
 </Window>
 

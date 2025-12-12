@@ -4,16 +4,12 @@
         total: number;
         numberDigit: number;
         digitGrouping: boolean;
-        regularExpression: RegExp;
-        oldValue: string;
-        selectionStart: number;
-        selectionEnd: number;
-        constructor(input: HTMLInputElement, type: string, regularExpression: string) {
-            if (regularExpression)
-                this.regularExpression = new RegExp(regularExpression)
+        search: boolean;
+        private maskedText: string;
+        constructor(input: HTMLInputElement, type: string) {
             caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
-            this.total ||= 8; 
+            this.total ||= 8;
             input.onmouseenter = () => {
                 let list = input.parentElement.classList;
                 list.add('t-state-hover');
@@ -40,31 +36,46 @@
             }
             this.readAttributes();
             this.bindAttributes();
-            //if (this.search) {
-            //    input.oninput = e => {
-            //        if (caspian.common.infoTimer != null)
-            //            clearTimeout(caspian.common.infoTimer);
-            //        caspian.common.infoTimer = caspian.common.infoTimer = setTimeout(() => {
-            //            let event = new Event('change');
-            //            e.target.dispatchEvent(event);
-            //        }, 300);
-            //    };
-            //}
-
-            if (type != 'string' || this.regularExpression) {
-                input.addEventListener('keydown', e => this.bindKeydown(e));
-                input.oninput = e => this.bindOnInput(e);
+            if (type != 'string') {
+                input.onkeypress = e => this.bindKeypress(e);
+                if (this.digitGrouping)
+                    input.oninput = e => this.bindOnInput(e);
             }
         }
 
-        bindKeydown(e: KeyboardEvent) {
-            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
-            if (this.regularExpression) {
-                this.oldValue = value;
-                this.selectionStart = start;
-                this.selectionEnd = end;
-                return;
+        bindOnInput(e: Event) {
+            let input = e.target as HTMLInputElement, start = input.selectionStart, end = input.selectionEnd;
+            let count = input.value.substring(0, start).split(',').length - 1;
+            input.value = this.sepreate3Digit(input.value);
+            let count1 = input.value.substring(0, start).split(',').length - 1;
+            if (count != count1) {
+                input.selectionStart = start + 1;
+                input.selectionEnd = end + 1;
             }
+            else {
+                input.selectionStart = start;
+                input.selectionEnd = end;
+            }
+        }
+
+        sepreate3Digit(value: String) {
+            let isNegativ = value.length > 0 && value[0] == '-'
+            if (isNegativ)
+                value = value.replace('-', '');
+            value = value.replace(/,/g, '');
+            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
+            for (let index in value) {
+                str += value[index];
+                counter++;
+                if (counter % 3 == 0 && counter <= value.length) {
+                    str += ',';
+                }
+            }
+            return str;
+        }
+
+        bindKeypress(e: KeyboardEvent) {
+            let isValid = false, code = e.keyCode, value = this.input.value, start = this.input.selectionStart, end = this.input.selectionEnd;
             if (code == 46 && this.numberDigit) {
                 let remain = value.length - end;
                 if (remain <= this.numberDigit && value.indexOf('.') == -1)
@@ -86,47 +97,6 @@
                 e.preventDefault();
         }
 
-        bindOnInput(e: Event) {
-
-            let input = e.target as HTMLInputElement, start = input.selectionStart, end = input.selectionEnd;
-            if (this.regularExpression) {
-                if (!this.regularExpression.test(input.value)) {
-                    input.value = this.oldValue;
-                    input.selectionStart = this.selectionStart;
-                    input.selectionEnd = this.selectionEnd;
-                }
-            }
-            else {
-                let count = input.value.substring(0, start).split(',').length - 1;
-                input.value = this.sepreate3Digit(input.value);
-                let count1 = input.value.substring(0, start).split(',').length - 1;
-                if (count != count1) {
-                    input.selectionStart = start + 1;
-                    input.selectionEnd = end + 1;
-                }
-                else {
-                    input.selectionStart = start;
-                    input.selectionEnd = end;
-                }
-            }
-        }
-
-        sepreate3Digit(value: String) {
-            let isNegativ = value.length > 0 && value[0] == '-'
-            if (isNegativ)
-                value = value.replace('-', '');
-            value = value.replace(/,/g, '');
-            let str = isNegativ ? '-' : '', counter = 3 - value.length % 3;
-            for (let index in value) {
-                str += value[index];
-                counter++;
-                if (counter % 3 == 0 && counter <= value.length) {
-                    str += ',';
-                }
-            }
-            return str;
-        }
-
         bindAttributes() {
             const mutationObserver = new MutationObserver((mutationList) => {
                 let name = mutationList[0].attributeName;
@@ -135,6 +105,12 @@
                     this.total = attrs['total'].value;
                 if (name == 'number-digit')
                     this.numberDigit = attrs['number-digit'].value;
+                if (name == 'masked-text') {
+                    if (attrs['masked-text'].value != this.maskedText) {
+                        this.maskedText = attrs['masked-text'].value;
+                        caspian.common.bindMaskedText(this.input, this.maskedText);
+                    }
+                }
             });
             mutationObserver.observe(this.input.closest('.t-widget'), {
                 attributes: true,
@@ -149,6 +125,12 @@
                 this.total = attrs['total'].value;
             if (attrs['number-digit'] != null)
                 this.numberDigit = attrs['number-digit'].value;
+            if (attrs['search'] != null)
+                this.search = true;
+            if (this.maskedText != attrs['masked-text']) {
+                this.maskedText = attrs['masked-text'].value;
+                caspian.common.bindMaskedText(this.input, this.maskedText);
+            }
             this.digitGrouping = attrs['digit-grouping'] != null;
         }
     }
