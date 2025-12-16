@@ -7,6 +7,8 @@ namespace Caspian.UI
     {
         void EnableLoadData();
 
+        Task ReloadData();
+
         Type EntityType { get; }
 
         void SetSearchKind(string path, SearchType searchType);

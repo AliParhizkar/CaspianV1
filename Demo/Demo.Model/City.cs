@@ -34,16 +34,4 @@ namespace Demo.Model
         [CheckOnDelete("شهر محل صدور شناسنامه کارکند می باشد و امکان حذف آن وجود ندارد")]
         public IList<IdentificationDetail> IdentificationDetailsRegCity { get; set; }
     }
-
-    //[Table("TCities")]
-    //public class TCity
-    //{
-    //    [Key]
-    //    public int Id { get; set; }
-
-    //    //public int Number { get; set; }
-
-    //    [MaxLength(25)]
-    //    public string Name { get; set; }
-    //}
 }

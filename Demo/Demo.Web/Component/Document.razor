@@ -1,14 +1,8 @@
-﻿@inject IHostEnvironment host
+﻿@using System.Diagnostics
+@inject IHostEnvironment host
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
-<script type="text/javascript">
-    function setContent(iframe, htmlContent){
-        iframe.contentDocument.open();
-        iframe.contentDocument.write(htmlContent);
-        iframe.contentDocument.close();
-    }
-</script>
-<button @ondblclick="OpenDocumentGeneratorPage">+</button>
+<button @onclick="OpenDocumentGeneratorPage">+</button>
 <div class="d-document" >
     <iframe @ref="iframe" frameborder="0">
     </iframe>
@@ -24,15 +18,18 @@
     [Parameter]
     public string FolderName { get; set; }
 
-    void OpenDocumentGeneratorPage(MouseEventArgs e)
+    void OpenDocumentGeneratorPage()
     {
-        if (e.CtrlKey)
+        var path = host.ContentRootPath;
+        path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
+        if (FolderName.HasValue())
+            path += FolderName + '\\';
+        path += $"{FileName}.docx";
+        Process.Start(new ProcessStartInfo()
         {
-            var url = $"/Demo/DocumentGenerator/{FileName}";
-            if (FolderName.HasValue())
-                url += $"/{FolderName}";
-            NavigationManager.NavigateTo(url, true, true);
-        }
+            FileName = path,
+            UseShellExecute = true
+        });
     }
 
     string content;
@@ -53,22 +50,11 @@
         //}
         //else
         //    content = $"File Not exist";
-        var document = new Syncfusion.DocIO.DLS.WordDocument($"{path}.docx");
         using var straem = new MemoryStream();
-        document.SaveOptions.UseContextualSpacing = false;
-        document.Save(straem, Syncfusion.DocIO.FormatType.Html);
-        document.Clone();
         straem.Position = 0;
         using var reader = new StreamReader(straem);
         content = await reader.ReadToEndAsync();
 
         await base.OnInitializedAsync();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-            await JSRuntime.InvokeVoidAsync("setContent", iframe, content);
-        await base.OnAfterRenderAsync(firstRender);
     }
 }

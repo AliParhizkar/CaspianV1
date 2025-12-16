@@ -1227,7 +1227,8 @@ var caspian;
 var caspian;
 (function (caspian) {
     class TextBox {
-        constructor(input, type) {
+        constructor(input, type, dotnet) {
+            this.dotnet = dotnet;
             caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
             this.total || (this.total = 8);
@@ -1260,22 +1261,53 @@ var caspian;
             if (type != 'string') {
                 input.onkeypress = e => this.bindKeypress(e);
                 if (this.digitGrouping)
-                    input.oninput = e => this.bindOnInput(e);
+                    input.oninput = (e) => __awaiter(this, void 0, void 0, function* () { return yield this.bindOnInput(e); });
             }
+            else if (this.search)
+                input.oninput = (e) => __awaiter(this, void 0, void 0, function* () { return yield this.bindOnInput(e); });
+        }
+        initializeTimer() {
+            if (this.timerId)
+                clearTimeout(this.timerId);
+            this.timerId = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                if (this.watingForSearch)
+                    this.initializeTimer();
+                else if (this.searchedValue != this.input.value) {
+                    this.watingForSearch = true;
+                    this.searchedValue = this.input.value;
+                    yield this.dotnet.invokeMethodAsync('SetSearchValue', this.input.value);
+                    this.watingForSearch = false;
+                }
+            }), 500);
         }
         bindOnInput(e) {
-            let input = e.target, start = input.selectionStart, end = input.selectionEnd;
-            let count = input.value.substring(0, start).split(',').length - 1;
-            input.value = this.sepreate3Digit(input.value);
-            let count1 = input.value.substring(0, start).split(',').length - 1;
-            if (count != count1) {
-                input.selectionStart = start + 1;
-                input.selectionEnd = end + 1;
-            }
-            else {
-                input.selectionStart = start;
-                input.selectionEnd = end;
-            }
+            return __awaiter(this, void 0, void 0, function* () {
+                let input = e.target, start = input.selectionStart, end = input.selectionEnd;
+                if (this.search) {
+                    if (this.watingForSearch) {
+                        this.initializeTimer();
+                    }
+                    else {
+                        this.watingForSearch = true;
+                        this.searchedValue = input.value;
+                        yield this.dotnet.invokeMethodAsync('SetSearchValue', input.value);
+                        this.watingForSearch = false;
+                    }
+                }
+                else {
+                    let count = input.value.substring(0, start).split(',').length - 1;
+                    input.value = this.sepreate3Digit(input.value);
+                    let count1 = input.value.substring(0, start).split(',').length - 1;
+                    if (count != count1) {
+                        input.selectionStart = start + 1;
+                        input.selectionEnd = end + 1;
+                    }
+                    else {
+                        input.selectionStart = start;
+                        input.selectionEnd = end;
+                    }
+                }
+            });
         }
         sepreate3Digit(value) {
             let isNegativ = value.length > 0 && value[0] == '-';
@@ -1822,11 +1854,11 @@ var caspian;
                 return null;
             return parseFloat(value.substring(0, value.length - 2));
         }
-        static bindTextBox(input) {
-            new caspian.TextBox(input, 'numeric');
+        static bindTextBox(input, dotnet) {
+            new caspian.TextBox(input, 'numeric', dotnet);
         }
-        static bindStringbox(input) {
-            new caspian.TextBox(input, 'string');
+        static bindStringbox(input, dotnet) {
+            new caspian.TextBox(input, 'string', dotnet);
         }
         static bindFileDownload(fileName, contentStreamReference) {
             return __awaiter(this, void 0, void 0, function* () {

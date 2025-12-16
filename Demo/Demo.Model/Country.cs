@@ -1,6 +1,7 @@
 ﻿using Caspian.Common;
 using Caspian.Engine.Model;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
@@ -27,5 +28,14 @@ namespace Demo.Model
         [InverseProperty(nameof(IdentificationDetail.RegCountry))]
         [CheckOnDelete("کشور بعنوان محل صدور شناسنامه کارمند ثبت شده و امکان حذف آن وجود ندارد")]
         public IList<IdentificationDetail> IdentificationDetailsRegCountry { get; set; }
+    }
+
+    [Table("Test ", Schema = "demo")]
+    public class Test
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string Name { get; set; }
     }
 }

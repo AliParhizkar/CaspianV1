@@ -169,10 +169,20 @@ namespace Caspian.UI
 
         public string Type { get; set; } = "string";
 
+        [JSInvokable]
+        public async Task SetSearchValue(string value)
+        {
+            await SetValue(value);
+            await EntitySearch.ReloadData();
+        }
+
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
-                await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement);
+            {
+                var dotnet = DotNetObjectReference.Create(this);
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindStringbox", InputElement, dotnet);
+            }
             if (focused)
             {
                 focused = false;

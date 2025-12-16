@@ -439,12 +439,12 @@ namespace caspian {
             return parseFloat(value.substring(0, value.length - 2));
         }
 
-        public static bindTextBox(input: HTMLInputElement) {
-            new TextBox(input, 'numeric');
+        public static bindTextBox(input: HTMLInputElement, dotnet: dotnetInvoker) {
+            new TextBox(input, 'numeric', dotnet);
         }
 
-        public static bindStringbox(input: HTMLInputElement) {
-            new TextBox(input, 'string');
+        public static bindStringbox(input: HTMLInputElement, dotnet: dotnetInvoker) {
+            new TextBox(input, 'string', dotnet);
         }
 
         public static async bindFileDownload(fileName: string, contentStreamReference) {

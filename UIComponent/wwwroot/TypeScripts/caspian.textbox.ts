@@ -6,7 +6,12 @@
         digitGrouping: boolean;
         search: boolean;
         private maskedText: string;
-        constructor(input: HTMLInputElement, type: string) {
+        dotnet: dotnetInvoker;
+        watingForSearch: boolean;
+        timerId: number;
+        searchedValue: string;
+        constructor(input: HTMLInputElement, type: string, dotnet: dotnetInvoker) {
+            this.dotnet = dotnet;
             caspian.common.bindErrorMessage(input.parentElement, input);
             this.input = input;
             this.total ||= 8;
@@ -39,22 +44,53 @@
             if (type != 'string') {
                 input.onkeypress = e => this.bindKeypress(e);
                 if (this.digitGrouping)
-                    input.oninput = e => this.bindOnInput(e);
+                    input.oninput = async e => await this.bindOnInput(e);
             }
+            else if (this.search)
+                input.oninput = async e => await this.bindOnInput(e);
         }
 
-        bindOnInput(e: Event) {
+         initializeTimer() {
+            if (this.timerId)
+                clearTimeout(this.timerId);
+            this.timerId = setTimeout(async () => {
+                if (this.watingForSearch)
+                    this.initializeTimer();
+                else if (this.searchedValue != this.input.value) {
+                    this.watingForSearch = true;
+                    this.searchedValue = this.input.value;
+                    await this.dotnet.invokeMethodAsync('SetSearchValue', this.input.value);
+                    this.watingForSearch = false;
+                }
+            }, 500);
+        }
+
+        async bindOnInput(e: Event) {
             let input = e.target as HTMLInputElement, start = input.selectionStart, end = input.selectionEnd;
-            let count = input.value.substring(0, start).split(',').length - 1;
-            input.value = this.sepreate3Digit(input.value);
-            let count1 = input.value.substring(0, start).split(',').length - 1;
-            if (count != count1) {
-                input.selectionStart = start + 1;
-                input.selectionEnd = end + 1;
+            if (this.search) {
+                if (this.watingForSearch) {
+                    this.initializeTimer();
+                }
+                else {
+                    this.watingForSearch = true;
+                    this.searchedValue = input.value;
+                    await this.dotnet.invokeMethodAsync('SetSearchValue', input.value);
+                    this.watingForSearch = false;
+                    
+                }
             }
             else {
-                input.selectionStart = start;
-                input.selectionEnd = end;
+                let count = input.value.substring(0, start).split(',').length - 1;
+                input.value = this.sepreate3Digit(input.value);
+                let count1 = input.value.substring(0, start).split(',').length - 1;
+                if (count != count1) {
+                    input.selectionStart = start + 1;
+                    input.selectionEnd = end + 1;
+                }
+                else {
+                    input.selectionStart = start;
+                    input.selectionEnd = end;
+                }
             }
         }
 

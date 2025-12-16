@@ -33,7 +33,7 @@
                             }
                             @if (level < codes.Count - 1)
                             {
-                                <IconButton IconType="IconType.Plus" Title="@(codes[context.Data.CodingLevelType.ConvertToInt().Value + 1].Name)" />
+                                <IconButton IconType="IconType.Plus" @onclick="async () => await MoveDownCodeAndOpenWindow(context.Data)" Title="@(codes[context.Data.CodingLevelType.ConvertToInt().Value + 1].Name)" />
                             }
                             <IconButton @onclick="async () => await MoveDownCode(context.Data)" IconType="IconType.AngleDoubleDown" Disabled="context.Data.CodingLevelType.ConvertToInt().Value == codes.Count - 1" />
                         </Template>
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <Window Service="Service"  Style="width:750px" OnOpen="OpenWindow">
+    <Window Service="Service"  Style="width:750px" OnOpen="OpenWindow" Title="تعریف کدینگ حساب">
         @{
             string maskedText = null;
             var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
@@ -62,16 +62,16 @@
                 {
                     maskedText += '_';
                 }
-                <StringTextBox Value="@(Service.Search.Code)" MaskedText="@maskedText" Style="direction:ltr" ColSpan="4" Title="@("کد " + title)" Disabled />
-                <StringTextBox Value="@parentCode.Name" ColSpan="4" Title="@("نام " + title)" Disabled />
+                <StringTextBox Value="@(Service.Search.Code)" MaskedText="@maskedText" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + title)" Disabled />
+                <StringTextBox Value="@parentCode.Name" ColSpan="6" TotalSpan="8" Title="@("نام " + title)" Disabled />
                 <div class="col-md-12 p-3 pb-1 pt-2">
                     <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
                 </div>
             }
-            <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="4" Title="@("کد " + curentCodedefination.Name)" />
-            <StringTextBox @bind-Value="context.Name" ColSpan="4" Title="@("نام " + curentCodedefination.Name)" />
-            <DropdownList @bind-Value="context.NatureType" ColSpan="4" />
-            <DropdownList @bind-Value="context.AccountType" ColSpan="4" />
+            <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + curentCodedefination.Name)" />
+            <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="6" TotalSpan="8" />
+            <DropdownList @bind-Value="context.NatureType" ColSpan="2" TotalSpan="4" />
+            <DropdownList @bind-Value="context.AccountType" ColSpan="6" TotalSpan="8" />
             <CheckBox @bind-Value="context.IsActive" ColSpan="3" TotalSpan="5" />
             <FormCommandButton ColSpan="6" TotalSpan="7" />
         </CaspianForm>
@@ -91,7 +91,6 @@
 
     protected override void OnInitialized()
     {
-        
         treeNodes = new List<NodeView>();
         base.OnInitialized();
     }
@@ -145,8 +144,13 @@
         };
 
         UpdateTree(this.treeNodes, node);
-
         await Service.DataView.ReloadAsync();
+    }
+
+    async Task MoveDownCodeAndOpenWindow(AccountingCode accountingCode)
+    {
+        await MoveDownCode(accountingCode);
+        await Service.OpenWindow(null);
     }
 
 

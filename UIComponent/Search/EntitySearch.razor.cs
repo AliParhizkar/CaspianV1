@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Components;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -26,10 +27,9 @@ namespace Caspian.UI
         [CascadingParameter]
         internal ILookup<TEntity> Lookup { get; set; }
 
-        void IEntitySearch.EnableLoadData()
-        {
-            Service.DataView?.EnableLoading();
-        }
+        void IEntitySearch.EnableLoadData() => Service.DataView?.EnableLoading();
+
+        async Task IEntitySearch.ReloadData() => await Service.DataView.ReloadAsync();
 
         void IEntitySearch.SetFromValue(string path, object fromValue)
         {

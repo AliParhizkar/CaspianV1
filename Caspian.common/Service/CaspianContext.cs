@@ -20,6 +20,7 @@ namespace Caspian.Common
             var schema = GetType().Namespace.Split('.')[0].ToLower();
             if (schema == "caspian")
                 schema = "cmn";
+            
             optionsBuilder.UseSqlServer(CS.Con, t =>
             {
                 t.AddRowNumberSupport();

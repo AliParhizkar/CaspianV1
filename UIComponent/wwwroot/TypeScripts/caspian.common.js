@@ -390,11 +390,11 @@ var caspian;
                 return null;
             return parseFloat(value.substring(0, value.length - 2));
         }
-        static bindTextBox(input) {
-            new caspian.TextBox(input, 'numeric');
+        static bindTextBox(input, dotnet) {
+            new caspian.TextBox(input, 'numeric', dotnet);
         }
-        static bindStringbox(input) {
-            new caspian.TextBox(input, 'string');
+        static bindStringbox(input, dotnet) {
+            new caspian.TextBox(input, 'string', dotnet);
         }
         static async bindFileDownload(fileName, contentStreamReference) {
             const arrayBuffer = await contentStreamReference.arrayBuffer();

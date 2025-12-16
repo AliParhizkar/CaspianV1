@@ -6,7 +6,6 @@
 @inject IHostEnvironment host
 
 
-@using Syncfusion.Blazor.DocumentEditor
 
 <style type="text/css">
     .c-content-main {
@@ -24,18 +23,11 @@
 <button title="Click to clear Bottom Margin" @onclick="ClearSpacing">C</button>
 <button title="Click to clear Bottom Margin" @onclick="SetSpacing">H</button>
 <button title="Click to set Method format" @onclick="setMethodFormat">F</button>
-<div class="main-container">
-    <SfDocumentEditorContainer @ref="Container" Height="calc(100vh + 10px)" LayoutType="LayoutType.Continuous" ShowPropertiesPane="false" EnableToolbar="false">
-        <DocumentEditorContainerEvents Created="OnCreated"></DocumentEditorContainerEvents>
-        @*<CascadingValue Value="Container.DocumentEditor">
-                <DocumentEditorEvents OnKeyDown="Save" />
-            </CascadingValue>*@
-    </SfDocumentEditorContainer>
-</div>
+
 
 @code
 {
-    SfDocumentEditorContainer Container;
+
     string path;
     bool heightUpdating;
 
@@ -52,22 +44,12 @@
 
     public async void OnCreated(object args)
     {
-        SfDocumentEditor documentEditor = Container.DocumentEditor;
-        var styles = await documentEditor.GetStyleNamesAsync(StyleType.Paragraph);
-        if (documentEditor != null)
-        {
-            using var document = new Syncfusion.DocIO.DLS.WordDocument(path + ".docx");
-            var editor = WordDocument.Load(document);
-            var sfdt = System.Text.Json.JsonSerializer.Serialize(editor);
-            editor.Dispose();
-            await documentEditor.OpenAsync(sfdt);
-        }
+
     }
 
     void ClearSpacing()
     {
-        var format = Container.DocumentEditor.Selection.ParagraphFormat;
-        format.SetContextualSpacingAsync(true);
+
         //format.SetAfterSpacingAsync(0);
         //format.SetBeforeSpacingAsync(0);
         //format.SetLineSpacingAsync(1);
@@ -76,25 +58,17 @@
 
     void SetSpacing()
     {
-        var format = Container.DocumentEditor.Selection.ParagraphFormat;
-        format.SetContextualSpacingAsync(false);
-        format.SetAfterSpacingAsync(5);
+
     }
 
     void setMethodFormat()
     {
-        var format = Container.DocumentEditor.Selection.CharacterFormat;
-        format.SetFontColorAsync("#745534");
-        format.SetBoldAsync(true);
+
     }
 
     public async Task Save()
     {
-        var base64 = await Container.DocumentEditor.SaveAsBlobAsync(FormatType.Docx);
-        var array = Convert.FromBase64String(base64);
-        await File.WriteAllBytesAsync("d:\\aaaa.docx", array);
-        await File.WriteAllBytesAsync($"{path}.docx", array);
-        ShowMessage("ثبت با موفقیت انجام شد");
+
     }
 
     [Parameter]

@@ -1,10 +1,26 @@
 ﻿@page "/Test"
-@inject IUIService<Customer> Service
-<div style="width:200px;margin:5px auto">
-    <StringTextBox @bind-Value="value" InputRegularExpression="^(\d+)?$" />
-</div>
+@inherits BasePage
+@{ 
+    base.BuildRenderTree(__builder);
+}
+
+@inject IUIService<Test> Service
+<button @onclick="async() => await UpsertAsync()">Test</button>
+
 @code
 {
-    string value;
-    bool showCustomerTypeColumn, showGenderColumn, showMobileNumberColumn;
+    async Task UpsertAsync()
+    {
+        for (var index1 = 0; index1 < 1000; index1++)
+        {
+            var list = new List<Test>();
+            for (var index = 0; index < 100; index++)
+            {
+                var guid = Guid.NewGuid().ToString().Replace("-", "");
+                list.Add(new Test() { Name = guid });
+            }
+            using var service = CreateScope().GetService<TestService>();
+            await service.AddRangeAsync(list);
+        }
+    }
 }

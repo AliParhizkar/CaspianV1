@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using Syncfusion.Blazor;
-using Syncfusion.Licensing;
 
 namespace Main
 {
@@ -28,7 +26,6 @@ namespace Main
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
-            SyncfusionLicenseProvider.RegisterLicense(licenseKey);
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddCaspianConsoleLogger(builder);
@@ -54,9 +51,6 @@ namespace Main
                 #region Localization
                 // Set the resx file folder path to access
                 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-                builder.Services.AddSyncfusionBlazor();
-                // Register the Syncfusion locale service to customize the  SyncfusionBlazor component locale culture
-                builder.Services.AddSingleton(typeof(ISyncfusionStringLocalizer), typeof(SyncfusionLocalizer));
 
                 var supportedCultures = new[] { "en-US", "de-DE", "fr-CH", "zh-CN" };
                 var localizationOptions = new RequestLocalizationOptions()
