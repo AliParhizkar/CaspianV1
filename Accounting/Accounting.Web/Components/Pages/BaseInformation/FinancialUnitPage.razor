@@ -1,0 +1,40 @@
+﻿@page "/Accounting/FinancialUnit"
+@attribute [Source(35, "تعریف واحد مالی")]
+@inherits BasePage
+@{ 
+    base.BuildRenderTree(__builder);
+}
+
+@inject IUIService<FinancialUnit> Service
+
+<div style="width:80%;margin:5px auto">
+    <DataGrid TEntity="FinancialUnit" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Title="تعریف واحد مالی" Style="width:600px;" Service="Service">
+        <CaspianForm Service="Service" TEntity="FinancialUnit">
+            <div class="col-md-7 row">
+                <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+                <StringTextBox @bind-Value="context.Description" ColSpan="9" MultiLine Rows="2" />
+                <FormCommandButton ColSpan="8" />
+            </div>
+            <div class="col-md-5 center-ailgn">
+                <Fileupload Accept="image/*" MaxAllowedSize="100_000" OnChange="async e => image = await e.File.GetByteArrayAsync()" Title="Click for upload">
+                    <PictureBox NoContentTitle="Click for upload" Data="image" style="width:200px;height:200px;background-size:cover" />
+                </Fileupload>
+            </div>
+
+        </CaspianForm>
+    </Window>
+</div>
+
+
+@code
+{
+    byte[] image;
+
+
+}

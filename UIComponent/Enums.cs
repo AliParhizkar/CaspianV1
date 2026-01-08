@@ -4,20 +4,53 @@ namespace Caspian.UI
 {
     public enum IconType
     {
+        [Display(Name = "Angle-Double-Up")]
         AngleDoubleUp,
+
+        [Display(Name = "Angle-Double-Down")]
         AngleDoubleDown,
+
+        [Display(Name = "Angle-Double-Left")]
         AngleDoubleLeft,
+
+        [Display(Name = "Angle-Double-Right")]
         AngleDoubleRight,
+
+        [Display(Name = "Angle-Up")]
         AngleUp,
+
+        [Display(Name = "Angle-Down")]
         AngleDown,
+
+        [Display(Name = "Angle-Left")]
         AngleLeft,
+
+        [Display(Name = "Angle-Right")]
         AngleRight,
+
+        [Display(Name = "Refresh")]
         Refresh,
+
+        [Display(Name = "External-Link")]
         ExternalLink,
-        Wpforms,
+
+        [Display(Name = "Wpforms")]
+        WpfForms,
+
+        [Display(Name = "File-Word-O")]
+        FileWordO,
+
+        [Display(Name = "Ban")]
         Ban,
+
+        [Display(Name = "Plus")]
         Plus,
+
+        [Display(Name = "Minus")]
         Minus,
+
+        [Display(Name = "Html5")]
+        Html5
     }
 
     public enum BindingType

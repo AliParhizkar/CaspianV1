@@ -160,7 +160,7 @@ namespace Caspian.Common.Extension
 
         public static PropertyInfo GetMyProperty(this Type type, string strName)
         {
-            var array = strName.Split(new char[] { '.' });
+            var array = strName.Split('.');
             var propertyInfo = type.GetProperty(array[0]);
             type = propertyInfo.PropertyType;
             for (int i = 1; i < array.Length; i++)

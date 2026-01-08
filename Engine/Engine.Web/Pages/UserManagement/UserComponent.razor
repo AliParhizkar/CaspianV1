@@ -26,12 +26,12 @@
         <GridColumn Field="t => t.MobileNumber" />
         <GridColumn Title="Menus" style="width:80px">
             <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccess/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
         <GridColumn Title="Menus-Tree" style="width:90px">
             <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserAccessTree/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
         <GridCommandColumns />

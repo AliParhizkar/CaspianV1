@@ -1,16 +1,21 @@
 ﻿@using System.Diagnostics
+@using Mammoth
+
 @inject IHostEnvironment host
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
-<button @onclick="OpenDocumentGeneratorPage">+</button>
-<div class="d-document" >
-    <iframe @ref="iframe" frameborder="0">
-    </iframe>
+<div style="padding:5px 10px">
+    <IconButton @onclick="OpenDocumentGeneratorPage" IconType="IconType.FileWordO" />
+    <IconButton @onclick="() => SaveAsFiltteredHtml()" IconType="IconType.Html5" />
+</div>
+<div class="d-document">
+    <span>111</span>
+    @((MarkupString)content)
 </div>
 
 @code
 {
-    ElementReference iframe;
+    string content;
 
     [Parameter]
     public string FileName { get; set; }
@@ -18,13 +23,19 @@
     [Parameter]
     public string FolderName { get; set; }
 
-    void OpenDocumentGeneratorPage()
+    string GetFilePath()
     {
         var path = host.ContentRootPath;
         path = path.Substring(0, path.Length - host.ApplicationName.Length) + "Demo\\Demo.Web\\Help\\";
         if (FolderName.HasValue())
             path += FolderName + '\\';
-        path += $"{FileName}.docx";
+        path += $"{FileName}";
+        return path;
+    }
+
+    void OpenDocumentGeneratorPage()
+    {
+        var path = $"{GetFilePath()}.docx";
         Process.Start(new ProcessStartInfo()
         {
             FileName = path,
@@ -32,7 +43,15 @@
         });
     }
 
-    string content;
+    void SaveAsFiltteredHtml()
+    {
+        var sourcePath = $"{GetFilePath()}.docx";
+        var outputPath = $"{GetFilePath()}.htm";
+        var converter = new DocumentConverter();
+        string html = converter.ConvertToHtml(File.OpenRead(sourcePath)).Value;
+        File.WriteAllText(outputPath, html);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var path = host.ContentRootPath;
@@ -42,19 +61,9 @@
             path += "\\Help\\";
         if (FolderName.HasValue())
             path += FolderName + '\\';
-        path += FileName;
-        //if (File.Exists(path))
-        //{
-        //    content = await File.ReadAllTextAsync(path);
-        //    content = content.Replace("�", "&nbsp;");
-        //}
-        //else
-        //    content = $"File Not exist";
-        using var straem = new MemoryStream();
-        straem.Position = 0;
-        using var reader = new StreamReader(straem);
-        content = await reader.ReadToEndAsync();
-
+        path += FileName + ".htm";
+        if (File.Exists(path))
+            content = await File.ReadAllTextAsync(path);
         await base.OnInitializedAsync();
     }
 }

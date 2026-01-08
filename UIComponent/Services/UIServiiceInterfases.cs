@@ -83,8 +83,6 @@ namespace Caspian.UI
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class
     {
-        int MasterId { get; set; }
-
         CaspianForm<TEntity> Form { get;}
 
         TEntity UpsertData { get; }

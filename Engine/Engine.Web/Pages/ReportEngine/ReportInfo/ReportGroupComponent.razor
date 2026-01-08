@@ -8,12 +8,12 @@
         <GridColumn Field="t => t.MethodName" />
         <GridColumn Title="Parameters" style="width:90px">
             <Template>
-                <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/ReportGroupParameter/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/ReportGroupParameter/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
         <GridColumn Title="Aggregate Parameters" style="width:170px">
             <Template>
-                <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/AggregateReportGroupParameter/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystem.ToString()}/SystemManagement/AggregateReportGroupParameter/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
     </Columns>

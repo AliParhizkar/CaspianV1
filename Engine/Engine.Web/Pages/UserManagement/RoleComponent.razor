@@ -12,17 +12,17 @@
         <GridColumn Field="t => t.Name" />
         <GridColumn Title="Members" style="width:80px">
             <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserMembership/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/UserMembership/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
         <GridColumn Title="Menus" style="width:80px">
             <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccess/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccess/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
         <GridColumn Title="Menus-Tree" style="width:90px">
             <Template>
-                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccessTree/{context.Data.Id}")' IconType="IconType.Wpforms" />
+                <IconButton Href='@($"/{SubSystemKind.ToString()}/UserManagement/RoleAccessTree/{context.Data.Id}")' IconType="IconType.WpfForms" />
             </Template>
         </GridColumn>
         <GridCommandColumns />

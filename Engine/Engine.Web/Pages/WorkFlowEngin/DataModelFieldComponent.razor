@@ -21,7 +21,7 @@
             <GridColumn Field="t => t.IsDetails" style="text-align:center" Title="Collection" />
             <GridColumn style="width:80px;" Title="Options">
                 <Template>
-                    <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiOptions" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.Wpforms"  />
+                    <IconButton Disabled="context.Data.FieldType != DataModelFieldType.MultiOptions" Href='@($"/{Subsystem.ToString()}/WorkflowEngine/DataModelOption/{context.Data.Id}")' IconType="IconType.WpfForms"  />
                 </Template>
             </GridColumn>
             <GridCommandColumns />

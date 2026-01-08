@@ -170,6 +170,7 @@
         if (await Confirm($"آیا با حذف {count} مشتری از گروه مشتریان موافقید؟"))
         {
             await query.ExecuteDeleteAsync();
+            
             await Service.DataView.ReloadAsync();
         }
     }

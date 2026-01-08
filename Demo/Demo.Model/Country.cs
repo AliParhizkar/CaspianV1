@@ -30,7 +30,7 @@ namespace Demo.Model
         public IList<IdentificationDetail> IdentificationDetailsRegCountry { get; set; }
     }
 
-    [Table("Test ", Schema = "demo")]
+    [Table("Test", Schema = "demo")]
     public class Test
     {
         [Key]

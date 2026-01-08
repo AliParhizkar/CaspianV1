@@ -19,7 +19,6 @@ namespace Main
     {
         static void Main(string[] args)
         {
-            var licenseKey = "MDAxQDMyMzkyZTMwMmUzMDNiMzIzOTNiS3EzNUFpVVNSREpUNXVJYUZ6UkNySldEbzdnS1VLSDFSd2I2akgrV1g0bz0=";
             var builder = WebApplication.CreateBuilder();
             
             ConfigureCulture();
@@ -45,7 +44,7 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
                 domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
-
+           
             if (!builder.Environment.IsProduction())
             {
                 #region Localization
@@ -77,7 +76,6 @@ namespace Main
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
-            //Stimulsoft.Base.StiLicense.Key = builder.Configuration.GetSection("StiLicenseKey").Value;
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<Caspian.Common.Client.CaspianDataService>();
             builder.Services.AddScoped<Caspian.UI.Client.BasePageService>();
@@ -117,7 +115,13 @@ namespace Main
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
             builder.Services.AddAuthenticationCore();
-
+            var uri = builder.Environment.ContentRootPath;
+            //var names = File.ReadAllLines($"{uri}/names.txt");
+            //var families = File.ReadAllLines($"{uri}/families.txt");
+            //var result = names.Concat(families).Select(t => new Demo.Model.Test() { Name = t }).ToList();
+            //var context = new Demo.Model.Context();
+            //context.Set<Demo.Model.Test>().AddRange(result);
+            //context.SaveChanges();
             builder.Services.AddIdentityCore<User>(options => options.Password.RequireNonAlphanumeric = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
@@ -152,7 +156,10 @@ namespace Main
             app.MapCaspianProjectWhen<Accounting.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Accounting"));
             app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
-                httpContext.Request.Path.StartsWithSegments("/Demo"));
+            {
+
+                return httpContext.Request.Path.StartsWithSegments("/Demo");
+            });
             app.MapCaspianProjectWhen<Investment.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Investment"));
             app.MapCaspianProjectWhen<Marketing.Web.App>(httpContext =>
@@ -205,7 +212,6 @@ namespace Main
                     endpoint.MapRazorComponents<TAppComponent>()
                     .AddInteractiveServerRenderMode();
                 });
-                
             });
         }
     }    

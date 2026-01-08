@@ -9,7 +9,7 @@ namespace Demo.Service
         public AccountCodingService(IServiceProvider provider)
             : base(provider)
         {
-
+            
         }
     }
 }

@@ -1,26 +1,22 @@
 ﻿@page "/Test"
+@inject IUIService<Demo.Model.Test> Service
 @inherits BasePage
 @{ 
     base.BuildRenderTree(__builder);
 }
 
-@inject IUIService<Test> Service
-<button @onclick="async() => await UpsertAsync()">Test</button>
+<div style="width:650px;margin:20px auto">
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Name" />
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="Demo.Model.Test">
+        <Columns>
+            <GridColumn Field="t => t.Name" Title="نام" />
+        </Columns>
+    </DataGrid>
+</div>
 
 @code
 {
-    async Task UpsertAsync()
-    {
-        for (var index1 = 0; index1 < 1000; index1++)
-        {
-            var list = new List<Test>();
-            for (var index = 0; index < 100; index++)
-            {
-                var guid = Guid.NewGuid().ToString().Replace("-", "");
-                list.Add(new Test() { Name = guid });
-            }
-            using var service = CreateScope().GetService<TestService>();
-            await service.AddRangeAsync(list);
-        }
-    }
+
 }
