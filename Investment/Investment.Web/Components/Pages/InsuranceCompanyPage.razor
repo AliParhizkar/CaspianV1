@@ -1,0 +1,48 @@
+﻿@page "/Investment/InsuranceCompany"
+@inject IUIService<InsuranceCompany> Service
+@attribute [Source(15, "شرکت های بیمه")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="InsuranceCompany" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.InsuranceCompanyType.EnumText()" />
+            <GridColumn Field="t => t.NationalCode" />
+            <GridColumn Field="t => t.EconomicCode" />
+            <GridColumn Field="t => t.City.Title" Title="شهر" />
+            <GridColumn Field="t => t.Tell" />
+            <GridColumn Field="t => t.Fax" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window Service="Service" Title="شرکت های بیمه" Style="width:800px">
+    <CaspianForm TEntity="InsuranceCompany" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <DropdownList @bind-Value="context.InsuranceCompanyType" ColSpan="4" />
+        <StringTextBox @bind-Value="context.NationalCode" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.EconomicCode" Style="direction:ltr" ColSpan="4" />
+        <ComboBox TValue="int" TEntity="Location" @bind-Value="context.ProvinceId" TextExpression="t => t.Title" CascadeService="cascadeService" ColSpan="4" ConditionExpression="t => t.LocationType == LocationType.Province" />
+        <ComboBox TValue="int?" TEntity="Location" @bind-Value="context.CityId" TextExpression="t => t.Title" CascadeService="cascadeService" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Tell" Style="direction:ltr" ColSpan="4"/>
+        <StringTextBox @bind-Value="context.Fax" Style="direction:ltr" ColSpan="4"/>
+        <StringTextBox @bind-Value="context.Address" ColSpan="8" TotalSpan="12" MultiLine Rows="3" />
+        <StringTextBox @bind-Value="context.Description" ColSpan="8" TotalSpan="12" MultiLine Rows="3" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    CascadeService<Location, Location> cascadeService;
+}

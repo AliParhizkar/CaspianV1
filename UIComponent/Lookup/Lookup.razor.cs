@@ -9,22 +9,16 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
     public partial class Lookup<TEntity, TValue> : CBaseInput<TValue>, ILookup<TEntity> where TEntity: class
     {
-        string Text, title;
-        string oldText;
         TValue oldValue;
         bool mustClear;
         string SearchStr;
         bool shouldRender;
-        EditContext oldContext;
         DataGrid<TEntity> grid;
-        ValidationMessageStore _messageStore;
         Dictionary<string, object> inputAttrs = new Dictionary<string, object>();
         WindowStatus status;
         bool valueUpdated, advanceSearch;
@@ -92,31 +86,31 @@ namespace Caspian.UI
             }
         }
 
-        void SetSearchValue(ChangeEventArgs e)
+        [JSInvokable]
+        public async Task SetSearchValue(string value)
         {
             OpenWindow();
             if (mustClear)
             {
-                Text = "";
+                await SetTextOnClientAsync("");
                 SearchStr = "";
                 mustClear = false;
             }
             else
-            {
-                Text = e.Value.ToString();
-                SearchStr = Text;
-            }
+                SearchStr = value;
+            StateHasChanged();
+        }
+
+        public async Task SetTextOnClientAsync(string text)
+        {
+            if (InputElement != null)
+                await jsRuntime.InvokeVoidAsync("caspian.common.setValueOnClient", InputElement, text);
         }
 
         protected override void OnInitialized()
         {
             shouldRender = true;
             status = WindowStatus.Close;
-            if (ValueExpression != null)
-            {
-                var member = (ValueExpression.Body as MemberExpression).Member;
-                title = member.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? member.Name;
-            }
             base.OnInitialized();
         }
 
@@ -128,7 +122,7 @@ namespace Caspian.UI
             return false;
         }
 
-        public async Task<bool> CloseHelpForm(TEntity selectedEntity, bool shouldRender = false)
+        internal async Task<bool> CloseHelpForm(TEntity selectedEntity, bool shouldRender = false)
         {
             var flag = selectedEntity == null || !OnSelecting.HasDelegate;
             if (!flag)
@@ -199,8 +193,8 @@ namespace Caspian.UI
                     await SetValue(value, false);
                     valueUpdated = true;
                     oldValue = Value;
-                    Text = await GetText(value);
-                    oldText = Text;
+                    var text = await GetText(value);
+                    await SetTextOnClientAsync(text);
                     if (changeState)
                         StateHasChanged();
                 }
@@ -256,6 +250,7 @@ namespace Caspian.UI
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
                     await SetValue(id);
+                    await SetTextAsync();
                 }
             });
             
@@ -287,12 +282,6 @@ namespace Caspian.UI
             base.OnParametersSet();
         }
 
-        protected override async Task OnParametersSetAsync()
-        {
-            await SetText();
-            await base.OnParametersSetAsync();
-        }
-
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -304,18 +293,17 @@ namespace Caspian.UI
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        async Task SetText()
+        async Task SetTextAsync()
         {
+            string text = null;
             if (Value == null || Value.Equals(0))
-                Text = "";
+                text = "";
             else if (!Value.Equals(oldValue))
             {
                 oldValue = Value;
-                Text = await GetText(Convert.ToInt32(Value));
-                oldText = Text;
+                text = await GetText(Convert.ToInt32(Value));
             }
-            else
-                Text = oldText;
+            await SetTextOnClientAsync(text);
         }
 
         public async Task SetValue(long id, bool fireEvent = true)
@@ -327,8 +315,6 @@ namespace Caspian.UI
                     type = Nullable.GetUnderlyingType(type);
                 var tempValue = Convert.ChangeType(id, type);
                 Value = (TValue)tempValue;
-                if (fireEvent)
-                    await SetText();
                 Value = (TValue)tempValue;
                 if (fireEvent)
                 {
@@ -340,11 +326,6 @@ namespace Caspian.UI
 
                 EntitySearch?.EnableLoadData();
             }
-        }
-
-        public void SetText(string text)
-        {
-            Text = text;
         }
 
         public void SetSearchStringValue(string searchStr)

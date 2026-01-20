@@ -1,6 +1,7 @@
 ﻿@page "/Demo/Lookup"
 @namespace Demo.Web.Pages
 @attribute [Source(6, "Lookup")]
+@inherits BasePage
 
 @{
     if (hideHeader)
@@ -259,7 +260,7 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <h4>Hirarkey Search</h4>
+                        <h4>Hierarchy Search</h4>
                     </div>
                     <div class="col-md-6">
                         <hr />
@@ -268,7 +269,7 @@
                                 <label>Account Coding</label>
                             </div>
                             <div class="col-md-8 pe-5">
-                                <Lookup TValue="int?" TEntity="AccountCoding" TextExpression="t => t.Title" CloseFunc="CloseFunc">
+                                <Lookup TValue="int?" TEntity="AccountCoding" TextExpression="t => t.Title" OnSelecting="CheckStatus">
                                     <CodingLookup />
                                 </Lookup>
                             </div>
@@ -329,9 +330,9 @@
         throw new NotImplementedException();
     }
 
-    bool CloseFunc(AccountCoding coding)
+    async Task CheckStatus(SelectStatus status)
     {
-        code = coding.Code;
-        return coding.Level == 3;
+        using var service = CreateScope().GetService<AccountCodingService>();
+        status.Cancel = await service.GetAll().AnyAsync(t => t.ParentCodeId == status.Id);
     }
 }

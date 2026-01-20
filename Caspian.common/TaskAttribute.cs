@@ -13,6 +13,11 @@ namespace Caspian.Common
         }
     }
 
+    public class IgnoreTableGenerationAttribute: Attribute
+    {
+
+    }
+
     internal class ValueTypeContainer
     {
         public ValueTypeContainer(string path)

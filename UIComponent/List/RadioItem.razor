@@ -10,18 +10,28 @@
         className += " t-selected";
     else
         className += " t-default";
-    <div style="@Style" class="@className">
-        <span @onclick="OnMouseClick" class="t-icon">
-            <input type="radio" class="c-radio-button" />
-            @if (selected)
+    @if (IconType.HasValue)
+    {
+        var iconClass = $"fa fa-{IconType.EnumText().ToLower()} c-small-icon";
+        <div style="@Style" class="@className" @onclick="OnMouseClick">
+            <span class="@iconClass"></span>
+        </div>
+    }
+    else
+    {
+        <div style="@Style" class="@className">
+            <div @onclick="OnMouseClick" class="t-icon">
+                <input type="radio" class="c-radio-button" />
+                @if (selected)
+                {
+                    <span class="c-radio"></span>
+                }
+            </div>
+            @if (!HideTitle)
             {
-                <span class="c-radio"></span>
+                <div class="t-title" @onclick="OnMouseClick">@Title</div>
             }
-        </span>
-        @if (!HideTitle)
-        {
-            <span class="t-title" @onclick="OnMouseClick">@Title</span>
-        }
-    </div>
+        </div>
+    }
 }
 

@@ -9,7 +9,8 @@ namespace Investment.Service
         public InvestmentUnitService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Code).UniqueAsync("کدی با این عنوان ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync("واحد مالی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Code).UniqueAsync("واحد مالی با این کد در سیستم ثبت شده است");
         }
     }
 }

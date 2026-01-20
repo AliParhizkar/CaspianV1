@@ -1,0 +1,34 @@
+﻿@page "/investment/ServiceCodingLevel"
+@attribute [Source(10, "تعریف سطوح گروه کالا")]
+@inherits BasePage
+@inject IUIService<ServiceGroupLevel> Service
+
+<div style="width:80%;margin:5px auto">
+    <DataGrid TEntity="ServiceGroupLevel" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.Length" />
+            <GridColumn Field="t => t.LevelType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Title="سطوح گروه کالا" Style="width:400px;" Service="Service" OnOpen="FilleCodingLevels">
+        <CaspianForm Service="Service" TEntity="ServiceGroupLevel">
+            <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.Length" ColSpan="8" />
+            <DropdownList @bind-Value="context.LevelType" ColSpan="8" FilterFunc="t => levelTypes?.Contains(t) != true" />
+            <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="3" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    IList<ServiceGroupLevelType> levelTypes;
+    async Task FilleCodingLevels()
+    {
+        using var service = CreateScope().GetService<ServiceGroupLevelService>();
+        levelTypes = await service.GetAll().Select(t => t.LevelType).ToListAsync();
+    }
+}

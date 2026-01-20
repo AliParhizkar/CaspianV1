@@ -1,12 +1,12 @@
 ﻿@page "/Investment/UserManagement/RoleAccess/{RoleId:int}"
-
+@attribute [Source(4, "دستابی نقش ها")]
 <div class="p-3">
-    <RoleAccessComponent RoldId="RoleId" SubSystem="SubSystemKind.Investment" />
+    <RoleAccessComponent RoleId="RoleId" SubSystem="SubSystemKind.Investment" />
 </div>
 
-
-@code 
+@code
 {
+
     [Parameter]
     public int RoleId { get; set; }
 }

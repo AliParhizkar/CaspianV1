@@ -55,21 +55,21 @@ namespace Caspian.Engine.SystemManagement
                     if (!url.Template.StartsWith("/" + Subsystem, StringComparison.OrdinalIgnoreCase))
                         throw new CaspianException($"On type {component.Name} path should start with /{Subsystem} ", null);
                 }
-                var pageAttr = component.GetCustomAttribute<SourceAttribute>();
+                var sourceAttr = component.GetCustomAttribute<SourceAttribute>();
                 if (routes.Any())
                 {
-                    if (pageAttr == null)
-                        throw new CaspianException($"Type {component.Name} is page and should has PageAttribute");
+                    if (sourceAttr == null)
+                        throw new CaspianException($"Type {component.Name} is page and should has SourceAttribute");
                 }
-                if (pageAttr != null)
+                if (sourceAttr != null)
                 {
-                    menu.SourceId = pageAttr.Id;
-                    menu.Title = pageAttr.Title;
-                    var old = components.SingleOrDefault(t => t.SourceId == pageAttr.Id);
+                    menu.SourceId = sourceAttr.Id;
+                    menu.Title = sourceAttr.Title;
+                    var old = components.SingleOrDefault(t => t.SourceId == sourceAttr.Id);
                     if (old != null)
-                        throw new CaspianException($"Types {component.Name} & {dic[pageAttr.Id].Name} Has same page id");
+                        throw new CaspianException($"Types {component.Name} & {dic[sourceAttr.Id].Name} Has same page id");
                     components.Add(menu);
-                    dic.Add(pageAttr.Id, component);
+                    dic.Add(sourceAttr.Id, component);
                 }
             }
             using var service = CreateScope().GetService<MenuService>();

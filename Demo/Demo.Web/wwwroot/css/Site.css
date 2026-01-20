@@ -520,13 +520,6 @@ html {
         text-align: -webkit-right !important;
     }
 
-.d-membership {
-    text-align: center;
-    color: #4f9995;
-    font-weight: bold;
-    font-size: 25px;
-}
-
 .d-btn-container{
     text-align:center;
 }
@@ -554,6 +547,7 @@ html {
 .d-document{
     background-color:white;
     height:calc(100vh - 88px);
+    overflow:auto;
 }
 .d-document iframe{
     height:calc(100vh - 88px)

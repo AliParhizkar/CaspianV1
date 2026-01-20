@@ -22,6 +22,468 @@ namespace Investment.Model.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ErrorFileName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<short?>("LineNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("RegisterDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(2)
+                        .HasColumnType("datetime2");
+
+                    b.Property<short>("RepetitionTimes")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("SourceCodeFileName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("SubSystemKind")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Version")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionsData", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.ExceptionDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ExceptionDataId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RegisterDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(2)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExceptionDataId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ExceptionDetails", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.Menu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDropped")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MenuCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Ordering")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ShowonMenu")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("SubSystemKind")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("URL")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuCategoryId");
+
+                    b.ToTable("Menus", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.MenuAccessibility", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MenusAccessibility", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.MenuCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IconFont")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Ordering")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("SubSystemKind")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MenuCategories", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("MobileNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.UserMembership", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UsersMembership", "cmn", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Investment.Model.AccountingCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("CodingLevelType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("ParentCodeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCodeId");
+
+                    b.ToTable("AccountingCodes", "acc", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Investment.Model.Exchange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exchanges", "ivm");
+                });
+
+            modelBuilder.Entity("Investment.Model.ExchangeRate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("ExchangeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExchangeId");
+
+                    b.ToTable("ExchangeRates", "ivm");
+                });
+
+            modelBuilder.Entity("Investment.Model.InsuranceCompany", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountingCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("EconomicCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Fax")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("InsuranceCompanyType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NationalCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ProvinceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tell")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountingCodeId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.ToTable("InsuranceCompany");
+                });
+
             modelBuilder.Entity("Investment.Model.InvestmentUnit", b =>
                 {
                     b.Property<int>("Id")
@@ -41,6 +503,29 @@ namespace Investment.Model.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InvestmentUnits", "ivm");
+                });
+
+            modelBuilder.Entity("Investment.Model.InvestmentUnitAccess", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("InvestmentUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvestmentUnitId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("InvestmentUnitAccess", "ivm");
                 });
 
             modelBuilder.Entity("Investment.Model.Location", b =>
@@ -134,6 +619,203 @@ namespace Investment.Model.Migrations
                     b.ToTable("OrganUnits", "ivm");
                 });
 
+            modelBuilder.Entity("Investment.Model.ServiceGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ServiceGroupLevelType")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("ServiceGroups", "ivm");
+                });
+
+            modelBuilder.Entity("Investment.Model.ServiceGroupLevel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("LevelType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServiceGroupLevel", "ivm");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.ExceptionDetail", b =>
+                {
+                    b.HasOne("Caspian.Engine.Model.ExceptionData", "ExceptionData")
+                        .WithMany("Details")
+                        .HasForeignKey("ExceptionDataId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.User", "User")
+                        .WithMany("ExceptionDetails")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExceptionData");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.Menu", b =>
+                {
+                    b.HasOne("Caspian.Engine.Model.MenuCategory", "MenuCategory")
+                        .WithMany("Menus")
+                        .HasForeignKey("MenuCategoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("MenuCategory");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.MenuAccessibility", b =>
+                {
+                    b.HasOne("Caspian.Engine.Model.Menu", "Menu")
+                        .WithMany("Accessibilities")
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.Role", "Role")
+                        .WithMany("MenuAccessibilities")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Caspian.Engine.Model.User", "User")
+                        .WithMany("Accessibilities")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.UserMembership", b =>
+                {
+                    b.HasOne("Caspian.Engine.Model.Role", "Role")
+                        .WithMany("Memberships")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.User", "User")
+                        .WithMany("Memberships")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Investment.Model.AccountingCode", b =>
+                {
+                    b.HasOne("Investment.Model.AccountingCode", "ParentCode")
+                        .WithMany("DetailsCode")
+                        .HasForeignKey("ParentCodeId");
+
+                    b.Navigation("ParentCode");
+                });
+
+            modelBuilder.Entity("Investment.Model.ExchangeRate", b =>
+                {
+                    b.HasOne("Investment.Model.Exchange", "Exchange")
+                        .WithMany("ExchangeRates")
+                        .HasForeignKey("ExchangeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Exchange");
+                });
+
+            modelBuilder.Entity("Investment.Model.InsuranceCompany", b =>
+                {
+                    b.HasOne("Investment.Model.AccountingCode", "AccountingCode")
+                        .WithMany("InsuranceCompanies")
+                        .HasForeignKey("AccountingCodeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Investment.Model.Location", "City")
+                        .WithMany("CityInsuranceCompanies")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Investment.Model.Location", "Province")
+                        .WithMany("ProvinceInsuranceCompanies")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AccountingCode");
+
+                    b.Navigation("City");
+
+                    b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("Investment.Model.InvestmentUnitAccess", b =>
+                {
+                    b.HasOne("Investment.Model.InvestmentUnit", "InvestmentUnit")
+                        .WithMany("InvestmentUnitAccesses")
+                        .HasForeignKey("InvestmentUnitId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InvestmentUnit");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Investment.Model.Location", b =>
                 {
                     b.HasOne("Investment.Model.Location", "ParentLocation")
@@ -165,9 +847,71 @@ namespace Investment.Model.Migrations
                     b.Navigation("ParentOrganUnit");
                 });
 
+            modelBuilder.Entity("Investment.Model.ServiceGroup", b =>
+                {
+                    b.HasOne("Investment.Model.ServiceGroup", "ParentServiceGroup")
+                        .WithMany("ServiceGroups")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ParentServiceGroup");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.Menu", b =>
+                {
+                    b.Navigation("Accessibilities");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.MenuCategory", b =>
+                {
+                    b.Navigation("Menus");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.Role", b =>
+                {
+                    b.Navigation("Memberships");
+
+                    b.Navigation("MenuAccessibilities");
+                });
+
+            modelBuilder.Entity("Caspian.Engine.Model.User", b =>
+                {
+                    b.Navigation("Accessibilities");
+
+                    b.Navigation("ExceptionDetails");
+
+                    b.Navigation("Memberships");
+                });
+
+            modelBuilder.Entity("Investment.Model.AccountingCode", b =>
+                {
+                    b.Navigation("DetailsCode");
+
+                    b.Navigation("InsuranceCompanies");
+                });
+
+            modelBuilder.Entity("Investment.Model.Exchange", b =>
+                {
+                    b.Navigation("ExchangeRates");
+                });
+
+            modelBuilder.Entity("Investment.Model.InvestmentUnit", b =>
+                {
+                    b.Navigation("InvestmentUnitAccesses");
+                });
+
             modelBuilder.Entity("Investment.Model.Location", b =>
                 {
+                    b.Navigation("CityInsuranceCompanies");
+
                     b.Navigation("Locations");
+
+                    b.Navigation("ProvinceInsuranceCompanies");
                 });
 
             modelBuilder.Entity("Investment.Model.OrganUnit", b =>
@@ -175,6 +919,11 @@ namespace Investment.Model.Migrations
                     b.Navigation("OrganPosts");
 
                     b.Navigation("SubOrganUnits");
+                });
+
+            modelBuilder.Entity("Investment.Model.ServiceGroup", b =>
+                {
+                    b.Navigation("ServiceGroups");
                 });
 #pragma warning restore 612, 618
         }

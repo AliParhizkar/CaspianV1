@@ -10,10 +10,16 @@
         watingForSearch: boolean;
         timerId: number;
         searchedValue: string;
+
         constructor(input: HTMLInputElement, type: string, dotnet: dotnetInvoker) {
             this.dotnet = dotnet;
             caspian.common.bindErrorMessage(input.parentElement, input);
+            let attr = input.parentElement.attributes['masked-text'];
             this.input = input;
+            if (attr) {
+                this.maskedText = attr.value;
+                caspian.common.bindMaskedText(this.input, this.maskedText);
+            }
             this.total ||= 8;
             input.onmouseenter = () => {
                 let list = input.parentElement.classList;
@@ -76,7 +82,6 @@
                     this.searchedValue = input.value;
                     await this.dotnet.invokeMethodAsync('SetSearchValue', input.value);
                     this.watingForSearch = false;
-                    
                 }
             }
             else {

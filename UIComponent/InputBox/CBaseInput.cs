@@ -37,9 +37,7 @@ namespace Caspian.UI
         protected string GetTitle()
         {
             if (Title != null)
-            {
                 return Title;
-            }
             if (ValueExpression != null)
             {
                 var member = (ValueExpression.Body as MemberExpression).Member;

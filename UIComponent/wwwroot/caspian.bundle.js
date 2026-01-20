@@ -735,6 +735,7 @@ var caspian;
 (function (caspian) {
     class Lookup {
         constructor(input, dotnet) {
+            this.input = input;
             let lookup = input.closest('.c-lookup');
             this.lookupWindow = lookup;
             input.onfocus = () => {
@@ -753,9 +754,33 @@ var caspian;
             input.onblur = () => {
                 caspian.common.hideErrorMessage(lookup);
             };
+            input.oninput = (e) => __awaiter(this, void 0, void 0, function* () {
+                if (this.watingForSearch)
+                    this.initializeTimer();
+                else {
+                    this.watingForSearch = true;
+                    this.searchedValue = input.value;
+                    yield dotnet.invokeMethodAsync("SetSearchValue", e.target.value);
+                    this.watingForSearch = false;
+                }
+            });
             Lookup.lookups || (Lookup.lookups = []);
             this.dotnetInvoker = dotnet;
             this.bindObserver(lookup);
+        }
+        initializeTimer() {
+            if (this.timerId)
+                clearTimeout(this.timerId);
+            this.timerId = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                if (this.watingForSearch)
+                    this.initializeTimer();
+                else if (this.searchedValue != this.input.value) {
+                    this.watingForSearch = true;
+                    this.searchedValue = this.input.value;
+                    yield this.dotnet.invokeMethodAsync('SetSearchValue', this.input.value);
+                    this.watingForSearch = false;
+                }
+            }), 500);
         }
         bindObserver(lookup) {
             let lookupComponenet = this;
@@ -1230,7 +1255,12 @@ var caspian;
         constructor(input, type, dotnet) {
             this.dotnet = dotnet;
             caspian.common.bindErrorMessage(input.parentElement, input);
+            let attr = input.parentElement.attributes['masked-text'];
             this.input = input;
+            if (attr) {
+                this.maskedText = attr.value;
+                caspian.common.bindMaskedText(this.input, this.maskedText);
+            }
             this.total || (this.total = 8);
             input.onmouseenter = () => {
                 let list = input.parentElement.classList;

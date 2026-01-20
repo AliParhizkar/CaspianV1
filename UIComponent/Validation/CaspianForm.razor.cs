@@ -104,7 +104,7 @@ namespace Caspian.UI
         {
             if (firstControl?.InputElement != null) 
                 await firstControl.FocusAsync();
-            else
+            else if (firstControl?.InputElement != null)
             {
                 await Task.Delay(300);
                 await firstControl.FocusAsync();

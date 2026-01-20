@@ -1,0 +1,111 @@
+﻿@page "/Investment/InvestmentUnitAccess/{InvestmentUnitId:int}"
+@inherits BasePage
+@attribute [Source(16, "دسترسی نوع اموال")]
+<div class="row p-3">
+    <div class="col-md-5">
+        <div>
+            <EntitySearch TEntity="User" Service="Service">
+                <StringTextBox @bind-Value="name1" placeholder="نام کاربری | نام خانوادگی" ColSpan="8" Title="کاربر" />
+                <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" SearchType="SearchType.StartWith" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">مشخصات کاربران</span>
+            </div>
+        </div>
+        <DataGrid TEntity="User" ContentHeight="250" Service="Service"
+                  ConditionExpr="t => name1 == null || t.UserName.StartsWith(name1) || t.LName.Contains(name1)">
+            <Columns>
+                <GridColumn Field="t => t.FName + ' ' + t.LName" Title="نام کاربر" />
+                <GridColumn Field="t => t.UserName" />
+                <GridColumn Field="t => t.MobileNumber" />
+            </Columns>
+        </DataGrid>
+    </div>
+    <div class="col-md-1">
+        <div class="align-content-center text-center h-100">
+            <CaspianForm Service="Service">
+                <div class="d-btn-container">
+                    <div>
+                        <IconButton @onclick="AddSelectedCustomersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                    </div>
+                    <div>
+                        <IconButton IconType="IconType.AngleRight" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="DeleteSelectedCustomersFromGroup" IconType="IconType.AngleDoubleLeft" />
+                    </div>
+                </div>
+            </CaspianForm>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <EntitySearch TEntity="InvestmentUnitAccess" Service="Service">
+                <StringTextBox @bind-Value="name2" placeholder="نام کاربری | نام خانوادگی" Title="کاربر" ColSpan="8" />
+                <StringTextBox @bind-Value="context.User.MobileNumber" ColSpan="8" SearchType="SearchType.StartWith" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">کاربران دارای دسترسی</span>
+            </div>
+        </div>
+        <DataGrid TEntity="InvestmentUnitAccess" Service="Service" ContentHeight="250" DeleteMessage=""
+                  ConditionExpr="t => name2 == null || t.User.UserName.StartsWith(name2) || t.User.LName.Contains(name2)">
+            <Columns>
+                <GridColumn Field="t => t.User.FName + ' ' + t.User.LName" />
+                <GridColumn Field="t => t.User.UserName" />
+                <GridColumn Field="t => t.User.MobileNumber" />
+                <GridCommandColumns HideEdit />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    string name1, name2;
+    MembershipService<InvestmentUnit, InvestmentUnitAccess, User> Service;
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<InvestmentUnit, InvestmentUnitAccess, User>(base.ServiceProvider);
+        Service.MasterId = InvestmentUnitId;
+        base.OnInitialized();
+    }
+
+    async Task AddSelectedCustomersToGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredOthers(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با افزودن {count} کاربر به واحد مالی موافقید؟"))
+        {
+            var service = scope.GetService<InvestmentUnitAccessService>();
+            service.GetAll().Intersect(query.Select(t => new InvestmentUnitAccess()
+            {
+                InvestmentUnitId = InvestmentUnitId,
+                UserId = t.Id
+            }));
+            await service.SaveChangesAsync();
+        }
+    }
+
+    async Task DeleteSelectedCustomersFromGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredAccess(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با حذف {count} کاربر از واحد مالی موافقید؟"))
+        {
+            await query.ExecuteDeleteAsync();
+            await Service.DataView.ReloadAsync();
+        }
+    }
+
+    [Parameter]
+    public int InvestmentUnitId { get; set; }
+}

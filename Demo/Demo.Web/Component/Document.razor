@@ -1,15 +1,16 @@
-﻿@using System.Diagnostics
-@using Mammoth
+﻿@using Mammoth
+@using System.Diagnostics
+
 
 @inject IHostEnvironment host
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+
 <div style="padding:5px 10px">
     <IconButton @onclick="OpenDocumentGeneratorPage" IconType="IconType.FileWordO" />
     <IconButton @onclick="() => SaveAsFiltteredHtml()" IconType="IconType.Html5" />
 </div>
 <div class="d-document">
-    <span>111</span>
     @((MarkupString)content)
 </div>
 
@@ -36,11 +37,16 @@
     void OpenDocumentGeneratorPage()
     {
         var path = $"{GetFilePath()}.docx";
-        Process.Start(new ProcessStartInfo()
+        if (File.Exists(path))
         {
-            FileName = path,
-            UseShellExecute = true
-        });
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+        }
+        else
+            Page.ShowMessage("فایل یافت نشد.");
     }
 
     void SaveAsFiltteredHtml()
@@ -63,7 +69,14 @@
             path += FolderName + '\\';
         path += FileName + ".htm";
         if (File.Exists(path))
+        {
             content = await File.ReadAllTextAsync(path);
+            content = content.Replace("�", "&ensp;");
+        }
+
         await base.OnInitializedAsync();
     }
+
+    [Parameter]
+    public BasePage Page { get; set; }
 }

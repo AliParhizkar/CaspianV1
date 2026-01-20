@@ -28,5 +28,13 @@ namespace Investment.Model
 
         [CheckOnDelete("موقعیت جغرافیایی دارای زیرمجموعه می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Location> Locations { get; set; }
+
+        [DisplayName("استان دارای شرکت بیمه می باشد و امکان حذف آن وجود ندارد")]
+        [InverseProperty(nameof(InsuranceCompany.Province))]
+        public ICollection<InsuranceCompany> ProvinceInsuranceCompanies { get; set; }
+
+        [DisplayName("شهر دارای شرکت بیمه می باشد و امکان حذف آن وجود ندارد")]
+        [InverseProperty(nameof(InsuranceCompany.City))]
+        public ICollection<InsuranceCompany> CityInsuranceCompanies { get; set; }
     }
 }

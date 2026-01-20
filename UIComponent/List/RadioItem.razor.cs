@@ -36,6 +36,9 @@ namespace Caspian.UI
         [Parameter]
         public bool Disabled { get; set; }
 
+        [Parameter]
+        public IconType? IconType { get; set; }
+
         protected override void OnParametersSet()
         {
             if (!Title.HasValue())

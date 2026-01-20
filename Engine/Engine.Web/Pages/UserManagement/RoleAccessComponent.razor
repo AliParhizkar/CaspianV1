@@ -4,72 +4,88 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div class="row">
-    <div class="col-md-5">
-        <EntitySearch TEntity="Menu" Service="Service">
-            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="8"
-                      ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" />
-            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
-        </EntitySearch>
-        <div class="col-md-12 text-center">
-            <hr class="m-0 mt-3" />
-            <span class="d-membership">Inaccessible menus</span>
-        </div>
-        <DataGrid TEntity="Menu" Service="Service" ConditionExpr="t => t.SubSystemKind == SubSystem && t.Title != null" ContentHeight="330">
-            <Columns>
-                <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
-                <GridColumn Field="t => t.Title" style="width:150px" />
-            </Columns>
-        </DataGrid>
-    </div>
-    <div class="col-md-1">
-        <div class="row align-content-center h-100">
-            <CaspianForm  Service="Service">
-                <div class="d-btn-container">
-                    <IconButton IconType="IconType.AngleRight" />
-                    <div>
-                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
-                        IconType="IconType.AngleLeft" />
-                    </div>
-                </div>
-            </CaspianForm>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <EntitySearch Service="Service" TEntity="MenuAccessibility">
-            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
-                      ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
-            <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
-
-        </EntitySearch>
-        <div class="col-md-12 text-center">
-            <hr class="m-0 mt-3" />
-            <span class="d-membership">Accessible menus</span>
-        </div>
-        <DataGrid TEntity="MenuAccessibility" Service="Service" ContentHeight="330" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" >
-            <Columns>
-                <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu category" />
-                <GridColumn Field="t => t.Menu.Title" />
-                <GridCommandColumns HideEdit />
-            </Columns>
-        </DataGrid>
-    </div>
+<div style="width:250px">
+    <RadioList @bind-Value="displayType">
+        <RadioItem Value="0" Title="ساختار درختی" />
+        <RadioItem Value="1" Title="ساختار لیستی" />
+    </RadioList>
 </div>
+
+@if (displayType == 0)
+{
+    <RoleAccessTreeComponent SubSystem="SubSystem" RoleId="RoleId" />
+}
+else
+{
+    <div class="row">
+        <div class="col-md-5">
+            <EntitySearch TEntity="Menu" Service="Service">
+                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="8"
+                          ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" />
+                <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="m-0 mt-3" />
+                <span class="d-membership">Inaccessible menus</span>
+            </div>
+            <DataGrid TEntity="Menu" Service="Service" ConditionExpr="t => t.SubSystemKind == SubSystem && t.Title != null" ContentHeight="330">
+                <Columns>
+                    <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
+                    <GridColumn Field="t => t.Title" style="width:150px" />
+                </Columns>
+            </DataGrid>
+        </div>
+        <div class="col-md-1">
+            <div class="row align-content-center h-100">
+                <CaspianForm Service="Service">
+                    <div class="d-btn-container">
+                        <IconButton IconType="IconType.AngleRight" />
+                        <div>
+                            <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
+                                        IconType="IconType.AngleLeft" />
+                        </div>
+                    </div>
+                </CaspianForm>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <EntitySearch Service="Service" TEntity="MenuAccessibility">
+                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
+                          ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
+                <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
+
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="m-0 mt-3" />
+                <span class="d-membership">Accessible menus</span>
+            </div>
+            <DataGrid TEntity="MenuAccessibility" Service="Service" ContentHeight="330" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem">
+                <Columns>
+                    <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu category" />
+                    <GridColumn Field="t => t.Menu.Title" />
+                    <GridCommandColumns HideEdit />
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+}
 
 @code
 {
+    int displayType;
+
     MembershipService<Role, MenuAccessibility, Menu> Service;
 
     [Parameter]
     public SubSystemKind SubSystem { get; set; }
 
     [Parameter]
-    public int RoldId { get; set; }
+    public int RoleId { get; set; }
 
     protected override void OnInitialized()
     {
         Service = new MembershipService<Role, MenuAccessibility, Menu>(base.ServiceProvider);
-        Service.MasterId = RoldId;
+        Service.MasterId = RoleId;
         base.OnInitialized();
     }
 }

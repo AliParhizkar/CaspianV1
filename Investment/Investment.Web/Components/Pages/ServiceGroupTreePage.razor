@@ -1,0 +1,117 @@
+﻿
+@inherits BasePage
+@inject IUIService<ServiceGroup> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="width:600px;margin:5px auto" class="row">
+    <div class="col-md-1 text-center pt-1">
+        <span class="d-tree-icon" @onclick="async () => await ShowEditForm(null)">
+            <span class="fa fa-plus"></span>
+        </span>
+    </div>
+    <div class="col-md-10 pb-1">
+        <StringTextBox @bind-Value="@serviceGroupSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو گروه خدمات" />
+    </div>
+    <TreeView @ref="tree" TEntity="ServiceGroup" style="height:500px" TextFunc="t => t.Name"
+              FilterFunc="t => !serviceGroupSearch.HasValue() || t.Name.StartsWith(serviceGroupSearch)">
+        <AfterNodeTemplate>
+            <span class="d-tree-icon">
+                <span @onclick="async () => await ShowEditForm(context)" class="fa fa-plus"></span>
+            </span>
+            <span class="d-tree-icon" @onclick="async () => await DeleteOrganUnit(context)">
+                <span class="fa fa-trash"></span>
+            </span>
+        </AfterNodeTemplate>
+    </TreeView>
+</div>
+
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await FocusAsync()" Title="گروه خدمات">
+    <CaspianForm Model="serviceGroup" TEntity="ServiceGroup" OnValidSubmit="UpsertCategory">
+        @{
+            string maskedText = parentGroup == null ? null : parentGroup.Code;
+            var curentCodedefination = codes.ElementAt(serviceGroup.ServiceGroupLevelType.ConvertToInt().Value);
+            for (var index = 0; index < curentCodedefination.Length; index++)
+                maskedText += '_';
+        }
+        <StringTextBox @ref="firstControl" @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="8" Title="@("کد " + curentCodedefination.Name)" />
+        <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="8" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+@code
+{
+    string name;
+    string serviceGroupSearch;
+    TreeView<ServiceGroup> tree;
+    ServiceGroup serviceGroup, parentGroup;
+    WindowStatus status;
+    IControl firstControl;
+    IList<ServiceGroupLevel> codes;
+
+    async Task FocusAsync()
+    {
+        await Task.Delay(300);
+        await firstControl.FocusAsync();
+    }
+
+    async Task ShowEditForm(NodeView nodeView)
+    {
+        using var service = CreateScope().GetService<ServiceGroupService>();
+        serviceGroup = new ServiceGroup();
+        serviceGroup.ParentId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+        if (serviceGroup.ParentId.HasValue)
+        {
+            parentGroup = await service.SingleAsync(serviceGroup.ParentId.Value);
+            serviceGroup.ServiceGroupLevelType = parentGroup.ServiceGroupLevelType + 1;
+        }
+        else
+        {
+            parentGroup = null;
+            serviceGroup.ServiceGroupLevelType = ServiceGroupLevelType.Level1;
+        }
+        name = nodeView?.Text;
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteOrganUnit(NodeView node)
+    {
+        var serviceGroupId = Convert.ToInt32(node.Value);
+        using var service = CreateScope().GetService<ServiceGroupService>();
+        var serviceGroup = await service.SingleAsync(serviceGroupId);
+        var result = await service.ValidateRemoveAsync(serviceGroup);
+        if (result.IsValid)
+        {
+            if (await Confirm("آیا با حذف گروه خدمات موافقید؟"))
+            {
+                service.Remove(serviceGroup);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(serviceGroup);
+            }
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task<bool> UpsertCategory()
+    {
+        using var service = CreateScope().GetService<ServiceGroupService>();
+        if (serviceGroup.Id == 0)
+            await service.AddAsync(serviceGroup);
+        else
+            await service.UpdateAsync(serviceGroup);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(serviceGroup);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ServiceGroupLevelService>();
+        codes = await service.GetAll().OrderBy(t => t.LevelType).ToListAsync();
+    }
+}
+

@@ -41,6 +41,15 @@ namespace Caspian.Common
             var assemblyName = assembly.GetName().Name;
             foreach (var type in types)
             {
+                if (type.GetCustomAttribute<IgnoreTableGenerationAttribute>() != null)
+                {
+                    TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
+                    modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
+                    {
+                        t.ExcludeFromMigrations();
+                    });
+                    continue;
+                }
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
                 foreach (var property in type.GetProperties())
                 {
@@ -117,11 +126,6 @@ namespace Caspian.Common
                     }
                 }
                 var baseType = type;
-                //while(type.BaseType != typeof(object))
-                //{
-                //    if (type == typeof())
-                //    baseType = baseType.BaseType;
-                //}
                 if (!assemblyName.Equals("Engine.Model", StringComparison.OrdinalIgnoreCase))
                 {
                     TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();

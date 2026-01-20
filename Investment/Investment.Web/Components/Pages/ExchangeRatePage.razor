@@ -1,0 +1,29 @@
+﻿@page "/Investment/ExchangeRate"
+@inject IUIService<ExchangeRate> Service
+@attribute [Source(15, "نرخ ارز")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-3">
+    <EntitySearch Service="Service">
+        <ComboBox TValue="int" TEntity="Exchange" @bind-Value="context.ExchangeId" TextExpression="t => t.Name" ColSpan="8"  />
+    </EntitySearch>
+    <DataGrid TEntity="ExchangeRate" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Exchange.Name" Title="ارز" />
+            <GridColumn Field="t => t.Date.ToPersianDateString()" />
+            <GridColumn Field="t => t.Rate.DigitGrouping()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window Service="Service" Title="تعریف ارز" Style="width:500px">
+    <CaspianForm TEntity="ExchangeRate" Service="Service">
+        <ComboBox TValue="int" TEntity="Exchange" @bind-Value="context.ExchangeId" TextExpression="t => t.Name" ColSpan="8" />
+        <DatePicker @bind-Value="context.Date" ColSpan="8" />
+        <NumericTextBox @bind-Value="context.Rate" DigitGrouping ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>

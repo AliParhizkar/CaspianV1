@@ -1,5 +1,10 @@
-﻿.fa.c-selected{
-    background-color:navajowhite;
+﻿.t-radio.t-selected .c-small-icon {
+    background-color: #D6E3FF;
+    border: 1px solid #c0c3c3;
+}
+
+.fa.c-selected {
+    background-color: navajowhite;
 }
 .c-header {
     border: 1px solid #bdbdbd;
@@ -14,8 +19,6 @@
 .t-ltr .c-value-search.d-flex .c-to {
     padding-left: 3px
 }
-
-
 
 .c-body {
     border: 1px solid #bdbdbd;
@@ -33,6 +36,7 @@
     border: 1px solid transparent;
     font-size: 18px !important;
     margin:auto;
+    display:inline-block;
 }
     .d-tree-icon:hover {
         border: 1px solid rgba(0, 0, 0, .24);

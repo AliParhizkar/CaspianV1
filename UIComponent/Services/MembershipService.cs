@@ -6,6 +6,7 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
+using Caspian.Engine.Model;
 
 namespace Caspian.UI
 {
@@ -90,6 +91,8 @@ namespace Caspian.UI
             DataView.Search = Search;
             DataView.ShowInsertIcon = false;
             DataView.InsertIconState(!onlyForSearch);
+            if (typeof(TOther) == typeof(User))
+                return;
             var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
             var u = Expression.Parameter(typeof(TAccess), "u");
             Expression innerExpr = Expression.Property(u, masterIdInfo);

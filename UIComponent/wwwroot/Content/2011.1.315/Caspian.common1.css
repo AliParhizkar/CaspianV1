@@ -1,4 +1,10 @@
-﻿.c-disabled label {
+﻿.d-membership {
+    text-align: center;
+    color: #4f9995;
+    font-size: 16px;
+}
+
+.c-disabled label {
     color: #9d9d9d;
 }
 .c-supervisor {
@@ -1886,17 +1892,13 @@ span, label, td, th {
 }
 .t-radios .t-title {
     padding: 0 5px;
-    cursor: context-menu;
-    line-height: 22px;
-    height: 24px;
-    display: inline-block;
-    vertical-align: middle;
     font-size:14px;
 }
 .t-radios .t-radio {
     white-space: nowrap;
     display:inline-block;
     padding: 5px 0;
+    display:flex;
 }
 
 .t-radios .c-radio {

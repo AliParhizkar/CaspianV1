@@ -1,64 +1,77 @@
 ﻿@namespace Caspian.Engine.UserManagement
 @inherits BasePage
-
 @{
     base.BuildRenderTree(__builder);
 }
-
-
-<div class="row">
-    <div class="col-md-5">
-        <EntitySearch TEntity="Menu" Service="Service">
-            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" TextExpression="t => t.Title"
-                      ColSpan="8" ConditionExpression="t => t.SubSystemKind == SubSystem" />
-            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
-        </EntitySearch>
-        <div class="col-md-12 text-center">
-            <hr class="mb-0" />
-            <span class="d-membership">Accessible menus</span>
-        </div>
-        <DataGrid TEntity="Menu" ConditionExpr="t => t.SubSystemKind == SubSystem" Service="Service" ContentHeight="330">
-            <Columns>
-                <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
-                <GridColumn Field="t => t.Title" style="width:150px" />
-            </Columns>
-        </DataGrid>
-    </div>
-    <div class="col-md-1 text-center">
-        <div class="row align-content-center h-100">
-            <CaspianForm Service="Service">
-                <div class="d-btn-container">
-                    <div class="pb-3">
-                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
-                        IconType="IconType.AngleLeft" />
-                    </div>
-                    <IconButton IconType="IconType.AngleRight" />
-                </div>
-            </CaspianForm>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <EntitySearch Service="Service" TEntity="MenuAccessibility">
-            <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
-                        ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
-            <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
-        </EntitySearch>
-        <div class="col-md-12 text-center">
-            <hr class="mb-0" />
-            <span class="d-membership">Accessible menus</span>
-        </div>
-        <DataGrid TEntity="MenuAccessibility" Service="Service" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" ContentHeight="330">
-            <Columns>
-                <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu" />
-                <GridColumn Field="t => t.Menu.Title" />
-                <GridCommandColumns HideEdit />
-            </Columns>
-        </DataGrid>
-    </div>
+<div style="width:250px">
+    <RadioList @bind-Value="displayType">
+        <RadioItem Value="0" Title="ساختار درختی" />
+        <RadioItem Value="1" Title="ساختار لیستی" />
+    </RadioList>
 </div>
+@if (displayType == 0)
+{
+    <UserAccessTreeComponent AccessUserId="UserId" SubSystem="SubSystem" />
+}
+else
+{
+    <div class="row">
+        <div class="col-md-5">
+            <EntitySearch TEntity="Menu" Service="Service">
+                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" TextExpression="t => t.Title"
+                          ColSpan="8" ConditionExpression="t => t.SubSystemKind == SubSystem" />
+                <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mb-0" />
+                <span class="d-membership">Accessible menus</span>
+            </div>
+            <DataGrid TEntity="Menu" ConditionExpr="t => t.SubSystemKind == SubSystem" Service="Service" ContentHeight="330">
+                <Columns>
+                    <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
+                    <GridColumn Field="t => t.Title" style="width:150px" />
+                </Columns>
+            </DataGrid>
+        </div>
+        <div class="col-md-1 text-center">
+            <div class="row align-content-center h-100">
+                <CaspianForm Service="Service">
+                    <div class="d-btn-container">
+                        <div class="pb-3">
+                            <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
+                                        IconType="IconType.AngleLeft" />
+                        </div>
+                        <IconButton IconType="IconType.AngleRight" />
+                    </div>
+                </CaspianForm>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <EntitySearch Service="Service" TEntity="MenuAccessibility">
+                <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
+                          ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
+                <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mb-0" />
+                <span class="d-membership">Accessible menus</span>
+            </div>
+            <DataGrid TEntity="MenuAccessibility" Service="Service" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" ContentHeight="330">
+                <Columns>
+                    <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu" />
+                    <GridColumn Field="t => t.Menu.Title" />
+                    <GridCommandColumns HideEdit />
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+}
+
 
 @code
 {
+    int displayType;
+
     MembershipService<User, MenuAccessibility, Menu> Service;
 
     [Parameter]

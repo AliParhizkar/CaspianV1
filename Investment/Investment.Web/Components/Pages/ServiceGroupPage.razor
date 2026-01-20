@@ -1,0 +1,175 @@
+﻿@page "/investment/ServiceGroup"
+@attribute [Source(11, "گروه خدمات")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject IUIService<ServiceGroup> Service
+
+@if (codes != null)
+{
+    <div class="row" style="width:98%;margin:5px auto">
+        <div class="col-md-12">
+            <EntitySearch Service="Service" ColumnsCount="2">
+                <StringTextBox @ref="txtSearchCode" @bind-Value="context.Code" TotalSpan="3" SearchType="SearchType.StartWith" Style="direction:ltr" ColSpan="2" Title="کد گروه" />
+                <StringTextBox @bind-Value="context.Name" TotalSpan="5" ColSpan="4" Title="نام گروه" />
+                <DropdownList @bind-Value="searchLevelType" SingleSelect Source="source" ColSpan="3" TotalSpan="4" Title="سطوح" NoSelectText="کلیه سطوح"
+                              OnChange="ChangeCodelevel" />
+            </EntitySearch>
+        </div>
+        <div class="col-md-12">
+            <div style="position: relative; left: calc(-100% + 38px);top:-3px;height:15px;width:5px">
+                <IconButton @onclick="async () => await MoveUpCode()" IconType="IconType.AngleDoubleUp" Disabled="searchLevelType == ServiceGroupLevelType.Level1" />
+            </div>
+            <DataGrid PageSize="30" TEntity="ServiceGroup" Service="Service" ConditionExpr="t => searchLevelType == null || t.ServiceGroupLevelType == searchLevelType" ContentHeight="400">
+                <Columns>
+                    <GridColumn Field="t => t.Code" />
+                    <GridColumn Field="t => t.Name" />
+                    <GridColumn Field="t => t.ServiceGroupLevelType" SortType="SortType.Asc">
+                        <Template>
+                            @{
+                                var level = context.Data.ServiceGroupLevelType.ConvertToInt().Value;
+                            }
+                            @if (level < codes.Count - 1)
+                            {
+                                <IconButton IconType="IconType.Plus" @onclick="async () => await MoveDownCodeAndOpenWindow(context.Data)" Title="@(codes[context.Data.ServiceGroupLevelType.ConvertToInt().Value + 1].Name)" />
+                            }
+                            <IconButton @onclick="async () => await MoveDownCode(context.Data)" IconType="IconType.AngleDoubleDown" Disabled="context.Data.ServiceGroupLevelType.ConvertToInt().Value == codes.Count - 1" />
+                        </Template>
+                    </GridColumn>
+                    <GridCommandColumns HideEdit />
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+
+    <Window Service="Service" Style="width:450px" OnOpen="OpenWindow" Title="تعریف گروه خدمات">
+        @{
+            string maskedText = null;
+            var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
+        }
+        <CaspianForm Service="Service" TEntity="ServiceGroup" OnSubmit="() => FillDataOnformSubmit()">
+            @if (parentCode != null)
+            {
+                var parentCodeDefination = codes.ElementAt(parentCode.ServiceGroupLevelType.ConvertToInt().Value);
+                var title = parentCodeDefination.Name;
+                maskedText = $"{parentCode.Code}";
+                <StringTextBox Value="@(Service.Search.Code)" MaskedText="@maskedText" Style="direction:ltr" ColSpan="8" Title="@("کد " + title)" Disabled />
+                <StringTextBox Value="@parentCode.Name" ColSpan="8" Title="@("نام " + title)" Disabled />
+                <div class="col-md-12 p-3 pb-1 pt-2">
+                    <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
+                </div>
+            }
+            @{ 
+                for (var index = 0; index < curentCodedefination.Length; index++)
+                {
+                    maskedText += '_';
+                }
+            }
+            <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="8" Title="@("کد " + curentCodedefination.Name)" />
+            <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="8" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+}
+
+@code
+{
+    StringTextBox txtSearchCode;
+    IList<SelectListItem> source;
+    IList<ServiceGroupLevel> codes;
+
+    ServiceGroupLevelType? searchLevelType = ServiceGroupLevelType.Level1;
+    string searchCode1;
+    ServiceGroup parentCode;
+
+    void FillDataOnformSubmit()
+    {
+        Service.UpsertData.ParentId = parentCode?.Id;
+        Service.UpsertData.ServiceGroupLevelType = searchLevelType.Value;
+    }
+
+    async Task ChangeCodelevel()
+    {
+        int? accountCodeId = null;
+        var searchCode = Service.Search.Code;
+        if (searchLevelType.HasValue && searchCode != null)
+        {
+            var length = codes.Where(t => t.LevelType <= searchLevelType.Value).Sum(t => t.Length);
+            searchCode = searchCode.Substring(0, length);
+            using var service = CreateScope().GetService<ServiceGroupService>();
+            var accountingCode = await service.GetAll().SingleAsync(t => t.Code == searchCode);
+            length = codes.Where(t => t.LevelType < searchLevelType.Value).Sum(t => t.Length);
+            if (length == 0)
+                searchCode = null;
+            else
+                searchCode = searchCode.Substring(0, length);
+            accountCodeId = accountingCode.Id;
+        }
+        await txtSearchCode.SetValueOnClientAsync(searchCode);
+        await Service.DataView.ReloadAsync();
+        if (accountCodeId.HasValue)
+        {
+            var node = new NodeView()
+            {
+                Value = accountCodeId.Value.ToString(),
+            };
+            await Service.DataView.SelectRowById(accountCodeId.Value);
+        }
+    }
+
+    async Task MoveDownCode(ServiceGroup serviceGroup)
+    {
+        await txtSearchCode.SetValueOnClientAsync(serviceGroup.Code);
+        searchLevelType = (ServiceGroupLevelType)(serviceGroup.ServiceGroupLevelType.ConvertToInt() + 1);
+        var node = new NodeView()
+        {
+            Text = $"{serviceGroup.Code}: {serviceGroup.Name}",
+            Value = serviceGroup.Id.ToString(),
+            Children = new List<NodeView>(),
+            Collabsable = false
+        };
+
+        await Service.DataView.ReloadAsync();
+    }
+
+    async Task MoveDownCodeAndOpenWindow(ServiceGroup code)
+    {
+        await MoveDownCode(code);
+        await Service.OpenWindow(null);
+    }
+
+    async Task MoveUpCode()
+    {
+        searchLevelType = (ServiceGroupLevelType)(searchLevelType.ConvertToInt() - 1);
+        await ChangeCodelevel();
+    }
+
+    async Task OpenWindow()
+    {
+        if (Service.UpsertData.Id == 0)
+        {
+            var account = Service.UpsertData;
+            if (searchLevelType > ServiceGroupLevelType.Level1)
+            {
+                var length = codes.Where(t => t.LevelType < searchLevelType.Value).Sum(t => t.Length);
+                var searchCode = Service.Search.Code;
+                searchCode = searchCode.Substring(0, length);
+                using var service = CreateScope().GetService<ServiceGroupService>();
+                parentCode = await service.GetAll().SingleAsync(t => t.Code == searchCode);
+                account.ParentId = parentCode.Id;
+                account.Code = parentCode.Code;
+            }
+            else
+                parentCode = null;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<ServiceGroupLevelService>();
+        codes = await service.GetAll().OrderBy(t => t.LevelType).ToListAsync();
+        source = SelectListItem.CreateList(codes.Select(t => t.Name).ToArray());
+        source.Insert(0, new SelectListItem(null, "کلیه سطوح"));
+    }
+}

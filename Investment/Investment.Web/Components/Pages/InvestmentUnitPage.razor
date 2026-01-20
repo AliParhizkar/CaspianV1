@@ -1,6 +1,6 @@
 ﻿@page "/Investment/InvestmentUnit"
 @inject IUIService<InvestmentUnit> Service
-@attribute [Source(1, "نوع اموال")]
+@attribute [Source(7, "واحد اموال")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -14,12 +14,15 @@
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Code" />
+            <GridColumn Title="دسترسی کاربران" style="width:60px;">
+                <IconButton Href='@($"/Investment/InvestmentUnitAccess/{context.Data.Id}")' IconType="IconType.WpfForms"/>
+            </GridColumn>
             <GridCommandColumns />
         </Columns>
     </DataGrid>
 </div>
 
-<Window Service="Service" Title="نوع اموال" Style="width:450px">
+<Window Service="Service" Title="واحد اموال" Style="width:450px">
     <CaspianForm TEntity="InvestmentUnit" Service="Service">
         <Content Context="city">
             <StringTextBox @bind-Value="city.Title" ColSpan="8" />

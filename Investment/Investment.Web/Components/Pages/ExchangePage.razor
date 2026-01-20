@@ -1,0 +1,26 @@
+﻿@page "/Investment/Exchange"
+@inject IUIService<Exchange> Service
+@attribute [Source(14, "تعریف ارز")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-3">
+    <EntitySearch Service="Service" >
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+    </EntitySearch>
+    <DataGrid TEntity="Exchange" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window Service="Service" Title="تعریف ارز" Style="width:500px">
+    <CaspianForm TEntity="Exchange" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="3" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>

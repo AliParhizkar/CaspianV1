@@ -29,11 +29,8 @@ namespace Caspian.Engine.Model
         [DisplayName("Email")]
         public override string Email { get; set; }
 
-        [DisplayName("Mobile number")]
+        [DisplayName("شماره همراه")]
         public string MobileNumber { get; set; }
-
-        //[NotMapped]
-        //public DateTime? ExpireDate { get; set; }
 
         [CheckOnDelete("The user is member of role and can not be removed")]
         public ICollection<UserMembership> Memberships { get; set; }

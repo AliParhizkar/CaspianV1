@@ -1,7 +1,14 @@
 ﻿namespace caspian {
     export class Lookup {
         public static lookups: Lookup[];
-        constructor(input: HTMLElement, dotnet: dotnetInvoker) {
+        timerId: number;
+        watingForSearch: boolean;
+        searchedValue: string;
+        input: HTMLInputElement;
+        dotnet: dotnetInvoker;
+
+        constructor(input: HTMLInputElement, dotnet: dotnetInvoker) {
+            this.input = input
             let lookup = input.closest('.c-lookup') as HTMLElement;
             this.lookupWindow = lookup;
             input.onfocus = () => {
@@ -20,9 +27,34 @@
             input.onblur = () => {
                 caspian.common.hideErrorMessage(lookup);
             }
+            input.oninput = async e => {
+                if (this.watingForSearch)
+                    this.initializeTimer();
+                else {
+                    this.watingForSearch = true;
+                    this.searchedValue = input.value;
+                    await dotnet.invokeMethodAsync("SetSearchValue", (e.target as HTMLInputElement).value)
+                    this.watingForSearch = false;
+                }
+            }
             Lookup.lookups ||= [];
             this.dotnetInvoker = dotnet;
             this.bindObserver(lookup);
+        }
+
+        initializeTimer() {
+            if (this.timerId)
+                clearTimeout(this.timerId);
+            this.timerId = setTimeout(async () => {
+                if (this.watingForSearch)
+                    this.initializeTimer();
+                else if (this.searchedValue != this.input.value) {
+                    this.watingForSearch = true;
+                    this.searchedValue = this.input.value;
+                    await this.dotnet.invokeMethodAsync('SetSearchValue', this.input.value);
+                    this.watingForSearch = false;
+                }
+            }, 500);
         }
 
         public dotnetInvoker: dotnetInvoker;
