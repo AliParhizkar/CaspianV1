@@ -18,23 +18,35 @@
             </EntitySearch>
         </div>
         <div class="col-md-12">
-            <div style="position: relative; left: calc(-100% + 38px);top:-3px;height:15px;width:5px">
-                <IconButton @onclick="async () => await MoveUpCode()" IconType="IconType.AngleDoubleUp" Disabled="searchLevelType == ServiceGroupLevelType.Level1" />
-            </div>
             <DataGrid PageSize="30" TEntity="ServiceGroup" Service="Service" ConditionExpr="t => searchLevelType == null || t.ServiceGroupLevelType == searchLevelType" ContentHeight="400">
                 <Columns>
                     <GridColumn Field="t => t.Code" />
                     <GridColumn Field="t => t.Name" />
-                    <GridColumn Field="t => t.ServiceGroupLevelType" SortType="SortType.Asc">
+                    <GridColumn style="width:40px">
+                        <Template>
+                            <IconButton @onclick="async () => await MoveDownCode(context.Data)" IconType="IconType.AngleDoubleDown" Disabled="context.Data.ServiceGroupLevelType.ConvertToInt().Value == codes.Count - 1" />
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field="t => t.ServiceGroupLevelType" SortType="SortType.Asc" style="width:100px" Title="زیرگروه">
                         <Template>
                             @{
                                 var level = context.Data.ServiceGroupLevelType.ConvertToInt().Value;
+                                if (level < codes.Count - 1)
+                                {
+                                    <IconButton IconType="IconType.Plus" @onclick="async () => await MoveDownCodeAndOpenWindow(context.Data)" Title="@(codes[context.Data.ServiceGroupLevelType.ConvertToInt().Value + 1].Name)" />
+                                }
                             }
-                            @if (level < codes.Count - 1)
-                            {
-                                <IconButton IconType="IconType.Plus" @onclick="async () => await MoveDownCodeAndOpenWindow(context.Data)" Title="@(codes[context.Data.ServiceGroupLevelType.ConvertToInt().Value + 1].Name)" />
+                        </Template>
+                    </GridColumn>
+
+                    <GridColumn style="width:40px">
+                        <Template>
+                            @{
+                                if (context.Data.ServiceGroupLevelType > ServiceGroupLevelType.Level1)
+                                {
+                                    <IconButton @onclick="async () => await MoveUpCode()" IconType="IconType.AngleDoubleUp" Disabled="searchLevelType == ServiceGroupLevelType.Level1" />
+                                }
                             }
-                            <IconButton @onclick="async () => await MoveDownCode(context.Data)" IconType="IconType.AngleDoubleDown" Disabled="context.Data.ServiceGroupLevelType.ConvertToInt().Value == codes.Count - 1" />
                         </Template>
                     </GridColumn>
                     <GridCommandColumns HideEdit />
@@ -44,28 +56,27 @@
     </div>
 
     <Window Service="Service" Style="width:450px" OnOpen="OpenWindow" Title="تعریف گروه خدمات">
-        @{
-            string maskedText = null;
-            var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
-        }
         <CaspianForm Service="Service" TEntity="ServiceGroup" OnSubmit="() => FillDataOnformSubmit()">
-            @if (parentCode != null)
-            {
-                var parentCodeDefination = codes.ElementAt(parentCode.ServiceGroupLevelType.ConvertToInt().Value);
-                var title = parentCodeDefination.Name;
-                maskedText = $"{parentCode.Code}";
-                <StringTextBox Value="@(Service.Search.Code)" MaskedText="@maskedText" Style="direction:ltr" ColSpan="8" Title="@("کد " + title)" Disabled />
-                <StringTextBox Value="@parentCode.Name" ColSpan="8" Title="@("نام " + title)" Disabled />
-                <div class="col-md-12 p-3 pb-1 pt-2">
-                    <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
-                </div>
-            }
-            @{ 
+            @{
+                string maskedText = "";
+                var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
+                if (parentCode != null)
+                {
+                    var parentCodeDefination = codes.ElementAt(parentCode.ServiceGroupLevelType.ConvertToInt().Value);
+                    var title = parentCodeDefination.Name;
+                    maskedText = $"{parentCode.Code}";
+                    <StringTextBox Value="@(Service.Search.Code)" MaskedText="@maskedText" Style="direction:ltr" ColSpan="8" Title="@("کد " + title)" Disabled />
+                    <StringTextBox Value="@parentCode.Name" ColSpan="8" Title="@("نام " + title)" Disabled />
+                    <div class="col-md-12 p-3 pb-1 pt-2">
+                        <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
+                    </div>
+                }
                 for (var index = 0; index < curentCodedefination.Length; index++)
                 {
                     maskedText += '_';
                 }
             }
+
             <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="8" Title="@("کد " + curentCodedefination.Name)" />
             <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="8" />
             <FormCommandButton ColSpan="8" />

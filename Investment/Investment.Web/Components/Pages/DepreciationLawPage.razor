@@ -1,0 +1,39 @@
+﻿@page "/investment/DepreciationLaw/{GroupId:int}"
+@attribute [Source(19, "قوانین استهلاک")]
+@inherits BasePage
+@inject IUIService<DepreciationLaw> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div style="margin:10px auto; width:90%">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="10" TotalSpan="12" />
+        <NumericTextBox @bind-Value="context.UsefulLife" ColSpan="4" />
+        <DropdownList @bind-Value="context.CalculateMethod" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="DepreciationLaw" Service="Service" ConditionExpr="t => t.DepreciationLawGroupId == GroupId " ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.CalculateMethod.EnumText()" />
+            <GridColumn Field="t => t.Rate" />
+            <GridColumn Field="t => t.UsefulLife" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="قوانین استهلاک" Style="width:700px">
+        <CaspianForm TEntity="DepreciationLaw" Service="Service" ColumnsCount="2" OnSubmit="t => t.Entity.DepreciationLawGroupId = GroupId">
+            <StringTextBox @bind-Value="context.Name" ColSpan="10" TotalSpan="12" />
+            <DropdownList @bind-Value="context.CalculateMethod" ColSpan="4" />
+            <NumericTextBox @bind-Value="context.Rate" ColSpan="4" />
+            <NumericTextBox @bind-Value="context.UsefulLife" ColSpan="4" />
+            <FormCommandButton ColSpan="6" TotalSpan="6" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    [Parameter]
+    public int GroupId { get; set; }
+}

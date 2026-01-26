@@ -7,6 +7,7 @@ namespace Warehouse.Service
 {
     public class ProductCategoryService: BaseService<ProductCategory>
     {
+        public static readonly int[] LevelsLength = { 1, 2, 3, 3, 3 };
         public ProductCategoryService(IServiceProvider provider):
             base(provider)
         {
@@ -15,11 +16,22 @@ namespace Warehouse.Service
                 .CustomAsync(async t => 
                 {
                     if (t.CategoryId == null)
-                        return null;
-                    var parent = await SingleAsync(t.CategoryId.Value);
-                    if (t.Code.StartsWith(parent.Code))
-                        return null;
-                    return $"کد باید با {parent.Code} شروع شود";
+                    {
+                        if (t.Code.Length != LevelsLength[0])
+                            return $"طول کد باید {LevelsLength[0]} باشد";
+                    }
+                    else
+                    {
+                        var parent = await SingleAsync(t.CategoryId.Value);
+                        if (parent.Level == LevelsLength.Length)
+                            return $"امکان تعریف بیش از{LevelsLength.Length} سطح کد وجود ندارد";
+                        var sum = LevelsLength.Where((t, index) => index <= parent.Level).Sum(t => t);
+                        if (t.Code.Length != sum)
+                            return $"طول کد باید {sum} رقم باشد";
+                        if (!t.Code.StartsWith(parent.Code))
+                            return $"کد باید با {parent.Code} شروع شود";
+                    }
+                    return null;
                 });
         }
 
@@ -30,8 +42,18 @@ namespace Warehouse.Service
                 var parent = await SingleAsync(category.CategoryId.Value);
                 if (!parent.HasChild)
                     parent.HasChild = true;
+                category.Level = parent.Level + 1;
             }
+            else
+                category.Level = 1;
             return await base.AddAsync(category);
+        }
+
+        public override async Task UpdateAsync(ProductCategory category)
+        {
+            var old = await SingleAsync(category.Id);
+            category.Level = old.Level;
+            await base.UpdateAsync(category);
         }
 
         public override async Task RemoveAsync(int id)

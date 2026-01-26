@@ -81,8 +81,6 @@
                     location.LocationType = LocationType.Country;
                 else if (parentLocationType == LocationType.Province)
                     location.LocationType = LocationType.City;
-                else if (parentLocationType == LocationType.City)
-                    location.LocationType = LocationType.Region;
             }
             location.ParentId = parentId;
         }

@@ -22,6 +22,44 @@ namespace Investment.Model.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("CodingLevelType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<byte>("NatureType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("ParentCodeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCodeId");
+
+                    b.ToTable("AccountingCodes", "acc");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
                 {
                     b.Property<int>("Id")
@@ -336,7 +374,7 @@ namespace Investment.Model.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Investment.Model.AccountingCode", b =>
+            modelBuilder.Entity("Investment.Model.DepreciationLaw", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,32 +382,48 @@ namespace Investment.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("CodingLevelType")
+                    b.Property<byte>("CalculateMethod")
                         .HasColumnType("tinyint");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                    b.Property<int>("DepreciationLawGroupId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ParentCodeId")
+                    b.Property<int>("Rate")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsefulLife")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentCodeId");
+                    b.HasIndex("DepreciationLawGroupId");
 
-                    b.ToTable("AccountingCodes", "acc", t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("DepreciationLaws", "ivm");
+                });
+
+            modelBuilder.Entity("Investment.Model.DepreciationLawGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DepreciationLawGroups", "ivm");
                 });
 
             modelBuilder.Entity("Investment.Model.Exchange", b =>
@@ -481,7 +535,45 @@ namespace Investment.Model.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("InsuranceCompany");
+                    b.ToTable("InsuranceCompanies", "ivm");
+                });
+
+            modelBuilder.Entity("Investment.Model.InvestmentCoding", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("DepreciationLawId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepreciationLawId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("InvestmentsCoding", "ivm");
                 });
 
             modelBuilder.Entity("Investment.Model.InvestmentUnit", b =>
@@ -679,6 +771,16 @@ namespace Investment.Model.Migrations
                     b.ToTable("ServiceGroupLevel", "ivm");
                 });
 
+            modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
+                {
+                    b.HasOne("Accounting.Model.AccountingCode", "ParentCode")
+                        .WithMany("DetailsCode")
+                        .HasForeignKey("ParentCodeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ParentCode");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionDetail", b =>
                 {
                     b.HasOne("Caspian.Engine.Model.ExceptionData", "ExceptionData")
@@ -751,13 +853,15 @@ namespace Investment.Model.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Investment.Model.AccountingCode", b =>
+            modelBuilder.Entity("Investment.Model.DepreciationLaw", b =>
                 {
-                    b.HasOne("Investment.Model.AccountingCode", "ParentCode")
-                        .WithMany("DetailsCode")
-                        .HasForeignKey("ParentCodeId");
+                    b.HasOne("Investment.Model.DepreciationLawGroup", "DepreciationLawGroup")
+                        .WithMany("DepreciationLaws")
+                        .HasForeignKey("DepreciationLawGroupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("ParentCode");
+                    b.Navigation("DepreciationLawGroup");
                 });
 
             modelBuilder.Entity("Investment.Model.ExchangeRate", b =>
@@ -773,10 +877,10 @@ namespace Investment.Model.Migrations
 
             modelBuilder.Entity("Investment.Model.InsuranceCompany", b =>
                 {
-                    b.HasOne("Investment.Model.AccountingCode", "AccountingCode")
-                        .WithMany("InsuranceCompanies")
+                    b.HasOne("Accounting.Model.AccountingCode", "AccountingCode")
+                        .WithMany()
                         .HasForeignKey("AccountingCodeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Investment.Model.Location", "City")
@@ -795,6 +899,24 @@ namespace Investment.Model.Migrations
                     b.Navigation("City");
 
                     b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("Investment.Model.InvestmentCoding", b =>
+                {
+                    b.HasOne("Investment.Model.DepreciationLaw", "DepreciationLaw")
+                        .WithMany("InvestmentsCoding")
+                        .HasForeignKey("DepreciationLawId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Investment.Model.InvestmentCoding", "Parent")
+                        .WithMany("InvestmentsCoding")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("DepreciationLaw");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Investment.Model.InvestmentUnitAccess", b =>
@@ -857,6 +979,11 @@ namespace Investment.Model.Migrations
                     b.Navigation("ParentServiceGroup");
                 });
 
+            modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
+                {
+                    b.Navigation("DetailsCode");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
                 {
                     b.Navigation("Details");
@@ -888,16 +1015,24 @@ namespace Investment.Model.Migrations
                     b.Navigation("Memberships");
                 });
 
-            modelBuilder.Entity("Investment.Model.AccountingCode", b =>
+            modelBuilder.Entity("Investment.Model.DepreciationLaw", b =>
                 {
-                    b.Navigation("DetailsCode");
+                    b.Navigation("InvestmentsCoding");
+                });
 
-                    b.Navigation("InsuranceCompanies");
+            modelBuilder.Entity("Investment.Model.DepreciationLawGroup", b =>
+                {
+                    b.Navigation("DepreciationLaws");
                 });
 
             modelBuilder.Entity("Investment.Model.Exchange", b =>
                 {
                     b.Navigation("ExchangeRates");
+                });
+
+            modelBuilder.Entity("Investment.Model.InvestmentCoding", b =>
+                {
+                    b.Navigation("InvestmentsCoding");
                 });
 
             modelBuilder.Entity("Investment.Model.InvestmentUnit", b =>

@@ -1,0 +1,28 @@
+﻿@page "/Warehouse/Location"
+@attribute [Source(8, "موفعیت جغراقیایی")]
+@inject IUIService<Location> Service
+@inherits BasePage
+<div class="row">
+    <div style="width:80px;">
+        <RadioList @bind-Value="flag" DefaultLayout="DefaultLayout.FlexStart">
+            <RadioItem IconType="IconType.Tree" Value="true" />
+            <RadioItem IconType="IconType.Outdent" Value="false" />
+        </RadioList>
+    </div>
+    <div style="width: calc(100% - 150px);padding-top:10px;">
+        @if (flag)
+        {
+            <LocationTreeComponenet Page="this" />
+        }
+        else
+        {
+            <LocationGridComponent Service="Service" Page="this" />
+        }
+
+    </div>
+</div>
+
+@code
+{
+    bool flag = true;
+}

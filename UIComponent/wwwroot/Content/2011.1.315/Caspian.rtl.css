@@ -181,8 +181,8 @@
 {
     zoom: normal;
 }
-    .t-rtl .c-lookup input{
-        padding-left:24px;
+    .t-rtl .c-lookup > input{
+        padding-left:26px;
     }
 
 

@@ -2,29 +2,27 @@
 @attribute [Source(8, "موفعیت جغراقیایی")]
 @inject IUIService<Location> Service
 @inherits BasePage
-@{
-    base.BuildRenderTree(__builder);
-    var gridClassName = "fa fa-outdent c-small-icon";
-    var treeClassName = "fa fa-tree c-small-icon";
-    if (treeView)
-        treeClassName += " c-selected";
-    else
-        gridClassName += " c-selected";
-}
-<div class="p-3 pb-1 pt-1">
-    <span class="@gridClassName" @onclick="() => treeView = false"></span>
-    <span class="@treeClassName" @onclick="() => treeView = true"></span>
+<div class="row">
+    <div style="width:80px;">
+        <RadioList @bind-Value="flag" DefaultLayout="DefaultLayout.FlexStart">
+            <RadioItem IconType="IconType.Tree" Value="true" />
+            <RadioItem IconType="IconType.Outdent" Value="false" />
+        </RadioList>
+    </div>
+    <div style="width: calc(100% - 150px);padding-top:10px;">
+        @if (flag)
+        {
+            <LocationTreeComponenet Page="this" />
+        }
+        else
+        {
+            <LocationGridComponent Service="Service" Page="this" />
+        }
+
+    </div>
 </div>
-@if (treeView)
-{
-    <LocationTreeComponenet Page="this" />
-}
-else
-{
-    <LocationGridComponent Service="Service" Page="this" />
-}
 
 @code
 {
-    bool treeView;
+    bool flag = true;
 }

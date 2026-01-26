@@ -417,6 +417,8 @@ namespace Caspian.UI
                     shouldRender = true;
                     if (Template == null)
                     {
+                        if (TextExpression == null)
+                            throw new CaspianException("Please specify TextExpression parameter");
                         var displayFunc = TextExpression.Compile();
                         var valueFunc = Expression.Lambda(primaryKeyExpr, parameter).Compile();
                         items = new List<SelectListItem>();

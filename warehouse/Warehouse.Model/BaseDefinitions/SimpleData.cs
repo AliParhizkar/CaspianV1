@@ -17,12 +17,8 @@ namespace Warehouse.Model
         [DisplayName("نوع")]
         public SimpleDataType DataType { get; set; }
 
-        [CheckOnDelete("واحد مالی دارای انبار می باشد و امکان حذف آن وجود ندارد")]
-        [InverseProperty(nameof(StockRoom.FinancialUnit))]
         public ICollection<StockRoom> StockRooms { get; set; }
 
-        [CheckOnDelete("واحد بودجه دارای انبار می باشد و امکان حذف آن وجود ندارد")]
-        [InverseProperty(nameof(StockRoom.BudgetUnit))]
         public ICollection<StockRoom> StockRooms1 { get; set; }
     }
 }

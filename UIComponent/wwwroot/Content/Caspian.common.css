@@ -1,5 +1,16 @@
-﻿.t-radio.t-selected .c-small-icon {
-    background-color: #D6E3FF;
+﻿.c-lookup > input {
+    width: calc(100% - 4px);
+    margin: 2px;
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 1px;
+    height: 32px;
+    line-height: 32px;
+    border-color: rgba(0, 0, 0, 0.12);
+    color: inherit;
+}
+.t-radio.t-selected .c-small-icon {
+    background-color: #ffdead;
     border: 1px solid #c0c3c3;
 }
 
@@ -120,7 +131,7 @@ input {
     }
 
     /*Focus state*/
-    .t-textbox input:focus {
+    .c-lookup > input:focus, .t-textbox > input:focus {
         border-color: rgba(0,0,0,0.24);
         box-shadow: 0 0 3px 0 #a6a6a6;
     }

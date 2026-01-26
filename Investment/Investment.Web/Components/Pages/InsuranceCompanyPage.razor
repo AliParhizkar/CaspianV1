@@ -32,17 +32,27 @@
         <DropdownList @bind-Value="context.InsuranceCompanyType" ColSpan="4" />
         <StringTextBox @bind-Value="context.NationalCode" Style="direction:ltr" ColSpan="4" />
         <StringTextBox @bind-Value="context.EconomicCode" Style="direction:ltr" ColSpan="4" />
-        <ComboBox TValue="int" TEntity="Location" @bind-Value="context.ProvinceId" TextExpression="t => t.Title" CascadeService="cascadeService" ColSpan="4" ConditionExpression="t => t.LocationType == LocationType.Province" />
-        <ComboBox TValue="int?" TEntity="Location" @bind-Value="context.CityId" TextExpression="t => t.Title" CascadeService="cascadeService" ColSpan="4" />
-        <StringTextBox @bind-Value="context.Tell" Style="direction:ltr" ColSpan="4"/>
-        <StringTextBox @bind-Value="context.Fax" Style="direction:ltr" ColSpan="4"/>
-        <StringTextBox @bind-Value="context.Address" ColSpan="8" TotalSpan="12" MultiLine Rows="3" />
-        <StringTextBox @bind-Value="context.Description" ColSpan="8" TotalSpan="12" MultiLine Rows="3" />
+        <Lookup TValue="int" TEntity="AccountingCode" @bind-Value="context.AccountingCodeId" TextExpression="t => t.Name" OnSelecting="CheckStatus" ColSpan="4">
+            <Accounting.Component.CodingLookup />
+        </Lookup>
+        <ComboBox TValue="int" TEntity="Location" @bind-Value="context.ProvinceId" TextExpression="t => t.Title" ColSpan="4" 
+                  ConditionExpression="t => t.LocationType == LocationType.Province" OnChange="() => cmbCities.EnableLoading()" />
+        <ComboBox @ref="cmbCities" TValue="int?" TEntity="Location" @bind-Value="context.CityId" TextExpression="t => t.Title" ColSpan="4" ConditionExpression="t => t.ParentId == context.ProvinceId" />
+        <StringTextBox @bind-Value="context.Tell" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Fax" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Address" ColSpan="10" TotalSpan="12" MultiLine Rows="2" />
+        <StringTextBox @bind-Value="context.Description" ColSpan="10" TotalSpan="12" MultiLine Rows="2" />
         <FormCommandButton ColSpan="8" />
     </CaspianForm>
 </Window>
 
 @code
 {
-    CascadeService<Location, Location> cascadeService;
+    ComboBox<Location, int?> cmbCities;
+
+    async Task CheckStatus(SelectStatus status)
+    {
+        using var service = CreateScope().GetService<AccountingCodeService>();
+        status.Cancel = await service.GetAll().AnyAsync(t => t.ParentCodeId == status.Id);
+    }
 }

@@ -1,0 +1,5 @@
+﻿
+namespace Investment.Model
+{
+
+}

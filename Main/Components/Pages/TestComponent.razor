@@ -1,22 +1,19 @@
 ﻿@page "/Test"
 @inject IUIService<Demo.Model.Test> Service
 @inherits BasePage
+@using Investment.Model
 @{ 
     base.BuildRenderTree(__builder);
 }
 
-<div style="width:650px;margin:20px auto">
-    <EntitySearch Service="Service">
-        <StringTextBox @bind-Value="context.Name" />
-    </EntitySearch>
-    <DataGrid Service="Service" TEntity="Demo.Model.Test">
-        <Columns>
-            <GridColumn Field="t => t.Name" Title="نام" />
-        </Columns>
-    </DataGrid>
+<div style="width:500px;margin:10px auto">
+    <Lookup TEntity="Location" TValue="int?" @bind-Value="locationId" TextExpression="t => t.Title">
+        <Accounting.Component.LocationLookupWindow />
+    </Lookup>
 </div>
+
 
 @code
 {
-
+    int? locationId;
 }

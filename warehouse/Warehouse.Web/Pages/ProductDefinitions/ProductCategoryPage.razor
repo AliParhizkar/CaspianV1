@@ -1,98 +1,126 @@
 ﻿@page "/Warehouse/ProductCategory"
 @attribute [Source(14, "گروه محصول")]
 @inherits BasePage
+@inject IUIService<ProductCategory> Service
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:600px;margin:10px auto" class="row align-items-center">
-    <div class="col-md-1 d-tree-icon text-center pb-1">
-        <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+<div class="row">
+    <div style="width:80px">
+        <RadioList @bind-Value="treeView" DefaultLayout="DefaultLayout.FlexStart">
+            <RadioItem Value="true" IconType="IconType.Tree" />
+            <RadioItem Value="false" IconType="IconType.Outdent" />
+        </RadioList>
     </div>
-    <div class="col-md-11 pb-1">
-        <StringTextBox @bind-Value="@categorySearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو ..." />
-    </div>
-    <div>
-        <TreeView @ref="tree" TEntity="ProductCategory" style="height:500px"
-                  TextFunc='t => t.Code + " : " + t.Title' FilterFunc="t => !categorySearch.HasValue() || t.Title.StartsWith(categorySearch)">
-            <AfterNodeTemplate>
-                <span class="d-tree-icon">
-                    <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
-                </span>
-                <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
-                    <span class="fa fa-pencil"></span>
-                </span>
-                <span class="d-tree-icon" @onclick="async () => await DeleteScope(context)">
-                    <span class="fa fa-trash"></span>
-                </span>
-            </AfterNodeTemplate>
-        </TreeView>
+    <div style="width:calc(100% - 80px)">
+        @if (treeView)
+        {
+            <ProductCategoryTreeComponent Page="this" />
+        }
+        else
+        {
+            <div style="width:800px;margin:10px auto;">
+                <EntitySearch Service="Service" ColumnsCount="2">
+                    <StringTextBox @ref="textBox" @bind-Value="context.Code" ColSpan="4" TotalSpan="6" Style="direction:ltr" Title="کد" SearchType="SearchType.StartWith" />
+                    <DropdownList @bind-Value="searchLevel" Source="source" SingleSelect NoSelectText="همه سطوح" ColSpan="4" TotalSpan="6" Title="سطح" />
+                    <StringTextBox @bind-Value="context.Title" ColSpan="10" />
+                </EntitySearch>
+                <DataGrid TEntity="ProductCategory" Service="Service" ConditionExpr="t => searchLevel == null || t.Level == searchLevel">
+                    <Columns>
+                        <GridColumn Field="t => t.Code" />
+                        <GridColumn Field="t => t.Title" />
+                        <GridColumn Field="t => t.Level" DataField />
+                        <GridColumn style="width:40px">
+                            <Template>
+                                <IconButton @onclick="async() => await MoveUpCategory(context.Data)" IconType="IconType.AngleDoubleUp" Disabled="context.Data.Level == 1" />
+                            </Template>
+                        </GridColumn>
+                        <GridColumn style="width:80px" Title="گروه فرعی">
+                            <Template>
+                                <IconButton @onclick="async () => await MoveDownCategoryAndOpenWindow(context.Data)" IconType="IconType.Plus" Disabled="context.Data.Level == 5" />
+                            </Template>
+                        </GridColumn>
+                        <GridColumn style="width:40px">
+                            <Template>
+                                <IconButton @onclick="async() => await MoveDownCategory(context.Data)" IconType="IconType.AngleDoubleDown" Disabled="context.Data.Level == 5" />
+                            </Template>
+                        </GridColumn>
+                    </Columns>
+                </DataGrid>
+            </div>
+            <Window Service="Service" Title="گروه کالا" Style="width:450px" OnOpen="OpenWindow">
+                <CaspianForm Service="Service">
+                    @{
+                        var maskedText = parentCategory?.Code ?? "";
+                        for (var index = 0; index < ProductCategoryService.LevelsLength[context.Level - 1]; index++)
+                            maskedText += '_';
+                        if (parentCategory != null)
+                        {
+                            <StringTextBox Value="@parentCategory.Code" Style="direction:ltr" ColSpan="8" Disabled Title="کد گروه اصلی" />
+                            <StringTextBox Value="@parentCategory.Title" Disabled Title="نام گروه اصلی" ColSpan="8" />
+                        }
+                    }
+
+                    <StringTextBox @bind-Value="context.Code" ColSpan="8" MaskedText="@maskedText" Style="direction:ltr" />
+                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                    <FormCommandButton ColSpan="8" />
+                </CaspianForm>
+            </Window>
+        }
     </div>
 </div>
-<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="گروه بندی کالا">
-    <CaspianForm Model="category" TEntity="ProductCategory" OnValidSubmit="UpsertAddress">
-        <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
-        <StringTextBox @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
-        <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="9" />
-        <WindowCommandButtons ColSpan="9" />
-    </CaspianForm>
-</Window>
+
 @code
 {
-    int? categoryId;
-    string categorySearch;
-    WindowStatus status;
-    ProductCategory category;
-    TreeView<ProductCategory> tree;
-    IControl firstControl;
+    bool treeView = false;
+    StringTextBox textBox;
+    int? searchLevel;
+    IList<SelectListItem> source;
+    ProductCategory parentCategory;
 
-    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    async Task OpenWindow()
     {
-        if (isUpdate)
+        var category = Service.UpsertData;
+        category.Level = searchLevel ?? 1;
+        if (category.Id == 0)
         {
-            ///Edit mode
-            var scopeId = Convert.ToInt32(nodeView.Value);
-            using var service = CreateScope().GetService<ProductCategoryService>();
-            category = await service.SingleAsync(scopeId);
-        }
-        else
-        {
-            ///Insert mode
-            category = new();
-            category.CategoryId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
-        }
-        status = WindowStatus.Open;
-    }
-
-    async Task DeleteScope(NodeView node)
-    {
-        var categoryId = Convert.ToInt32(node.Value);
-        using var service = CreateScope().GetService<ProductCategoryService>();
-        var old = await service.SingleAsync(categoryId);
-        var result = await service.ValidateRemoveAsync(old);
-        if (result.IsValid)
-        {
-            if (await Confirm("آیا با حذف گروه محصول موافقید؟"))
+            if (searchLevel > 0)
             {
-                await service.RemoveAsync(categoryId);
-                await service.SaveChangesAsync();
-                tree.RemoveFromTree(category);
+                using var service = CreateScope().GetService<ProductCategoryService>();
+                parentCategory = await service.GetAll().SingleAsync(t => t.Code == Service.Search.Code);
+                category.CategoryId = parentCategory.Id;
             }
         }
-        else
-            ShowMessage(result.Errors.First().ErrorMessage);
     }
 
-    async Task<bool> UpsertAddress()
+    protected override void OnInitialized()
     {
-        using var service = CreateScope().GetService<ProductCategoryService>();
-        if (category.Id == 0)
-            await service.AddAsync(category);
-        else
-            await service.UpdateAsync(category);
-        await service.SaveChangesAsync();
-        tree.UpsertInTree(category);
-        status = WindowStatus.Close;
-        StateHasChanged();
-        return true;
+        source = SelectListItem.CreateList("سطح اول", "سطح دوم", "سطح سوم", "سطح چهارم", "سطح پنجم");
+        foreach (var item in source)
+            item.Value = $"{Convert.ToInt32(item.Value) + 1}";
+        source.Insert(0, new SelectListItem(null, "همه سطوح"));
+        base.OnInitialized();
+    }
+
+    async Task MoveDownCategory(ProductCategory category)
+    {
+        await textBox.SetValueOnClientAsync(category.Code);
+        searchLevel = category.Level + 1;
+        await Service.DataView.ReloadAsync();
+    }
+
+    async Task MoveUpCategory(ProductCategory category)
+    {
+        var length = ProductCategoryService.LevelsLength[category.Level - 1];
+        var code = category.Code;
+        code = code.Substring(0, code.Length - length);
+        await textBox.SetValueOnClientAsync(code);
+        await Service.DataView.ReloadAsync();
+    }
+
+    async Task MoveDownCategoryAndOpenWindow(ProductCategory category)
+    {
+        await MoveDownCategory(category);
+        await Service.OpenWindow(null);
     }
 }

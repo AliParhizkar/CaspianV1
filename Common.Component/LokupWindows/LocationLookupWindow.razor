@@ -1,0 +1,27 @@
+﻿@typeparam TValue
+@inherits LookupWindow<Location, TValue>
+@namespace Accounting.Component
+<div class="c-lookup-page" style="width:600px;">
+    <EntitySearch TEntity="Location" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="5" />
+        <DropdownList @bind-Value="context.LocationType" ColSpan="3" SingleSelect />
+    </EntitySearch>
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="Location" ContentHeight="200">
+            <Columns>
+                <GridColumn Field="t => t.Title" Title="محل جغرافیایی" />
+                <GridColumn Field="t => t.ParentLocation.Title" Title="محل جغرافیایی اصلی" />
+                <GridColumn Field="t => t.LocationType.EnumText()" SortType="SortType.Asc" Title="نوع" style="width:60px" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{ 
+    protected override void OnInitialized()
+    {
+        base.InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

@@ -336,6 +336,23 @@ namespace Warehouse.Model.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Warehouse.Model.Branch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Branches", "wh");
+                });
+
             modelBuilder.Entity("Warehouse.Model.City", b =>
                 {
                     b.Property<int>("Id")
@@ -358,7 +375,7 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("Cities", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.MaterialAddress", b =>
+            modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -366,7 +383,83 @@ namespace Warehouse.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ParentAddressId")
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PostCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Tell")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("KeepCenters", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("LocationType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Locations", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.MaterialLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentLocationId")
                         .HasColumnType("int");
 
                     b.Property<int>("StockroomId")
@@ -378,11 +471,11 @@ namespace Warehouse.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentAddressId");
+                    b.HasIndex("ParentLocationId");
 
                     b.HasIndex("StockroomId");
 
-                    b.ToTable("MaterialAddresses", "wh");
+                    b.ToTable("MaterialLocations", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.MaterialUnit", b =>
@@ -486,6 +579,9 @@ namespace Warehouse.Model.Migrations
 
                     b.Property<bool>("HasChild")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
@@ -785,43 +881,33 @@ namespace Warehouse.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("BudgetUnitId")
+                    b.Property<int>("BranchId")
                         .HasColumnType("int");
 
                     b.Property<string>("Code")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("FinancialUnitId")
+                    b.Property<int>("KeepCenterId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ManagerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Mobile")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<bool>("MemberInManyParts")
+                        .HasColumnType("bit");
 
-                    b.Property<byte>("PricingMethodType")
-                        .HasColumnType("tinyint");
+                    b.Property<bool>("MemberOfMiddlePart")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ScopeId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("StockRoomType")
-                        .HasColumnType("tinyint");
+                    b.Property<int?>("SimpleDataId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Tel")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int?>("SimpleDataId1")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
@@ -829,13 +915,17 @@ namespace Warehouse.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BudgetUnitId");
+                    b.HasIndex("BranchId");
 
-                    b.HasIndex("FinancialUnitId");
+                    b.HasIndex("KeepCenterId");
 
                     b.HasIndex("ManagerId");
 
                     b.HasIndex("ScopeId");
+
+                    b.HasIndex("SimpleDataId");
+
+                    b.HasIndex("SimpleDataId1");
 
                     b.ToTable("StockRooms", "wh");
                 });
@@ -949,11 +1039,40 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Province");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.MaterialAddress", b =>
+            modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
-                    b.HasOne("Warehouse.Model.MaterialAddress", "ParentAddress")
-                        .WithMany("MaterialAddresses")
-                        .HasForeignKey("ParentAddressId")
+                    b.HasOne("Warehouse.Model.Branch", "Branch")
+                        .WithMany("KeepCenters")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.Location", "Location")
+                        .WithMany("KeepCenters")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Location", b =>
+                {
+                    b.HasOne("Warehouse.Model.Location", "ParentLocation")
+                        .WithMany("Locations")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ParentLocation");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.MaterialLocation", b =>
+                {
+                    b.HasOne("Warehouse.Model.MaterialLocation", "ParentLocation")
+                        .WithMany("Locations")
+                        .HasForeignKey("ParentLocationId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Warehouse.Model.StockRoom", "StockRoom")
@@ -962,7 +1081,7 @@ namespace Warehouse.Model.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("ParentAddress");
+                    b.Navigation("ParentLocation");
 
                     b.Navigation("StockRoom");
                 });
@@ -1101,32 +1220,39 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
                 {
-                    b.HasOne("Warehouse.Model.SimpleData", "BudgetUnit")
-                        .WithMany("StockRooms1")
-                        .HasForeignKey("BudgetUnitId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.HasOne("Warehouse.Model.Branch", "Branch")
+                        .WithMany("Stocks")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.HasOne("Warehouse.Model.SimpleData", "FinancialUnit")
-                        .WithMany("StockRooms")
-                        .HasForeignKey("FinancialUnitId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                    b.HasOne("Warehouse.Model.KeepCenter", "KeepCenter")
+                        .WithMany("Stocks")
+                        .HasForeignKey("KeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.User", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId");
 
-                    b.HasOne("Warehouse.Model.Scope", "Scope")
+                    b.HasOne("Warehouse.Model.Scope", null)
                         .WithMany("StockRooms")
-                        .HasForeignKey("ScopeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ScopeId");
 
-                    b.Navigation("BudgetUnit");
+                    b.HasOne("Warehouse.Model.SimpleData", null)
+                        .WithMany("StockRooms")
+                        .HasForeignKey("SimpleDataId");
 
-                    b.Navigation("FinancialUnit");
+                    b.HasOne("Warehouse.Model.SimpleData", null)
+                        .WithMany("StockRooms1")
+                        .HasForeignKey("SimpleDataId1");
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("KeepCenter");
 
                     b.Navigation("Manager");
-
-                    b.Navigation("Scope");
                 });
 
             modelBuilder.Entity("Warehouse.Model.Supplier", b =>
@@ -1171,14 +1297,33 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Memberships");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.Branch", b =>
+                {
+                    b.Navigation("KeepCenters");
+
+                    b.Navigation("Stocks");
+                });
+
             modelBuilder.Entity("Warehouse.Model.City", b =>
                 {
                     b.Navigation("Sellers");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.MaterialAddress", b =>
+            modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
-                    b.Navigation("MaterialAddresses");
+                    b.Navigation("Stocks");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Location", b =>
+                {
+                    b.Navigation("KeepCenters");
+
+                    b.Navigation("Locations");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.MaterialLocation", b =>
+                {
+                    b.Navigation("Locations");
                 });
 
             modelBuilder.Entity("Warehouse.Model.MaterialUnit", b =>

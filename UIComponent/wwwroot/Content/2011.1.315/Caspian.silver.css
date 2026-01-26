@@ -521,9 +521,8 @@ html input[disabled], textarea[disabled] {
 }
     .t-HelpWindow .t-grid-header .t-header span {
         line-height: 20px;
-        height: 25px;
-        display: block;
         vertical-align: baseline;
+        padding:0 3px;
     }
     .t-HelpWindow .t-grid-bottom {
         padding: 3px 10px;

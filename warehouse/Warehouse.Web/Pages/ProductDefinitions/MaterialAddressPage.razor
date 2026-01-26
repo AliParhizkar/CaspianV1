@@ -1,7 +1,7 @@
-﻿@page "/Warehouse/MaterialAddress"
-@page "/Warehouse/MaterialAddress/{StockroomId:int}"
+﻿@page "/Warehouse/MaterialLocation"
+@page "/Warehouse/MaterialLocation/{StockroomId:int}"
 @inherits BasePage
-@attribute [Source(2, "آدرس کالا در انبار")]
+@attribute [Source(2, "محل فیزیکی کالا")]
 
 @{
 base.BuildRenderTree(__builder);
@@ -30,7 +30,7 @@ base.BuildRenderTree(__builder);
                 </div>
             </div>
             <div class="p-1">
-                <TreeView @ref="tree" TEntity="MaterialAddress" style="height:400px" ConditionExpression="t => t.StockroomId == stockroomId"
+                <TreeView @ref="tree" TEntity="MaterialLocation" style="height:400px" ConditionExpression="t => t.StockroomId == stockroomId"
                           TextFunc="t => t.Title" FilterFunc="t => !addressSearch.HasValue() || t.Title.StartsWith(addressSearch)">
                     <AfterNodeTemplate>
                         <span class="d-tree-icon">
@@ -49,8 +49,8 @@ base.BuildRenderTree(__builder);
     </div>
 </div>
 
-<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="آدرس کالا">
-    <CaspianForm Model="materialAddress" TEntity="MaterialAddress" OnValidSubmit="UpsertAddress">
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="محل فیزیکی کالا">
+    <CaspianForm Model="materialLocation" TEntity="MaterialLocation" OnValidSubmit="UpsertAddress">
         <div class="p-3 text-center">@(parentNodeTitle)</div>
         <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
         <WindowCommandButtons ColSpan="9" />
@@ -62,8 +62,8 @@ base.BuildRenderTree(__builder);
     int? stockroomId;
     string addressSearch;
     WindowStatus status;
-    MaterialAddress materialAddress;
-    TreeView<MaterialAddress> tree;
+    MaterialLocation materialLocation;
+    TreeView<MaterialLocation> tree;
     IControl firstControl;
     string parentNodeTitle;
 
@@ -75,42 +75,42 @@ base.BuildRenderTree(__builder);
 
     async Task ShowEditForm(NodeView nodeView, bool isUpdate)
     {
-        using var service = CreateScope().GetService<MaterialAddressService>();
+        using var service = CreateScope().GetService<MaterialLocationService>();
         if (isUpdate)
         {
             ///Edit mode
-            var addressId = Convert.ToInt32(nodeView.Value);
-            materialAddress = await service.GetAll().Include(t => t.ParentAddress).SingleAsync(addressId);
-            parentNodeTitle = materialAddress.ParentAddress?.Title;
+            var locationId = Convert.ToInt32(nodeView.Value);
+            materialLocation = await service.GetAll().Include(t => t.ParentLocation).SingleAsync(locationId);
+            parentNodeTitle = materialLocation.ParentLocation?.Title;
 
         }
         else
         {
             ///Insert mode
-            materialAddress = new MaterialAddress();
-            materialAddress.ParentAddressId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
-            if (materialAddress.ParentAddressId.HasValue)
-                parentNodeTitle = (await service.SingleAsync(materialAddress.ParentAddressId.Value)).Title;
+            materialLocation = new MaterialLocation();
+            materialLocation.ParentLocationId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            if (materialLocation.ParentLocationId.HasValue)
+                parentNodeTitle = (await service.SingleAsync(materialLocation.ParentLocationId.Value)).Title;
             else
                 parentNodeTitle = null;
         }
-        materialAddress.StockroomId = stockroomId.Value;
+        materialLocation.StockroomId = stockroomId.Value;
         status = WindowStatus.Open;
     }
 
     async Task DeleteAddress(NodeView node)
     {
-        var addressId = Convert.ToInt32(node.Value);
-        using var service = CreateScope().GetService<MaterialAddressService>();
-        var address = await service.SingleAsync(addressId);
-        var result = await service.ValidateRemoveAsync(address);
+        var locationId = Convert.ToInt32(node.Value);
+        using var service = CreateScope().GetService<MaterialLocationService>();
+        var location = await service.SingleAsync(locationId);
+        var result = await service.ValidateRemoveAsync(location);
         if (result.IsValid)
         {
             if (await Confirm("آیا با حذف موافقید؟"))
             {
-                service.Remove(address);
+                service.Remove(location);
                 await service.SaveChangesAsync();
-                tree.RemoveFromTree(address);
+                tree.RemoveFromTree(location);
             }
         }
         else
@@ -119,13 +119,13 @@ base.BuildRenderTree(__builder);
 
     async Task<bool> UpsertAddress()
     {
-        using var service = CreateScope().GetService<MaterialAddressService>();
-        if (materialAddress.Id == 0)
-            await service.AddAsync(materialAddress);
+        using var service = CreateScope().GetService<MaterialLocationService>();
+        if (materialLocation.Id == 0)
+            await service.AddAsync(materialLocation);
         else
-            await service.UpdateAsync(materialAddress);
+            await service.UpdateAsync(materialLocation);
         await service.SaveChangesAsync();
-        tree.UpsertInTree(materialAddress);
+        tree.UpsertInTree(materialLocation);
         status = WindowStatus.Close;
         StateHasChanged();
         return true;

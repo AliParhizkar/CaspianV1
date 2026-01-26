@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using Accounting.Model;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Investment.Model
 {
+    [Table("InsuranceCompanies", Schema = "ivm")]
     public class InsuranceCompany
     {
         [Key]
@@ -18,6 +20,7 @@ namespace Investment.Model
         [ForeignKey(nameof(AccountingCodeId))]
         public AccountingCode AccountingCode { get; set; }
 
+        [DisplayName("کد حسابداری")]
         public int AccountingCodeId { get; set; }
 
         [DisplayName("نوع")]
@@ -35,6 +38,7 @@ namespace Investment.Model
         [ForeignKey(nameof(ProvinceId))]
         public Location Province { get; set; }
 
+        [DisplayName("شهر")]
         public int? CityId { get; set; }
 
         [ForeignKey(nameof(CityId))]

@@ -1,7 +1,5 @@
 ﻿using Caspian.Common;
-using System.Reflection;
 using Microsoft.JSInterop;
-using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
@@ -63,7 +61,7 @@ namespace Caspian.UI
 
         IDictionary<string, object> GetMainAttribute()
         {
-            var className = "t-widget t-textbox c-lookup";
+            var className = "t-widget c-lookup";
             if (Disabled)
                 className += " t-state-disabled";
             if (ErrorMessage.HasValue())
@@ -91,7 +89,7 @@ namespace Caspian.UI
         {
             OpenWindow();
             if (mustClear)
-            {
+         {
                 await SetTextOnClientAsync("");
                 SearchStr = "";
                 mustClear = false;
@@ -303,7 +301,8 @@ namespace Caspian.UI
                 oldValue = Value;
                 text = await GetText(Convert.ToInt32(Value));
             }
-            await SetTextOnClientAsync(text);
+            if (text != null)
+                await SetTextOnClientAsync(text);
         }
 
         public async Task SetValue(long id, bool fireEvent = true)

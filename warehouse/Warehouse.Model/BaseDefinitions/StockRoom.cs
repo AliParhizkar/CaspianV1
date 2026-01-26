@@ -12,55 +12,37 @@ namespace Warehouse.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("نام انبار")]
-        public string Title { get; set; }
-
         [DisplayName("کد انبار")]
         public string Code { get; set; }
 
-        [DisplayName("نوع انبار")]
-        public StockRoomType StockRoomType { get; set; }
+        [DisplayName("نام انبار")]
+        public string Title { get; set; }
 
-        [DisplayName("واحد مالی")]
-        public int? FinancialUnitId { get; set; }
+        [DisplayName("مرکز نگهداری کالا")]
+        public int KeepCenterId { get; set; }
 
-        [ForeignKey(nameof(FinancialUnitId))]
-        public SimpleData FinancialUnit { get; set; }
+        [ForeignKey(nameof(KeepCenterId))]
+        public KeepCenter KeepCenter { get; set; }
 
-        [DisplayName("واحد بودجه")]
-        public int? BudgetUnitId { get; set; }
-
-        [ForeignKey(nameof(BudgetUnitId))]
-        public SimpleData BudgetUnit { get; set; }
-
-        [DisplayName("مسئول انبار")]
+        [DisplayName("سرپرست انبار")]
         public int? ManagerId { get; set; }
 
         [ForeignKey(nameof(ManagerId))]
         public User Manager { get; set; }
 
-        [DisplayName("حوزه")]
-        public int? ScopeId { get; set; }
+        [DisplayName("شعبه")]
+        public int BranchId { get; set; }
 
-        [ForeignKey(nameof(ScopeId))]
-        public Scope Scope { get; set; }
+        [ForeignKey(nameof(BranchId))]
+        public Branch Branch { get; set; }
 
-        [DisplayName("روش قیمت گذاری")]
-        public PricingMethodType PricingMethodType { get; set; }
+        [DisplayName("امکان عضویت در بخش های میانی")]
+        public bool MemberOfMiddlePart { get; set; }
 
-        [DisplayName("تلفن")]
-        public string Tel { get; set; }
+        [DisplayName("امکان عضویت در بیش از یک بخش")]
+        public bool MemberInManyParts { get; set; }
 
-        [DisplayName("همراه")]
-        public string Mobile { get; set; }
-
-        [MaxLength(200), DisplayName("آدرس")]
-        public string Address { get; set; }
-
-        [MaxLength(200), DisplayName("شرح")]
-        public string Description { get; set; }
-
-        [CheckOnDelete("انبار دارای آدرس می باشد و امکان حذف آن وجود ندارد")]
-        public ICollection<MaterialAddress> MaterialAddresses{ get; set; }
+        [CheckOnDelete("انبار دارای محل فیزیکی کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<MaterialLocation> MaterialAddresses{ get; set; }
     }
 }

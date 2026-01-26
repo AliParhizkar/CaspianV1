@@ -3,8 +3,16 @@
 <div class="text-center">
     <h4>سامانه اموال</h4>
 </div>
-<span></span>
+
+
+<div style="width:500px;margin:10px auto">
+    <Lookup TEntity="Location" TValue="int?" @bind-Value="locationId" TextExpression="t => t.Title">
+        <Accounting.Component.LocationLookupWindow />
+    </Lookup>
+</div>
+
+
 @code
 {
-    
+    int? locationId;
 }

@@ -22,6 +22,8 @@ namespace Warehouse.Model
 
         public int? CategoryId { get; set; }
 
+        public int Level { get; set; }
+
         public bool HasChild { get; set; }
 
         [ForeignKey(nameof(CategoryId))]

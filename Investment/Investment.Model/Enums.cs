@@ -14,10 +14,7 @@ namespace Investment.Model
         Province,
 
         [Display(Name = "شهر")]
-        City,
-
-        [Display(Name = "محله")]
-        Region
+        City    
     }
 
     public enum ServiceGroupLevelType : byte
@@ -87,5 +84,17 @@ namespace Investment.Model
         
         [Display(Name = "نمایندگی")]
         Agancy
+    }
+
+    public enum CalculateMethod: byte
+    {
+        [Display(Name = "خط مستقیم")]
+        Linear,
+
+        [Display(Name = "مانده نزولی")]
+        Remain,
+
+        [Display(Name = "بدون روش")]
+        None
     }
 }

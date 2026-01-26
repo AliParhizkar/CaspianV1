@@ -1,0 +1,40 @@
+﻿@page "/investment/DepreciationLawGroup"
+@attribute [Source(18, "گروه قوانین استهلاک")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@inject IUIService<DepreciationLawGroup> Service
+
+<div class="row" style="width:98%;margin:5px auto">
+    <div class="col-md-12">
+        <EntitySearch Service="Service">
+            <StringTextBox @bind-Value="context.Name" ColSpan="10" />
+        </EntitySearch>
+    </div>
+    <div class="col-md-12">
+        <DataGrid PageSize="30" TEntity="DepreciationLawGroup" Service="Service">
+            <Columns>
+                <GridColumn Field="t => t.Name" />
+                <GridColumn Title="قوانین استهلاک" style="width:95px">
+                    <Template>
+                        <IconButton Href='@($"/investment/DepreciationLaw/{context.Data.Id}")' IconType="IconType.WpfForms" />
+                    </Template>
+                </GridColumn>
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+<Window Service="Service" Style="width:600px" Title="گروه قوانین استهلاک">
+    <CaspianForm Service="Service" TEntity="DepreciationLawGroup">
+        <StringTextBox @bind-Value="context.Name" ColSpan="10" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

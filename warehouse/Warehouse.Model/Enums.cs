@@ -2,24 +2,6 @@
 
 namespace Warehouse.Model
 {
-    public enum StockRoomType:byte
-    {
-        [Display(Name = "سایر")]
-        Others,
-
-        [Display(Name = "دارایی ثابت")]
-        FixedAsset,
-
-        [Display(Name = "مواد")]
-        Material,
-
-        [Display(Name = "نمیه ساخت")]
-        SemiFinished,
-
-        [Display(Name = "محصول")]
-        Product
-    }
-
     public enum ReceiptType
     {
         [Display(Name = "رسید خرید")]
@@ -123,5 +105,17 @@ namespace Warehouse.Model
 
         [Display(Name = "تاریخ")]
         Date
+    }
+
+    public enum LocationType: byte
+    {
+        [Display(Name = "کشور")]
+        Country,
+
+        [Display(Name = "استان")]
+        Province,
+
+        [Display(Name = "شهر")]
+        City
     }
 }

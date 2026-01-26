@@ -48,26 +48,27 @@
     </div>
 
     <Window Service="Service"  Style="width:750px" OnOpen="OpenWindow" Title="تعریف کدینگ حساب">
-        @{
-            string maskedText = null;
-            var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
-        }
         <CaspianForm Service="Service" TEntity="AccountingCode" ColumnsCount="2" OnSubmit="() => FillDataOnformSubmit()">
-            @if (parentCode != null)
-            {
-                var parentCodeDefination = codes.ElementAt(parentCode.CodingLevelType.ConvertToInt().Value);
-                var title = parentCodeDefination.Name;
-                maskedText = $"{parentCode.Code}";
-                for (var index = 0; index < curentCodedefination.Length; index++)
+            @{
+                string maskedText = null;
+                var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
+                if (parentCode != null)
                 {
-                    maskedText += '_';
+                    var parentCodeDefination = codes.ElementAt(parentCode.CodingLevelType.ConvertToInt().Value);
+                    var title = parentCodeDefination.Name;
+                    maskedText = $"{parentCode.Code}";
+                    for (var index = 0; index < curentCodedefination.Length; index++)
+                    {
+                        maskedText += '_';
+                    }
+                    <StringTextBox Value="@(Service.Search.Code)" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + title)" Disabled />
+                    <StringTextBox Value="@parentCode.Name" ColSpan="6" TotalSpan="8" Title="@("نام " + title)" Disabled />
+                    <div class="col-md-12 p-3 pb-1 pt-2">
+                        <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
+                    </div>
                 }
-                <StringTextBox Value="@(Service.Search.Code)" MaskedText="@maskedText" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + title)" Disabled />
-                <StringTextBox Value="@parentCode.Name" ColSpan="6" TotalSpan="8" Title="@("نام " + title)" Disabled />
-                <div class="col-md-12 p-3 pb-1 pt-2">
-                    <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
-                </div>
             }
+
             <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + curentCodedefination.Name)" />
             <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="6" TotalSpan="8" />
             <DropdownList @bind-Value="context.NatureType" ColSpan="2" TotalSpan="4" />
@@ -188,9 +189,9 @@
 
     async Task OpenWindow()
     {
-        if (Service.UpsertData.Id == 0)
+        var account = Service.UpsertData;
+        if (account.Id == 0)
         {
-            var account = Service.UpsertData;
             account.IsActive = true;
             if (searchLevelType > CodingLevelType.Level1)
             {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.UI
 {
@@ -50,7 +51,16 @@ namespace Caspian.UI
         Minus,
 
         [Display(Name = "Html5")]
-        Html5
+        Html5,
+
+        [Display(Name = "Tree")]
+        Tree,
+
+        [Display(Name = "outdent")]
+        Outdent,
+
+        [Display(Name = "check")]
+        Check 
     }
 
     public enum BindingType

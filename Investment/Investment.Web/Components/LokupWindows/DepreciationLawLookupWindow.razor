@@ -1,0 +1,28 @@
+﻿@typeparam TValue
+@inherits LookupWindow<DepreciationLaw, TValue>
+@namespace Investment.Component
+<div class="c-lookup-page" style="width:800px;">
+    <EntitySearch Service="Service">
+        <ComboBox TValue="int" TEntity="DepreciationLawGroup" @bind-Value="context.DepreciationLawGroupId" TextExpression="t => t.Name" 
+                  ColSpan="6" TotalSpan="8" />
+        <DropdownList @bind-Value="context.CalculateMethod" ColSpan="2" TotalSpan="4" SingleSelect />
+        <StringTextBox @bind-Value="context.Name" ColSpan="10"   />
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="DepreciationLaw" ContentHeight="250">
+        <Columns>
+            <GridColumn Field="t => t.DepreciationLawGroup.Name" Title="گروه قوانین استهلاک" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.CalculateMethod.EnumText()" />
+        </Columns>
+    </DataGrid>
+</div>
+
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Name.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

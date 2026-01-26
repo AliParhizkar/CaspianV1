@@ -1,0 +1,113 @@
+﻿<div style="width:600px;margin:10px auto" class="row align-items-center">
+    <div class="col-md-1 d-tree-icon text-center pb-1">
+        <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+    </div>
+    <div class="col-md-11 pb-1">
+        <StringTextBox @bind-Value="@categorySearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو ..." />
+    </div>
+    <div>
+        <TreeView @ref="tree" TEntity="InvestmentCoding" style="height:500px"
+                  TextFunc='t => t.Code + " : " + t.Name' FilterFunc="t => !categorySearch.HasValue() || t.Name.StartsWith(categorySearch)">
+            <AfterNodeTemplate>
+                <span class="d-tree-icon">
+                    <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                    <span class="fa fa-pencil"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await DeleteScope(context)">
+                    <span class="fa fa-trash"></span>
+                </span>
+            </AfterNodeTemplate>
+        </TreeView>
+    </div>
+</div>
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="کدینگ اموال">
+    <CaspianForm Model="coding" TEntity="InvestmentCoding" OnValidSubmit="UpsertAddress">
+        <StringTextBox @ref="firstControl" @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" Disabled="context.Id > 0" MaskedText="@maskedText" />
+        <StringTextBox  @bind-Value="context.Name" ColSpan="9" />
+        <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="9" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+
+@code {
+    string maskedText;
+    int? categoryId;
+    string categorySearch;
+    WindowStatus status;
+    InvestmentCoding coding;
+    TreeView<InvestmentCoding> tree;
+    IControl firstControl;
+
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    {
+        maskedText = null;
+        if (isUpdate)
+        {
+            ///Edit mode
+            var scopeId = Convert.ToInt32(nodeView.Value);
+            using var service = Page.CreateScope().GetService<InvestmentCodingService>();
+            coding = await service.SingleAsync(scopeId);
+        }
+        else
+        {
+            ///Insert mode
+            coding = new();
+            coding.ParentId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            var level = 0;
+            if (coding.ParentId.HasValue)
+            {
+                using var service = Page.CreateScope().GetService<InvestmentCodingService>();
+                var parent = await service.SingleAsync(coding.ParentId.Value);
+                maskedText = parent.Code;
+
+                while (nodeView != null)
+                {
+                    nodeView = nodeView.Parent;
+                    level++;
+                }
+            }
+            int[] levelsLength = { 1, 2, 3, 3, 3 };
+            for (var index = 0; index < levelsLength[level]; index++)
+                maskedText += '_';
+        }
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteScope(NodeView node)
+    {
+        var codingId = Convert.ToInt32(node.Value);
+        using var service = Page.CreateScope().GetService<InvestmentCodingService>();
+        var old = await service.SingleAsync(codingId);
+        var result = await service.ValidateRemoveAsync(old);
+        if (result.IsValid)
+        {
+            if (await Page.Confirm("آیا با حذف کدینگ اموال موافقید؟"))
+            {
+                await service.RemoveAsync(codingId);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(coding);
+            }
+        }
+        else
+            Page.ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task<bool> UpsertAddress()
+    {
+        using var service = Page.CreateScope().GetService<InvestmentCodingService>();
+        if (coding.Id == 0)
+            await service.AddAsync(coding);
+        else
+            await service.UpdateAsync(coding);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(coding);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+}

@@ -1,0 +1,93 @@
+﻿@page "/Accounting/CostCenter"
+@attribute [Source(36, "مراکز هزینه")]
+@inherits BasePage
+
+<div class="row pb-2" style="width:800px;margin:0 auto">
+    <div class="col-md-7">
+        <StringTextBox @bind-Value="@nameSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجوی نام مرکز هزینه" />
+    </div>
+    <div class="col-md-4">
+        <StringTextBox @bind-Value="@codeSearch" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجوی کد مرکز هزینه" Style="direction:ltr" />
+    </div>
+    <div class="col-md-1 d-tree-icon text-center pb-1">
+        <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+    </div>
+    <TreeView @ref="tree" TEntity="CostCenter" style="height:500px" TextFunc="t => t.Code + ':' + t.Name"
+              FilterFunc="t => (!nameSearch.HasValue() || t.Name.Contains(nameSearch)) && (!codeSearch.HasValue() || t.Code.StartsWith(codeSearch)) ">
+        <AfterNodeTemplate>
+            <span class="d-tree-icon">
+                <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+            </span>
+            <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                <span class="fa fa-pencil"></span>
+            </span>
+            <span class="d-tree-icon" @onclick="async () => await DeleteCostCenter(context)">
+                <span class="fa fa-trash"></span>
+            </span>
+        </AfterNodeTemplate>
+    </TreeView>
+
+</div>
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="مرکز هزینه">
+    <CaspianForm Model="costCenter" TEntity="CostCenter" OnValidSubmit="UpsertCostCenter">
+        <StringTextBox @ref="firstControl" @bind-Value="context.Name" ColSpan="9" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+@code
+{
+    string nameSearch, codeSearch;
+    TreeView<CostCenter> tree;
+    CostCenter costCenter;
+    WindowStatus status;
+    IControl firstControl;
+
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    {
+        if (isUpdate)
+        {
+            ///Edit mode
+            var costCenterId = Convert.ToInt32(nodeView.Value);
+            using var service = CreateScope().GetService<CostCenterService>();
+            costCenter = await service.SingleAsync(costCenterId);
+        }
+        else
+        {
+            ///Insert mode
+            costCenter = new CostCenter();
+            costCenter.ParentId= nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+        }
+        status = WindowStatus.Open;
+    }
+
+    async Task<bool> UpsertCostCenter()
+    {
+        using var service = CreateScope().GetService<CostCenterService>();
+        if (costCenter.Id == 0)
+            await service.AddAsync(costCenter);
+        else
+            await service.UpdateAsync(costCenter);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(costCenter);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+
+    async Task DeleteCostCenter(NodeView node)
+    {
+        var costCenterId = Convert.ToInt32(node.Value);
+        using var service = CreateScope().GetService<CostCenterService>();
+        var costCenter = await service.SingleAsync(costCenterId);
+        var result = await service.ValidateRemoveAsync(costCenter);
+        if (result.IsValid)
+        {
+            service.Remove(costCenter);
+            await service.SaveChangesAsync();
+            tree.RemoveFromTree(costCenter);
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+}

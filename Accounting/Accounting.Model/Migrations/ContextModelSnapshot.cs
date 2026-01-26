@@ -87,6 +87,32 @@ namespace Accounting.Model.Migrations
                     b.ToTable("CodingLevels", "acc");
                 });
 
+            modelBuilder.Entity("Accounting.Model.CostCenter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("CostCenters", "acc");
+                });
+
             modelBuilder.Entity("Accounting.Model.FinancialUnit", b =>
                 {
                     b.Property<int>("Id")
@@ -141,9 +167,24 @@ namespace Accounting.Model.Migrations
                     b.Navigation("ParentCode");
                 });
 
+            modelBuilder.Entity("Accounting.Model.CostCenter", b =>
+                {
+                    b.HasOne("Accounting.Model.CostCenter", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
                 {
                     b.Navigation("DetailsCode");
+                });
+
+            modelBuilder.Entity("Accounting.Model.CostCenter", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }

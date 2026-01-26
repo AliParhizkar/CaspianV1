@@ -9,7 +9,7 @@ namespace Investment.Service
         public LocationService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required().UniqueAsync("موقعیت جغرافیایی با این عنوان در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required().UniqueAsync(t => t.LocationType, "موقعیت جغرافیایی با این عنوان در سیستم ثبت شده است");
             RuleFor(t => t.Code).UniqueAsync("موقعیت جغرافیایی با این کد در سیستم ثبت شده است").CustomAsync(async t => 
                 {
                     if (t.Code.HasValue() && t.ParentId.HasValue)
@@ -39,8 +39,6 @@ namespace Investment.Service
                 if (parent.LocationType == LocationType.Country && t.LocationType != LocationType.Province && t.LocationType != LocationType.City)
                     return message;
                 if (parent.LocationType == LocationType.Province && t.LocationType != LocationType.City)
-                    return message;
-                if (parent.LocationType == LocationType.City && t.LocationType != LocationType.Region)
                     return message;
                 return null;
             });

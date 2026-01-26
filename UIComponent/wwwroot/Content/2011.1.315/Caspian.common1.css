@@ -1588,9 +1588,8 @@ form > tr {
     font-size: 18px;
     cursor: pointer;
     position: absolute;
-    margin-right: -26px;
-    margin-top: 9px;
-    margin-left:-26px;
+    margin-right: -24px;
+    margin-top: 10px;
 }
 .c-page-size {
     width: 100px;
@@ -1695,6 +1694,7 @@ span, label, td, th {
         width: 32px;
         height: 32px;
         background-color: transparent;
+        line-height:0;
     }
         .c-icon-button.c-simple:hover {
             background-color: aliceblue;

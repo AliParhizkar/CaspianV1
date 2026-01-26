@@ -1,13 +1,14 @@
 ﻿@typeparam TValue
 @inherits LookupWindow<AccountingCode, TValue>
+@namespace Accounting.Component
 <div class="c-lookup-page" style="width:700px;">
     <EntitySearch TEntity="AccountingCode" Service="Service">
         <StringTextBox @ref="txtCode" @bind-Value="searchCode" Title="کد" ColSpan="2" TotalSpan="4" />
-        <StringTextBox @ref="txtTitle" @bind-Value="context.Title" ColSpan="6" TotalSpan="8" />
+        <StringTextBox @ref="txtTitle" @bind-Value="context.Name" ColSpan="6" TotalSpan="8" />
     </EntitySearch>
     <div class="p-2">
         <DataGrid Service="Service" TEntity="AccountingCode" ContentHeight="200" 
-                  ConditionExpr="t => t.Level == level && ((code + searchCode)== null || t.Code.StartsWith(code + searchCode))">
+                  ConditionExpr="t => t.CodingLevelType == (Accounting.Model.CodingLevelType)level && ((code + searchCode)== null || t.Code.StartsWith(code + searchCode))">
             <Columns>
                 <GridColumn Field="t => t.Code" Title="کد حساب">
                     <Template>
@@ -15,18 +16,18 @@
                     </Template>
                 </GridColumn>
                 <GridColumn Field="t => t.Name" />
-                <GridColumn DataField Field="t => t.Level" />
+                <GridColumn DataField Field="t => t.CodingLevelType.EnumText()" />
             </Columns>
         </DataGrid>
     </div>
 
-    <div class="a-titles ps-3">
+    <div class="a-titles ps-3" style="height:32px">
         @for (var i = 1; i < level; i++)
         {
-            <span>@(titles[i - 1])</span>
+            <span style="font-size:14px;">@(titles[i - 1])</span>
             if (i < level - 1)
             {
-                <span class="fa fa-angle-double-right"></span>
+                <span class="fa fa-angle-double-left ps-2 pe-2" style="color: #df4b4b; font-size: 20px; "></span>
             }
         }
     </div>
