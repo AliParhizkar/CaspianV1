@@ -1,0 +1,38 @@
+﻿@page "/Warehouse/MeasurementUnit"
+@attribute [Source(2, "واحد سنجش")]
+@inherits BasePage
+@inject IUIService<MeasurementUnit> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <DropdownList @bind-Value="context.MeasurementDimension" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="MeasurementUnit" Service="Service" ContentHeight="300">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MeasurementDimension.EnumText()" />
+            <GridColumn Field="t => t.ShortName" />
+            <GridColumn Field="t => t.ActiveStatus.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="واحد سنجش" Style="width:500px">
+    <CaspianForm TEntity="MeasurementUnit" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="9" />
+        <DropdownList @bind-Value="context.MeasurementDimension" ColSpan="9" />
+        <StringTextBox @bind-Value="context.ShortName" ColSpan="9" />
+        <DropdownList @bind-Value="context.ActiveStatus" ColSpan="9" />
+        <FormCommandButton ColSpan="9" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

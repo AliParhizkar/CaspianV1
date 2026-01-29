@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Warehouse.Model;
 
@@ -11,9 +12,11 @@ using Warehouse.Model;
 namespace Warehouse.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260127193116_V12")]
+    partial class V12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,46 +378,6 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("Cities", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.GoodsProperties", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("FixLength")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("Length")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MaxLength")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("MaximumValue")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("MinimumValue")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("NumberDigit")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("PropertyType")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GoodsProperties", "wh");
-                });
-
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
                     b.Property<int>("Id")
@@ -688,28 +651,6 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductDescriptions", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.PropertyList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GoodsPropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GoodsPropertyId");
-
-                    b.ToTable("PropertyList");
                 });
 
             modelBuilder.Entity("Warehouse.Model.Province", b =>
@@ -1246,17 +1187,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.PropertyList", b =>
-                {
-                    b.HasOne("Warehouse.Model.GoodsProperties", "GoodsProperty")
-                        .WithMany("Properties")
-                        .HasForeignKey("GoodsPropertyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("GoodsProperty");
-                });
-
             modelBuilder.Entity("Warehouse.Model.Receipt", b =>
                 {
                     b.HasOne("Warehouse.Model.Seller", "Seller")
@@ -1457,11 +1387,6 @@ namespace Warehouse.Model.Migrations
             modelBuilder.Entity("Warehouse.Model.City", b =>
                 {
                     b.Navigation("Sellers");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.GoodsProperties", b =>
-                {
-                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>

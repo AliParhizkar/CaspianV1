@@ -1,0 +1,79 @@
+﻿@page "/Warehouse/StandardChangeUnit"
+@attribute [Source(1, "تبدیل واحدهای استاندارد")]
+@inherits BasePage
+@inject IUIService<StandardChangeUnit> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MainUnitId" ColSpan="4" TextExpression="t => t.Name" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="StandardChangeUnit" Service="Service" ContentHeight="300">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MainUnit.Name" Title="واحد اصلی" />
+            <GridColumn Field="t => t.OtherUnit.Name" Title="واحد تبدیلی"  />
+            <GridColumn Field="t => t.Rate.DigitGrouping()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="تبدیل واحد های استاندارد" Style="width:800px" OnOpen="OnWindowOpen">
+    <CaspianForm TEntity="StandardChangeUnit" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <NumericTextBox @bind-Value="context.Rate" ColSpan="4" DigitGrouping />
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MainUnitId" ColSpan="4" TextExpression="t => t.Name"
+                  OnChange="async () => await OnMainUnitChange(context)"/>
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.OtherUnitId" ColSpan="4" TextExpression="t => t.Name" 
+                  OnChange="async () => await OnOtherUnitChange(context)"/>
+        <div style="text-align:center">
+            <span>هر یک </span>
+            <span style="font-weight:bold;color:deeppink">@(context.MainUnit?.Name)</span>
+            <span style="color:aqua">@(context.Rate.DigitGrouping())</span>
+            <span style="font-weight:bold;color:deeppink">@(context.OtherUnit?.Name)</span>
+            <span>است</span>
+        </div>
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    async Task OnWindowOpen()
+    {
+        var changeUnit = Service.UpsertData;
+        if (changeUnit.Id > 0)
+        {
+            using var service = CreateScope().GetService<MeasurementUnitService>();
+            changeUnit.MainUnit = await service.SingleAsync(changeUnit.MainUnitId);
+            changeUnit.OtherUnit = await service.SingleAsync(changeUnit.OtherUnitId);
+        }
+    }
+
+    async Task OnMainUnitChange(StandardChangeUnit changeUnit)
+    {
+        if (changeUnit.MainUnitId == 0)
+            changeUnit.MainUnit = null;
+        else
+        {
+            using var service = CreateScope().GetService<MeasurementUnitService>();
+            changeUnit.MainUnit = await service.SingleAsync(changeUnit.MainUnitId);
+        }
+    }
+
+    async Task OnOtherUnitChange(StandardChangeUnit changeUnit)
+    {
+        if (changeUnit.OtherUnitId == 0)
+            changeUnit.OtherUnit = null;
+        else
+        {
+            using var service = CreateScope().GetService<MeasurementUnitService>();
+            changeUnit.OtherUnit = await service.SingleAsync(changeUnit.OtherUnitId);
+        }
+    }
+}
+

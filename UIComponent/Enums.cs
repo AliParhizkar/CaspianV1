@@ -47,6 +47,12 @@ namespace Caspian.UI
         [Display(Name = "Plus")]
         Plus,
 
+        [Display(Name = "Pencil")]
+        Edit,
+
+        [Display(Name = "Trash")]
+        Delete,
+
         [Display(Name = "Minus")]
         Minus,
 

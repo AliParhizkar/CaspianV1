@@ -93,9 +93,6 @@ namespace Caspian.UI
         [Parameter]
         public Type DynamicType { get; set; }
 
-        [Parameter]
-        public bool Required { get; set; }
-
         [CascadingParameter]
         public EditContext CurrentEditContext { get; set; }
 
@@ -154,9 +151,12 @@ namespace Caspian.UI
             return (disabled ? "c-disabled " : "") + container.GetLabelContainerCSSClassName(ColSpan.Value);
         }
 
+        [Parameter]
+        public Func<TValue, bool> ValidationFunc { get; set; }
+
         public bool Validate()
         {
-            if (Required && (Value == null || Value.ToString() == ""))
+            if (ValidationFunc != null && !ValidationFunc.Invoke(Value))
             {
                 ErrorMessage = "مقدار این فیلد اجباری است.";
                 return false;

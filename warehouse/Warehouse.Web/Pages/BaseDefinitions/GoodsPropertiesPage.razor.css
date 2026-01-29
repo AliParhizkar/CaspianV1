@@ -1,0 +1,16 @@
+﻿.list-items
+{
+    display:flex;
+    flex-wrap:wrap;
+    margin-top:5px;
+}
+.head {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: #68686b;
+    background-color: #e9ebee;
+    padding: 4px 0;
+    border-radius: 8px 8px 0 0;
+    margin-top: 5px;
+}

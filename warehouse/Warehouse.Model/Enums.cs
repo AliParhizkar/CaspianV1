@@ -118,4 +118,61 @@ namespace Warehouse.Model
         [Display(Name = "شهر")]
         City
     }
+
+    public enum MeasurementDimension: byte
+    {
+        [Display(Name = "وزن")]
+        Weight,
+
+        [Display(Name = "حجم")]
+        Volume,
+
+        [Display(Name = "متراژ")]
+        Meterage,
+
+        [Display(Name = "سایر(شمارشی)")]
+        Other,
+
+        [Display(Name = "زمان")]
+        Time,
+
+        [Display(Name = "انرژی")]
+        Energy,
+
+        [Display(Name = "دما")]
+        Temperature,
+
+        [Display(Name = "فشار")]
+        Pressure,
+
+        [Display(Name = "فرکانس")]
+        Frequency
+    }
+
+    public enum ActiveStatus: byte
+    {
+        [Display(Name = "فعال")]
+        Enable,
+
+        [Display(Name = "غیرفعال")]
+        Disable
+    }
+
+    public enum PropertyType: byte
+    {
+        [Display(Name = "عددی")]
+        Number,
+
+        [Display(Name = "تاریخ")]
+        Date,
+
+        [Display(Name = "بلی/خیر")]
+        Boolean,
+
+        [Display(Name = "متنی")]
+        String,
+
+        [Display(Name = "لیست ثابت")]
+        List
+    }
 }

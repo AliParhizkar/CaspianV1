@@ -1,0 +1,108 @@
+﻿@page "/Warehouse/GoodsProperties"
+@inherits BasePage
+@inject UIService<GoodsProperties, PropertyList> Service
+@attribute [Source(3, "ویژگی ها")]
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <DropdownList @bind-Value="context.PropertyType" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="GoodsProperties" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.PropertyType.EnumText()" />
+            <GridColumn Field="t => t.MaximumValue.DigitGrouping()" />
+            <GridColumn Field="t => t.MinimumValue.DigitGrouping()" />
+            <GridColumn Field="t => t.MaxLength" />
+            <GridColumn Field="t => t.FixLength" />
+            <GridColumn Field="t => t.Length" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="تعریف ویژگی" Style="width:450px" OnOpen="LoadData">
+    <CaspianForm TEntity="GoodsProperties" Service="Service" OnSubmit="InitializeValue">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <DropdownList @bind-Value="context.PropertyType" ColSpan="8" />
+        @if (context.PropertyType == PropertyType.Number)
+        {
+            <NumericTextBox @bind-Value="context.MinimumValue" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.MaxLength" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.NumberDigit" ColSpan="8" />
+        }
+        else if (context.PropertyType == PropertyType.String)
+        {
+            <NumericTextBox @bind-Value="context.MaxLength" ColSpan="8" Disabled="context.FixLength == true" />
+            <CheckBox @bind-Value="context.FixLength" ColSpan="8" Disabled="context.MaxLength != null" />
+            <NumericTextBox @bind-Value="context.Length" ColSpan="8" Disabled="context.FixLength != true" />
+        }
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+    @if (Service.UpsertData.PropertyType == PropertyType.List)
+    {
+        <DataGrid TEntity="PropertyList" DetailsService="Service" Batch Inline>
+            <Columns>
+                <GridColumn Field="t => t.Name">
+                    <EditTemplate>
+                        <StringTextBox @bind-Value="context.Data.Name" />
+                    </EditTemplate>
+                </GridColumn>
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    }
+
+</Window>
+
+@code
+{
+    StringTextBox txtItem;
+    IList<PropertyList> list;
+    string item;
+    PropertyList selectedItem;
+
+    async Task AddItem()
+    {
+        if (txtItem.Validate())
+        {
+
+        }
+    }
+
+    async Task LoadData()
+    {
+        list = new List<PropertyList>();
+        var id = Service.UpsertData.Id;
+        if (id > 0)
+        {
+            using var service = CreateScope().GetService<PropertyListService>();
+            list = await service.GetAll().Where(t => t.GoodsPropertyId == id).ToListAsync();
+        }
+    }
+
+    void InitializeValue(CancelableEvent<GoodsProperties> e)
+    {
+        var property = e.Entity;
+        switch(property.PropertyType)
+        {
+            case PropertyType.String:
+                property.MaximumValue = property.MinimumValue = property.NumberDigit = null;
+                if (property.FixLength != true)
+                    property.Length = null;
+                break;
+            case PropertyType.Number:
+                property.Length = property.MaxLength = null;
+                property.FixLength = null;
+                break;
+            default:
+                property.MaximumValue = property.MinimumValue = property.NumberDigit = property.Length = property.MaxLength = null;
+                property.FixLength = null;
+                break;
+        }
+    }
+}

@@ -1,18 +1,15 @@
 ﻿using Caspian.Common;
-using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
-using System.ComponentModel;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using System.Linq.Dynamic.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
@@ -202,162 +199,45 @@ namespace Caspian.UI
             fieldsExpression.Add(expression);
         }
 
-        //protected async override Task OnParametersSetAsync()
-        //{
-        //    if (CurrentEditContext != null && CurrentEditContext != oldContext && ValueExpression != null)
-        //    {
-        //        var expr = ValueExpression.Body;
-        //        string str = "";
-        //        while (expr.NodeType == ExpressionType.MemberAccess)
-        //        {
-        //            var memberExpr = expr as MemberExpression;
-        //            if (memberExpr.Member.DeclaringType.GetCustomAttribute<TableAttribute>() == null)
-        //                break;
-        //            else
-        //            {
-        //                if (str.Length > 0)
-        //                    str = $".{str}";
-        //                str = memberExpr.Member.Name + str;
-        //                expr = memberExpr.Expression;
-        //            }
-        //        }
-        //        _FieldName = str;
-        //        _messageStore = new ValidationMessageStore(CurrentEditContext);
-        //        CurrentEditContext.OnValidationStateChanged -= CurrentEditContext_OnValidationStateChanged;
-        //        CurrentEditContext.OnValidationStateChanged += CurrentEditContext_OnValidationStateChanged;
-        //        oldContext = CurrentEditContext;
-        //    }
-        //    attrs = new Dictionary<string, object>();
-        //    if (disabled)
-        //        attrs.Add("disabled", "disabled");
-        //    if (Source != null)
-        //        items = Source.ToList();
-        //    SelectedIndex = -1;
-        //    if (items == null)
-        //    {
-        //        if (Value == null || Value.Equals(default(TEntity)))
-        //        {
-        //            text = "";
-        //        }
-        //        else if (!Value.Equals(OldValue))
-        //        {
-        //            if (OnInternalValueChanged.HasDelegate)
-        //                await OnInternalValueChanged.InvokeAsync(Value);
-        //            OldValue = Value;
-        //            if (Source == null)
-        //            {
-        //                using var scope = ServiceScopeFactory.CreateScope();
-        //                var query = new BaseService<TEntity>(scope.ServiceProvider).GetAll();
-        //                var parameter = Expression.Parameter(typeof(TEntity));
-        //                Expression expr = Expression.Property(parameter, typeof(TEntity).GetPrimaryKey());
-        //                expr = Expression.Equal(expr, Expression.Constant(Value));
-        //                expr = Expression.Lambda(expr, parameter);
-        //                query = query.Where(expr).OfType<TEntity>();
-        //                string str = query.ToQueryString();
-        //                var list = new ExpressionSurvey().Survey(TextExpression);
-        //                var entity = (await query.GetValuesAsync(list)).FirstOrDefault();
-        //                if (entity == null)
-        //                    text = null;
-        //                else
-        //                    text = TextExpression.Compile().Invoke(entity);
-        //            }
-        //            else
-        //                text = Source.SingleOrDefault(t => t.Value == Value.ToString())?.Text;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var index = 0;
-        //        foreach (var item in items)
-        //        {
-        //            var value = Template == null ? (item as SelectListItem).Value : typeof(TEntity).GetPrimaryKey().GetValue(item).ToString();
-        //            if (Value != null && Value.ToString() == value)
-        //            {
-        //                SelectedIndex = index;
-        //                break;
-        //            }
-        //            index++;
-        //        }
-        //        if (SelectedIndex >= 0 && SelectedIndex < items.Count)
-        //        {
-        //            if (Template == null)
-        //                text = (items[SelectedIndex] as SelectListItem).Text;
-        //            else
-        //                text = TextExpression.Compile().Invoke(items[SelectedIndex] as TEntity).ToString();
-        //        }
-        //        else
-        //            text = "";
-        //    }
-        //    attrs["value"] = text;
-        //    if (Id.HasValue())
-        //    {
-        //        attrs.Add("id", Id.Replace('.', '_'));
-        //        attrs.Add("name", Id.Replace('.', '_'));
-        //    }
-        //    await base.OnParametersSetAsync();
-        //}
-
-        //private void CurrentEditContext_OnValidationStateChanged(object sender, ValidationStateChangedEventArgs e)
-        //{
-        //    if (_FieldName != null)
-        //    {
-        //        if (CurrentEditContext.Properties["ValidationType"].ToString() == "FieldChanged")
-        //        {
-        //            object obj;
-        //            if (CurrentEditContext.Properties.TryGetValue("PropertyName", out obj))
-        //            {
-        //                var propertyName = obj.ToString();
-        //                if (propertyName != null && propertyName == _FieldName)
-        //                {
-
-        //                    var identifier = CurrentEditContext.Field(propertyName);
-        //                    var errorMessage = CurrentEditContext.GetValidationMessages(identifier).FirstOrDefault();
-        //                    if (ErrorMessage != errorMessage)
-        //                    {
-        //                        ErrorMessage = errorMessage;
-        //                        StateHasChanged();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            var identifire = CurrentEditContext.Field(_FieldName);
-        //            ErrorMessage = CurrentEditContext.GetValidationMessages(identifire).FirstOrDefault();
-        //        }
-        //    }
-        //    if (Validate != null )
-        //    {
-        //        if (Validate != null)
-        //            ErrorMessage = Validate();
-        //        if (!ErrorMessage.HasValue())
-        //            ErrorMessage = null;
-        //    }
-        //    if (ErrorMessage != null && FormAppState.AllControlsIsValid)
-        //    {
-        //        FormAppState.AllControlsIsValid = false;
-        //        FormAppState.Control = this;
-        //        FormAppState.ErrorMessage = ErrorMessage;
-        //    }
-        //}
-
-        //protected override void OnAfterRender(bool firstRender)
-        //{
-        //    CaspianForm?.SetFirstControl(this);
-        //    base.OnAfterRender(firstRender);
-        //}
-
-        //[CascadingParameter]
-        //internal PageData PageData { get; set; }
+        protected override async Task OnParametersSetAsync()
+        {
+            if (Value == null || Value.Equals(0))
+                text = "";
+            else if (!Value.Equals(OldValue))
+            {
+                OldValue = Value;
+                if (Source == null)
+                {
+                    using var scope = ServiceScopeFactory.CreateScope();
+                    var query = new BaseService<TEntity>(scope.ServiceProvider).GetAll();
+                    var parameter = Expression.Parameter(typeof(TEntity));
+                    Expression expr = Expression.Property(parameter, typeof(TEntity).GetPrimaryKey());
+                    expr = Expression.Equal(expr, Expression.Constant(Value));
+                    expr = Expression.Lambda(expr, parameter);
+                    query = query.Where(expr).OfType<TEntity>();
+                    string str = query.ToQueryString();
+                    var list = new ExpressionSurvey().Survey(TextExpression);
+                    var entity = (await query.GetValuesAsync(list)).FirstOrDefault();
+                    if (entity == null)
+                        text = null;
+                    else
+                        text = TextExpression.Compile().Invoke(entity);
+                }
+                else
+                    text = Source.SingleOrDefault(t => t.Value == Value.ToString())?.Text;
+            }
+            await base.OnParametersSetAsync();
+        }
 
         async Task DataBinding()
         {
             if (LoadData)
             {
                 LoadData = false;
-                
                 if (Source == null)
                 {
+                    if (TextExpression == null)
+                        throw new CaspianException("Please specify TextExpression parameter");
                     using var scope = ServiceScopeFactory.CreateScope();
                     scope.SetUserId(PageData);
                     var service = scope.GetService<BaseService<TEntity>>();
@@ -392,8 +272,8 @@ namespace Caspian.UI
                     else
                     {
                         list = new List<MemberExpression>();
-                        foreach (var fieldexpr in fieldsExpression)
-                            list.AddRange(new ExpressionSurvey().Survey(fieldexpr).ToArray());
+                        foreach (var fieldExpression in fieldsExpression)
+                            list.AddRange(new ExpressionSurvey().Survey(fieldExpression).ToArray());
                     }
                     var type = typeof(TEntity);
                     query = query.Take(PageSize * pageNumber);
@@ -417,8 +297,7 @@ namespace Caspian.UI
                     shouldRender = true;
                     if (Template == null)
                     {
-                        if (TextExpression == null)
-                            throw new CaspianException("Please specify TextExpression parameter");
+
                         var displayFunc = TextExpression.Compile();
                         var valueFunc = Expression.Lambda(primaryKeyExpr, parameter).Compile();
                         items = new List<SelectListItem>();

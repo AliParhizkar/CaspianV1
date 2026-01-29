@@ -1694,7 +1694,8 @@ span, label, td, th {
         width: 32px;
         height: 32px;
         background-color: transparent;
-        line-height:0;
+        line-height: 0;
+        border: 1px solid transparent;
     }
         .c-icon-button.c-simple:hover {
             background-color: aliceblue;

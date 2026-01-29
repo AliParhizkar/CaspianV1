@@ -19,25 +19,36 @@ else
         {
             @if (ColSpan.HasValue)
             {
-                var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer) ?? (EntitySearch as ICaspianContainer);
-                string labelContainerCSSClassName = GetLabelCSSClassName();
-                string controlContainerCSSClassName = GetControlCSSClassName();
-                <div class="@(labelContainerCSSClassName)">
-                    <label>@GetTitle()</label>
-                </div>
-                <div class="@(controlContainerCSSClassName)">
-                    @RenderCheckBox()
-                </div>
+                if (ColSpan == TotalSpan)
+                {
+                    
+                    var className = $"col-md-{TotalSpan}";
+                    <div class="@className">
+                        @RenderCheckBox(GetTitle())
+                    </div>
+                }
+                else
+                {
+                    var container = (CaspianForm as ICaspianContainer ?? CaspianContainer as ICaspianContainer) ?? (EntitySearch as ICaspianContainer);
+                    string labelContainerCSSClassName = GetLabelCSSClassName();
+                    string controlContainerCSSClassName = GetControlCSSClassName();
+                    <div class="@(labelContainerCSSClassName)">
+                        <label>@GetTitle()</label>
+                    </div>
+                    <div class="@(controlContainerCSSClassName)">
+                        @RenderCheckBox(null)
+                    </div>
+                }
             }
             else
             {
-                @RenderCheckBox()
+                @RenderCheckBox(null)
             }
         };
     }
 
 
-    RenderFragment RenderCheckBox()
+    RenderFragment RenderCheckBox(string title)
     {
         return __builder =>
         {
@@ -45,9 +56,9 @@ else
                 <span class="t-icon" @onclick="ChangeValue">
                     <i @attributes="@iconAtttrs" aria-hidden="true"></i>
                 </span>
-                @if (Title.HasValue() && ColSpan == null)
+                @if (Title.HasValue()  && ColSpan == null || title != null)
                 {
-                    <span class="t-title" @onclick="ChangeValue">@Title</span>
+                    <span class="t-title" @onclick="ChangeValue">@(title ?? Title)</span>
                 }
             </span>
         };

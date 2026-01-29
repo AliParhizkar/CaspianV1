@@ -8,6 +8,9 @@
 <div class="p-4 pb-0">
     <EntitySearch Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <ComboBox TValue="int" TEntity="KeepCenter" @bind-Value="context.KeepCenterId" TextExpression="t => t.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="4"/>
+        <ComboBox TValue="int" TEntity="Branch" @bind-Value="context.BranchId" TextExpression="t => t.Title" ColSpan="4" />
     </EntitySearch>
 </div>
 <div class="p-4 pt-1">
@@ -15,9 +18,11 @@
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.Code" />
-            <GridColumn style="width:60px" Title="محل های فیزیکی">
+            <GridColumn Field="t => t.KeepCenter.Name" Title="مرکز نگهداری" />
+            <GridColumn Field="t => t.Branch.Title" Title="شعبه" />
+            <GridColumn style="width:110px" Title="محل های فیزیکی">
                 <Template>
-                    <IconButton IconType="IconType.WpfForms" Href='@($"/Warehouse/MaterialAddress/{context.Data.Id}")' />
+                    <IconButton IconType="IconType.ExternalLink" @onclick="() => OpenPopup(context.Data.Id)" />
                 </Template>
             </GridColumn>
             <GridCommandColumns />
@@ -26,21 +31,33 @@
 </div>
 <Window Service="Service" Title="انبار" Style="width:800px">
     <CaspianForm TEntity="StockRoom" Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Title" ColSpan="4" Title="عنوان"  />
-        <StringTextBox @bind-Value="context.Code" ColSpan="4" Title="کد" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" Title="کد" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" Title="عنوان" />
+        <ComboBox TValue="int" TEntity="KeepCenter" @bind-Value="context.KeepCenterId" TextExpression="t => t.Name" ColSpan="4" />
         <Lookup TValue="int?" TEntity="User" @bind-Value="context.ManagerId" TextExpression='t => t.FName + " " + t.LName' ColSpan="4">
-            <UserLookupWindow TValue="int?" />
-        </Lookup>    
+            <UserLookupWindow />
+        </Lookup>
+        <ComboBox TValue="int" TEntity="Branch" @bind-Value="context.BranchId" TextExpression="t => t.Title" ColSpan="4" />
+        <CheckBox @bind-Value="context.MemberOfMiddlePart" ColSpan="6" TotalSpan="6" />
+        <CheckBox @bind-Value="context.MemberInManyParts" ColSpan="6" TotalSpan="6"  />
         <FormCommandButton ColSpan="12" />
     </CaspianForm>
 </Window>
 
+<Window @bind-Status="status" Title="محل فیزیکی کالا در انبار" Style="width:700px;">
+    <MaterialLocationTreeComponent Page="this" StockRoomId="selectedStockRoomId" />
+</Window>
+
+
 @code
 {
-    bool IsLeef(Scope scope)
+    int selectedStockRoomId;
+    WindowStatus status;
+    
+
+    void OpenPopup(int stockRoomId)
     {
-        if (scope.Scopes == null || scope.Scopes.Count() == 0)
-            return true;
-        return false;
+        selectedStockRoomId = stockRoomId;
+        status = WindowStatus.Open;
     }
 }
