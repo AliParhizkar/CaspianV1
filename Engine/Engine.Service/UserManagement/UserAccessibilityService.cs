@@ -26,7 +26,7 @@ namespace Caspian.Engine.Service
         {
             if (userId == 1)
             {
-                return await new MenuService(ServiceProvider).GetAll().Where(t => t.ShowonMenu)
+                return await new MenuService(ServiceProvider).GetAll().Where(t => t.ShowOnMenu)
                     .Select(t => t.Id).ToListAsync();
             }
             var query = GetAll().Where(t => t.UserId == userId || t.Role.Memberships.Any(u => u.UserId == userId))

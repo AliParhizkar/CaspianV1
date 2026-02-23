@@ -1,0 +1,34 @@
+﻿@page "/Warehouse/CodingPattern"
+@attribute [Source(3, "الگوی بارکد")]
+@inherits BasePage
+@inject IUIService<BarcodePattern> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" TotalSpan="5" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="6" TotalSpan="7" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="BarcodePattern" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="الگوی بارکد" Style="width:450px">
+    <CaspianForm TEntity="BarcodePattern" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

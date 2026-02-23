@@ -1,4 +1,4 @@
-﻿@page "/Warehouse/Product"
+﻿@*page "/Warehouse/Product"
 @attribute [Source(15, "کالا")]
 @inject UIService<Product, ProductDescription> Service
 @inherits BasePage
@@ -84,4 +84,4 @@
         using var service = CreateScope().GetService<ProductCategoryService>();
         status.Cancel = await service.GetAll().AnyAsync(t => t.CategoryId == status.Id);
     }
-}
+}*@

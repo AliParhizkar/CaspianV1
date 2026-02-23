@@ -5,6 +5,7 @@ using Caspian.Engine.Model;
 using Caspian.Engine.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using System.Linq.Dynamic.Core;
 
 namespace Caspian.Engine.SystemManagement
 {
@@ -19,7 +20,7 @@ namespace Caspian.Engine.SystemManagement
 
         void FillUrls()
         {
-            if (Service.UpsertData.ShowonMenu)
+            if (Service.UpsertData.ShowOnMenu)
             {
                 var page = new AssemblyInfo().GetWebTypes(Subsystem)
                     .SingleOrDefault(t => t.GetCustomAttribute<SourceAttribute>()?.Id == Service.UpsertData.SourceId);
@@ -45,6 +46,7 @@ namespace Caspian.Engine.SystemManagement
             ///Check All Urls that start with /SubsystemName
             var components = new List<Menu>();
             var dic = new Dictionary<int, Type>();
+            using var service = CreateScope().GetService<MenuService>();
             foreach (var component in new AssemblyInfo().GetWebTypes(Subsystem))
             {
                 var menu = new Menu();
@@ -67,12 +69,18 @@ namespace Caspian.Engine.SystemManagement
                     menu.Title = sourceAttr.Title;
                     var old = components.SingleOrDefault(t => t.SourceId == sourceAttr.Id);
                     if (old != null)
-                        throw new CaspianException($"Types {component.Name} & {dic[sourceAttr.Id].Name} Has same page id");
+                    {
+                        var errorMessage = $"Types {component.Name} & {dic[sourceAttr.Id].Name} Has same page id. ";
+                        if (service.GetAll().Any(t => t.SourceId == old.Id && !t.Accessibilities.Any()))
+                            errorMessage += $"You can change id of {component.Name}";
+                        else if (service.GetAll().Any(t => t.SourceId == old.Id && !t.Accessibilities.Any()))
+                            errorMessage += $"This code should be changed";
+                        throw new CaspianException(errorMessage);
+                    }
                     components.Add(menu);
                     dic.Add(sourceAttr.Id, component);
                 }
             }
-            using var service = CreateScope().GetService<MenuService>();
             var menus = await service.GetAll().Where(t => t.SubSystemKind == Subsystem).ToListAsync();
             foreach (var menu in menus)
             {

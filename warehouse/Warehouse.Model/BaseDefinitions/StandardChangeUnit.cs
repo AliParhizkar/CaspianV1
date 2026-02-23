@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +23,7 @@ namespace Warehouse.Model
         [DisplayName("واحد سنجش")]
         public int OtherUnitId { get; set; }
 
-        [DisplayName("نسبت")]
+        [DisplayName("نسبت"), Precision(10, 3)]
         public decimal Rate { get; set; }
 
         [ForeignKey(nameof(OtherUnitId))]

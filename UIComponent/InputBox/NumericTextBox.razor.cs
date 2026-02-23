@@ -1,25 +1,55 @@
 ﻿using Caspian.Common;
+using System.Reflection;
 using Microsoft.JSInterop;
+using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
     public partial class NumericTextBox<TValue>: CBaseInput<TValue>
     {
-        int numberDigit;
+        int numberDigit, total;
 
         [Parameter]
-        public int Total { get; set; } = 8;
+        public int? Total { get; set; }
 
         [Parameter]
-        public int? NumberDigit { get; set; } = 2;
+        public int? NumberDigit { get; set; }
 
         [Parameter]
         public bool DigitGrouping { get; set; }
 
         [CascadingParameter(Name = "ParentControlIsValueSearch")]
         public bool ParentControlIsValueSearch { get; set; }
+
+        protected override void OnInitialized()
+        {
+            if (Id.HasValue())
+            {
+                InputAttributes["id"] = Id.Replace('.', '_');
+                InputAttributes["name"] = Id.Replace('.', '_');
+            }
+            var type = typeof(TValue).GetUnderlyingType();
+            PrecisionAttribute attribute = null;
+            if (attribute != null)
+            {
+                var member = (ValueExpression.Body as MemberExpression).Member;
+                attribute = member.GetCustomAttribute<PrecisionAttribute>();
+            }
+            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long))
+                numberDigit = 0;
+            else if (NumberDigit == null)
+                numberDigit = attribute?.Scale ?? 2;
+            else
+                numberDigit = NumberDigit.Value;
+            if (Total == null)
+                total = attribute?.Precision ?? 10;
+            else
+                total = Total.Value;
+            base.OnInitialized();
+        }
 
         string GetDigitGrouping(string digit)
         {
@@ -44,7 +74,7 @@ namespace Caspian.UI
                 attributes["error-message"] = ErrorMessage;
             }
             attributes["class"] = className;
-            attributes["total"] = Total;
+            attributes["total"] = total;
             if (DigitGrouping)
                 attributes["digit-grouping"] = true;
             if (NumberDigit.HasValue)
@@ -74,26 +104,11 @@ namespace Caspian.UI
                 await OnChange.InvokeAsync(Value);
         }
 
-        protected override void OnParametersSet()
-        {
-            if (Id.HasValue())
-            {
-                InputAttributes["id"] = Id.Replace('.', '_');
-                InputAttributes["name"] = Id.Replace('.', '_');
-            }
-            var type = typeof(TValue).GetUnderlyingType();
-            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long))
-                numberDigit = 0;
-            else
-                numberDigit = NumberDigit ?? 2;
-            base.OnParametersSet();
-        }
-
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender && (EntitySearch == null || ParentControlIsValueSearch))
             {
-                var regular = numberDigit > 0 ? "" : "^-?\\d{0," + Total + "}$";
+                var regular = numberDigit > 0 ? "" : "^-?\\d{0," + total + "}$";
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement, regular);
             }
             await base.OnAfterRenderAsync(firstRender);

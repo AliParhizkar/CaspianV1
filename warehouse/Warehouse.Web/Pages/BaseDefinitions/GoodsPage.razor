@@ -1,0 +1,104 @@
+﻿@page "/Warehouse/Goods"
+@inherits BasePage
+@inject IUIService<Goods> Service
+@attribute [Source(4, "تعریف کالا")]
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="3">
+        <StringTextBox @bind-Value="context.Name" ColSpan="3" TotalSpan="4" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="3" TotalSpan="4" Style="direction:ltr" />
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MeasurementUnitId" TextExpression="t => t.Name" ColSpan="3" TotalSpan="4" Title="واحد سنجش" />
+        <ComboBox TValue="int" TEntity="ProductClass" @bind-Value="context.ProductClassId" TextExpression="t => t.Name" ColSpan="3" TotalSpan="4" />
+        <DropdownList @bind-Value="context.GoodsNature" ColSpan="3" TotalSpan="4" />
+        <DropdownList @bind-Value="context.ReservationLevel" ColSpan="3" TotalSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="Goods" Service="Service" ContentHeight="300">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش" />
+            <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
+            <GridColumn Field="t => t.GoodsNature.EnumText()" />
+            <GridColumn Field="t => t.ReservationLevel.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="تعریف کالا" Style="width:750px" >
+    <CaspianForm TEntity="Goods" Service="Service" ColumnsCount="2">
+        <ComboBox TValue="int?" TEntity="BarcodePattern" @bind-Value="context.BarcodePatternId" TextExpression="t => t.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MeasurementUnitId" TextExpression="t => t.Name" ColSpan="4" />
+        <ComboBox TValue="int" TEntity="ProductClass" @bind-Value="context.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
+        <DropdownList @bind-Value="context.ReservationLevel" ColSpan="4" />
+        <div class="col-md-6 row">
+            <DropdownList @bind-Value="context.GoodsNature" ColSpan="8" TotalSpan="12" />
+            <RadioList @bind-Value="context.GoodsType" ShowTitle>
+                <div class="row">
+                    <div class="col-md-6">
+                        <RadioItem Value="GoodsType.Purchased" />
+                    </div>
+                    <div class="col-md-6">
+                        <RadioItem Value="GoodsType.Salable" />
+                    </div>
+                    <div class="col-md-6">
+                        <RadioItem Value="GoodsType.Construction" />
+                    </div>
+                    <div class="col-md-6">
+                        <RadioItem Value="GoodsType.OutOfStockItem" />
+                    </div>
+                </div>
+            </RadioList>
+        </div>
+        <div class="col-md-6">
+            <CheckBox @bind-Value="context.SuspendedInIncoming" ColSpan="12" TotalSpan="12" />
+            <CheckBox @bind-Value="context.SuspendedInOutcoming" ColSpan="12" TotalSpan="12" />
+        </div>
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    StringTextBox txtItem;
+    IList<PropertyList> list;
+    string item;
+    PropertyList selectedItem;
+
+    async Task LoadData()
+    {
+        list = new List<PropertyList>();
+        var id = Service.UpsertData.Id;
+        if (id > 0)
+        {
+            using var service = CreateScope().GetService<PropertyListService>();
+            list = await service.GetAll().Where(t => t.GoodsPropertyId == id).ToListAsync();
+        }
+    }
+
+    void InitializeValue(CancelableEvent<GoodsProperties> e)
+    {
+        var property = e.Entity;
+        switch (property.PropertyType)
+        {
+            case PropertyType.String:
+                property.MaximumValue = property.MinimumValue = property.NumberDigit = null;
+                if (property.FixLength != true)
+                    property.Length = null;
+                break;
+            case PropertyType.Number:
+                property.Length = property.MaxLength = null;
+                property.FixLength = null;
+                break;
+            default:
+                property.MaximumValue = property.MinimumValue = property.NumberDigit = property.Length = property.MaxLength = null;
+                property.FixLength = null;
+                break;
+        }
+    }
+}

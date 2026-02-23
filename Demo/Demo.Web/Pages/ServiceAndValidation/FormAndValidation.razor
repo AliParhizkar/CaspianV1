@@ -42,56 +42,17 @@
                         </ul>
                     </div>
                     <div class="col-md-7">
-                        <CaspianForm Model="upsertData">
-                            <div class="data-form-container p-4">
-                                <div class="row c-controls">
-                                    <div class="col-md-4">
-                                        <label>Product category</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Title</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <StringTextBox @bind-Value="context.Title" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Code</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <StringTextBox @bind-Value="context.Code" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Price</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="context.Price" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Take out price</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <NumericTextBox @bind-Value="context.TakeoutPrice" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Meal</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <MultiSelectBox @bind-Value="context.Meal" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Status</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <DropdownList @bind-Value="context.ActiveType" />
-                                    </div>
-                                    <div class="pt-5 col-md-12">
-                                        <FormCommandButton SubmitButtonTitl="Submit" />
-                                    </div>
-                                </div>
-                            </div>
-                        </CaspianForm>
+                        <div class="data-form-container pt-4 pb-4 p-3">
+                            <CaspianForm Model="upsertData">
+                                <ComboBox TValue="int" TEntity="ProductCategory" @bind-Value="context.ProductCategoryId" ColSpan="8" TextExpression="t => t.Title" />
+                                <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                                <StringTextBox @bind-Value="context.Code" ColSpan="8" />
+                                <NumericTextBox @bind-Value="context.Price" ColSpan="8" />
+                                <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" />
+                                <MultiSelectBox @bind-Value="context.Meal" ColSpan="8" />
+                                <FormCommandButton SubmitButtonTitle="Submit" />
+                            </CaspianForm>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,60 +90,18 @@
                         </ul>
                     </div>
                     <div class="col-md-7">
+                        <div class="data-form-container pt-4 pb-4 p-3">
+                            <CaspianForm Model="upsertData" TEntity="Product" OnSubmit="FormSubmit" OnReset="FormReset" OnInvalidSubmit="InvalidSubmit" OnValidSubmit="ValidSubmit">
+                                <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=context.ProductCategoryId TextExpression="t => t.Title" ColSpan="8" />
+                                <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                                <StringTextBox @bind-Value="context.Code" ColSpan="8" />
+                                <NumericTextBox @bind-Value="context.Price" ColSpan="8" />
+                                <MultiSelectBox @bind-Value="context.Meal" ColSpan="8" />
+                                <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+                                <FormCommandButton SubmitButtonTitle="Submit" ColSpan="8" />
+                            </CaspianForm>
+                        </div>
 
-                        <CaspianForm Model="upsertData" TEntity="Product" OnSubmit="FormSubmit" OnReset="FormReset" OnInvalidSubmit="InvalidSubmit" OnValidSubmit="ValidSubmit">
-                            <Content Context="product">
-                                <div class="data-form-container p-4">
-                                    <div class="row c-controls">
-                                        <div class="col-md-4">
-                                            <label>Product category</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value=product.ProductCategoryId TextExpression="t => t.Title" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Title</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <StringTextBox @bind-Value="product.Title" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Code</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <StringTextBox @bind-Value="product.Code" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="product.Price" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Take out price</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <NumericTextBox @bind-Value="product.TakeoutPrice" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Meal</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <MultiSelectBox @bind-Value="product.Meal" />
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <DropdownList @bind-Value="product.ActiveType" />
-                                        </div>
-                                        <div class="pt-5 col-md-12">
-                                            <FormCommandButton SubmitButtonTitle="Submit" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </Content>
-                        </CaspianForm>
                     </div>
                 </div>
             </div>

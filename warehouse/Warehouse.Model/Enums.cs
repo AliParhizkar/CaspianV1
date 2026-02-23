@@ -175,4 +175,61 @@ namespace Warehouse.Model
         [Display(Name = "لیست ثابت")]
         List
     }
+
+    public enum PricingMethod: byte
+    {
+        [Display(Name = "میانگین")]
+        Average,
+
+        [Display(Name = "FIFO")]
+        FIFO,
+
+        [Display(Name = "LIFO")]
+        LIFO,
+
+        [Display(Name = "شناسایی ویژه")]
+        SpecialIdentification
+    }
+
+    public enum GoodsNature: byte
+    {
+        [Display(Name = "ماده اولیه")]
+        RawMaterial,
+
+        [Display(Name = "محصول نهایی")]
+        FinalProduct,
+
+        [Display(Name = "نیمه ساخته")]
+        HalfMade,
+
+        [Display(Name = "دارایی ثابت")]
+        FixedAsset,
+
+        [Display(Name = "سایر")]
+        Others
+    }
+
+    public enum GoodsType: byte
+    {
+        [Display(Name = "خریدنی")]
+        Purchased,
+
+        [Display(Name = "قابل فروش")]
+        Salable,
+
+        [Display(Name = "ساختنی")]
+        Construction,
+
+        [Display(Name = "کالای غیرموجودی")]
+        OutOfStockItem
+    }
+
+    public enum ReservationLevel: byte
+    {
+        [Display(Name = "رزرو دارد")]
+        HasReservation,
+
+        [Display(Name = "رزرو ندارد")]
+        hasNotReservation
+    }
 }

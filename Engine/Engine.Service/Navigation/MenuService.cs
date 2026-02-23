@@ -12,9 +12,9 @@ namespace Caspian.Engine.Service
         {
             RuleFor(t => t.Title).Required(t => t.Id > 0).UniqueAsync(t => t.SubSystemKind, "منویی با این عنوان در سیستم تعریف شده است");
             RuleFor(t => t.SourceId).Required().UniqueAsync(t => t.SubSystemKind, "آدرسی با این شماره در سیستم ثبت شده است");
-            RuleFor(t => t.URL).Required(t => t.ShowonMenu && t.Id > 0);
-            RuleFor(t => t.MenuCategoryId).Required(t => t.ShowonMenu && t.Id > 0)
-                .Custom(t => t.MenuCategoryId.HasValue && !t.ShowonMenu, "در صورت عدم نمایش منو نیازی به گروه آن نیست");
+            RuleFor(t => t.URL).Required(t => t.ShowOnMenu && t.Id > 0);
+            RuleFor(t => t.MenuCategoryId).Required(t => t.ShowOnMenu && t.Id > 0)
+                .Custom(t => t.MenuCategoryId.HasValue && !t.ShowOnMenu, "در صورت عدم نمایش منو نیازی به گروه آن نیست");
             RuleFor(t => t.Ordering).Custom(t => t.Ordering < 0 || t.Id == 0 && t.Ordering == 0, "مقدار فیلد مرتب سازی باید بزرگتر  از صفر باشد").UniqueAsync(t => t.MenuCategoryId, "فیلد مرتب سازی به ازای هر گروه منو نمی تواند تکراری باشد.");
         }
 

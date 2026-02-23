@@ -1,4 +1,4 @@
-﻿@page "/Warehouse/Receipt"
+﻿@*page "/Warehouse/Receipt"
 @attribute [Source(17, "حواله/رسید کالا")]
 
 @inject UIService<Receipt, ReceiptDetails> Service
@@ -24,4 +24,4 @@
             url += $"/{receipt.Id}";
         NavigationManager.NavigateTo(url);
     }
-}
+}*@

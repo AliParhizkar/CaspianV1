@@ -1,4 +1,4 @@
-﻿@typeparam TValue
+﻿@*@typeparam TValue
 @namespace Warehouse.Web.Lookup
 @inherits LookupWindow<Product, TValue>
 <div class="c-lookup-page" style="width:800px;">
@@ -26,4 +26,4 @@
         using var service = CreateScope().GetService<ProductCategoryService>();
         status.Cancel = await service.GetAll().AnyAsync(t => t.CategoryId == status.Id);
     }
-}
+}*@

@@ -30,7 +30,7 @@ namespace Caspian.Engine.Model
         public int Ordering { get; set; }
 
         [DisplayName("Show in menu")]
-        public bool ShowonMenu { get; set; }
+        public bool ShowOnMenu { get; set; }
 
         /// <summary>
         /// Page is renamed or dropped and not exists in project

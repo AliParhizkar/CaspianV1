@@ -1,5 +1,4 @@
 ﻿using Caspian.Common;
-using Caspian.Engine;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,5 +30,8 @@ namespace Warehouse.Model
         [InverseProperty(nameof(StandardChangeUnit.OtherUnit))]
         [CheckOnDelete("واحد سنجش داری تبدیل واحد استاندارد می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<StandardChangeUnit> OtherUnits { get; set; }
+
+        [CheckOnDelete("این واحد سنجش بعنوان واحد سنجش کالا استفاده شده و امکان حذف آن وجود ندارد")]
+        public ICollection<Goods> Goods { get; set; }
     }
 }

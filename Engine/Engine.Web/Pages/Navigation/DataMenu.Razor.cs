@@ -43,7 +43,7 @@ namespace Caspian.Engine.Navigation
                 var subSystemKind = (SubSystemKind)field.GetValue(null);
                 if (OldSubSystem != subSystemKind)
                 {
-                    Menus = SingletonMenuService.Menus.Where(t => t.ShowonMenu && t.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
+                    Menus = SingletonMenuService.Menus.Where(t => t.ShowOnMenu && t.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
                     Categories = SingletonMenuService.Categories.Where(t => t.SubSystemKind == subSystemKind)
                         .OrderBy(t => t.Ordering).ToList();
                     OldSubSystem = subSystemKind;
@@ -70,8 +70,8 @@ namespace Caspian.Engine.Navigation
             if (url.EndsWith('/'))
                 url = url.Substring(0, url.Length - 1);
             var menu = SingletonMenuService.GetMenu(url);
-            if (menu?.ShowonMenu == true)
-                Storege.SetAsync("CurentShowUrl", url);
+            if (menu?.ShowOnMenu == true)
+                Storege.SetAsync("CurrentShowUrl", url);
         }
 
         [Parameter]
@@ -81,7 +81,7 @@ namespace Caspian.Engine.Navigation
         {
             if (firstRender)
             {
-                var item = await Storege.GetAsync<string>("CurentShowUrl");
+                var item = await Storege.GetAsync<string>("CurrentShowUrl");
                 if (item.Success)
                 {
                     sholdRender = true;

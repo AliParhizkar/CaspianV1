@@ -7,25 +7,25 @@ using System.Linq.Dynamic.Core.CustomTypeProviders;
 
 namespace Warehouse.Model
 {
-    [Table("Supplier", Schema = "wh")]
-    public class Supplier
-    {
-        [Key]
-        public int Id { get; set; }
+    //[Table("Supplier", Schema = "wh")]
+    //public class Supplier
+    //{
+    //    [Key]
+    //    public int Id { get; set; }
 
-        [DisplayName("کاربری مرتبط")]
-        public int RelatedUserId { get; set; }
+    //    [DisplayName("کاربری مرتبط")]
+    //    public int RelatedUserId { get; set; }
 
-        [ForeignKey(nameof(RelatedUserId))]
-        public User RelatedUser { get; set; }
+    //    [ForeignKey(nameof(RelatedUserId))]
+    //    public User RelatedUser { get; set; }
 
-        [DisplayName("کد ملی")]
-        public string IdCard { get; set; }
+    //    [DisplayName("کد ملی")]
+    //    public string IdCard { get; set; }
 
-        [DisplayName("نام پدر")]
-        public string ParentName { get; set; }
+    //    [DisplayName("نام پدر")]
+    //    public string ParentName { get; set; }
 
-        [CheckOnDelete("کارپرداز دارای رسید می باشد و امکان حذف وی وجود ندارد")]
-        public ICollection<Receipt> Receipts { get; set; }
-    }
+    //    [CheckOnDelete("کارپرداز دارای رسید می باشد و امکان حذف وی وجود ندارد")]
+    //    public ICollection<Receipt> Receipts { get; set; }
+    //}
 }

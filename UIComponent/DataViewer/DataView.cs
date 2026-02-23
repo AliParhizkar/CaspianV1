@@ -163,21 +163,9 @@ namespace Caspian.UI
 
         public abstract Task DataBind();
 
-        public int PageNumber
-        {
-            get
-            {
-                return pageNumber;
-            }
-        }
+        public int PageNumber {get{ return pageNumber; }}
 
-        public int PageCount
-        {
-            get
-            {
-                return (Total - 1) / PageSize + 1;
-            }
-        }
+        public int PageCount {get{ return (Total - 1) / PageSize + 1; }}
 
         [CascadingParameter]
         internal PageData PageData { get; set; }
@@ -206,10 +194,7 @@ namespace Caspian.UI
             await base.OnInitializedAsync();
         }
 
-        internal void ChangeState()
-        {
-            StateHasChanged();
-        }
+        internal void ChangeState() => StateHasChanged();
 
         /// <summary>
         /// 
@@ -354,10 +339,7 @@ namespace Caspian.UI
             
         }
 
-        internal IList<TEntity>  GetSource()
-        {
-            return source;
-        }
+        internal IList<TEntity>  GetSource() => source;
 
         internal async Task ReadyToInsert()
         {
@@ -638,10 +620,7 @@ namespace Caspian.UI
             return list;
         }
 
-        public void EnableLoading()
-        {
-            shouldFetchData = true;
-        }
+        public void EnableLoading() => shouldFetchData = true;
 
         public IList<TEntity> GetDeletedEntities()
         {

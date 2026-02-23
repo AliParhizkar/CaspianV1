@@ -9,7 +9,7 @@
     <StringTextBox @bind-Value="context.Title" ColSpan="4" />
     <CheckBox CustomeSearch @bind-Value="onlyUntitledMenus" ColSpan="2" TotalSpan="4" Title="only Untitled Menus" />
     <CheckBox @bind-Value="context.IsDropped" ColSpan="2" TotalSpan="4"Title="Dropped" />
-    <CheckBox @bind-Value="context.ShowonMenu" ColSpan="2" TotalSpan="4" Title="Show In Menu" />
+    <CheckBox @bind-Value="context.ShowOnMenu" ColSpan="2" TotalSpan="4" Title="Show In Menu" />
     <div class="col-md-3 text-center">
         <IconButton @onclick="async () => await UpdateMenus()" IconType="IconType.Refresh" title="Update menus" />
     </div>
@@ -30,7 +30,7 @@
                 <GridColumn Field="t => t.Title" />
                 <GridColumn Field="t => t.SourceId" style="width:100px" />
                 <GridColumn Field="t => t.Ordering" style="width:100px;" />
-                <GridColumn Field="t => t.ShowonMenu" style="width:100px;" />
+                <GridColumn Field="t => t.ShowOnMenu" style="width:100px;" />
                 <GridCommandColumns DisableDeleteButton="context?.Data?.IsDropped == true" />
             </Columns>
         </DataGrid>
@@ -41,7 +41,7 @@
                       TextExpression="t => t.Title" ColSpan="8"
                       ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
             <StringTextBox @bind-Value="Service.UpsertData.Title" ColSpan="8" />
-            <CheckBox @bind-Value="context.ShowonMenu" OnChange="FillUrls" ColSpan="8" />
+            <CheckBox @bind-Value="context.ShowOnMenu" OnChange="FillUrls" ColSpan="8" />
             <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="context.URL" Source="source" ColSpan="8" />
             <div class="col-md-12 ps-5 text-center">
                 <FormCommandButton  />

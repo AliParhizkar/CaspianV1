@@ -28,6 +28,10 @@
         return __builder =>
         {
             <div class="t-radios @(className)" style="@Style">
+                @if (ShowTitle)
+                {
+                    <span class="c-title">@GetTitle()</span>
+                }
                 @if (dic != null)
                 {
                     foreach (var item in dic)

@@ -116,6 +116,7 @@ namespace Caspian.UI
                     if (Batch)
                     {
                         source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
+                        (DetailsService as IInternalBatchService<TEntity>).SetDetailsProperty(source);
                         if (DetailsService != null)
                         {
                             foreach(var item in DetailsService.ChangedEntities)

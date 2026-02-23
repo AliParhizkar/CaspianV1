@@ -15,7 +15,11 @@ namespace Marketing.Web.OrderComponents
         int? selectedOrderId;
         IList<Order> orders;
 
-        async Task SelectOrder(Order order) => await OnChange.InvokeAsync(order.Id);
+        async Task SelectOrder(Order order)
+        {
+            await StatusChanged.InvokeAsync(WindowStatus.Close);
+            await OnChange.InvokeAsync(order.Id);
+        }
 
         protected override async Task OnInitializedAsync()
         {

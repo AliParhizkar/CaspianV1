@@ -112,7 +112,7 @@ namespace Warehouse.Model.Migrations
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
 
-                    b.Property<bool>("ShowonMenu")
+                    b.Property<bool>("ShowOnMenu")
                         .HasColumnType("bit");
 
                     b.Property<int>("SourceId")
@@ -336,6 +336,27 @@ namespace Warehouse.Model.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Warehouse.Model.BarcodePattern", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BarcodePatterns", "wh");
+                });
+
             modelBuilder.Entity("Warehouse.Model.Branch", b =>
                 {
                     b.Property<int>("Id")
@@ -353,7 +374,7 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("Branches", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.City", b =>
+            modelBuilder.Entity("Warehouse.Model.Goods", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -361,18 +382,47 @@ namespace Warehouse.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProvinceId")
+                    b.Property<int?>("BarcodePatternId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Code")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<byte>("GoodsNature")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("GoodsType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("MeasurementUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ProductClassId")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("ReservationLevel")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("SuspendedInIncoming")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SuspendedInOutcoming")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProvinceId");
+                    b.HasIndex("BarcodePatternId");
 
-                    b.ToTable("Cities", "wh");
+                    b.HasIndex("MeasurementUnitId");
+
+                    b.HasIndex("ProductClassId");
+
+                    b.ToTable("Goods", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.GoodsProperties", b =>
@@ -518,30 +568,6 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("MaterialLocations", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.MaterialUnit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<byte>("MeasureType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MaterialUnits", "wh");
-                });
-
             modelBuilder.Entity("Warehouse.Model.MeasurementUnit", b =>
                 {
                     b.Property<int>("Id")
@@ -569,125 +595,28 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("MeasurementUnits", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Product", b =>
+            modelBuilder.Entity("Warehouse.Model.ProductClass", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Code")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("MaterialUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Maximum")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<string>("Name")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal?>("OrderPoint")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<byte?>("ProductType")
+                    b.Property<byte>("PricingMethod")
                         .HasColumnType("tinyint");
 
-                    b.Property<string>("StandardCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("StandardPrice")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TechnicalCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("WarningDate")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("MaterialUnitId");
-
-                    b.ToTable("Product");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ProductCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("HasChild")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Level")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("ProductCategories", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ProductDescription", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("DescriptionType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductDescriptions", "wh");
+                    b.ToTable("ProductClasses", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.PropertyList", b =>
@@ -712,256 +641,6 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("PropertyList");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Province", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Provinces", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Receipt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("No")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateOnly?>("ReceiptDate")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("ReceiptType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SellerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("Receipt", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ReceiptDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateOnly>("ExpireDate")
-                        .HasColumnType("date");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("ReceiptId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ReceiptId");
-
-                    b.ToTable("ReceiptDetails", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Scope", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Scopes", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Seller", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<byte?>("Citizenship")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EconomicCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Fax")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("IdCard")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PreCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RegistrationNo")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<byte>("SellerType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Tel1")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Tel2")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Zipcode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.ToTable("Sellers", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SellerCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("SellerCategories", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SellerCategoryMembership", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SellerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("SellerCategoryMemberships", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SimpleData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("DataType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SimpleData", "wh");
-                });
-
             modelBuilder.Entity("Warehouse.Model.StandardChangeUnit", b =>
                 {
                     b.Property<int>("Id")
@@ -981,8 +660,8 @@ namespace Warehouse.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Rate")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(10, 3)
+                        .HasColumnType("decimal(10,3)");
 
                     b.HasKey("Id");
 
@@ -1020,15 +699,6 @@ namespace Warehouse.Model.Migrations
                     b.Property<bool>("MemberOfMiddlePart")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ScopeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SimpleDataId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SimpleDataId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -1041,16 +711,10 @@ namespace Warehouse.Model.Migrations
 
                     b.HasIndex("ManagerId");
 
-                    b.HasIndex("ScopeId");
-
-                    b.HasIndex("SimpleDataId");
-
-                    b.HasIndex("SimpleDataId1");
-
                     b.ToTable("StockRooms", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
+            modelBuilder.Entity("Warehouse.Model.SubstituteProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1058,22 +722,26 @@ namespace Warehouse.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("IdCard")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<bool>("DuplicateRelation")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("ParentName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RelatedUserId")
+                    b.Property<decimal>("Rate")
+                        .HasPrecision(6, 3)
+                        .HasColumnType("decimal(6,3)");
+
+                    b.Property<int>("SubstituteGoodsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RelatedUserId");
+                    b.HasIndex("GoodsId");
 
-                    b.ToTable("Supplier", "wh");
+                    b.HasIndex("SubstituteGoodsId");
+
+                    b.ToTable("SubstituteProduct");
                 });
 
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionDetail", b =>
@@ -1148,15 +816,30 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.City", b =>
+            modelBuilder.Entity("Warehouse.Model.Goods", b =>
                 {
-                    b.HasOne("Warehouse.Model.Province", "Province")
-                        .WithMany("Cities")
-                        .HasForeignKey("ProvinceId")
+                    b.HasOne("Warehouse.Model.BarcodePattern", "BarcodePattern")
+                        .WithMany("Goods")
+                        .HasForeignKey("BarcodePatternId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.MeasurementUnit", "MeasurementUnit")
+                        .WithMany("Goods")
+                        .HasForeignKey("MeasurementUnitId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Province");
+                    b.HasOne("Warehouse.Model.ProductClass", "ProductClass")
+                        .WithMany("Goods")
+                        .HasForeignKey("ProductClassId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("BarcodePattern");
+
+                    b.Navigation("MeasurementUnit");
+
+                    b.Navigation("ProductClass");
                 });
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
@@ -1206,46 +889,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("StockRoom");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Product", b =>
-                {
-                    b.HasOne("Warehouse.Model.ProductCategory", "ProductCategory")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Warehouse.Model.MaterialUnit", "MaterialUnit")
-                        .WithMany("Products")
-                        .HasForeignKey("MaterialUnitId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("MaterialUnit");
-
-                    b.Navigation("ProductCategory");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ProductCategory", b =>
-                {
-                    b.HasOne("Warehouse.Model.ProductCategory", "Category")
-                        .WithMany("Categories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ProductDescription", b =>
-                {
-                    b.HasOne("Warehouse.Model.Product", "Product")
-                        .WithMany("ProductDescriptions")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Warehouse.Model.PropertyList", b =>
                 {
                     b.HasOne("Warehouse.Model.GoodsProperties", "GoodsProperty")
@@ -1255,98 +898,6 @@ namespace Warehouse.Model.Migrations
                         .IsRequired();
 
                     b.Navigation("GoodsProperty");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Receipt", b =>
-                {
-                    b.HasOne("Warehouse.Model.Seller", "Seller")
-                        .WithMany("Receipts")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Warehouse.Model.Supplier", "Supplier")
-                        .WithMany("Receipts")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Seller");
-
-                    b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ReceiptDetails", b =>
-                {
-                    b.HasOne("Warehouse.Model.Product", "Product")
-                        .WithMany("ReceiptDetails")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Warehouse.Model.Receipt", "Receipt")
-                        .WithMany("ReceiptDetails")
-                        .HasForeignKey("ReceiptId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Receipt");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Scope", b =>
-                {
-                    b.HasOne("Warehouse.Model.Scope", "Parent")
-                        .WithMany("Scopes")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Seller", b =>
-                {
-                    b.HasOne("Warehouse.Model.City", "City")
-                        .WithMany("Sellers")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Warehouse.Model.Province", "Province")
-                        .WithMany("Sellers")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("City");
-
-                    b.Navigation("Province");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SellerCategory", b =>
-                {
-                    b.HasOne("Warehouse.Model.SellerCategory", "Category")
-                        .WithMany("Categories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SellerCategoryMembership", b =>
-                {
-                    b.HasOne("Warehouse.Model.SellerCategory", "Category")
-                        .WithMany("SellerCategoryMemberships")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Warehouse.Model.Seller", "Seller")
-                        .WithMany("SellerCategoryMemberships")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StandardChangeUnit", b =>
@@ -1386,18 +937,6 @@ namespace Warehouse.Model.Migrations
                         .WithMany()
                         .HasForeignKey("ManagerId");
 
-                    b.HasOne("Warehouse.Model.Scope", null)
-                        .WithMany("StockRooms")
-                        .HasForeignKey("ScopeId");
-
-                    b.HasOne("Warehouse.Model.SimpleData", null)
-                        .WithMany("StockRooms")
-                        .HasForeignKey("SimpleDataId");
-
-                    b.HasOne("Warehouse.Model.SimpleData", null)
-                        .WithMany("StockRooms1")
-                        .HasForeignKey("SimpleDataId1");
-
                     b.Navigation("Branch");
 
                     b.Navigation("KeepCenter");
@@ -1405,15 +944,23 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Manager");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
+            modelBuilder.Entity("Warehouse.Model.SubstituteProduct", b =>
                 {
-                    b.HasOne("Caspian.Engine.Model.User", "RelatedUser")
-                        .WithMany()
-                        .HasForeignKey("RelatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Warehouse.Model.Goods", "Goods")
+                        .WithMany("Substitutes")
+                        .HasForeignKey("GoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("RelatedUser");
+                    b.HasOne("Warehouse.Model.Goods", "SubstituteGoods")
+                        .WithMany("OtherSubstitutes")
+                        .HasForeignKey("SubstituteGoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Goods");
+
+                    b.Navigation("SubstituteGoods");
                 });
 
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
@@ -1447,6 +994,11 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Memberships");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.BarcodePattern", b =>
+                {
+                    b.Navigation("Goods");
+                });
+
             modelBuilder.Entity("Warehouse.Model.Branch", b =>
                 {
                     b.Navigation("KeepCenters");
@@ -1454,9 +1006,11 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Stocks");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.City", b =>
+            modelBuilder.Entity("Warehouse.Model.Goods", b =>
                 {
-                    b.Navigation("Sellers");
+                    b.Navigation("OtherSubstitutes");
+
+                    b.Navigation("Substitutes");
                 });
 
             modelBuilder.Entity("Warehouse.Model.GoodsProperties", b =>
@@ -1481,80 +1035,23 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Locations");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.MaterialUnit", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("Warehouse.Model.MeasurementUnit", b =>
                 {
+                    b.Navigation("Goods");
+
                     b.Navigation("MainUnits");
 
                     b.Navigation("OtherUnits");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.Product", b =>
+            modelBuilder.Entity("Warehouse.Model.ProductClass", b =>
                 {
-                    b.Navigation("ProductDescriptions");
-
-                    b.Navigation("ReceiptDetails");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.ProductCategory", b =>
-                {
-                    b.Navigation("Categories");
-
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Province", b =>
-                {
-                    b.Navigation("Cities");
-
-                    b.Navigation("Sellers");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Receipt", b =>
-                {
-                    b.Navigation("ReceiptDetails");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Scope", b =>
-                {
-                    b.Navigation("Scopes");
-
-                    b.Navigation("StockRooms");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Seller", b =>
-                {
-                    b.Navigation("Receipts");
-
-                    b.Navigation("SellerCategoryMemberships");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SellerCategory", b =>
-                {
-                    b.Navigation("Categories");
-
-                    b.Navigation("SellerCategoryMemberships");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.SimpleData", b =>
-                {
-                    b.Navigation("StockRooms");
-
-                    b.Navigation("StockRooms1");
+                    b.Navigation("Goods");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
                 {
                     b.Navigation("MaterialAddresses");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
-                {
-                    b.Navigation("Receipts");
                 });
 #pragma warning restore 612, 618
         }

@@ -16,6 +16,12 @@ namespace Caspian.UI
             ChangedEntities = new List<ChangedEntity<TDetail>>();
         }
 
+        void IInternalBatchService<TDetail>.SetDetailsProperty(IList<TDetail> details)
+        {
+            var property = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            property.SetValue(UpsertData, details);
+        }
+
         PropertyInfo ISimpleBatchService.ThirdLevelProperty { get; set; }
 
         public DataView<TDetail> DetailDataView { get; private set; }

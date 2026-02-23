@@ -17,6 +17,12 @@ namespace Caspian.UI
             ChangedEntities = new List<ChangedEntity<TDetail1>>();
         }
 
+        void IInternalBatchService<TDetail1>.SetDetailsProperty(IList<TDetail1> details)
+        {
+            var property = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            property.SetValue(UpsertData, details);
+        }
+
         Expression IInternalBatchService<TDetail1>.GetDetailsFilterExpression()
         {
             var param = Expression.Parameter(typeof(TDetail1), "t");

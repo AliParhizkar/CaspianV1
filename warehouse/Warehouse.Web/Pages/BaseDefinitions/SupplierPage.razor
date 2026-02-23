@@ -1,4 +1,4 @@
-﻿@page "/Warehouse/Supplier"
+﻿@*page "/Warehouse/Supplier"
 @inherits BasePage
 @attribute [Source(21, "کارپرداز")]
 @inject IUIService<Supplier> Service
@@ -10,7 +10,6 @@
         @{
             context.RelatedUser = context.RelatedUser ?? new();
         }
-
         <StringTextBox @bind-Value="context.RelatedUser.LName" ColSpan="4" Title="نام خانوادگی" />
         <StringTextBox @bind-Value="context.IdCard" ColSpan="4" />
     </EntitySearch>
@@ -42,4 +41,4 @@
 @code
 {
 
-}
+}*@

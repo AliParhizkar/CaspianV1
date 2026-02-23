@@ -45,8 +45,12 @@ namespace Warehouse.Service
             });
             RuleFor(t => t.FixLength).Custom(t => t.FixLength == true && t.PropertyType != PropertyType.String, 
                 "طول ثابت فقط باید در حالت متنی پر باشد");
-            RuleFor(t => t.Properties).Custom(t => t.PropertyType == PropertyType.List && (t.Properties == null || t.Properties.Count < 2),
-                "لیست حداقل باید دو آیتم داشته باشد");
+            RuleFor(t => t.Properties).Custom(t =>
+            {
+                if (t.PropertyType == PropertyType.List && (t.Properties == null || t.Properties.Count < 2))
+                    return "لیست حداقل باید دو آیتم داشته باشد";
+                return null;
+            });
             RuleForEach(t => t.Properties).SetValidator(t => new PropertyListService(provider));
         }
     }

@@ -1,5 +1,5 @@
 ﻿@page "/Warehouse/StandardChangeUnit"
-@attribute [Source(1, "تبدیل واحدهای استاندارد")]
+@attribute [Source(26, "تبدیل واحدهای استاندارد")]
 @inherits BasePage
 @inject IUIService<StandardChangeUnit> Service
 @{
@@ -9,6 +9,7 @@
     <EntitySearch Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Name" ColSpan="4" />
         <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MainUnitId" ColSpan="4" TextExpression="t => t.Name" />
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.OtherUnitId" ColSpan="4" TextExpression="t => t.Name" />
     </EntitySearch>
 </div>
 <div class="p-4 pt-1">
@@ -22,13 +23,13 @@
         </Columns>
     </DataGrid>
 </div>
-<Window Service="Service" Title="تبدیل واحد های استاندارد" Style="width:800px" OnOpen="OnWindowOpen">
-    <CaspianForm TEntity="StandardChangeUnit" Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-        <NumericTextBox @bind-Value="context.Rate" ColSpan="4" DigitGrouping />
-        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MainUnitId" ColSpan="4" TextExpression="t => t.Name"
+<Window Service="Service" Title="تبدیل واحد های استاندارد" Style="width:450px" OnOpen="OnWindowOpen">
+    <CaspianForm TEntity="StandardChangeUnit" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <NumericTextBox @bind-Value="context.Rate" ColSpan="8" DigitGrouping />
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MainUnitId" ColSpan="8" TextExpression="t => t.Name"
                   OnChange="async () => await OnMainUnitChange(context)"/>
-        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.OtherUnitId" ColSpan="4" TextExpression="t => t.Name" 
+        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.OtherUnitId" ColSpan="8" TextExpression="t => t.Name" 
                   OnChange="async () => await OnOtherUnitChange(context)"/>
         <div style="text-align:center">
             <span>هر یک </span>

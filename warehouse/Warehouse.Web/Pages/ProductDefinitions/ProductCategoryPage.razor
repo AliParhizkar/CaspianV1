@@ -1,4 +1,4 @@
-﻿@page "/Warehouse/ProductCategory"
+﻿@*page "/Warehouse/ProductCategory"
 @attribute [Source(14, "گروه محصول")]
 @inherits BasePage
 @inject IUIService<ProductCategory> Service
@@ -123,4 +123,4 @@
         await MoveDownCategory(category);
         await Service.OpenWindow(null);
     }
-}
+}*@

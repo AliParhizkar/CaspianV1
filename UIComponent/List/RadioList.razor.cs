@@ -1,6 +1,5 @@
 ﻿using Caspian.Common;
 using System.Reflection;
-using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
@@ -25,6 +24,9 @@ namespace Caspian.UI
 
         [Parameter]
         public string ClassName { get; set; }
+
+        [Parameter]
+        public bool ShowTitle { get; set; }
 
         public object GetValue()
         {
@@ -74,7 +76,9 @@ namespace Caspian.UI
         {
             className = "justify-content-" + DefaultLayout.GetCssClassName();
             if (ClassName.HasValue())
-                className += " " + ClassName;
+                className += $" {ClassName}";
+            if (ShowTitle)
+                className += " c-container";
             base.OnParametersSet();
         }
 

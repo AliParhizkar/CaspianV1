@@ -10,7 +10,8 @@ namespace Warehouse.Service
             : base(provider)
         {
             RuleFor(t => t.Name).Required().UniqueAsync("تبدیل واحدی با این عنوان در سیستم ثبت شده است");
-            RuleFor(t => t.MainUnitId).Custom(t => t.MainUnitId == t.OtherUnitId, "واحد اصلی و تبدیلی نمی توانند یکسان باشند");
+            RuleFor(t => t.MainUnitId).UniqueAsync(t => t.OtherUnitId, "این تبدیل واحد در سیستم ثبت شده است");
+            RuleFor(t => t.OtherUnitId).Custom(t => t.MainUnitId == t.OtherUnitId, "واحد اصلی و تبدیلی نمی توانند یکسان باشند");
             RuleFor(t => t.Rate).Custom(t => t.Rate <= 0, "نسبت در تبدیل واحد باید بزرگتر از صفر باشد.");
         }
     }

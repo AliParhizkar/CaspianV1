@@ -100,7 +100,7 @@ namespace Main
             typeof(Caspian.Engine.Service.ReportParamService).Assembly.InjectServices(builder.Services);
             typeof(Investment.Service.InvestmentUnitService).Assembly.InjectServices(builder.Services);
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
-            typeof(Warehouse.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
+            typeof(Warehouse.Service.BranchService).Assembly.InjectServices(builder.Services);
             typeof(Accounting.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
             #endregion
             builder.Services.AddControllers();
@@ -128,6 +128,7 @@ namespace Main
                 .AddDefaultTokenProviders();
             var app = builder.Build();
             // Configure the HTTP request pipeline.
+            
             if (app.Environment.IsDevelopment())
                 app.UseWebAssemblyDebugging();
             else 

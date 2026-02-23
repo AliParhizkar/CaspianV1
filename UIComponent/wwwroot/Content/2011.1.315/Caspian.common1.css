@@ -1,4 +1,21 @@
-﻿.d-membership {
+﻿.t-radios.c-container .c-title {
+    font-size: 12px;
+    color: #343434;
+    margin-right: 2px;
+    position: absolute;
+    background-color: white;
+    margin-top: -16px;
+    font-weight: bold;
+}
+.t-radios.c-container {
+    border: 1px solid #dbdbdb;
+    padding: 5px 5px 5px 0;
+    margin: 4px;
+    width: calc(100% - 16px) !important;
+    border-radius: 4px;
+    background-color: #f6fbff;
+}
+.d-membership {
     text-align: center;
     color: #4f9995;
     font-size: 16px;
@@ -1541,6 +1558,7 @@ body {
     }
 .t-window-content {
     padding: 8px;
+    transition: height .2s cubic-bezier(0.35, 0, 0.25, 1);
 }
 .c-icon-button .fa {
     color: #423d96;
@@ -1643,18 +1661,26 @@ form > tr {
 
 .t-checkbox {
     white-space: nowrap;
-    line-height: 28px;
     display: inline-block;
-    vertical-align: middle;
     margin: 0 2px;
-    overflow: hidden;
+    height:36px;
+    width:36px;
+    border-radius:50%;
+    text-align:center;
+    padding-top:8px;
 }
-.c-grid-command {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    vertical-align: middle;
-}
+    .t-checkbox:hover {
+        background-color: #edf1fc;
+    }
+    .t-checkbox:active{
+        background-image: repeating-radial-gradient()
+    }
+    .c-grid-command {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        vertical-align: middle;
+    }
 
 
 span, label, td, th {

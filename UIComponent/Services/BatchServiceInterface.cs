@@ -26,6 +26,7 @@ namespace Caspian.UI
         void DetailTypeWindowInitialize(TypeWindow<TDetail> window);
         void DetailFormInitializer(CaspianForm<TDetail> form);
         Expression GetDetailsFilterExpression();
+        void SetDetailsProperty(IList<TDetail> details);
     }
 
     public interface IBatchService<TDetail> : ISimpleBatchService<TDetail> where TDetail : class
