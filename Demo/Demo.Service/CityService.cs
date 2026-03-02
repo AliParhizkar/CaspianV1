@@ -14,7 +14,7 @@ namespace Demo.Service
         }
     }
 
-    public class TestService: BaseService<Test>
+    public class TestService: BaseService<TestProduct>
     {
         public TestService(IServiceProvider provider)
             : base(provider)

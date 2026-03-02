@@ -24,6 +24,11 @@
             <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
             <GridColumn Field="t => t.GoodsNature.EnumText()" />
             <GridColumn Field="t => t.ReservationLevel.EnumText()" />
+            <GridColumn Title="کالاهای مشابه">
+                <Template>
+                    <IconButton Href='@($"/Warehouse/SubstituteProduct/{context.Data.Id}")' IconType="IconType.WpfForms" />
+                </Template>
+            </GridColumn>
             <GridCommandColumns />
         </Columns>
     </DataGrid>

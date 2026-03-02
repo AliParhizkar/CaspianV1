@@ -738,9 +738,7 @@ var caspian;
             this.input = input;
             let lookup = input.closest('.c-lookup');
             this.lookupWindow = lookup;
-            input.onfocus = () => {
-                caspian.common.showErrorMessage(lookup);
-            };
+            input.onfocus = () => caspian.common.showErrorMessage(lookup);
             input.onkeydown = e => {
                 let code = e.keyCode;
                 if (code == 40 || code == 38)
@@ -751,9 +749,7 @@ var caspian;
                         e.preventDefault();
                 }
             };
-            input.onblur = () => {
-                caspian.common.hideErrorMessage(lookup);
-            };
+            input.onblur = () => caspian.common.hideErrorMessage(lookup);
             input.oninput = (e) => __awaiter(this, void 0, void 0, function* () {
                 if (this.watingForSearch)
                     this.initializeTimer();
@@ -1366,7 +1362,7 @@ var caspian;
             if (code >= 48 && code <= 57 || code == 13 || code == 45 && start == 0 && value.substr(end).indexOf('-') == -1)
                 isValid = true;
             var pointIndex = value.indexOf('.');
-            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length == this.numberDigit)
+            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length >= this.numberDigit)
                 isValid = false;
             if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
                 isValid = false;

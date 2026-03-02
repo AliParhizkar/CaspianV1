@@ -1,6 +1,7 @@
 ﻿@namespace Demo.Web.Page
 @page "/Demo/ListView"
 @attribute [Source(5, "List View")]
+@inherits BasePage
 <h2>List view</h2>
 <p>
     We use this control to <b>display a list</b> with a <b>custom Template</b>, unlike the Grid, which has a specific structure, the ListView does not have a specific structure.
@@ -211,7 +212,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="ListView" FileName="Data-Binding" />
+            <Document Page="this" FolderName="ListView" FileName="Data-Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

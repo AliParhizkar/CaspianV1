@@ -1,6 +1,7 @@
 ﻿@page "/Demo/CheckedListbox"
 @attribute [Source(2, "Checked Listbox")]
 @namespace Demo.Web.Pages
+@inherits BasePage
 
 <h2>Checked Listbox</h2>
 <p>
@@ -85,7 +86,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="CheckedListbox" FileName="Binding&Appearance" />
+            <Document Page="this" FolderName="CheckedListbox" FileName="Binding&Appearance" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -110,7 +111,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Lookup" FileName="Data-Binding" />
+            <Document Page="this" FolderName="Lookup" FileName="Data-Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

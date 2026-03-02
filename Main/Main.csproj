@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Aspose.Words" Version="26.2.0" />
 	  <PackageReference Include="EFCore.BulkExtensions" Version="9.0.2" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
 	    <PrivateAssets>all</PrivateAssets>

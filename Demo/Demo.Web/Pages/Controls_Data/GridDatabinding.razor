@@ -1,6 +1,7 @@
 ﻿@namespace Demo.Web
 @page "/Demo/Grid-DataBinding"
 @attribute [Source(3, "Grid-Data binding")]
+@inherits BasePage
 <h2>Grid-Databinding</h2>
 <p>
     After <b>grid data binding</b>, we have <b>paging</b>, <b>default search</b> and <b>sorting (increasing and decreasing) without any coding</b>.
@@ -172,7 +173,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Grid-DataBinding" FileName="Data-Binding" />
+            <Document Page="this" FolderName="Grid-DataBinding" FileName="Data-Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

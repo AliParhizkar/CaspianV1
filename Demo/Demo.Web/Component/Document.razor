@@ -1,7 +1,6 @@
 ﻿@using Mammoth
 @using System.Diagnostics
 
-
 @inject IHostEnvironment host
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
@@ -45,17 +44,17 @@
                 UseShellExecute = true
             });
         }
-        else
+        else 
             Page.ShowMessage("فایل یافت نشد.");
     }
 
     void SaveAsFiltteredHtml()
     {
-        var sourcePath = $"{GetFilePath()}.docx";
-        var outputPath = $"{GetFilePath()}.htm";
-        var converter = new DocumentConverter();
-        string html = converter.ConvertToHtml(File.OpenRead(sourcePath)).Value;
-        File.WriteAllText(outputPath, html);
+        var document = new Aspose.Words.Document($"{GetFilePath()}.docx");
+        document.Save($"{GetFilePath()}.htm");
+        content = File.ReadAllText($"{GetFilePath()}.htm");
+        content = content.Replace("�", "&ensp;");
+        Page.ShowMessage("ثبت با موفقیت انجام شد");
     }
 
     protected override async Task OnInitializedAsync()

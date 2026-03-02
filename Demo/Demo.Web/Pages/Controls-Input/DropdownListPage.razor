@@ -111,10 +111,10 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DropdownList" FileName="Binding" />
+            <Document Page="this" FolderName="DropdownList" FileName="Binding" />
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Enum">
-            <Document FolderName="Enums" FileName="OrderType" />
+            <Document Page="this" FolderName="Enums" FileName="OrderType" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -134,12 +134,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Control size</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="controlSize" />
-                            </div>
+                            <DropdownList @bind-Value="controlSize" ColSpan="8" TotalSpan="12" Title="Control size" />
                             <div class="col-md-12">
                                 <DropdownList Style="@GetStyle()" @bind-Value="orderType" />
                             </div>
@@ -153,12 +148,7 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Enable/Disable</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="disable" />
-                            </div>
+                            <CheckBox @bind-Value="disable" ColSpan="8" TotalSpan="12" Title="Enable/Disable" />
                             <div class="col-md-12">
                                 <DropdownList @bind-Value="nullableOrderType" Disabled="disable" />
                             </div>
@@ -168,7 +158,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DropdownList" FileName="Generalproperties" />
+            <Document Page="this" FolderName="DropdownList" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -188,12 +178,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls">
-                            <div class="ps-5 col-md-6">
-                                <label>Enable filtering</label>
-                            </div>
-                            <div class="pe-5 col-md-6">
-                                <CheckBox @bind-Value="filtering" />
-                            </div>
+                            <CheckBox @bind-Value="filtering" ColSpan="6" TotalSpan="12" Title="Enable filtering" />
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
                                     <DropdownList @bind-Value="orderType" FilterFunc="t => !filtering || t.ConvertToInt() <= 2" />
@@ -209,12 +194,7 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls">
-                            <div class="ps-5 col-md-6">
-                                <label>Disable Items</label>
-                            </div>
-                            <div class="pe-5 col-md-6">
-                                <CheckBox @bind-Value="itemDisable" />
-                            </div>
+                            <CheckBox @bind-Value="itemDisable" ColSpan="6" TotalSpan="12" Title="Disable Items" />
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
                                     <DropdownList @bind-Value="orderType" DisableFunc="t => itemDisable && t.ConvertToInt() > 2" />
@@ -226,7 +206,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DropdownList" FileName="ItemsDisableFilter" />
+            <Document Page="this" FolderName="DropdownList" FileName="ItemsDisableFilter" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

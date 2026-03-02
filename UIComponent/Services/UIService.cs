@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -21,6 +24,7 @@ namespace Caspian.UI
         protected CaspianDataService CaspianDataService;
         protected bool hideFooter, isDevelopment;
         protected ILogger logger;
+        protected PropertyInfo masterProperty;
         ILookup<TEntity> lookup;
 
         public UIService(IServiceProvider serviceProvider)
@@ -312,16 +316,26 @@ namespace Caspian.UI
             if (MasterType != null && MasterId > 0)
             {
                 var param = Expression.Parameter(typeof(TEntity), "t");
-                var foreignKey = typeof(TEntity).GetForeignKey(MasterType);
-                Expression expr = Expression.Property(param, foreignKey);
-                var foreignKeyType = foreignKey.PropertyType;
-
-                if (foreignKey.PropertyType.IsNullableType())
+                Expression expr = null;
+                if (masterProperty == null)
                 {
-                    expr = Expression.Property(expr, "Value");
-                    foreignKeyType = foreignKeyType.GetUnderlyingType();
+                    var foreignKey = typeof(TEntity).GetForeignKey(MasterType);
+                    expr = Expression.Property(param, foreignKey);
+                    var foreignKeyType = foreignKey.PropertyType;
+                    if (foreignKey.PropertyType.IsNullableType())
+                    {
+                        expr = Expression.Property(expr, "Value");
+                        foreignKeyType = foreignKeyType.GetUnderlyingType();
+                    }
+                    expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, foreignKeyType)));
                 }
-                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, foreignKeyType)));
+                else
+                {
+                    var foreignKey = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                    expr = Expression.Property(param, foreignKey);
+
+                }
+                
                 DataView.InternalConditionExpr = expr;
             }
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>

@@ -1,0 +1,71 @@
+﻿@page "/Warehouse/SubstituteProduct/{ProductId:int}"
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="row p-3">
+    <div class="col-md-5">
+        <div>
+            <EntitySearch TEntity="Goods" Service="Service">
+                <StringTextBox @bind-Value="context.Code" placeholder="First name/Last Name/Company name" ColSpan="8" Title="Customer" />
+                <StringTextBox @bind-Value="context.Name" ColSpan="8" SearchType="SearchType.StartWith" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">Others Customers</span>
+            </div>
+        </div>
+        <DataGrid TEntity="Goods" ContentHeight="250" Service="Service" >
+            <Columns>
+                <GridColumn Field="t => t.Name" />
+                <GridColumn Field="t => t.Code" />
+                <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
+                <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش اصلی" />
+            </Columns>
+        </DataGrid>
+    </div>
+    <div class="col-md-1">
+        <div class="align-content-center h-100">
+            <CaspianForm Service="Service">
+                <div class="d-btn-container">
+                    <div>
+                        <IconButton IconType="IconType.AngleRight" />
+                    </div>
+                    <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                </div>
+            </CaspianForm>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <EntitySearch TEntity="Goods" Service="Service">
+
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">Members Customers</span>
+            </div>
+        </div>
+
+        <DataGrid TEntity="SubstituteProduct" Service="Service" ContentHeight="250" DeleteMessage="">
+            <Columns>
+                
+                <GridCommandColumns HideEdit />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public int ProductId { get; set; }
+    MembershipService<Goods, SubstituteProduct, Goods> Service;
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<Goods, SubstituteProduct, Goods>(base.ServiceProvider, t => t.Goods);
+        Service.MasterId = ProductId; /// Set Product Id for service
+        base.OnInitialized();
+    }
+}

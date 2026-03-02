@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Aspose.Words;
 
 namespace Main
 {
@@ -33,7 +34,7 @@ namespace Main
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
                 .SetApplicationName("SharedCookieApp");
             string domain = null;
-
+            new License().SetLicense($"{builder.Environment.ContentRootPath}\\Aspose.Total.NET.lic");
             if (!builder.Environment.IsProduction())
             {
                 CS.Con = builder.Configuration.GetConnectionString("TestDB");

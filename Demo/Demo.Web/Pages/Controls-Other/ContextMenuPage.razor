@@ -1,6 +1,7 @@
 ﻿@page "/Demo/ContextMenu"
 @namespace Demo.Web.Pages
 @attribute [Source(17, "Context Menu")]
+@inherits BasePage
 <h2>Context menu & Tooltip</h2>
 <p>
     Context menu use for
@@ -55,7 +56,7 @@
 
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Window" FileName="Generalproperties" />
+            <Document Page="this" FolderName="Other" FileName="ContextMenu" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -75,21 +76,13 @@
                     </div>
                     <div class="col-md-7">
                         <div class="row c-controls ps-4">
-                            <div class="col-md-4">
-                                <label>Text</label>
-                            </div>
-                            <div class="col-md-8">
-                                <StringTextBox @bind-Value="@tooltipText" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Position</label>
-                            </div>
-                            <div class="col-md-8">
-                                <RadioList @bind-Value="tooltipPosition" OnChange="SetTooltipText" />
-                            </div>
+                            <StringTextBox @bind-Value="@tooltipText" ColSpan="8" TotalSpan="12" Title="Text" />
+                            <RadioList @bind-Value="tooltipPosition" OnChange="SetTooltipText" ColSpan="8" Title="Position" TotalSpan="12" />
                             <div>
-                                <Tooltip>
+                                <Tooltip Text="@tooltipText">
+                                    <div style="width:200px; height:100px;border:1px dashed gray;margin:10px auto ">
 
+                                    </div>
                                 </Tooltip>
                             </div>
                         </div>
@@ -99,7 +92,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Window" FileName="Generalproperties" />
+            <Document Page="this" FolderName="Window" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

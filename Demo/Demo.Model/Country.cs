@@ -30,12 +30,35 @@ namespace Demo.Model
         public IList<IdentificationDetail> IdentificationDetailsRegCountry { get; set; }
     }
 
-    [Table("Test", Schema = "demo")]
-    public class Test
+    [Table("TestProducts")]
+    public class TestProduct
     {
         [Key]
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        [InverseProperty(nameof(SameProduct.Product))]
+        public IList<SameProduct> Products { get; set; }
+
+        [InverseProperty(nameof(SameProduct.MaterialSame))]
+        public IList<SameProduct> SameProducts { get; set; }
+    }
+
+    [Table("SameProducts")]
+    public class SameProduct
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public int ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public TestProduct Product { get; set; }
+
+        public int MaterialSameId { get; set; }
+
+        [ForeignKey(nameof(MaterialSameId))]
+        public TestProduct MaterialSame { get; set; }
     }
 }

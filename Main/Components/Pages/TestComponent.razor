@@ -1,41 +1,15 @@
 ﻿@page "/Test"
-@inject IUIService<Demo.Model.Test> Service
 @inherits BasePage
 @using Investment.Model
 @{
     base.BuildRenderTree(__builder);
 }
 
-@if (value.HasValue)
-{
-    <progress value="@value" max="100" />
-    if (dates != null)
-    {
-        foreach(var date in dates)
-        {
-            <div>@date</div>
-        }
-    }
-}
-<button disabled="@(value != null)" @onclick="Progress">Click me(@value)</button>
+<div style="width:500px;margin:5px auto">
+    <NumericTextBox @bind-Value="value" />
+</div>
 
 @code
 {
-    int? value;
-    IList<string> dates;
-
-    async Task Progress()
-    {
-        var startDate = DateTime.Now;
-        dates = new List<string>();
-        for (var index = 0; index < 100; index++)
-        {
-            value = index + 1;
-            await Task.Delay(100);
-            var dif = (DateTime.Now - startDate);
-            dates.Add(dif.Milliseconds.ToString());
-            StateHasChanged();
-        }
-        //value = null;
-    }
+    decimal value;
 }

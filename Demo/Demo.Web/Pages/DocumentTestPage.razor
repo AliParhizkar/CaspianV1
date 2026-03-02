@@ -1,6 +1,8 @@
 ﻿@page "/Demo/DocumentTest/{FileName}/{FolderName}"
 @attribute [Source(87, "Document Generator")]
-<Document FileName="@FileName" FolderName="@FolderName" /> 
+@inherits BasePage
+
+<Document Page="this" FileName="@FileName" FolderName="@FolderName" /> 
 @code 
 {
     [Parameter]

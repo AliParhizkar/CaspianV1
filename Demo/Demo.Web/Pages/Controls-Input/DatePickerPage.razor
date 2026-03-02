@@ -2,6 +2,7 @@
 @namespace Demo.Web.Pages
 @using System.Globalization;
 @attribute [Source(9, "Date Picker")]
+@inherits BasePage
 <h2>Date Picker</h2>
 <h3>Binding</h3>
 <p>
@@ -56,7 +57,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DatePicker" FileName="Binding" />
+            <Document Page="this" FolderName="DatePicker" FileName="Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -92,7 +93,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DatePicker" FileName="DefaultMode" />
+            <Document Page="this" FolderName="DatePicker" FileName="DefaultMode" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -145,7 +146,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DatePicker" FileName="GeneralProperties" />
+            <Document Page="this" FolderName="DatePicker" FileName="GeneralProperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -185,7 +186,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="DatePicker" FileName="Range" />
+            <Document Page="this" FolderName="DatePicker" FileName="Range" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

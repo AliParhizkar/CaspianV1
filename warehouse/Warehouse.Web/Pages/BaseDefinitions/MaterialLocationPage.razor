@@ -4,7 +4,7 @@
 @attribute [Source(2, "محل فیزیکی کالا")]
 
 @{
-base.BuildRenderTree(__builder);
+    base.BuildRenderTree(__builder);
 }
 
 <div style="width:600px;margin:10px auto">
@@ -51,8 +51,13 @@ base.BuildRenderTree(__builder);
 
 <Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="محل فیزیکی کالا">
     <CaspianForm Model="materialLocation" TEntity="MaterialLocation" OnValidSubmit="UpsertAddress">
-        <div class="p-3 text-center">@(parentNodeTitle)</div>
-        <StringTextBox @ref="firstControl" @bind-Value="context.Title" ColSpan="9" />
+        @if (parentNode != null)
+        {
+            <StringTextBox Value="@parentNode.Code" ColSpan="9" Title="کد" Style="direction:ltr" Disabled />
+            <StringTextBox Value="@parentNode.Title" ColSpan="9" Title="عنوان" Disabled />
+        }
+        <StringTextBox @ref="firstControl" @bind-Value="context.Code" ColSpan="9" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="9" />
         <WindowCommandButtons ColSpan="9" />
     </CaspianForm>
 </Window>
@@ -65,7 +70,7 @@ base.BuildRenderTree(__builder);
     MaterialLocation materialLocation;
     TreeView<MaterialLocation> tree;
     IControl firstControl;
-    string parentNodeTitle;
+    MaterialLocation parentNode;
 
     async Task ReloadData()
     {
@@ -81,7 +86,7 @@ base.BuildRenderTree(__builder);
             ///Edit mode
             var locationId = Convert.ToInt32(nodeView.Value);
             materialLocation = await service.GetAll().Include(t => t.ParentLocation).SingleAsync(locationId);
-            parentNodeTitle = materialLocation.ParentLocation?.Title;
+            parentNode = materialLocation;
 
         }
         else
@@ -90,9 +95,9 @@ base.BuildRenderTree(__builder);
             materialLocation = new MaterialLocation();
             materialLocation.ParentLocationId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
             if (materialLocation.ParentLocationId.HasValue)
-                parentNodeTitle = (await service.SingleAsync(materialLocation.ParentLocationId.Value)).Title;
+                parentNode = (await service.SingleAsync(materialLocation.ParentLocationId.Value));
             else
-                parentNodeTitle = null;
+                parentNode = null;
         }
         materialLocation.StockroomId = stockroomId.Value;
         status = WindowStatus.Open;

@@ -1,6 +1,7 @@
 ﻿@page "/Demo/Timepicker"
 @namespace Demo.Web.Pages
 @attribute [Source(15, "Time Picker")]
+@inherits BasePage
 <h2>Time Picker</h2>
 <h3>Binding</h3>
 <p>
@@ -110,13 +111,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Control size</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="controlSize" />
-                            </div>
-                            <div class="col-md-12">
+                            <DropdownList @bind-Value="controlSize" ColSpan="8" TotalSpan="12" Title="Control size" />
+                            <div class="col-md-12 p-2">
                                 <Timepicker Style="@GetStyle()" @bind-Value="time" />
                             </div>
                         </div>
@@ -129,13 +125,8 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Enable/Disable</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="disable" />
-                            </div>
-                            <div class="col-md-12">
+                            <CheckBox @bind-Value="disable" ColSpan="8" TotalSpan="12" Title="Enable/Disable"/>
+                            <div class="col-md-12 p-2">
                                 <Timepicker @bind-Value="time" Disabled="disable" />
                             </div>
                         </div>
@@ -148,7 +139,7 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-2">
                                 <Timepicker @bind-Value="time" AutoSelect />
                             </div>
                         </div>
@@ -157,7 +148,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="TimePicker" FileName="Generalproperties" />
+            <Document Page="this" FolderName="TimePicker" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -176,31 +167,22 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-2">
                                 <Timepicker @bind-Value="time" FromTime="fromTime" ToTime="toTime" />
                             </div>
-                            <div class="col-md-4">
-                                <label>From time</label>
-                            </div>
-                            <div class="col-md-8">
-                                <Timepicker @bind-Value="fromTime" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>To Time</label>
-                            </div>
-                            <div class="col-md-8">
-                                <Timepicker @bind-Value="toTime" />
-                            </div>
+                            <Timepicker @bind-Value="fromTime" ColSpan="8" TotalSpan="12" Title="From time" />
+                            <Timepicker @bind-Value="toTime" ColSpan="8" TotalSpan="12" Title="To Time"/>
                         </div>
                     </div>
                 </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="TimePicker" FileName="Range" />
+            <Document Page="this" FolderName="TimePicker" FileName="Range" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
+
 @code
 {
     TimeSpan time = DateTime.Now.TimeOfDay;

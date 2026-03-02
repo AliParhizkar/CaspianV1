@@ -11,9 +11,7 @@
             this.input = input
             let lookup = input.closest('.c-lookup') as HTMLElement;
             this.lookupWindow = lookup;
-            input.onfocus = () => {
-                caspian.common.showErrorMessage(lookup);
-            }
+            input.onfocus = () => caspian.common.showErrorMessage(lookup);
             input.onkeydown = e => {
                 let code = e.keyCode;
                 if (code == 40 || code == 38)
@@ -24,9 +22,7 @@
                         e.preventDefault();
                 }
             }
-            input.onblur = () => {
-                caspian.common.hideErrorMessage(lookup);
-            }
+            input.onblur = () => caspian.common.hideErrorMessage(lookup);
             input.oninput = async e => {
                 if (this.watingForSearch)
                     this.initializeTimer();

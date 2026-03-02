@@ -1,27 +1,15 @@
 ﻿@page "/Demo/PersianMonth"
 @namespace Demo.Web.Pages
+@inherits BasePage
 @attribute [Source(19, "Desk calendar")]
 <h2>Persian Calendar</h2>
 
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
-            <div class="row c-controls p-4">
-                <div class="col-md-1">
-                    <label>سال</label>
-                </div>
-                <div class="col-md-3 pe-2">
-                    <DropdownList @bind-Value="year" Source="years" />
-                </div>
-                <div class="col-md-1 9s- 2">
-                    <label>ماه</label>
-                </div>
-                <div class="col-md-3">
-                    <DropdownList @bind-Value="month" />
-                </div>
-                <div class="col-md-4">
-                    <span></span>
-                </div>
+            <div class="row c-controls p-2 ps-5 pe-5">
+                <DropdownList @bind-Value="year" Source="years" ColSpan="4" TotalSpan="6" Title="سال" />
+                <DropdownList @bind-Value="month" ColSpan="4" TotalSpan="6" Title="ماه" />
             </div>
             <div class="p-3">
                 <PersianMonthComponent Year="year" Month="month">
@@ -32,7 +20,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
-            <Document FolderName="BasePage" FileName="Calendar" />
+            <Document Page="this" FolderName="BasePage" FileName="Calendar" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

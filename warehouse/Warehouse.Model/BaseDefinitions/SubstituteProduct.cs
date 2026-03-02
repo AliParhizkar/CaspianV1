@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Warehouse.Model
 {
+    [Table("SubstituteProducts", Schema = "wh")]
     public class SubstituteProduct
     {
         [Key]

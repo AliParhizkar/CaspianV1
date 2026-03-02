@@ -32,22 +32,22 @@
     <Tabs>
         <TabPanelItem Title="C# code">
             <div class="p-4">
-                <Document FolderName="Service" FileName="Service-Declaration" />
+                <Document Page="this" FolderName="Service" FileName="Service-Declaration" />
                 <hr />
                 <h5>Or in a simpler way</h5>
                 <div>
-                    <Document FolderName="Service" FileName="Service-Declaration-1" />
+                    <Document Page="this" FolderName="Service" FileName="Service-Declaration-1" />
                 </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="Razor">
             <div class="p-4">
                 <h5>Section 1</h5>
-                <Document FolderName="Service" FileName="Service-Declaration-razor" />
+                    <Document Page="this" FolderName="Service" FileName="Service-Declaration-razor" />
                 <hr />
                 <h5>Section 2</h5>
                 <div>
-                    <Document FolderName="Service" FileName="Service-Declaration-1-razor" />
+                    <Document Page="this" FolderName="Service" FileName="Service-Declaration-1-razor" />
                 </div>
             </div>
         </TabPanelItem>
@@ -73,12 +73,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Country</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="SelectListItem" TValue="int?" @bind-Value="upsertCountryId" Source="countries" OnChange="() => upsertResult = null" />
-                            </div>
+                            <ComboBox TEntity="SelectListItem" TValue="int?" @bind-Value="upsertCountryId" Source="countries" 
+                                      OnChange="() => upsertResult = null" ColSpan="8" TotalSpan="12" Title="Country" />
                             <div class="ps-5 col-md-4">
                                 <label>Country id</label>
                             </div>
@@ -110,12 +106,8 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Country</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="deleteCountryId" TextExpression="t => t.Title + '(' + t.Cities.Count() + ')'" OnChange="() => deleteResult = null" />
-                            </div>
+                            <ComboBox TEntity="Country" TValue="int?" @bind-Value="deleteCountryId" TextExpression="t => t.Title + '(' + t.Cities.Count() + ')'"
+                                      OnChange="() => deleteResult = null" ColSpan="8" TotalSpan="12" Title="Country" />
                             <div class="ps-5 col-md-4">
                                 <label>Country id</label>
                             </div>
@@ -147,12 +139,8 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Order Type</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <DropdownList @bind-Value="orderType" Source='SelectListItem.CreateList("Salon", "Takeout", "Tel", "Internet", "Invalid order type")' OnChange="() => enumResult = null" />
-                            </div>
+                            <DropdownList @bind-Value="orderType" Source='SelectListItem.CreateList("Salon", "Takeout", "Tel", "Internet", "Invalid order type")'
+                                          OnChange="() => enumResult = null" ColSpan="8" TotalSpan="12" Title="Order Type" />
                             <div class="ps-5 col-md-4">
                                 <label>Enum value</label>
                             </div>

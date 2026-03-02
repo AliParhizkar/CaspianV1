@@ -27,12 +27,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Control size</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto" />
-                            </div>
+                            <DropdownList @bind-Value="controlSize" FilterFunc="t => t != ControlSize.Auto" ColSpan="8" TotalSpan="12" Title="Control size" />
                             <div class="col-md-4">
                                 <label>Window</label>
                             </div>
@@ -49,18 +44,8 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Modal</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="modal" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Draggable</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="draggable" />
-                            </div>
+                            <CheckBox @bind-Value="modal" Title="Modal" ColSpan="8" TotalSpan="12" />
+                            <CheckBox @bind-Value="draggable" Title="Draggable" ColSpan="8" TotalSpan="12" />
                             <div class="col-md-4">
                                 <label>Window</label>
                             </div>
@@ -77,18 +62,9 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Title</label>
-                            </div>
-                            <div class="col-md-8">
-                                <StringTextBox @bind-Value="title" Disabled="customHeader" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Custom header</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="customHeader" />
-                            </div>
+                            <StringTextBox @bind-Value="title" Disabled="customHeader" Title="Title" ColSpan="8" TotalSpan="12" />
+                            <CheckBox @bind-Value="customHeader" Title="Custom header" ColSpan="8" TotalSpan="12" />
+
                             <div class="col-md-4">
                                 <label>Window</label>
                             </div>
@@ -101,7 +77,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Window" FileName="Generalproperties" />
+            <Document FolderName="Window" Page="this" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -133,7 +109,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="Window" FileName="CascadeWindow" />
+            <Document Page="this" FolderName="Window" FileName="CascadeWindow" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

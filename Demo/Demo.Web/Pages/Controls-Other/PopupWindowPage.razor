@@ -15,152 +15,93 @@
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="d-content">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <h4>Vertical and horizontal align</h4>
                         <span class="c-demo-description">In this example, we use <b>HorizontalAlign parameter</b> for <b>horizontal align(left, center, right)</b> and use <b>VerticalAlign parameter</b> for vertical align(top, middle, bottom).</span>
                     </div>
-                    <div class="col-md-6">
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Vertical align</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <RadioList @bind-Value="vAlign" />
-                            </div>
-                            <div class="ps-5 col-md-4">
-                                <label>Horizontal align</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <RadioList @bind-Value="hAlign" />
-                            </div>
-                            <div class="ps-5 col-md-4">
+                    <div class="col-md-7">
+                        <div class="row c-controls ps-3">
+                            <RadioList @bind-Value="vAlign" ColSpan="8" TotalSpan="12" Title="Vertical align" />
+                            <RadioList @bind-Value="hAlign" ColSpan="8" TotalSpan="12" Title="Horizontal align" />
+
+                            <div class="col-md-4 ps-1">
                                 <label>Popup window</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <button class="c-btn c-primary" @onclick="() => alignStatus = WindowStatus.Open">Show Popup</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <hr />
                         <h4>Custom position</h4>
                         <span class="c-demo-description">In this example, we use <b>Top, Left, Right and Bottom parameters</b> to set <b>top, left, right, bottom position</b>, These parameters are <b>nullable integers</b> and, if set, <b>override the align parameters</b>.</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-12">
+                        <div class="row c-controls ps-5">
+                            <div class="col-md-12">
                                 <CheckBox @bind-Value="enableCustomHorizontalAlign" Title="Custom horizontal align" />
                             </div>
                             @if (enableCustomHorizontalAlign)
                             {
-                                <div class="col-md-3 ps-5">
-                                    <label>Left</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <NumericTextBox @bind-Value="left" Disabled="right.HasValue" maxlength="3" />
-                                </div>
-                                <div class="col-md-3 ps-5">
-                                    <label>Right</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <NumericTextBox @bind-Value="right" Disabled="left.HasValue" maxlength="3" />
-                                </div>
+                                <NumericTextBox @bind-Value="left" Disabled="right.HasValue" maxlength="3" ColSpan="3" TotalSpan="6" Title="Left" />
+                                <NumericTextBox @bind-Value="right" Disabled="left.HasValue" maxlength="3" ColSpan="3" TotalSpan="6" Title="Right" />
                             }
                             else
                             {
                                 left = null;
                                 right = null;
-                                <div class="col-md-12 ps-5 pe-5">
+                                <div class="col-md-12">
                                     <RadioList @bind-Value="customHorizontalAlign" />
                                 </div>
                             }
-                            <div class="ps-5 col-md-12">
+                            <div class="col-md-12">
                                 <CheckBox @bind-Value="enableCustomVerticalAlign" Title="Custom vertical align" />
                             </div>
                             @if (enableCustomVerticalAlign)
                             {
-                                <div class="col-md-3 ps-5">
-                                    <label>Top</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <NumericTextBox @bind-Value="top" Disabled="bottom.HasValue" maxlength="3" />
-                                </div>
-                                <div class="col-md-3 ps-5">
-                                    <label>Bottom</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <NumericTextBox @bind-Value="bottom" Disabled="top.HasValue" maxlength="3" />
-                                </div>
+                                <NumericTextBox @bind-Value="top" Disabled="bottom.HasValue" maxlength="3" ColSpan="3" TotalSpan="6" Title="Top" />
+                                <NumericTextBox @bind-Value="bottom" Disabled="top.HasValue" maxlength="3" ColSpan="3" TotalSpan="6" Title="Bottom" />
                             }
                             else
                             {
                                 top = null;
                                 bottom = null;
-                                <div class="col-md-12 ps-5 pe-5">
+                                <div class="col-md-12">
                                     <RadioList @bind-Value="customVerticalAlign" />
                                 </div>
                             }
-                            <div class="ps-5 col-md-6">
+                            <div class="col-md-6">
                                 <label>Popup window</label>
                             </div>
-                            <div class="pe-5 col-md-6 text-center">
+                            <div class="col-md-6 text-center">
                                 <button class="c-btn c-primary" @onclick="() => customPositionStatus = WindowStatus.Open">Show Popup</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <hr />
                         <h4>Target element</h4>
                         <span class="c-demo-description">In this example, </span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="col-md-4">
-                                <label>Target Horizontal Anchor</label>
-                            </div>
-                            <div class="col-md-8">
-                                <RadioList @bind-Value="hAnchorTarget" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Target Vertical Anchor </label>
-                            </div>
-                            <div class="col-md-8">
-                                <RadioList @bind-Value="vAnchorTarget" />
-                            </div>
+                        <div class="row c-controls ps-5">
+                            <RadioList @bind-Value="hAnchorTarget" ColSpan="8" TotalSpan="12" Title="Target Horizontal Anchor" />
+                            <RadioList @bind-Value="vAnchorTarget" ColSpan="8" TotalSpan="12" Title="Target Vertical Anchor" />
                             <div class="row">
                                 <div @ref="targetElement" class="col-md-5 d-target-element">
                                     Target Element
                                 </div>
-                                <div class="col-md-7 row">
-                                    <div class="col-md-6 ps-3">
-                                        <label>Offset Left</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <NumericTextBox @bind-Value="offsetLeft" />
-                                    </div>
-                                    <div class="col-md-6 ps-3">
-                                        <label>Offset top</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <NumericTextBox @bind-Value="offsetTop" />
-                                    </div>
+                                <div class="col-md-7 row ps-3">
+                                    <NumericTextBox @bind-Value="offsetLeft" ColSpan="6" TotalSpan="12" Title="Offset Left" />
+                                    <NumericTextBox @bind-Value="offsetTop" ColSpan="6" TotalSpan="12" Title="Offset top" />
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <label>Horizontal Anchor</label>
-                            </div>
-                            <div class="col-md-8">
-                                <RadioList @bind-Value="hAnchor" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Vertical Anchor</label>
-                            </div>
-                            <div class="col-md-8">
-                                <RadioList @bind-Value="vAnchor" />
-                            </div>
-                            <div class="col-md-6 ps-5">
+                            <RadioList @bind-Value="hAnchor" ColSpan="8" TotalSpan="12" Title="Horizontal Anchor" />
+                            <RadioList @bind-Value="vAnchor" ColSpan="8" TotalSpan="12" Title="Vertical Anchor" />
+                            <div class="col-md-6">
                                 <label>Popup window</label>
                             </div>
                             <div class="col-md-6 pe-6 text-center">
@@ -168,12 +109,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <hr />
                         <h4>Custom appearance</h4>
                         <span class="c-demo-description">In this example we use the <b>Style Parameter</b> to create a custom appearance</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <hr />
                         <div class="row c-controls">
                             <div class="col-md-6 ps-5">
@@ -184,12 +125,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <hr />
                         <h4>Prevent closing</h4>
                         <span class="c-demo-description">In this example we use the <b>AutoHide Parameter</b> to <b>enable/disable auto hide</b>, this parameter is <b>boolean</b>.</span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <hr />
                         <div class="row c-controls">
                             <div class="col-md-6 ps-5">
@@ -204,7 +145,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="PopupWindow" FileName="PopupWindow" />
+            <Document Page="this" FolderName="PopupWindow" FileName="PopupWindow" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

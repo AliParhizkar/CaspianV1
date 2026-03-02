@@ -1,12 +1,14 @@
 ﻿using System.Data;
 using Caspian.Common;
+using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
+using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
-using Caspian.Engine.Model;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.UI
 {
@@ -23,12 +25,22 @@ namespace Caspian.UI
             if (properties.Count() == 0)
                 throw new CaspianException($"In type {typeof(TAccess).Name} There is no property of type {typeof(TOther).Name}");
             if (properties.Count() > 1)
-                throw new CaspianException($"In type {typeof(TAccess).Name} There is more than 1 property of type {typeof(TOther).Name}");
+                throw new CaspianException($"In type {typeof(TAccess).Name} There is more than 1 property of type {typeof(TOther).Name}. please specify master property");
             var property = properties.Single();
             property.SetValue(base.Search, Activator.CreateInstance<TOther>());
             Search = Activator.CreateInstance<TOther>();
             MasterType = typeof(TMaster);
-            base.HideInsertIcon = true;
+            HideInsertIcon = true;
+        }
+
+        public MembershipService(IServiceProvider provider, Expression<Func<TAccess, TMaster>> masterPropertyExpression)
+            :base(provider)
+        {
+            masterProperty = (masterPropertyExpression.Body as MemberExpression).Member as PropertyInfo;
+            masterProperty.SetValue(base.Search, Activator.CreateInstance<TOther>());
+            Search = Activator.CreateInstance<TOther>();
+            MasterType = typeof(TMaster);
+            HideInsertIcon = true;
         }
 
         /// <summary>
@@ -93,7 +105,14 @@ namespace Caspian.UI
             DataView.InsertIconState(!onlyForSearch);
             if (typeof(TOther) == typeof(User))
                 return;
-            var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+            PropertyInfo masterIdInfo = null;
+            if (masterProperty == null)
+                masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+            else
+            {
+                var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                masterIdInfo = typeof(TAccess).GetProperty(name);
+            }
             var u = Expression.Parameter(typeof(TAccess), "u");
             Expression innerExpr = Expression.Property(u, masterIdInfo);
             if (innerExpr.Type.IsNullableType())
@@ -101,7 +120,9 @@ namespace Caspian.UI
             innerExpr = Expression.Equal(innerExpr, Expression.Constant(Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType())));
             innerExpr = Expression.Lambda(innerExpr, u);
             var accessListProperties = typeof(TOther).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
-            if (accessListProperties.Count() != 1)
+            if (masterProperty != null)
+                accessListProperties = accessListProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == masterProperty.Name);
+            if (accessListProperties.Count() == 0)
                 throw new CaspianException("Error: Type " + typeof(TOther).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
             Expression expression = Expression.Property(Expression.Parameter(typeof(TOther), "t"), accessListProperties.Single());
             var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Any").LastOrDefault().MakeGenericMethod(typeof(TAccess));

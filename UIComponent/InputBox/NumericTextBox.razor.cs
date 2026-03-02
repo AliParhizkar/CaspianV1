@@ -33,7 +33,7 @@ namespace Caspian.UI
             }
             var type = typeof(TValue).GetUnderlyingType();
             PrecisionAttribute attribute = null;
-            if (attribute != null)
+            if (ValueExpression != null)
             {
                 var member = (ValueExpression.Body as MemberExpression).Member;
                 attribute = member.GetCustomAttribute<PrecisionAttribute>();
@@ -77,8 +77,8 @@ namespace Caspian.UI
             attributes["total"] = total;
             if (DigitGrouping)
                 attributes["digit-grouping"] = true;
-            if (NumberDigit.HasValue)
-                attributes["number-digit"] = NumberDigit.Value;
+            if (numberDigit > 0)
+                attributes["number-digit"] = numberDigit;
             if (Style.HasValue())
                 attributes["style"] = Style;
 
@@ -107,10 +107,7 @@ namespace Caspian.UI
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender && (EntitySearch == null || ParentControlIsValueSearch))
-            {
-                var regular = numberDigit > 0 ? "" : "^-?\\d{0," + total + "}$";
-                await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement, regular);
-            }
+                await jsRuntime.InvokeVoidAsync("caspian.common.bindTextBox", InputElement);
             await base.OnAfterRenderAsync(firstRender);
         }
     }

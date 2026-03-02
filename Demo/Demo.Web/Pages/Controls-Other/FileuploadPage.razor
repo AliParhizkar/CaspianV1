@@ -58,7 +58,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="FileUpload" FileName="FileUpload" />
+            <Document Page="this" FolderName="FileUpload" FileName="FileUpload" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -106,7 +106,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="FileUpload" FileName="Generalproperties" />
+            <Document Page="this" FolderName="FileUpload" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -149,12 +149,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls align-items-center">
-                            <div class="col-md-6 ps-5">
-                                <label>Maximum size of file</label>
-                            </div>
-                            <div class="col-md-6">
-                                <DropdownList @bind-Value="fileSizeSingle" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
-                            </div>
+                            <DropdownList @bind-Value="fileSizeSingle" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))"
+                                          ColSpan="6" TotalSpan="12" Title="Maximum size of file" />
                             <div class="col-md-6 ps-5">
                                 <label>Fileupload</label>
                             </div>
@@ -182,18 +178,10 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls">
-                            <div class="col-md-6">
-                                <label>Maximum size of files</label>
-                            </div>
-                            <div class="col-md-6">
-                                <DropdownList @bind-Value="fileSizeMultiple" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))" />
-                            </div>
-                            <div class="col-md-6">
-                                <label>Maximum numer of files file</label>
-                            </div>
-                            <div class="col-md-6">
-                                <DropdownList @bind-Value="fileCount" Source="@(SelectListItem.CreateList("Two", "Three", "Five", "Eight", "Ten"))" />
-                            </div>
+                            <DropdownList @bind-Value="fileSizeMultiple" Source="@(SelectListItem.CreateList(filesSize.Select(t => t + "M").ToArray()))"
+                                          ColSpan="6" TotalSpan="12" Title="Maximum size of files" />
+                            <DropdownList @bind-Value="fileCount" Source="@(SelectListItem.CreateList("Two", "Three", "Five", "Eight", "Ten"))"
+                                          ColSpan="6" TotalSpan="12" Title="Maximum numer of files file" />
                             <div class="col-md-6">
                                 <label>Fileupload</label>
                             </div>
@@ -209,7 +197,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="FileUpload" FileName="LargFileUpload" />
+            <Document Page="this" FolderName="FileUpload" FileName="LargFileUpload" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -258,7 +246,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="FileUpload" FileName="Progressbar" />
+            <Document Page="this" FolderName="FileUpload" FileName="Progressbar" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

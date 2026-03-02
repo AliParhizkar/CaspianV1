@@ -21,23 +21,18 @@
                         <span class="c-demo-description">In this example, we fill combobox from <b>Source parameter</b> and bind it to <b>string</b>.</span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Country</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="CountryId" Source="countries" />
-                            </div>
-                            <div class="ps-5 col-md-4">
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="CountryId" Source="countries" ColSpan="8" Title="Country" TotalSpan="12" />
+                            <div class="col-md-4">
                                 <label>Country id</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <label style="color:red;">@(CountryId ?? "---")</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Country id</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 @if (countries != null)
                                 {
                                     <label style="color:red;">@(countries.SingleOrDefault(t => t.Value == CountryId)?.Text ?? "---")</label>
@@ -49,7 +44,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="ComboBox" FileName="Binding" />
+            <Document Page="this" FolderName="ComboBox" FileName="Binding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -72,13 +67,8 @@
                         </span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Country</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" />
-                            </div>
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" Title="Country" ColSpan="8" TotalSpan="12" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -90,13 +80,8 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Country city</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="City" TValue="int?" @bind-Value="cityId" TextExpression="t => t.Country.Title + ' ' + t.Title" />
-                            </div>
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TEntity="City" TValue="int?" @bind-Value="cityId" TextExpression="t => t.Country.Title + ' ' + t.Title" Title="Country city" ColSpan="8" TotalSpan="12" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -108,13 +93,9 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Customer</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
-                            </div>
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" Title="Customer" ColSpan="8" TotalSpan="12"
+                                      TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -126,31 +107,27 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Menu Category</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TValue="int" TEntity="MenuCategory" @bind-Value="menuCategoryId" TextExpression="t => t.Title">
-                                    <Template Context="Category">
-                                        <div class="d-menu-categories">
-                                            <TextField Field="t => t.IconFont">
-                                                <Template>
-                                                    <i class="d-icon @(context)"></i>
-                                                </Template>
-                                            </TextField>
-                                            <TextField Field="t => t.Title" />
-                                        </div>
-                                    </Template>
-                                </ComboBox>
-                            </div>
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TValue="int" TEntity="MenuCategory" @bind-Value="menuCategoryId" TextExpression="t => t.Title"
+                                      Title="Menu Category" ColSpan="8" TotalSpan="12">
+                                <Template Context="Category">
+                                    <div class="d-menu-categories">
+                                        <TextField Field="t => t.IconFont">
+                                            <Template>
+                                                <i class="d-icon @(context)"></i>
+                                            </Template>
+                                        </TextField>
+                                        <TextField Field="t => t.Title" />
+                                    </div>
+                                </Template>
+                            </ComboBox>
                         </div>
                     </div>
                 </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="ComboBox" FileName="DataBinding" />
+            <Document Page="this" FolderName="ComboBox" FileName="DataBinding" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -170,19 +147,11 @@
                         </span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Real customer</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression='t => t.FName + " " + t.LName' ConditionExpression="t => t.CustomerType == CustomerType.Real" />
-                            </div>
-                            <div class="ps-5 col-md-4">
-                                <label>legal customer</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" TextExpression="t => t.CompanyName" ConditionExpression="t => t.CustomerType == CustomerType.Legal" />
-                            </div>
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" Title="Real customer" ColSpan="8" TotalSpan="12"
+                                      TextExpression='t => t.FName + " " + t.LName' ConditionExpression="t => t.CustomerType == CustomerType.Real" />
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" Title="legal customer" ColSpan="8" TotalSpan="12"
+                                      TextExpression="t => t.CompanyName" ConditionExpression="t => t.CustomerType == CustomerType.Legal" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -194,26 +163,18 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-4">
-                                <label>Ascending sort</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" OrderByExpression="t => t.Title" />
-                            </div>
-                            <div class="ps-5 col-md-4">
-                                <label>Descending sort</label>
-                            </div>
-                            <div class="pe-5 col-md-8">
-                                <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" OrderByExpression="t => t.Title" SortType="SortType.Decs" />
-                            </div>
+                        <div class="row c-controls ps-5 pe-2">
+                            <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" Title="Ascending sort" ColSpan="8" TotalSpan="12"
+                                      TextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                            <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" Title="Descending sort" ColSpan="8" TotalSpan="12"
+                                      TextExpression="t => t.Title" OrderByExpression="t => t.Title" SortType="SortType.Decs" />
                         </div>
                     </div>
                 </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="ComboBox" FileName="FilteringSorting" />
+            <Document Page="this" FolderName="ComboBox" FileName="FilteringSorting" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -273,7 +234,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Source">
-            <Document FolderName="ComboBox" FileName="Generalproperties" />
+            <Document Page="this" FolderName="ComboBox" FileName="Generalproperties" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -338,7 +299,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="ComboBox" FileName="Cascade" />
+            <Document Page="this" FolderName="ComboBox" FileName="Cascade" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -376,7 +337,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document FolderName="ComboBox" FileName="Cascade" />
+            <Document Page="this" FolderName="ComboBox" FileName="Cascade" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

@@ -127,7 +127,8 @@
             if (code >= 48 && code <= 57 || code == 13 || code == 45 && start == 0 && value.substr(end).indexOf('-') == -1)
                 isValid = true;
             var pointIndex = value.indexOf('.');
-            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length == this.numberDigit)
+
+            if (pointIndex >= 0 && start == end && end > pointIndex && value.split('.')[1].length >= this.numberDigit)
                 isValid = false;
             if (start == 0 && end == 0 && value.length > 0 && value[0] == '-' && code >= 48 && code <= 57)
                 isValid = false;

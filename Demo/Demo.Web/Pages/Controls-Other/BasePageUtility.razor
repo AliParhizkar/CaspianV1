@@ -21,17 +21,12 @@
                         <span class="c-demo-description">In this example we use the <b>ShowMessage method</b> to <b>display a message</b>, this method get a <b>string as the message</b> and <b>displays it.</b></span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-6">
-                                <label>Simple message</label>
-                            </div>
-                            <div class="pe-5 col-md-6">
-                                <StringTextBox @bind-Value="simpleMessage" />
-                            </div>
-                            <div class="ps-5 col-md-6">
+                        <div class="row c-controls ps-5">
+                            <StringTextBox @bind-Value="simpleMessage" ColSpan="6" TotalSpan="12" Title="Simple message" />
+                            <div class="col-md-6 ps-1">
                                 <label>Action</label>
                             </div>
-                            <div class="pe-5 col-md-6 text-center">
+                            <div class="col-md-6 text-center">
                                 <button class="c-btn c-outline-primary" @onclick="SimpleMessage">Simple message</button>
                             </div>
                         </div>
@@ -43,17 +38,12 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-6">
-                                <label>Message</label>
-                            </div>
-                            <div class="pe-5 col-md-6 text-center">
-                                <StringTextBox @bind-Value="alertMessage" />
-                            </div>
-                            <div class="ps-5 col-md-6">
+                        <div class="row c-controls ps-5">
+                            <StringTextBox @bind-Value="alertMessage" ColSpan="6" TotalSpan="12" Title="Message" />
+                            <div class="col-md-6 ps-1">
                                 <label>Action</label>
                             </div>
-                            <div class="pe-5 col-md-6 text-center">
+                            <div class="col-md-6 text-center">
                                 <button class="c-btn c-outline-info" @onclick="async () => await AlertMessageAsync()">Alert</button>
                             </div>
                         </div>
@@ -65,17 +55,12 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
-                            <div class="ps-5 col-md-6">
-                                <label>Message</label>
-                            </div>
-                            <div class="pe-5 col-md-6 text-center">
-                                <StringTextBox @bind-Value="confirmMessage" />
-                            </div>
-                            <div class="ps-5 col-md-6">
+                        <div class="row c-controls ps-5">
+                            <StringTextBox @bind-Value="confirmMessage" ColSpan="6" TotalSpan="12" Title="Message" />
+                            <div class="col-md-6 ps-1">
                                 <label>Action</label>
                             </div>
-                            <div class="pe-5 col-md-6 text-center">
+                            <div class="col-md-6 text-center">
                                 <button class="c-btn c-outline-info" @onclick="async () => await ConfirmMessageAsync()">Confirm</button>
                             </div>
                         </div>
@@ -84,7 +69,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
-            <Document FolderName="BasePage" FileName="Message" />
+            <Document Page="this" FolderName="BasePage" FileName="Message" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -108,7 +93,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
-            <Document FolderName="BasePage" FileName="ShowOnWindow" />
+            <Document Page="this" FolderName="BasePage" FileName="ShowOnWindow" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -129,7 +114,7 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Demo">
-            <Document FolderName="BasePage" FileName="Download" />
+            <Document Page="this" FolderName="BasePage" FileName="Download" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

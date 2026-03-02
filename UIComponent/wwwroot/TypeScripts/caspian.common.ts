@@ -310,7 +310,7 @@ namespace caspian {
             new Window(win);
         }
 
-        public static bindLookup(input: HTMLElement, dotnet: dotnetInvoker) {
+        public static bindLookup(input: HTMLInputElement, dotnet: dotnetInvoker) {
             new Lookup(input, dotnet);
         }
 

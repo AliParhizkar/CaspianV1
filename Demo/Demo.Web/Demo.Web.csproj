@@ -35,6 +35,7 @@
 	    <Isolated>false</Isolated>
 	    <EmbedInteropTypes>true</EmbedInteropTypes>
 	  </COMReference>
+		<PackageReference Include="Aspose.Words" Version="26.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
