@@ -14,9 +14,9 @@ namespace Caspian.UI
 {
     public class MembershipService<TMaster, TAccess, TOther> :UIService<TAccess>, IInternalSearchService<TOther> where TAccess : class where TOther : class
     {
-        //protected IDictionary<string, SearchType> searchData;
-        //protected IDictionary<string, ICollection> enumValues;
-        bool onlyForSearch, isLookup;
+        bool onlyForSearch;
+        protected PropertyInfo masterProperty;
+
 
         public MembershipService(IServiceProvider provider)
             :base(provider)
@@ -29,8 +29,34 @@ namespace Caspian.UI
             var property = properties.Single();
             property.SetValue(base.Search, Activator.CreateInstance<TOther>());
             Search = Activator.CreateInstance<TOther>();
-            MasterType = typeof(TMaster);
             HideInsertIcon = true;
+        }
+
+        protected override void DataViewInitializer()
+        {
+            if (MasterId > 0)
+            {
+                var param = Expression.Parameter(typeof(TAccess), "t");
+                Expression expr = null;
+                PropertyInfo otherProperty = null;
+                if (masterProperty == null)
+                    otherProperty = typeof(TAccess).GetForeignKey(typeof(TMaster));
+                else
+                {
+                    var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                    otherProperty = typeof(TAccess).GetProperty(name);
+                }
+                expr = Expression.Property(param, otherProperty);
+                var foreignKeyType = otherProperty.PropertyType;
+                if (foreignKeyType.IsNullableType())
+                {
+                    expr = Expression.Property(expr, "Value");
+                    foreignKeyType = foreignKeyType.GetUnderlyingType();
+                }
+                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, foreignKeyType)));
+                base.DataView.InternalConditionExpr = expr;
+            }
+            base.DataViewInitializer();
         }
 
         public MembershipService(IServiceProvider provider, Expression<Func<TAccess, TMaster>> masterPropertyExpression)
@@ -39,7 +65,6 @@ namespace Caspian.UI
             masterProperty = (masterPropertyExpression.Body as MemberExpression).Member as PropertyInfo;
             masterProperty.SetValue(base.Search, Activator.CreateInstance<TOther>());
             Search = Activator.CreateInstance<TOther>();
-            MasterType = typeof(TMaster);
             HideInsertIcon = true;
         }
 
@@ -155,11 +180,23 @@ namespace Caspian.UI
             var other = DataView.GetSelectedData();
             if (other != null)
             {
-                var otherKey = typeof(TAccess).GetForeignKey(typeof(TOther));
+                PropertyInfo masterIdInfo, otherKey;
+                if (masterProperty == null)
+                {
+                    otherKey = typeof(TAccess).GetForeignKey(typeof(TOther));
+                    masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+                }
+                else
+                {
+                    var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                    masterIdInfo = typeof(TAccess).GetProperty(name);
+                    name = typeof(TAccess).GetProperties().Single(t => t.PropertyType == typeof(TOther) && t != masterProperty)
+                        .GetCustomAttribute<ForeignKeyAttribute>().Name;
+                    otherKey = typeof(TAccess).GetProperty(name);
+                }
                 typeof(TAccess).GetPrimaryKey().SetValue(entity, 0);
                 var id = typeof(TOther).GetPrimaryKey().GetValue(other);
                 otherKey.SetValue(entity, id);
-                var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
                 masterIdInfo.SetValue(entity, Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType()));
             }
             base.InitializeBeforeValidation(entity);
@@ -174,7 +211,16 @@ namespace Caspian.UI
         protected override async Task InitializeAfterRemove(TAccess entity)
         {
             await base.InitializeAfterRemove(entity);
-            var otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
+            PropertyInfo otherIdInfo;
+            if(masterProperty == null)
+                otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
+            else
+            {
+                var name = typeof(TAccess).GetProperties().Single(t => t.PropertyType == typeof(TOther) && t != masterProperty)
+                        .GetCustomAttribute<ForeignKeyAttribute>().Name;
+                otherIdInfo = typeof(TAccess).GetProperty(name);
+            }
+            
             var otherKey = otherIdInfo.GetValue(entity);
             await DataView.SelectRowById(Convert.ToInt32(otherKey));
             StateHasChanged();
@@ -210,7 +256,15 @@ namespace Caspian.UI
                     await service.SaveChangesAsync();
                     await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
                     await base.DataView.ReloadAsync();
-                    var otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
+                    PropertyInfo otherIdInfo;
+                    if (masterProperty == null)
+                        otherIdInfo = typeof(TAccess).GetForeignKey(typeof(TOther));
+                    else
+                    {
+                        var name = typeof(TAccess).GetProperties().Single(t => t.PropertyType == typeof(TOther) && t != masterProperty)
+                            .GetCustomAttribute<ForeignKeyAttribute>().Name;
+                        otherIdInfo = typeof(TAccess).GetProperty(name);
+                    }
                     var otherKey = otherIdInfo.GetValue(old);
                     await DataView.SelectRowById(Convert.ToInt32(otherKey));
                     StateHasChanged();
@@ -219,7 +273,6 @@ namespace Caspian.UI
             else
                 await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
         }
-
         IDictionary<string, SearchType> IInternalSearchService<TOther>.SearchData { get; set; }
     }
 }

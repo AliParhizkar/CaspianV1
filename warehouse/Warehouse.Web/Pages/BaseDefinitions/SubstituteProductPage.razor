@@ -7,12 +7,12 @@
     <div class="col-md-5">
         <div>
             <EntitySearch TEntity="Goods" Service="Service">
-                <StringTextBox @bind-Value="context.Code" placeholder="First name/Last Name/Company name" ColSpan="8" Title="Customer" />
-                <StringTextBox @bind-Value="context.Name" ColSpan="8" SearchType="SearchType.StartWith" />
+                <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
+                <StringTextBox @bind-Value="context.Name" ColSpan="8"  />
             </EntitySearch>
             <div class="col-md-12 text-center">
                 <hr class="mt-0" />
-                <span class="d-membership">Others Customers</span>
+                <span class="d-membership">لیست کالاها</span>
             </div>
         </div>
         <DataGrid TEntity="Goods" ContentHeight="250" Service="Service" >
@@ -20,18 +20,18 @@
                 <GridColumn Field="t => t.Name" />
                 <GridColumn Field="t => t.Code" />
                 <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
-                <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش اصلی" />
             </Columns>
         </DataGrid>
     </div>
-    <div class="col-md-1">
-        <div class="align-content-center h-100">
+    <div class="col-md-1" style="max-width:60px;">
+        <div class="align-content-center text-center h-100">
             <CaspianForm Service="Service">
+                
                 <div class="d-btn-container">
-                    <div>
+                    <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                    <div class="pt-3">
                         <IconButton IconType="IconType.AngleRight" />
                     </div>
-                    <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
                 </div>
             </CaspianForm>
         </div>
@@ -39,17 +39,20 @@
     <div class="col-md-6">
         <div>
             <EntitySearch TEntity="Goods" Service="Service">
-
+                <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
+                <StringTextBox @bind-Value="context.Name" ColSpan="8" />
             </EntitySearch>
             <div class="col-md-12 text-center">
                 <hr class="mt-0" />
-                <span class="d-membership">Members Customers</span>
+                <span class="d-membership">کالاهای جایگزین</span>
             </div>
         </div>
 
         <DataGrid TEntity="SubstituteProduct" Service="Service" ContentHeight="250" DeleteMessage="">
             <Columns>
-                
+                <GridColumn Field="t => t.SubstituteGoods.Name" />
+                <GridColumn Field="t => t.SubstituteGoods.Code" />
+                <GridColumn Field="t => t.SubstituteGoods.ProductClass.Name" Title="طبقه کالا" />
                 <GridCommandColumns HideEdit />
             </Columns>
         </DataGrid>

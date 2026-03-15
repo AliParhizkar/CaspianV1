@@ -32,9 +32,27 @@ namespace Caspian.UI
 
         public CaspianValidationValidator<TDetail> DetailValidator { get; set; }
 
-        public new Type MasterType => typeof(TMaster);
+        public Type MasterType => typeof(TMaster);
 
         public IList<ChangedEntity<TDetail>> ChangedEntities { get; set; }
+
+        public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression) => (this as IInternalBatchService<TDetail>).ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
+
+        /// <summary>
+        /// This method reload data for update
+        /// </summary>
+        /// <param name="masterId">The id of "TMaster"</param>
+        public async Task ReloadForUpdate(int masterId)
+        {
+            MasterId = masterId;
+            ChangedEntities?.Clear();
+            if (DetailDataView != null)
+            {
+                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
+                await DetailDataView.ReloadAsync();
+            }
+            await (this as IInternalUIService<TMaster>).FetchAsync();
+        }
 
         /// <summary>
         /// In Master-Details page we should filter the detail data-view (grid or list view) by MasterId. 
@@ -81,24 +99,6 @@ namespace Caspian.UI
             TypeWindow = null;
 
             base.DisposeResource();
-        }
-
-        public void ThirdDataLevelToIgnoreOnRemove<TProperty>(Expression<Func<TDetail, ICollection<TProperty>>> expression) => (this as IInternalBatchService<TDetail>).ThirdLevelProperty = (expression.Body as MemberExpression).Member as PropertyInfo;
-
-        /// <summary>
-        /// This method reload data for update
-        /// </summary>
-        /// <param name="masterId">The id of "TMaster"</param>
-        public async Task ReloadForUpdate(int masterId)
-        {
-            MasterId = masterId;
-            ChangedEntities?.Clear();
-            if (DetailDataView != null)
-            {
-                DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
-                await DetailDataView.ReloadAsync();
-            }
-            await (this as IInternalUIService<TMaster>).FetchAsync();
         }
 
         protected virtual Task SetChangedEntities()
@@ -150,7 +150,6 @@ namespace Caspian.UI
                     await DetailForm.FocusAsync();
             });
         }
-
 
         void IInternalBatchService<TDetail>.DetailFormInitializer(CaspianForm<TDetail> form)
         {

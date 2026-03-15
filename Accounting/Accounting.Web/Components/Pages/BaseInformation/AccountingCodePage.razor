@@ -109,15 +109,18 @@
         if (searchLevelType.HasValue && searchCode != null)
         {
             var length = codes.Where(t => t.CodingLevelType <= searchLevelType.Value).Sum(t => t.Length);
-            searchCode = searchCode.Substring(0, length);
-            using var service = CreateScope().GetService<AccountingCodeService>();
-            var accountingCode = await service.GetAll().SingleAsync(t => t.Code == searchCode);
-            length = codes.Where(t => t.CodingLevelType < searchLevelType.Value).Sum(t => t.Length);
-            if (length == 0)
-                searchCode = null;
-            else
+            if (searchCode.Length >= length)
+            {
                 searchCode = searchCode.Substring(0, length);
-            accountCodeId = accountingCode.Id;
+                using var service = CreateScope().GetService<AccountingCodeService>();
+                var accountingCode = await service.GetAll().SingleAsync(t => t.Code == searchCode);
+                length = codes.Where(t => t.CodingLevelType < searchLevelType.Value).Sum(t => t.Length);
+                if (length == 0)
+                    searchCode = null;
+                else
+                    searchCode = searchCode.Substring(0, length);
+                accountCodeId = accountingCode.Id;
+            }
         }
         await txtSearchCode.SetValueOnClientAsync(searchCode);
         await Service.DataView.ReloadAsync();

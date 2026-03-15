@@ -25,7 +25,7 @@
             title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
         }
         Service.MasterId = TabPanel.Service.MasterId;
-        (Service as UIService<TDetail>).MasterType = typeof(TEntity);
+        //(Service as UIService<TDetail>).MasterType = typeof(TEntity);
         base.OnInitialized();
     }
 
