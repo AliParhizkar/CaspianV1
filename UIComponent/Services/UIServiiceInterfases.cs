@@ -23,36 +23,42 @@ namespace Caspian.UI
     {
         void DataViewInitializer(DataView<TEntity> dataView);
         IDictionary<string, ICollection> EnumFields { get; set; }
-
         IDictionary<string, SearchType> SearchData { get; set; }
-
         IList<ValueTypeContainer> ValueTypes { get; set; }
-
         void OnlyForSearch();
         void HideFooter();
         void LookupInitializer(ILookup<TEntity> lookup);
-
         bool IsLookup();
-
         Task SelectItemOnLookup();
     }
 
     public interface IUIService
     {
         Task OpenWindow(int? id);
-
         Task CloseWindow();
-
         int MasterId { get; set; }
     }
 
     internal interface IInternalUIService : IUIService
     {
         void WindowInitializer(Window window);
-
         void Dispose();
-
         Window Window { get; }
+
+        /// <summary>
+        /// It's Used in One-To-One Relationship.For Example in Employee(Entity) and Address(Other Type) 
+        /// </summary>
+        Type OtherType { get; set; }
+
+        /// <summary>
+        /// It's used in Master-Details CRUD when we save only Single detail we use this to set foreign key property
+        /// </summary>
+        int InternalMasterId { get; set; }
+
+        /// <summary>
+        /// It's used in Master-Details CRUD when we save only Single detail we use this to find foreign key property
+        /// </summary>
+        Type InternalMasterType { get; set; }
     }
 
     internal interface IInternalUIService<TEntity> : IInternalUIService, IInternalSearchService<TEntity>, IUIService<TEntity>  where TEntity : class
@@ -74,11 +80,6 @@ namespace Caspian.UI
         /// <returns></returns>
         Task FetchAsync();
         void StateHasChanged();
-        
-        /// <summary>
-        /// It's Used in One-To-One Relationship.For Example in Employee(Entity) and Address(Other Type) 
-        /// </summary>
-        Type OtherType { get; set; }
     }
 
     public interface IUIService<TEntity> : IUIService, ISearchService<TEntity> where TEntity : class

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Accounting.Model
 {
@@ -47,12 +48,18 @@ namespace Accounting.Model
         Both
     }
 
-    public enum AccountType
+    public enum AccountType: byte
     {
         [Display(Name = "دائم")]
         Permanent,
 
         [Display(Name = "موقت")]
         Temporary
+    }
+
+    public enum OtherPartyType: byte
+    {
+        [Display(Name = "مرکز هزینه")]
+        CostCenter
     }
 }

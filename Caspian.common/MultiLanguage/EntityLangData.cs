@@ -2,7 +2,7 @@
 {
     public class EntityLangData
     {
-        public SubSystemKind SubSystemKind { get; set; }
+        public SubsystemKind SubsystemKind { get; set; }
 
         public int? PageId { get; set; }
 

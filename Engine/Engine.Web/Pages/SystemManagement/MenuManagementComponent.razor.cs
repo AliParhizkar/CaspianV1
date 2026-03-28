@@ -16,7 +16,7 @@ namespace Caspian.Engine.SystemManagement
         WindowStatus categoryWindowStatus;
 
         [Parameter]
-        public SubSystemKind Subsystem { get; set; }
+        public SubsystemKind Subsystem { get; set; }
 
         void FillUrls()
         {
@@ -50,7 +50,7 @@ namespace Caspian.Engine.SystemManagement
             foreach (var component in new AssemblyInfo().GetWebTypes(Subsystem))
             {
                 var menu = new Menu();
-                menu.SubSystemKind = Subsystem;
+                menu.SubsystemKind = Subsystem;
                 var routes = component.GetCustomAttributes<RouteAttribute>();
                 foreach (var url in routes)
                 {
@@ -81,7 +81,7 @@ namespace Caspian.Engine.SystemManagement
                     dic.Add(sourceAttr.Id, component);
                 }
             }
-            var menus = await service.GetAll().Where(t => t.SubSystemKind == Subsystem).ToListAsync();
+            var menus = await service.GetAll().Where(t => t.SubsystemKind == Subsystem).ToListAsync();
             foreach (var menu in menus)
             {
                 var old = await service.SingleAsync(menu.Id);

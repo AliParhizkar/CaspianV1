@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Accounting\Accounting.Model\Accounting.Model.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
   </ItemGroup>
 

@@ -25,7 +25,7 @@ namespace Caspian.UI
 
         async Task ShowTree()
         {
-            if (show == false)
+            if (show == false && !Disabled)
             {
                 show = true;
                 if (OnInternalShow.HasDelegate)
@@ -50,6 +50,7 @@ namespace Caspian.UI
             InputElement = null;
         }
 
+        [Parameter]
         public bool Disabled { get; set; }
 
         public ElementReference? InputElement {  get; private set; }
@@ -195,18 +196,20 @@ namespace Caspian.UI
                 valueIsUpdated = false;
                 if (OnInternalChanged.HasDelegate)
                     await OnInternalChanged.InvokeAsync(searchText);
+                if (ValueChanged.HasDelegate)
+                    await ValueChanged.InvokeAsync(default);
                 if (show == false)
                     await ShowTree();
                 await treeView.ReloadAsync();
             }
         }
 
-        protected override void OnAfterRender(bool firstRender)
-        {
-            if (firstRender)
-                CaspianForm?.SetFirstControl(this);
-            base.OnAfterRender(firstRender);
-        }
+        //protected override void OnAfterRender(bool firstRender)
+        //{
+        //    if (firstRender)
+        //        CaspianForm?.SetFirstControl(this);
+        //    base.OnAfterRender(firstRender);
+        //}
 
         [Parameter]
         public EventCallback OnChange { get; set; }
@@ -310,8 +313,6 @@ namespace Caspian.UI
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
         }
-
-        public EventCallback OnInternalClose { get; set; }
 
         [JSInvokable]
         public async Task Close()

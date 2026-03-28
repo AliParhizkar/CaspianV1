@@ -31,6 +31,7 @@ namespace Warehouse.Model
         [CheckOnDelete("محل فیزیکی انبار دارای زیرمجموعه می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<MaterialLocation> Locations { get; set; }
 
-
+        [CheckOnDelete("کالا(هایی) در این محل فیزیکی ذخیره شده اند و امکان حذف آن وجود ندارد")]
+        public ICollection<GoodsPlacement> GoodsPlacements { get; set; }
     }
 }

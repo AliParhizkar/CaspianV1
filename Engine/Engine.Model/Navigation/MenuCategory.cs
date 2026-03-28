@@ -14,7 +14,7 @@ namespace Caspian.Engine.Model
         [DisplayName("Title")]
         public string Title { get; set; }
 
-        public SubSystemKind SubSystemKind { get; set; }
+        public SubsystemKind SubsystemKind { get; set; }
 
         [DisplayName("ICon")]
         public string IconFont { get; set; }

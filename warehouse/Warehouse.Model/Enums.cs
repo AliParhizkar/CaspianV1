@@ -2,111 +2,6 @@
 
 namespace Warehouse.Model
 {
-    public enum ReceiptType
-    {
-        [Display(Name = "رسید خرید")]
-        PurchaseReceipt,
-
-        [Display(Name = "رسید تولید")]
-        production,
-
-        [Display(Name = "رسید اجناس برگشتی")]
-        ReturnedGoods,
-
-        [Display(Name = "رسید مغایرت انبار")]
-        WarehouseDiscrepancy,
-
-        [Display(Name = "رسید عمومی")]
-        Public,
-
-        [Display(Name = "رسید تعدیل")]
-        Adjustment
-    }
-
-    public enum SimpleDataType:byte
-    {
-        [Display(Name = "واحد مالی")]
-        FinancialUnit,
-
-        [Display(Name = "واحد بودجه")]
-        BudgetUnit,
-    }
-
-    public enum PricingMethodType:byte
-    {
-        [Display(Name = "آخرین وارده(LIFO)")]
-        LIFO,
-
-        [Display(Name = "میانگین موزون")]
-        Average,
-
-        [Display(Name = "اولین وارده(FIFO)")]
-        FIFO
-    }
-
-    public enum MeasureType: byte
-    {
-        [Display(Name = "سایر")]
-        Others,
-
-        [Display(Name = "شمارشی")]
-        Numerical,
-
-        [Display(Name = "حجم")]
-        Volume,
-
-        [Display(Name = "وزن")]
-        Weight,
-
-        [Display(Name = "طول")]
-        Length,
-
-        [Display(Name = "سطج")]
-        Surface
-    }
-
-    public enum SellerType: byte
-    {
-        [Display(Name = "حقیقی")]
-        Real,
-        
-        [Display(Name = "حقوقی")]
-        Legal
-    }
-
-    public enum Citizenship: byte
-    {
-        [Display(Name = "ایرانی")]
-        Iranian,
-
-        [Display(Name = "خارجی")]
-        Foreigner
-    }
-
-    public enum ProductType: byte
-    {
-        [Display(Name = "مصرفی")]
-        Consumable,
-
-        [Display(Name = "اموالی")]
-        State,
-
-        [Display(Name = "خدماتی")]
-        Service
-    }
-
-    public enum DescriptionType: byte
-    {
-        [Display(Name = "حرفی")]
-        String,
-
-        [Display(Name = "عددی")]
-        Numerical,
-
-        [Display(Name = "تاریخ")]
-        Date
-    }
-
     public enum LocationType: byte
     {
         [Display(Name = "کشور")]
@@ -226,10 +121,37 @@ namespace Warehouse.Model
 
     public enum ReservationLevel: byte
     {
-        [Display(Name = "رزرو دارد")]
-        HasReservation,
-
         [Display(Name = "رزرو ندارد")]
-        hasNotReservation
+        hasNotReservation,
+
+        [Display(Name = "انبار")]
+        StockRoom,
+
+        [Display(Name = "مرکز نگهداری")]
+        KeepCenter
+    }
+
+    public enum ReferenceDocumentType : byte
+    {
+        [Display(Name = "بدون مبناء")]
+        WithoutReference
+    }
+
+    public enum PurchaseRequestType: byte
+    {
+        [Display(Name = "مصرف")]
+        Consumption
+    }
+
+    public enum ReservationBasis: byte
+    {
+        [Display(Name = "درخواست کالا")]
+        PurchaseRequest
+    }
+
+    public enum ReservationType:byte
+    {
+        [Display(Name = "مصرف")]
+        Consumption
     }
 }

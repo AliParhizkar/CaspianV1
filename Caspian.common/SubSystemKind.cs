@@ -1,59 +1,70 @@
 ﻿using System.Reflection;
-using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.Common
 {
-    public enum SubSystemKind: byte
+    public enum SubsystemKind: byte
     { 
         /// <summary>
         /// بخش اصلی
         /// </summary>
-        [Display(Name = "Engine")]
+        [SubsystemMetaData("Engine", Schema = "cmn")]
         Engine = 1,
 
         /// <summary>
         /// دمو
         /// </summary>
-        [Display(Name = "دمو")]
+        [SubsystemMetaData("دمو", Schema = "demo")]
         Demo,
 
-        [Display(Name = "فروش")]
+        [SubsystemMetaData("فروش", Schema = "mrk")]
         Marketing,
 
-        [Display(Name = "انبار")]
+        [SubsystemMetaData("انبار", Schema = "wh")]
         Warehouse,
 
-        [Display(Name = "حسابداری")]
+        [SubsystemMetaData("حسابداری", Schema = "acc")]
         Accounting,
 
-        [Display(Name = "اموال و دارایی ثابت")]
+        [SubsystemMetaData("اموال و دارایی ثابت", Schema = "ivm")]
         Investment
     }
 
-public static class SubSystemExt
+    public static class SubsystemExtension
     {
-        private static Assembly GetAssembly(SubSystemKind subSystemKind, bool isModel)
+        private static Assembly GetAssembly(SubsystemKind subsystemKind, bool isModel)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var index = path.LastIndexOf("\\");
             path = path.Substring(0, index) + "\\";
-            path += subSystemKind.ToString() + (isModel ? ".Model" : ".Service") + ".dll";
+            path += subsystemKind.ToString() + (isModel ? ".Model" : ".Service") + ".dll";
             return Assembly.LoadFile(path);
         }
 
-        public static Assembly GetEntityAssembly(this SubSystemKind systemKind)
+        public static Assembly GetEntityAssembly(this SubsystemKind systemKind)
         {
-            return SubSystemExt.GetAssembly(systemKind, true);
+            return GetAssembly(systemKind, true);
         }
 
-        public static bool HasEntityType(this SubSystemKind systemKind, string namespace_, string name)
+        public static bool HasEntityType(this SubsystemKind systemKind, string namespace_, string name)
         {
             return GetEntityAssembly(systemKind).GetTypes().Any(t => t.Namespace == namespace_ && t.Name == name); 
         }
 
-        public static Assembly GetServiceAssembly(this SubSystemKind systemKind)
+        public static Assembly GetServiceAssembly(this SubsystemKind systemKind)
         {
-            return SubSystemExt.GetAssembly(systemKind, false);
+            return GetAssembly(systemKind, false);
         }
+    }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class SubsystemMetaDataAttribute : Attribute
+    {
+
+        public SubsystemMetaDataAttribute(string name)
+        {
+
+        }
+
+        public string Schema { get; set; }
     }
 }

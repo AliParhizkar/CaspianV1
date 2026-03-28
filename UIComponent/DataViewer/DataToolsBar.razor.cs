@@ -14,18 +14,17 @@ namespace Caspian.UI
         public DataView<TEntity> DataView { get; set; }
 
         [Parameter]
-        public EventCallback<TEntity> OnInsertButoonClicked { get; set; }
+        public EventCallback<TEntity> OnInsertButtonClicked { get; set; }
 
         protected virtual async Task OpenAddForm()
         {
             if (!DisableInsertIcon)
             {
                 var entity = Activator.CreateInstance<TEntity>();
-
                 if (DataView.OnOpen.HasDelegate)
                     await DataView.OnOpen.InvokeAsync(entity);
-                if (DataView.Inline && OnInsertButoonClicked.HasDelegate)
-                    await OnInsertButoonClicked.InvokeAsync(entity);
+                if (DataView.Inline && OnInsertButtonClicked.HasDelegate)
+                    await OnInsertButtonClicked.InvokeAsync(entity);
                 if (DataView is ListView<TEntity> listView && listView.UpsertType != UpsertType.Inline)
                     await listView.OpenPopupWindow();
                 if (DataView.OnInternalUpsert.HasDelegate)

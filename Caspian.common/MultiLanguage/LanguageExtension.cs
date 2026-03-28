@@ -11,36 +11,25 @@ namespace Caspian.Common.Extension
         public static string GetTitle(this Type type, string memberName)
         {
             var subsystem =  type.Assembly.GetSystemKind();
-            if (subsystem == null)
-                return null;
             if (Datas == null)
             {
                 var path = $"{type.Assembly.GetMapPath()}/Languages/{CultureInfo.CurrentCulture.Name}.json";
                 var jsonText = File.ReadAllText(path);
                 Datas = JsonSerializer.Deserialize<EntityLangData[]>(jsonText);
             }
-            return Datas.SingleOrDefault(t => t.SubSystemKind == subsystem && t.TypeName == type.Name && t.MemberName == memberName)?.Title;
+            return Datas.SingleOrDefault(t => t.SubsystemKind == subsystem && t.TypeName == type.Name && t.MemberName == memberName)?.Title;
         }
 
-        public static SubSystemKind? GetSystemKind(this Assembly assembly)
+        public static SubsystemKind GetSystemKind(this Assembly assembly)
         {
-            foreach(var field in typeof(SubSystemKind).GetFields().Where(t => !t.IsSpecialName))
-            {
-                var value = (SubSystemKind)field.GetValue(null);
-                if (value.GetEntityAssembly().FullName == assembly.FullName)
-                    return value;
-            }
-            return null;
+            var subsystemName = assembly.GetName().Name.Split('.')[0];
+            return (SubsystemKind)typeof(SubsystemKind).GetField(subsystemName).GetValue(null);
         }
 
-        //public static string GetTitle(this SubSystemKind subSystem, int pageId, string controlId)
-        //{
-        //    if (Datas == null)
-        //    {
-        //        var path = $"{type.Assembly.GetMapPath()}/Languages/{CultureInfo.CurrentCulture.Name}.json";
-        //        var jsonText = File.ReadAllText(path);
-        //        Datas = JsonSerializer.Deserialize<EntityLangData[]>(jsonText);
-        //    }
-        //}
+        public static SubsystemMetaDataAttribute GetSubsystemMetaData(this Assembly assembly)
+        {
+            var subsystemName = assembly.GetName(true).Name.Split('.')[0];
+            return typeof(SubsystemKind).GetField(subsystemName).GetCustomAttribute<SubsystemMetaDataAttribute>();
+        }
     }
 }

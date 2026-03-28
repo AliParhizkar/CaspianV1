@@ -13,13 +13,4 @@ namespace Demo.Service
             RuleFor(t => t.Title).Required().UniqueAsync(t => t.CountryId, "A city with this title is defined in the system");
         }
     }
-
-    public class TestService: BaseService<TestProduct>
-    {
-        public TestService(IServiceProvider provider)
-            : base(provider)
-        {
-            
-        }
-    }
 }

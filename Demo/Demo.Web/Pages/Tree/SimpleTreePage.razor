@@ -67,7 +67,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var service = CreateScope().GetService<MenuCategoryService>();
-        var query = service.GetAll().Where(t => t.SubSystemKind == SubSystemKind.Demo);
+        var query = service.GetAll().Where(t => t.SubsystemKind == SubsystemKind.Demo);
         /// load menus category and menus together
         loadOnFirstSource = await query.Select(t => new NodeView()
         {

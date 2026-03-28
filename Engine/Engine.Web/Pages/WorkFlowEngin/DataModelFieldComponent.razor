@@ -88,7 +88,7 @@
     {
         using var scope = CreateScope();
         var workflow = await new WorkflowGroupService(scope.ServiceProvider).SingleAsync(DataModelId);
-        workflowEntityTypes = new AssemblyInfo().GetModelTypes(workflow.SubSystemKind)
+        workflowEntityTypes = new AssemblyInfo().GetModelTypes(workflow.SubsystemKind)
             .Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(WorkflowEntityAttribute)))
             .Select(t => new SelectListItem(t.Name, t.GetCustomAttribute<WorkflowEntityAttribute>()!.Title)).ToList();
         await base.OnInitializedAsync();
@@ -112,5 +112,5 @@
     public int DataModelId { get; set; }
 
     [Parameter]
-    public SubSystemKind Subsystem { get; set; }
+    public SubsystemKind Subsystem { get; set; }
 }

@@ -15,11 +15,8 @@ namespace Caspian.Common
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0];
-            var schema = GetType().Namespace.Split('.')[0].ToLower();
-            if (schema == "caspian")
-                schema = "cmn";
-            
+            var subsystemData = GetType().Assembly.GetSubsystemMetaData();
+            var schema = subsystemData.Schema;
             optionsBuilder.UseSqlServer(CS.Con, t =>
             {
                 t.AddRowNumberSupport();
@@ -34,16 +31,20 @@ namespace Caspian.Common
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var assembly = this.GetType().Assembly;
+            var schema = assembly.GetSubsystemMetaData().Schema;
             var allTypes = assembly.GetTypes().Where(t => t.GetCustomAttribute<TableAttribute>() != null);
             foreach (var type in allTypes)
                 modelBuilder.Entity(type);
             var types = modelBuilder.Model.GetEntityTypes().Select(t => t.ClrType);
-            var assemblyName = assembly.GetName().Name;
             foreach (var type in types)
             {
-                if (type.GetCustomAttribute<IgnoreTableGenerationAttribute>() != null)
+                TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
+                if (tableAttribute == null)
+                    throw new CaspianException($"Type {type.FullName} is a entity and haven't any TableAttribute");
+                if (!tableAttribute.Schema.HasValue())
+                    throw new CaspianException($"in Type {type.FullName} schema is null or empty");
+                if (tableAttribute.Schema != schema)
                 {
-                    TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
                     modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
                     {
                         t.ExcludeFromMigrations();
@@ -63,9 +64,9 @@ namespace Caspian.Common
                         if (foreignKey != null)
                             throw new CaspianException($"Only properties of type entity can have ForeignKeyAttribute: In type {type.Name} property {property.Name} have ForeignKeyAttribute");
                     }
-                    else 
+                    else if (!type1.IsCollectionType())
                     {
-                        if (type1.Assembly == type.Assembly)
+                        if (schema == type1.GetCustomAttribute<TableAttribute>().Schema)
                         {
                             ///Check relations between this entity and others entities 
                             if (type1.IsEnumerableType())
@@ -126,21 +127,17 @@ namespace Caspian.Common
                                 }
                             }
                         }
+                        else
+                        {
+                            var otherType = typeof(ICollection<>).MakeGenericType(type);
+                            modelBuilder.Entity(type)
+                                .HasOne(property.Name)
+                                .WithMany()
+                                .OnDelete(DeleteBehavior.NoAction);
+                        }
                     }
                 }
                 var baseType = type;
-                if (!assemblyName.Equals("Engine.Model", StringComparison.OrdinalIgnoreCase))
-                {
-                    TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
-                    if (tableAttribute?.Schema == "cmn")
-                    {
-                        modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
-                    }
-                }
-
                 foreach (var property in type.GetProperties())
                 {
                     if (property.PropertyType == typeof(string))

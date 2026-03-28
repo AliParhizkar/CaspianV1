@@ -11,7 +11,7 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        public SubSystemKind SubSystemKind { get; set; }
+        public SubsystemKind SubsystemKind { get; set; }
 
         [DisplayName("Title")]
         public string Title { get; set; }

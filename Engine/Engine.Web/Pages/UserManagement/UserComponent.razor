@@ -59,7 +59,7 @@
                   : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
     [Parameter]
-    public SubSystemKind? SubSystemKind { get; set; }
+    public SubsystemKind? SubSystemKind { get; set; }
 
     protected override void OnParametersSet()
     {

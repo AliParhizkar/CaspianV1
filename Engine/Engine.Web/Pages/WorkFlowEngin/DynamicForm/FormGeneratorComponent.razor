@@ -3,7 +3,7 @@
 @inherits BasePage
 @inject IHostEnvironment Environment
 <div class="row t-rtl">
-    <PropertyWindow @ref="propertyWindow" SubSystem="subSystemKind" Id="@Id" FormName="@formName" Control="selectedControl"
+    <PropertyWindow @ref="propertyWindow" SubSystem="subsystemKind" Id="@Id" FormName="@formName" Control="selectedControl"
         OnChange="UpdateControlData" OnEventHandlerCreated="async t => await OnEventHandlerCreated.InvokeAsync(t)"  />
     <div class="c-form-designer">
         <div class="c-tools-bar">

@@ -106,7 +106,7 @@ namespace Investment.Model.Migrations
                 principalSchema: "acc",
                 principalTable: "AccountingCodes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_InsuranceCompanies_Locations_CityId",
@@ -186,7 +186,7 @@ namespace Investment.Model.Migrations
                 principalSchema: "acc",
                 principalTable: "AccountingCodes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_InsuranceCompany_Locations_CityId",

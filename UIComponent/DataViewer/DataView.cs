@@ -40,18 +40,21 @@ namespace Caspian.UI
 
         internal Expression InternalConditionExpr { get; set; }
 
-        public int Total { get; set; }
+        /// <summary>
+        /// Return total count of records base on grid query
+        /// </summary>
+        public int Total { get; protected set; }
 
+        /// <summary>
+        /// Return index of selected row in grid (base on zero) 
+        /// </summary>
         public int? SelectedRowIndex { get; protected set; }
 
         [Inject]
-        public FormAppState FormAppState { get; set; }
+        internal FormAppState FormAppState { get; set; }
 
         [Inject]
         protected IJSRuntime jsRuntime { get; set; }
-
-        [Inject]
-        public CaspianDataService CaspianDataService { get; set; }
 
         [Parameter]
         public TEntity Search { get; set; }
@@ -101,7 +104,7 @@ namespace Caspian.UI
         public int PageSize { get; set; } = 5;
 
         [Inject]
-        public BatchServiceData BatchServiceData { get; set; }
+        internal BatchServiceData BatchServiceData { get; set; }
 
         /// <summary>
         /// Hide after Upsert
@@ -122,7 +125,7 @@ namespace Caspian.UI
         public EventCallback OnPageChanged { get; set; }
 
         [Inject]
-        public IServiceScopeFactory ServiceScopeFactory { get; set; }
+        internal IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         internal EventCallback<TEntity> OnInternalDelete { get; set; }
 

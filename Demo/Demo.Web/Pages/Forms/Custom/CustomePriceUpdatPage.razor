@@ -35,19 +35,10 @@
                 <span class="fa fa-info"> Note:</span> <span class="c-demo-description">We use the <b>SelectNextRow method</b> to select the next row in the grid.</span>
             </div>
             <div class="row p-4 c-controls pt-0">
-                <div class="col-md-2 ps-3">
-                    <label>Product category</label>
-                </div>
-                <div class="col-md-4 pe-4">
-                    <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="searchProduct.ProductCategoryId"
-                              TextExpression="t => t.Title" />
-                </div>
-                <div class="col-md-2 ps-4">
-                    <label>Status</label>
-                </div>
-                <div class="col-md-4 pe-3">
-                    <DropdownList @bind-Value="searchProduct.ActiveType" />
-                </div>
+                <ComboBox TEntity="ProductCategory" TValue="int" @bind-Value="searchProduct.ProductCategoryId"
+                          TextExpression="t => t.Title" ColSpan="4" TotalSpan="6" />
+                <DropdownList @bind-Value="searchProduct.ActiveType" ColSpan="4" TotalSpan="6" />
+
                 <div class="col-md-12 pt-4">
                     <DataGrid @ref="grid" TEntity="Product" Search="searchProduct" PageSize="10" ContentHeight="400">
                         <Columns>

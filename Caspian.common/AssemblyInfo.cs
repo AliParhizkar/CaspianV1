@@ -17,9 +17,9 @@ namespace Caspian.Common
             RelatedPath = Path.GetDirectoryName(this.GetType().Assembly.Location);
         }
 
-        public Dictionary<string, string> GetRuleTypes(SubSystemKind subSystemKind)
+        public Dictionary<string, string> GetRuleTypes(SubsystemKind subsystemKind)
         {
-            var types = GetModelTypes(subSystemKind);
+            var types = GetModelTypes(subsystemKind);
             var dic = new Dictionary<string, string>();
             foreach(var type in types)
             {
@@ -30,9 +30,9 @@ namespace Caspian.Common
             return dic;
         }
 
-        public Type GetDbContextType(SubSystemKind subSystemKind)
+        public Type GetDbContextType(SubsystemKind subsystemKind)
         {
-            var contextType = GetModelTypes(subSystemKind).SingleOrDefault(t => t.BaseType == typeof(CaspianContext));
+            var contextType = GetModelTypes(subsystemKind).SingleOrDefault(t => t.BaseType == typeof(CaspianContext));
             if (contextType == null)
                 throw new CaspianException("خطا: Model must has DbContext that inherited from MyContext");
             return contextType;
@@ -47,50 +47,50 @@ namespace Caspian.Common
             return contextType;
         }
 
-        public Type[] GetServiseTypes(SubSystemKind subSystemKind)
+        public Type[] GetServiceTypes(SubsystemKind subsystemKind)
         {
-            var path = $"{RelatedPath}\\{subSystemKind}.Service.dll";
+            var path = $"{RelatedPath}\\{subsystemKind}.Service.dll";
             return Assembly.LoadFile(path).GetTypes();
         }
 
-        public Type[] GetModelTypes(SubSystemKind subSystemKind)
+        public Type[] GetModelTypes(SubsystemKind subsystemKind)
         {
-            return Assembly.Load(subSystemKind.ToString() + ".Model").GetTypes();
+            return Assembly.Load(subsystemKind.ToString() + ".Model").GetTypes();
         }
 
-        public Type[] GetWebTypes(SubSystemKind subSystemKind)
+        public Type[] GetWebTypes(SubsystemKind subsystemKind)
         {
-            return Assembly.Load(subSystemKind.ToString() + ".Web").GetTypes();
+            return Assembly.Load(subsystemKind.ToString() + ".Web").GetTypes();
         }
 
-        public Type[] GetAllServiceTypes(SubSystemKind subSystemKind)
+        public Type[] GetAllServiceTypes(SubsystemKind subsystemKind)
         {
-            var types = GetServiseTypes(subSystemKind);
+            var types = GetServiceTypes(subsystemKind);
             return types.Where(t => t.CustomAttributes.Any(u => u.AttributeType == typeof(ReportClassAttribute))).ToArray();
         }
 
-        public Type GetModelType(SubSystemKind subSystemKind, string typeName)
+        public Type GetModelType(SubsystemKind subsystemKind, string typeName)
         {
-            var type = GetModelTypes(subSystemKind).SingleOrDefault(t => t.Name == typeName);
+            var type = GetModelTypes(subsystemKind).SingleOrDefault(t => t.Name == typeName);
             if (type == null)
                 throw new CaspianException("خطا: " + "There are no type with name " + typeName + " in assembly");
             return type;
         }
 
-        public Type GetModelType(SubSystemKind subSystemKind, string @namespace, string className)
+        public Type GetModelType(SubsystemKind subsystemKind, string @namespace, string className)
         {
-            var type = GetModelTypes(subSystemKind).SingleOrDefault(t => t.Namespace == @namespace && t.Name == className);
+            var type = GetModelTypes(subsystemKind).SingleOrDefault(t => t.Namespace == @namespace && t.Name == className);
             if (type == null)
                 throw new CaspianException("خطا: " + "There are no type in namespace " + @namespace + " with name " + className);
             return type;
         }
 
-        public IEnumerable InvokeReportMethod(SubSystemKind subSystemKind, string className, string methodName, IServiceScope scope)
+        public IEnumerable InvokeReportMethod(SubsystemKind subsystemKind, string className, string methodName, IServiceScope scope)
         {
-            var type = GetAllServiceTypes(subSystemKind).SingleOrDefault(t => t.Name == className);
+            var type = GetAllServiceTypes(subsystemKind).SingleOrDefault(t => t.Name == className);
             var method = type.GetMethod(methodName);
             var obj = Activator.CreateInstance(type, scope);
-            var contextType = GetDbContextType(subSystemKind);
+            var contextType = GetDbContextType(subsystemKind);
             //(obj as IEntity).Context = Activator.CreateInstance(contextType) as MyContext;
             return (IEnumerable)method.Invoke(obj, new object[]{ null});
         }

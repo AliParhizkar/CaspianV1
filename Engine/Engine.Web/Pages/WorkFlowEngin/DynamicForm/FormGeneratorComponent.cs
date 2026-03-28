@@ -20,7 +20,7 @@ namespace Caspian.Engine.WorkflowEngine
         int selectedInnerRowIndex = -1;
         int selectedInnerColIndex = -1;
         IList<int> selectedColsIndex;
-        SubSystemKind subSystemKind;
+        SubsystemKind subsystemKind;
         PropertySelector propertySelector;
         WindowStatus windowStatus;
         BlazorControl selectedControl;
@@ -42,7 +42,7 @@ namespace Caspian.Engine.WorkflowEngine
         void SelectControl(BlazorControl ctr)
         {
             selectedControl = ctr;
-            Id = ctr.GetId(subSystemKind);
+            Id = ctr.GetId(subsystemKind);
         }
 
         void ToggleWindowStatus()
@@ -73,7 +73,7 @@ namespace Caspian.Engine.WorkflowEngine
             var form = await formService.GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
             forms = await formService.GetAll().Where(t => t.WorkflowGroupId == form.WorkflowGroupId).ToListAsync();
             columnsCount = form.ColumnCount;
-            subSystemKind = form.WorkflowGroup.SubSystemKind;
+            subsystemKind = form.WorkflowGroup.SubsystemKind;
             formName = form.Name;
             formTitle = form.Title;
             rows = await scope.GetService<HtmlRowService>().GetRows(WorkflowFormId);
@@ -523,7 +523,7 @@ namespace Caspian.Engine.WorkflowEngine
                             {
                                 if (col1.Component != null)
                                 {
-                                    var name = col1.Component.GetId(subSystemKind);
+                                    var name = col1.Component.GetId(subsystemKind);
                                     if (name == id)
                                         return col1.Component;
                                 }
@@ -532,7 +532,7 @@ namespace Caspian.Engine.WorkflowEngine
                     } 
                     else 
                     {
-                        var name = ctr.GetId(subSystemKind);
+                        var name = ctr.GetId(subsystemKind);
                         if (name == id)
                             return ctr;
                     }

@@ -45,7 +45,7 @@ namespace Caspian.Engine
         /// <summary>
         /// زیر سیستمی که قانون برای آن تعریف شده است.
         /// </summary>
-        public SubSystemKind SystemKind { get; set; }
+        public SubsystemKind SystemKind { get; set; }
 
         /// <summary>
         /// نوعی که برای آن قانون تعریف شده است

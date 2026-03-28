@@ -43,7 +43,7 @@
     PropertyInfo? selectedPropertyInfo;
     IList<DataModelField> dataModelFields;
     IList<PropertyInfo> workflowEntityProperties;
-    SubSystemKind subSystemKind;
+    SubsystemKind subsystemKind;
     int? DataModelFieldId;
     int? selectedDynamicParameterId;
     bool showParameter;
@@ -83,7 +83,7 @@
         if (entityName.HasValue())
         {
             showEntityProperties = true;
-            workflowEntityProperties = new AssemblyInfo().GetModelType(subSystemKind, entityName).GetProperties()
+            workflowEntityProperties = new AssemblyInfo().GetModelType(subsystemKind, entityName).GetProperties()
                 .Where(t => !t.CustomAttributes.Any(t => t.AttributeType == typeof(KeyAttribute) ||
                 t.AttributeType == typeof(ForeignKeyAttribute)) || t.PropertyType.IsCollectionType()).ToList();
             var scope = CreateScope();
@@ -122,7 +122,7 @@
         var scope = CreateScope();
         var form = await new WorkflowFormService(scope.ServiceProvider).GetAll().Include(t => t.WorkflowGroup).SingleAsync(t => t.Id == WorkflowFormId);
 
-        subSystemKind = form.WorkflowGroup.SubSystemKind;
+        subsystemKind = form.WorkflowGroup.SubsystemKind;
         dataModelFields = new DataModelFieldService(scope.ServiceProvider).GetAll().Where(t => t.DataModelId == form.DataModelId).ToList();
         await base.OnInitializedAsync();
     }

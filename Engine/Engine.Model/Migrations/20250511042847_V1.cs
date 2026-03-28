@@ -431,7 +431,7 @@ namespace Engine.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -459,7 +459,7 @@ namespace Engine.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -924,7 +924,7 @@ namespace Engine.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "BlazorControls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_HtmlColumns_HtmlRows_RowId",
                         column: x => x.RowId,

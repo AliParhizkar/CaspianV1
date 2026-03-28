@@ -44,18 +44,19 @@ namespace Caspian.UI
             return new EnumSearch<TValue>(lambda.Body, (this as IInternalSearchService<TEntity>).EnumFields);
         }
 
-        Type IInternalUIService<TEntity>.OtherType { get; set; }
+        int IInternalUIService.InternalMasterId { get; set; }
+
+        Type IInternalUIService.InternalMasterType { get; set; }
+
+        Type IInternalUIService.OtherType { get; set; }
 
         IList<ValueTypeContainer> IInternalSearchService<TEntity>.ValueTypes { get; set; }
-
 
         internal int UserId { get; private set; }
 
         public IServiceProvider ServiceProvider { get; private set; }
 
         public int MasterId { get; set; }
-
-        //public Type MasterType { get; set; }
 
         public Window Window { get; private set; }
 
@@ -162,6 +163,8 @@ namespace Caspian.UI
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
                     await DataView.SelectRowById(id);
+                    if ((this as IInternalUIService).InternalMasterType != null)
+                        DataView.ChangeState();
                     if (Window == null)
                         StateHasChanged();
                 }
@@ -198,7 +201,12 @@ namespace Caspian.UI
         /// </summary>
         protected virtual void InitializeBeforeValidation(TEntity entity)
         {
-            
+            var service = this as IInternalUIService;
+            if (service.InternalMasterType != null)
+            {
+                var info = typeof(TEntity).GetForeignKey(service.InternalMasterType);
+                info.SetValue(entity, Convert.ChangeType(service.InternalMasterId, info.PropertyType.GetUnderlyingType()));
+            }
         }
 
         /// <summary>
@@ -270,11 +278,10 @@ namespace Caspian.UI
             DataView.Search = Search;
             DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? !HideInsertIcon;
             DataView.HideFooter = DataView.HideFooter ?? hideFooter;
-
+            
             DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
                 var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                MasterId = value;
                 if (value != 0)
                 {
                     using var service = CreateScope().GetService<BaseService<TEntity>>();
@@ -283,6 +290,12 @@ namespace Caspian.UI
                 else
                 {
                     UpsertData = Activator.CreateInstance<TEntity>();
+                    var otherType = (this as IInternalUIService).OtherType;
+                    if (otherType != null)
+                    {
+                        var info = typeof(TEntity).GetForeignKey(otherType);
+                        info.SetValue(UpsertData, MasterId);
+                    }
                     if (UpsertData is BaseEntity baseEntity)
                         baseEntity.UpsertUserId = UserId;
                 }
@@ -434,22 +447,35 @@ namespace Caspian.UI
         async Task IInternalUIService<TEntity>.UpdateChildOfModelAsync(Type childType)
         {
             (this as IInternalUIService<TEntity>).OtherType = childType;
+            
             if (childType != typeof(TEntity) && UpsertData != null)
             {
-                var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
-                var detail = info.GetValue(UpsertData);
-                if (detail == null)
+                if (childType.IsCollectionType())
                 {
-                    if (MasterId > 0)
-                    {
-                        using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                        var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
-                        detail = info.GetValue(old);
-                    }
-                    if (detail == null)
-                        detail = Activator.CreateInstance(childType);
+                    var entityType = childType.GetGenericArguments()[0];
+                    var serviceType = typeof(IUIService<>).MakeGenericType(entityType);
+                    var service = ServiceProvider.GetService(serviceType) as IInternalUIService;
+                    var id = typeof(TEntity).GetPrimaryKey().GetValue(UpsertData);
+                    service.InternalMasterId = Convert.ToInt32(id);
+                    service.InternalMasterType = typeof(TEntity);
                 }
-                info.SetValue(UpsertData, detail);
+                else
+                {
+                    var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
+                    var detail = info.GetValue(UpsertData);
+                    if (detail == null)
+                    {
+                        if (MasterId > 0)
+                        {
+                            using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                            var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
+                            detail = info.GetValue(old);
+                        }
+                        if (detail == null)
+                            detail = Activator.CreateInstance(childType);
+                    }
+                    info.SetValue(UpsertData, detail);
+                }
             }
         }
 

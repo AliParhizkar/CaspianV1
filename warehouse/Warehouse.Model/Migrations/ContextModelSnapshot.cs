@@ -22,6 +22,33 @@ namespace Warehouse.Model.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Accounting.Model.CostCenter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("CostCenters", "acc", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
                 {
                     b.Property<int>("Id")
@@ -31,30 +58,26 @@ namespace Warehouse.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ErrorFileName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("LineNumber")
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<short>("RepetitionTimes")
                         .HasColumnType("smallint");
 
                     b.Property<string>("SourceCodeFileName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("SubSystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Version")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -77,7 +100,6 @@ namespace Warehouse.Model.Migrations
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
@@ -118,16 +140,14 @@ namespace Warehouse.Model.Migrations
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("URL")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -179,18 +199,16 @@ namespace Warehouse.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("IconFont")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
 
-                    b.Property<byte>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -209,16 +227,13 @@ namespace Warehouse.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -240,23 +255,19 @@ namespace Warehouse.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("FName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -265,42 +276,34 @@ namespace Warehouse.Model.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("MobileNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -408,6 +411,9 @@ namespace Warehouse.Model.Migrations
                     b.Property<byte?>("ReservationLevel")
                         .HasColumnType("tinyint");
 
+                    b.Property<bool>("ReserveBaseOnControl")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("SuspendedInIncoming")
                         .HasColumnType("bit");
 
@@ -423,6 +429,34 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("ProductClassId");
 
                     b.ToTable("Goods", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.GoodsPlacement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockRoomId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("StockRoomId");
+
+                    b.ToTable("GoodsPlacements", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.GoodsProperties", b =>
@@ -638,7 +672,124 @@ namespace Warehouse.Model.Migrations
 
                     b.HasIndex("GoodsPropertyId");
 
-                    b.ToTable("PropertyList");
+                    b.ToTable("PropertiesList", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.PurchaseRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CostCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("CostCenterType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("IssuerKeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IssuerStockRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Loadable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("No")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ReceiverKeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReceiverStockRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ReferenceDocumentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("RequisitionerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("StockRoomDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CostCenterId");
+
+                    b.HasIndex("IssuerKeepCenterId");
+
+                    b.HasIndex("IssuerStockRoomId");
+
+                    b.HasIndex("ReceiverKeepCenterId");
+
+                    b.HasIndex("ReceiverStockRoomId");
+
+                    b.HasIndex("RequisitionerId");
+
+                    b.ToTable("PurchaseRequests", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Reservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Branch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("CostCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("DateOnly")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("ExpirationDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("KeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("OtherPartyType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("ReservationBasis")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("ReservationNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("ReservationType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("StockRoomId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CostCenterId");
+
+                    b.HasIndex("KeepCenterId");
+
+                    b.HasIndex("StockRoomId");
+
+                    b.ToTable("Reservations", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StandardChangeUnit", b =>
@@ -744,12 +895,21 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("SubstituteProducts", "wh");
                 });
 
+            modelBuilder.Entity("Accounting.Model.CostCenter", b =>
+                {
+                    b.HasOne("Accounting.Model.CostCenter", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionDetail", b =>
                 {
                     b.HasOne("Caspian.Engine.Model.ExceptionData", "ExceptionData")
                         .WithMany("Details")
                         .HasForeignKey("ExceptionDataId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
@@ -767,8 +927,7 @@ namespace Warehouse.Model.Migrations
                 {
                     b.HasOne("Caspian.Engine.Model.MenuCategory", "MenuCategory")
                         .WithMany("Menus")
-                        .HasForeignKey("MenuCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("MenuCategoryId");
 
                     b.Navigation("MenuCategory");
                 });
@@ -778,13 +937,12 @@ namespace Warehouse.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.Menu", "Menu")
                         .WithMany("Accessibilities")
                         .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.Role", "Role")
                         .WithMany("MenuAccessibilities")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("RoleId");
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("Accessibilities")
@@ -802,7 +960,7 @@ namespace Warehouse.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.Role", "Role")
                         .WithMany("Memberships")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
@@ -840,6 +998,32 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("MeasurementUnit");
 
                     b.Navigation("ProductClass");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.GoodsPlacement", b =>
+                {
+                    b.HasOne("Warehouse.Model.Goods", "Goods")
+                        .WithMany("GoodsPlacements")
+                        .HasForeignKey("GoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.MaterialLocation", "Location")
+                        .WithMany("GoodsPlacements")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.StockRoom", "StockRoom")
+                        .WithMany("GoodsPlacements")
+                        .HasForeignKey("StockRoomId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Goods");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("StockRoom");
                 });
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
@@ -898,6 +1082,79 @@ namespace Warehouse.Model.Migrations
                         .IsRequired();
 
                     b.Navigation("GoodsProperty");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.PurchaseRequest", b =>
+                {
+                    b.HasOne("Accounting.Model.CostCenter", "CostCenter")
+                        .WithMany()
+                        .HasForeignKey("CostCenterId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "IssuerKeepCenter")
+                        .WithMany("PurchaseRequestsIssuer")
+                        .HasForeignKey("IssuerKeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.StockRoom", "IssuerStockRoom")
+                        .WithMany("PurchaseRequestsIssuer")
+                        .HasForeignKey("IssuerStockRoomId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "ReceiverKeepCenter")
+                        .WithMany("PurchaseRequestsReceiver")
+                        .HasForeignKey("ReceiverKeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.StockRoom", "ReceiverStockRoom")
+                        .WithMany("PurchaseRequestsReceiver")
+                        .HasForeignKey("ReceiverStockRoomId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Caspian.Engine.Model.User", "Requisitioner")
+                        .WithMany()
+                        .HasForeignKey("RequisitionerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CostCenter");
+
+                    b.Navigation("IssuerKeepCenter");
+
+                    b.Navigation("IssuerStockRoom");
+
+                    b.Navigation("ReceiverKeepCenter");
+
+                    b.Navigation("ReceiverStockRoom");
+
+                    b.Navigation("Requisitioner");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Reservation", b =>
+                {
+                    b.HasOne("Accounting.Model.CostCenter", "CostCenter")
+                        .WithMany()
+                        .HasForeignKey("CostCenterId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "KeepCenter")
+                        .WithMany("Reservations")
+                        .HasForeignKey("KeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.StockRoom", "StockRoom")
+                        .WithMany("Reservations")
+                        .HasForeignKey("StockRoomId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("CostCenter");
+
+                    b.Navigation("KeepCenter");
+
+                    b.Navigation("StockRoom");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StandardChangeUnit", b =>
@@ -963,6 +1220,11 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("SubstituteGoods");
                 });
 
+            modelBuilder.Entity("Accounting.Model.CostCenter", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.ExceptionData", b =>
                 {
                     b.Navigation("Details");
@@ -1008,6 +1270,8 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.Goods", b =>
                 {
+                    b.Navigation("GoodsPlacements");
+
                     b.Navigation("OtherSubstitutes");
 
                     b.Navigation("Substitutes");
@@ -1020,6 +1284,12 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
+                    b.Navigation("PurchaseRequestsIssuer");
+
+                    b.Navigation("PurchaseRequestsReceiver");
+
+                    b.Navigation("Reservations");
+
                     b.Navigation("Stocks");
                 });
 
@@ -1032,6 +1302,8 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.MaterialLocation", b =>
                 {
+                    b.Navigation("GoodsPlacements");
+
                     b.Navigation("Locations");
                 });
 
@@ -1051,7 +1323,15 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
                 {
+                    b.Navigation("GoodsPlacements");
+
                     b.Navigation("MaterialAddresses");
+
+                    b.Navigation("PurchaseRequestsIssuer");
+
+                    b.Navigation("PurchaseRequestsReceiver");
+
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

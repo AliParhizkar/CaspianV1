@@ -19,7 +19,7 @@ namespace Caspian.Engine.Shared
         int? userId;
         int menuId;
         bool userIsAuthenticated;
-        SubSystemKind systemKind;
+        SubsystemKind systemKind;
         string currentUrl;
         PageData pageData;
         WindowStatus status;
@@ -98,9 +98,9 @@ namespace Caspian.Engine.Shared
             if (url.StartsWith("/"))
                 url = url.Substring(1);
             var strSubsystem = url.Split('/')[0];
-            var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem,
+            var field = typeof(SubsystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem,
                 StringComparison.OrdinalIgnoreCase));
-            systemKind = (SubSystemKind)field.GetValue(null);
+            systemKind = (SubsystemKind)field.GetValue(null);
             if (PageId.HasValue)
             {
                 var menu = MenuService.GetMenu(PageId.Value, systemKind);

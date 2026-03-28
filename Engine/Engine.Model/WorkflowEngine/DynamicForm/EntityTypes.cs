@@ -10,7 +10,7 @@ namespace Caspian.Engine
         [Key]
         public int Id { get; set; }
 
-        public SubSystemKind SubSystem { get; set; }
+        public SubsystemKind Subsystem { get; set; }
 
         public string Name { get; set; }
 

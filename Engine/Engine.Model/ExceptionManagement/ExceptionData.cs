@@ -10,7 +10,7 @@ namespace Caspian.Engine.Model
         [Key]
         public int Id { get; set; }
 
-        public SubSystemKind SubSystemKind { get; set; }
+        public SubsystemKind SubSystemKind { get; set; }
 
         public string SourceCodeFileName { get; set; }
 

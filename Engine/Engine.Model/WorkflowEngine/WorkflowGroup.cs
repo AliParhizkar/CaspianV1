@@ -15,7 +15,7 @@ namespace Caspian.Engine
         public string Title { get; set; }
 
         [DisplayName("Subsystem")]
-        public SubSystemKind SubSystemKind { get; set; }
+        public SubsystemKind SubsystemKind { get; set; }
 
         [DisplayName("Description")]
         public string Description { get; set; }

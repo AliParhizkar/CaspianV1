@@ -126,6 +126,8 @@ namespace Caspian.UI
             {
                 if (DetailDataView.Inline)
                     DetailDataView.Batch = true;
+                var value = typeof(TMaster).GetPrimaryKey().GetValue(base.UpsertData);
+                MasterId = Convert.ToInt32(value);
                 DetailDataView.InsertIconState(true);
                 DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
             }

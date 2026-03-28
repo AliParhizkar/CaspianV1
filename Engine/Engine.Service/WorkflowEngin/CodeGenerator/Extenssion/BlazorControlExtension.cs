@@ -111,7 +111,7 @@ namespace Caspian.Engine.Service
             return str.ToString();
         }
 
-        public static string GetCode(this BlazorControl component, string formName, SubSystemKind kind, string userCode)
+        public static string GetCode(this BlazorControl component, string formName, SubsystemKind kind, string userCode)
         {
             var str = new StringBuilder();
             bool? isAsync = null;
@@ -264,11 +264,11 @@ namespace Caspian.Engine.Service
             throw new NotImplementedException("خطای عدم پیاده سازی");
         }
 
-        public static string GetControlType(this BlazorControl ctr, SubSystemKind subSystem, bool isServerSide)
+        public static string GetControlType(this BlazorControl ctr, SubsystemKind subsystem, bool isServerSide)
         {
             if (ctr.CustomeFieldName.HasValue())
                 return ctr.GetCustomFieldControl(isServerSide);
-            var entityType = new AssemblyInfo().GetModelType(subSystem, ctr.DataModelField.EntityFullName);
+            var entityType = new AssemblyInfo().GetModelType(subsystem, ctr.DataModelField.EntityFullName);
             var info = entityType.GetProperty(ctr.PropertyName);
             switch (ctr.ControlType)
             {
@@ -317,7 +317,7 @@ namespace Caspian.Engine.Service
             }
         }
 
-        public static string GetId(this BlazorControl ctr, SubSystemKind subSystemKind)
+        public static string GetId(this BlazorControl ctr, SubsystemKind subsystemKind)
         {
             var str = new StringBuilder();
             switch (ctr.ControlType)
@@ -335,7 +335,7 @@ namespace Caspian.Engine.Service
                             return $"lkp{name}";
                         return $"cmb{name}";
                     }
-                    var entityType = new AssemblyInfo().GetModelType(subSystemKind, ctr.DataModelField.EntityFullName);
+                    var entityType = new AssemblyInfo().GetModelType(subsystemKind, ctr.DataModelField.EntityFullName);
                     var info = entityType.GetProperties().SingleOrDefault(t => t.GetCustomAttribute<ForeignKeyAttribute>()?.Name == ctr.PropertyName);
                     if (info == null)
                         throw new CaspianException($"خطا: In type {entityType.Name} property with name {ctr.PropertyName} not exist");

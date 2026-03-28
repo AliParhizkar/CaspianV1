@@ -58,7 +58,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,7 +154,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -339,7 +339,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "PersianDatesTable",
                         principalColumn: "Date",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Orders_couriers_CourierId",
                         column: x => x.CourierId,
@@ -679,7 +679,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "HR",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -722,7 +722,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "HR",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Families_SimpleData_WifeJobId",
                         column: x => x.WifeJobId,
@@ -749,7 +749,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "HR",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_ReligionAndSubReligion_SimpleData_ReligionId",
                         column: x => x.ReligionId,
@@ -815,7 +815,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "HR",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_IdentificationDetails_Provinces_BirthProvinceId",
                         column: x => x.BirthProvinceId,

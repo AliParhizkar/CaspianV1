@@ -14,9 +14,9 @@ namespace Caspian.Engine.Service
 
         public IList<Menu> Menus { get; set; }
 
-        public Menu GetMenu(int sourceId, SubSystemKind systemKind)
+        public Menu GetMenu(int sourceId, SubsystemKind systemKind)
         {
-            return Menus.SingleOrDefault(t => t.SourceId == sourceId && t.SubSystemKind == systemKind);
+            return Menus.SingleOrDefault(t => t.SourceId == sourceId && t.SubsystemKind == systemKind);
         }
 
         public Menu GetMenu(string url)

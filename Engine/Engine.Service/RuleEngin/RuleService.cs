@@ -21,9 +21,9 @@ namespace Caspian.Engine.Service
             }, "قانون فرمی نباید شامل قانون غیرفرمی باشد");
         }
 
-        public IQueryable<Rule> GetAll(SubSystemKind subSystemKind)
+        public IQueryable<Rule> GetAll(SubsystemKind subsystemKind)
         {
-            return GetAll().Where(t => t.SystemKind == subSystemKind);
+            return GetAll().Where(t => t.SystemKind == subsystemKind);
         }
 
         public async Task<ValueTypeKind?> NextTokeValueType(IList<Token> tokens, int ruleId)

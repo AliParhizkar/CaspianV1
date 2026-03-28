@@ -5,7 +5,7 @@
 @inject IUIService<MenuCategory> CategoryService
 <EntitySearch Service="Service" ColumnsCount="2">
     <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="4"
-              TextExpression="t => t.Title" ConditionExpression="t => t.SubSystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
+              TextExpression="t => t.Title" ConditionExpression="t => t.SubsystemKind == Subsystem" OrderByExpression="t => t.Ordering" />
     <StringTextBox @bind-Value="context.Title" ColSpan="4" />
     <CheckBox CustomeSearch @bind-Value="onlyUntitledMenus" ColSpan="2" TotalSpan="4" Title="only Untitled Menus" />
     <CheckBox @bind-Value="context.IsDropped" ColSpan="2" TotalSpan="4"Title="Dropped" />
@@ -23,7 +23,7 @@
 
 <div class="row c-controls">
     <div class="pt-4">
-        <DataGrid TEntity="Menu" Service="Service" ContentHeight="300" ShowInsertIcon="false" ConditionExpr='t => (!onlyUntitledMenus || t.Title == null) && t.SubSystemKind == Subsystem'>
+        <DataGrid TEntity="Menu" Service="Service" ContentHeight="300" ShowInsertIcon="false" ConditionExpr='t => (!onlyUntitledMenus || t.Title == null) && t.SubsystemKind == Subsystem'>
             <Columns>
                 <GridColumn Field="t => t.Id" Title="Id" style="width:50px;" />
                 <GridColumn Field="t => t.MenuCategory.Title" Title="main menu" />
@@ -39,7 +39,7 @@
         <CaspianForm Service="Service">
             <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" 
                       TextExpression="t => t.Title" ColSpan="8"
-                      ConditionExpression='t => t.SubSystemKind == Subsystem && t.Title != "Engin"' />
+                      ConditionExpression='t => t.SubsystemKind == Subsystem && t.Title != "Engin"' />
             <StringTextBox @bind-Value="Service.UpsertData.Title" ColSpan="8" />
             <CheckBox @bind-Value="context.ShowOnMenu" OnChange="FillUrls" ColSpan="8" />
             <ComboBox TValue="string" TEntity="SelectListItem" @bind-Value="context.URL" Source="source" ColSpan="8" />
@@ -55,7 +55,7 @@
         <StringTextBox @bind-Value="context.Title" ColSpan="4" />
         <StringTextBox @bind-Value="context.IconFont" ColSpan="4" />
     </EntitySearch>
-    <DataGrid Service="CategoryService" TEntity="MenuCategory" ConditionExpr="t => t.SubSystemKind == Subsystem">
+    <DataGrid Service="CategoryService" TEntity="MenuCategory" ConditionExpr="t => t.SubsystemKind == Subsystem">
         <Columns>
             <GridColumn Field="t => t.Title" />
             <GridColumn Field="t => t.IconFont" >
@@ -65,7 +65,7 @@
         </Columns>
     </DataGrid>
     <Window Service="CategoryService" Title="Category" Style="width:400px;">
-        <CaspianForm TEntity="MenuCategory" Service="CategoryService" OnSubmit="t => t.Entity.SubSystemKind = Subsystem">
+        <CaspianForm TEntity="MenuCategory" Service="CategoryService" OnSubmit="t => t.Entity.SubsystemKind = Subsystem">
             <StringTextBox @bind-Value="context.Title" ColSpan="9" />
             <StringTextBox @bind-Value="context.IconFont" ColSpan="9" />
             <FormCommandButton ColSpan="9" />

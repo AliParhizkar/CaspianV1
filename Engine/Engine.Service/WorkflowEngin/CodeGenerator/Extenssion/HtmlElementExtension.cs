@@ -21,7 +21,7 @@ namespace Caspian.Engine.Service
             str.Append("\t\t\tbuilder.OpenElement(1, \"div\");\n");
             str.Append($"\t\t\tbuilder.AddAttribute(3, \"class\", \"col-md-{col.Span}\");\n");
             if (col.Component != null)
-                str.Append(col.Component.GetCode(form.Name, form.WorkflowGroup.SubSystemKind, userCode));
+                str.Append(col.Component.GetCode(form.Name, form.WorkflowGroup.SubsystemKind, userCode));
             else if (col.InnerRows != null)
             {
                 foreach (var row in col.InnerRows)

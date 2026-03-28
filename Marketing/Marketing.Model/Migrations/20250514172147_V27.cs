@@ -57,7 +57,7 @@ namespace Marketing.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -95,7 +95,7 @@ namespace Marketing.Model.Migrations
                 principalSchema: "cmn",
                 principalTable: "Users",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

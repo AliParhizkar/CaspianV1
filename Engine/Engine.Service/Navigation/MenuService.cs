@@ -10,8 +10,8 @@ namespace Caspian.Engine.Service
         public MenuService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Title).Required(t => t.Id > 0).UniqueAsync(t => t.SubSystemKind, "منویی با این عنوان در سیستم تعریف شده است");
-            RuleFor(t => t.SourceId).Required().UniqueAsync(t => t.SubSystemKind, "آدرسی با این شماره در سیستم ثبت شده است");
+            RuleFor(t => t.Title).Required(t => t.Id > 0).UniqueAsync(t => t.SubsystemKind, "منویی با این عنوان در سیستم تعریف شده است");
+            RuleFor(t => t.SourceId).Required().UniqueAsync(t => t.SubsystemKind, "آدرسی با این شماره در سیستم ثبت شده است");
             RuleFor(t => t.URL).Required(t => t.ShowOnMenu && t.Id > 0);
             RuleFor(t => t.MenuCategoryId).Required(t => t.ShowOnMenu && t.Id > 0)
                 .Custom(t => t.MenuCategoryId.HasValue && !t.ShowOnMenu, "در صورت عدم نمایش منو نیازی به گروه آن نیست");

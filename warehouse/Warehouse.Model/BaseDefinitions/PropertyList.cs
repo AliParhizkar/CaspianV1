@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Warehouse.Model
 {
+    [Table("PropertiesList", Schema = "wh")]
     public class PropertyList
     {
         [Key]

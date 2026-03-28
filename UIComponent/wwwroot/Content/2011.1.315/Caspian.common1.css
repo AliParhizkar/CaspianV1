@@ -772,18 +772,28 @@ input[type='range']::-webkit-slider-thumb {
     height: 270px;
     border-radius: 50%;
 }
-.t-tabstrip.t-vertical{
-    display:flex;
+.t-rtl .t-tabstrip.t-vertical .c-selected-panel {
+    left: 2px !important;
+}
+.t-ltr .t-tabstrip.t-vertical .c-selected-panel {
+    left: 156px !important;
+}
+.t-rtl .t-tabstrip.t-vertical >.t-header {
+    border-radius: 0 8px 0 0;
+    border-bottom: none;
+}
+.t-ltr .t-tabstrip.t-vertical .t-header {
+    border-radius: 8px 0 0 0;
+    border-bottom: none;
+}
+.t-tabstrip.t-vertical {
+    display: flex;
 }
     .t-tabstrip.t-vertical .c-selected-panel {
         width: 2px !important;
         height: 31px;
-        left:156px!important;
+        
         transition: top .2s cubic-bezier(0.35, 0, 0.25, 1)!important;
-    }
-    .t-tabstrip.t-vertical .t-header {
-        border-radius: 8px 0 0 0;
-        border-bottom: none;
     }
     .t-tabstrip.t-vertical .t-tabstrip-items {
         width: 160px;
@@ -799,9 +809,10 @@ input[type='range']::-webkit-slider-thumb {
             display: block !important;
             height: 39px;
             border-right: none;
+            border-left: none;
             border-bottom: 1px solid #d6d6d6;
-            padding:4px!important;
-            margin:0!important;
+            padding: 4px !important;
+            margin: 0 !important;
         }
 .t-tabstrip.t-vertical >.t-content{
     width:calc(100% - 160px);
@@ -1317,8 +1328,10 @@ body {
     bottom: -100%;
     transition: bottom .2s ease;
 }
-
-.c-lookup-tree >.c-content {
+.c-lookup-tree .c-content.t-state-disabled {
+    background-color: #eaeaea;
+}
+.c-lookup-tree > .c-content {
     border-width: 1px;
     border-style: solid;
     border-color: rgba(0,0,0,0.12);
@@ -1331,9 +1344,9 @@ body {
         font-size:18px;
         cursor:pointer;
     }
-    .c-lookup-tree .c-content:hover {
-        border-color: rgba(0,0,0,0.24);
-    }
+.c-lookup-tree .c-content:not(.t-state-disabled):hover {
+    border-color: rgba(0,0,0,0.24);
+}
 
         .c-lookup-tree .c-content.c-state-focus {
             border-color: rgba(0,0,0,0.24);
@@ -2673,8 +2686,14 @@ div.t-window {
     overflow: hidden;
     white-space: nowrap;
     height: 29px;
-    border-radius: 8px 0 0 0;
 }
+.t-ltr .t-tabstrip .t-tabstrip-items {
+    border-radius: 8px 0 0 0!important;
+}
+.t-rtl .t-tabstrip .t-tabstrip-items {
+    border-radius: 0 8px 0 0!important;
+}
+
 
 .t-tabstrip-items .t-item,
 .t-panelbar .t-tabstrip-items .t-item {

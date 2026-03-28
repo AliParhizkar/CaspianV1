@@ -9,16 +9,16 @@ namespace Caspian.Engine.Navigation
 {
     public partial class DataMenu: ComponentBase
     {
-        string curentUrl;
+        string currentUrl;
         IList<Menu> Menus;
         ElementReference elm;
-        bool sholdRender = true;
-        SubSystemKind? OldSubSystem;
+        bool shouldRender = true;
+        SubsystemKind? OldSubSystem;
         IList<MenuCategory> Categories;
 
         protected override bool ShouldRender()
         {
-            return sholdRender;
+            return shouldRender;
         }
 
         async Task ChangeValueAsync()
@@ -34,17 +34,17 @@ namespace Caspian.Engine.Navigation
         {
             var url = navigationManager.Uri.Substring(navigationManager.BaseUri.Length);
             navigationManager.LocationChanged += NavigationManager_LocationChanged;
-            curentUrl = '/' + url; 
+            currentUrl = '/' + url; 
             var segments = url.Split('/');
             if (url.HasValue() && segments.Length > 0 && !segments[0].Equals("login", StringComparison.OrdinalIgnoreCase))
             {
                 var str = segments[0].Split("?")[0];
-                var field = typeof(SubSystemKind).GetFields().Single(t => t.Name.Equals(str, StringComparison.OrdinalIgnoreCase));
-                var subSystemKind = (SubSystemKind)field.GetValue(null);
+                var field = typeof(SubsystemKind).GetFields().Single(t => t.Name.Equals(str, StringComparison.OrdinalIgnoreCase));
+                var subSystemKind = (SubsystemKind)field.GetValue(null);
                 if (OldSubSystem != subSystemKind)
                 {
-                    Menus = SingletonMenuService.Menus.Where(t => t.ShowOnMenu && t.SubSystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
-                    Categories = SingletonMenuService.Categories.Where(t => t.SubSystemKind == subSystemKind)
+                    Menus = SingletonMenuService.Menus.Where(t => t.ShowOnMenu && t.SubsystemKind == subSystemKind && MenusId.Contains(t.Id)).OrderBy(t => t.Ordering).ToList();
+                    Categories = SingletonMenuService.Categories.Where(t => t.SubsystemKind == subSystemKind)
                         .OrderBy(t => t.Ordering).ToList();
                     OldSubSystem = subSystemKind;
                 }
@@ -84,10 +84,10 @@ namespace Caspian.Engine.Navigation
                 var item = await Storege.GetAsync<string>("CurrentShowUrl");
                 if (item.Success)
                 {
-                    sholdRender = true;
-                    if (curentUrl != item.Value)
+                    shouldRender = true;
+                    if (currentUrl != item.Value)
                     {
-                        curentUrl = item.Value;
+                        currentUrl = item.Value;
                         StateHasChanged();
                     }
                 }

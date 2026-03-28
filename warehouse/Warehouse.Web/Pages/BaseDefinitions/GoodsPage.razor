@@ -33,39 +33,48 @@
         </Columns>
     </DataGrid>
 </div>
-<Window Service="Service" Title="تعریف کالا" Style="width:750px" >
-    <CaspianForm TEntity="Goods" Service="Service" ColumnsCount="2">
-        <ComboBox TValue="int?" TEntity="BarcodePattern" @bind-Value="context.BarcodePatternId" TextExpression="t => t.Name" ColSpan="4" />
-        <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
-        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-        <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="context.MeasurementUnitId" TextExpression="t => t.Name" ColSpan="4" />
-        <ComboBox TValue="int" TEntity="ProductClass" @bind-Value="context.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
-        <DropdownList @bind-Value="context.ReservationLevel" ColSpan="4" />
-        <div class="col-md-6 row">
-            <DropdownList @bind-Value="context.GoodsNature" ColSpan="8" TotalSpan="12" />
-            <RadioList @bind-Value="context.GoodsType" ShowTitle>
-                <div class="row">
-                    <div class="col-md-6">
-                        <RadioItem Value="GoodsType.Purchased" />
+<Window Service="Service" Title="تعریف کالا" Style="width:850px" >
+    <EntityTabPanel TEntity="Goods" Service="Service" Vertical>
+        <Content Context="goods">
+            <ChildTabPanelItem Child="t => t" ColumnsCount="2">
+                <div class="row p-2 ps-0">
+                    <ComboBox TValue="int?" TEntity="BarcodePattern" @bind-Value="goods.BarcodePatternId" TextExpression="t => t.Name" ColSpan="4" />
+                    <StringTextBox @bind-Value="goods.Code" ColSpan="4" Style="direction:ltr" />
+                    <StringTextBox @bind-Value="goods.Name" ColSpan="4" />
+                    <ComboBox TValue="int" TEntity="MeasurementUnit" @bind-Value="goods.MeasurementUnitId" TextExpression="t => t.Name" ColSpan="4" />
+                    <ComboBox TValue="int" TEntity="ProductClass" @bind-Value="goods.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
+                    <DropdownList @bind-Value="goods.ReservationLevel" ColSpan="4" />
+                    <div class="col-md-6 row">
+                        <DropdownList @bind-Value="goods.GoodsNature" ColSpan="8" TotalSpan="12" />
+                        <RadioList @bind-Value="goods.GoodsType" ShowTitle>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <RadioItem Value="GoodsType.Purchased" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadioItem Value="GoodsType.Salable" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadioItem Value="GoodsType.Construction" />
+                                </div>
+                                <div class="col-md-6">
+                                    <RadioItem Value="GoodsType.OutOfStockItem" />
+                                </div>
+                            </div>
+                        </RadioList>
                     </div>
                     <div class="col-md-6">
-                        <RadioItem Value="GoodsType.Salable" />
+                        <CheckBox @bind-Value="goods.SuspendedInIncoming" ColSpan="12" TotalSpan="12" />
+                        <CheckBox @bind-Value="goods.SuspendedInOutcoming" ColSpan="12" TotalSpan="12" />
                     </div>
-                    <div class="col-md-6">
-                        <RadioItem Value="GoodsType.Construction" />
-                    </div>
-                    <div class="col-md-6">
-                        <RadioItem Value="GoodsType.OutOfStockItem" />
-                    </div>
+                    <FormCommandButton ColSpan="8" />
                 </div>
-            </RadioList>
-        </div>
-        <div class="col-md-6">
-            <CheckBox @bind-Value="context.SuspendedInIncoming" ColSpan="12" TotalSpan="12" />
-            <CheckBox @bind-Value="context.SuspendedInOutcoming" ColSpan="12" TotalSpan="12" />
-        </div>
-        <FormCommandButton ColSpan="8" />
-    </CaspianForm>
+            </ChildTabPanelItem>
+            <ChildrenTabPanelItem Children="t => t.GoodsPlacements" Title="انبار">
+                <GoodsPlacementComponent />
+            </ChildrenTabPanelItem>
+        </Content>
+    </EntityTabPanel>
 </Window>
 
 @code

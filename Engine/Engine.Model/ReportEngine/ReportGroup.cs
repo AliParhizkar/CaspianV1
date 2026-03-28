@@ -20,7 +20,7 @@ namespace Caspian.Engine.Model
         [DisplayName("عنوان")]
         public string Title { get; set; }
 
-        public SubSystemKind SubSystem { get; set; }
+        public SubsystemKind SubSystem { get; set; }
 
         /// <summary>
         /// عنوان لاتین <see cref="namespace"/>ئی که متد در یکی از کلاسهای آن قرار دارد

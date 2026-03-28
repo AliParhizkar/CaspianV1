@@ -19,14 +19,14 @@ else
         <div class="col-md-5">
             <EntitySearch TEntity="Menu" Service="Service">
                 <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" TextExpression="t => t.Title"
-                          ColSpan="8" ConditionExpression="t => t.SubSystemKind == SubSystem" />
+                          ColSpan="8" ConditionExpression="t => t.SubsystemKind == SubSystem" />
                 <StringTextBox @bind-Value="context.Title" ColSpan="8" />
             </EntitySearch>
             <div class="col-md-12 text-center">
                 <hr class="mb-0" />
                 <span class="d-membership">Accessible menus</span>
             </div>
-            <DataGrid TEntity="Menu" ConditionExpr="t => t.SubSystemKind == SubSystem" Service="Service" ContentHeight="330">
+            <DataGrid TEntity="Menu" ConditionExpr="t => t.SubsystemKind == SubSystem" Service="Service" ContentHeight="330">
                 <Columns>
                     <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                     <GridColumn Field="t => t.Title" style="width:150px" />
@@ -49,14 +49,14 @@ else
         <div class="col-md-6">
             <EntitySearch Service="Service" TEntity="MenuAccessibility">
                 <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
-                          ConditionExpression="t => t.SubSystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
+                          ConditionExpression="t => t.SubsystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
                 <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
             </EntitySearch>
             <div class="col-md-12 text-center">
                 <hr class="mb-0" />
                 <span class="d-membership">Accessible menus</span>
             </div>
-            <DataGrid TEntity="MenuAccessibility" Service="Service" ConditionExpr="t => t.Menu.MenuCategory.SubSystemKind == SubSystem" ContentHeight="330">
+            <DataGrid TEntity="MenuAccessibility" Service="Service" ConditionExpr="t => t.Menu.MenuCategory.SubsystemKind == SubSystem" ContentHeight="330">
                 <Columns>
                     <GridColumn Field="t => t.Menu.MenuCategory.Title" Title="Menu" />
                     <GridColumn Field="t => t.Menu.Title" />
@@ -75,7 +75,7 @@ else
     MembershipService<User, MenuAccessibility, Menu> Service;
 
     [Parameter]
-    public SubSystemKind SubSystem { get; set; }
+    public SubsystemKind SubSystem { get; set; }
 
     [Parameter]
     public int SelectedUserId { get; set; }

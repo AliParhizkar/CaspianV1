@@ -94,7 +94,7 @@ namespace Investment.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(

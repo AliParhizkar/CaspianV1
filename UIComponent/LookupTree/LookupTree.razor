@@ -35,7 +35,7 @@ else
         {
             <div class="auto-hide c-lookup-tree" error-message="@ErrorMessage" multiselect="@multiSelectable">
                 <div class="@className">
-                    <input @ref="InputElement" value="@searchText" @oninput="async e => await Search(e)" />
+                    <input @ref="InputElement" value="@searchText" @oninput="async e => await Search(e)" disabled="@Disabled" />
                     <span @onclick="async () => await ShowTree()" class="fa fa-search"></span>
                 </div>
                 @if (show)

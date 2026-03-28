@@ -69,7 +69,7 @@ namespace Investment.Model.Migrations
                 principalSchema: "acc",
                 principalTable: "AccountingCodes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

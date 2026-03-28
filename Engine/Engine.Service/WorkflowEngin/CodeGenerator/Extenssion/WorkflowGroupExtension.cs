@@ -22,9 +22,9 @@ namespace Caspian.Engine.Service
             str.Append("using Caspian.UI;\n");
             str.Append("using System;\n");
             str.Append("using Caspian.Common.Attributes;\n");
-            str.Append($"using {group.SubSystemKind}.Model;\n");
-            str.Append($"using {group.SubSystemKind}.Service;\n");
-            str.Append($"using {group.SubSystemKind}.Web.Pages;\n");
+            str.Append($"using {group.SubsystemKind}.Model;\n");
+            str.Append($"using {group.SubsystemKind}.Service;\n");
+            str.Append($"using {group.SubsystemKind}.Web.Pages;\n");
             str.Append("using Microsoft.AspNetCore.Components;\n");
             str.Append("using Caspian.Common;\n");
             str.Append("using System.Threading.Tasks;\n");
@@ -50,9 +50,9 @@ namespace Caspian.Engine.Service
         {
             SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(codeToCompile);
             string assemblyName = Path.GetRandomFileName();
-            var modelPath = new AssemblyInfo().RelatedPath + "\\" + group.SubSystemKind.ToString() + ".model.dll";
-            var servicePath = new AssemblyInfo().RelatedPath + "\\" + group.SubSystemKind.ToString() + ".service.dll";
-            var webPagePath = new AssemblyInfo().RelatedPath + "\\" + group.SubSystemKind.ToString() + ".Web.dll";
+            var modelPath = new AssemblyInfo().RelatedPath + "\\" + group.SubsystemKind.ToString() + ".model.dll";
+            var servicePath = new AssemblyInfo().RelatedPath + "\\" + group.SubsystemKind.ToString() + ".service.dll";
+            var webPagePath = new AssemblyInfo().RelatedPath + "\\" + group.SubsystemKind.ToString() + ".Web.dll";
             var refPaths = new[] {
                     typeof(object).GetTypeInfo().Assembly.Location,
                     typeof(PersianDate).GetTypeInfo().Assembly.Location,

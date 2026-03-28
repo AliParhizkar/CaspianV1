@@ -70,7 +70,7 @@
     {
         using var service = CreateScope().GetService<WorkflowFormService>();
         var form = await service.GetAll().Include(t => t.WorkflowGroup).SingleAsync(WorkflowFormId);
-        var systemName = form.WorkflowGroup.SubSystemKind.ToString();
+        var systemName = form.WorkflowGroup.SubsystemKind.ToString();
         className = form.Name;
         assemblies = new string[] { $"{systemName}.Model", $"{systemName}.Service", "Caspian.common", "FluentValidation", "Engine.Model", "Microsoft.Extensions.DependencyInjection.Abstractions" };
         var basePath = Host.ContentRootPath;

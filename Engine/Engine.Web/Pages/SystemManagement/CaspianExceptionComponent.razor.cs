@@ -159,7 +159,7 @@ namespace Caspian.Engine.Shared
         }
 
         [Parameter]
-        public SubSystemKind SystemKind { get; set; }
+        public SubsystemKind SystemKind { get; set; }
 
         [Parameter]
         public int? UserId { get; set; }

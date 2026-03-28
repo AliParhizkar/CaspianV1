@@ -40,7 +40,7 @@
         var ids = tree.GetSelectedItems().Select(t => Convert.ToInt32(t.Value)).ToList();
         var service = new MenuAccessibilityService(scope.ServiceProvider);
         ///منوهایی که در پایگاه داده به کاربر تخصیص داده شده اند
-        var oldMenusId = await service.GetAll().Where(t => t.UserId == AccessUserId && t.Menu.MenuCategory.SubSystemKind == SubSystem).Select(t => t.MenuId).ToListAsync();
+        var oldMenusId = await service.GetAll().Where(t => t.UserId == AccessUserId && t.Menu.MenuCategory.SubsystemKind == SubSystem).Select(t => t.MenuId).ToListAsync();
         ///منوهایی که در درخت انتخاب شده اند ولی در پایگاه داده وجود ندارند
         var menusShouldAdded = ids.Where(t => !oldMenusId.Contains(t));
         ///منوهایی که در پایگاه داده وجود دارند ولی در درخت انتخاب نشده اند
@@ -88,7 +88,7 @@
     async Task InitializData()
     {
         using var scope = CreateScope();
-        source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubSystemKind == SubSystem)
+        source = await new MenuCategoryService(scope.ServiceProvider).GetAll().Where(t => t.SubsystemKind == SubSystem)
             .Select(t => new NodeView()
                 {
                     Text = t.Title,
@@ -121,7 +121,7 @@
     }
 
     [Parameter]
-    public SubSystemKind SubSystem { get; set; }
+    public SubsystemKind SubSystem { get; set; }
 
     [Parameter]
     public int AccessUserId { get; set; }

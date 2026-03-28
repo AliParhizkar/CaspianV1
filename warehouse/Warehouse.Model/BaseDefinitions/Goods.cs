@@ -41,21 +41,27 @@ namespace Warehouse.Model
         [DisplayName("نوع کالا")]
         public GoodsType GoodsType { get; set; }
 
+        [DisplayName("سطح رزرو")]
+        public ReservationLevel? ReservationLevel { get; set; }
+
+        [DisplayName("رزرو براساس عامل کنترل موجودی")]
+        public bool ReserveBaseOnControl { get; set; }
+
         [DisplayName("معلق در اسناد ورودی")]
         public bool SuspendedInIncoming { get; set; }
 
         [DisplayName("معلق در اسناد خروجی")]
         public bool SuspendedInOutcoming { get; set; }
 
-        [DisplayName("سطح رزرو")]
-        public ReservationLevel? ReservationLevel { get; set; }
-
         [CheckOnDelete("محصول دارای محصول جایگزین می باشد و امکان حذف آن وجود ندارد")]
         [InverseProperty(nameof(SubstituteProduct.Goods))]
-        public IList<SubstituteProduct> Substitutes { get; set; }
+        public ICollection<SubstituteProduct> Substitutes { get; set; }
 
         [CheckOnDelete("محصول بعنوان جایگزین تعریف شده است و امکان حذف آن وجود ندارد")]
         [InverseProperty(nameof(SubstituteProduct.SubstituteGoods))]
-        public IList<SubstituteProduct> OtherSubstitutes { get; set; }
+        public ICollection<SubstituteProduct> OtherSubstitutes { get; set; }
+
+        [CheckOnDelete("این کالا در انبار نگهداری می شود و امکان حذف آن وجود ندارد")]
+        public ICollection<GoodsPlacement> GoodsPlacements { get; set; }
     }
 }

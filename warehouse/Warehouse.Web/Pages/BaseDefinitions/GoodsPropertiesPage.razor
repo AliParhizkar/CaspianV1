@@ -38,7 +38,8 @@
         else if (context.PropertyType == PropertyType.String)
         {
             <NumericTextBox @bind-Value="context.MaxLength" ColSpan="8" Disabled="context.FixLength == true" />
-            <CheckBox @bind-Value="context.FixLength" ColSpan="8" Disabled="context.MaxLength != null" />
+            <CheckBox TValue="bool" Value="context.FixLength == true" ValueChanged="t => context.FixLength = t" 
+                      Title="طول ثابت" ColSpan="8" Disabled="context.MaxLength != null" />
             <NumericTextBox @bind-Value="context.Length" ColSpan="8" Disabled="context.FixLength != true" />
         }
         <FormCommandButton ColSpan="8" />
@@ -65,14 +66,6 @@
     IList<PropertyList> list;
     string item;
     PropertyList selectedItem;
-
-    async Task AddItem()
-    {
-        if (txtItem.Validate())
-        {
-
-        }
-    }
 
     async Task LoadData()
     {

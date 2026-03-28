@@ -10,7 +10,7 @@ namespace Engine.Web.Pages.MultiLanguage
 {
     public partial class EntityLanguagePage: BasePage
     {
-        SubSystemKind? systemKind;
+        SubsystemKind? systemKind;
         string entityName, filePath;
         Type entityType;
         IList<SelectListItem> entities;
@@ -19,7 +19,7 @@ namespace Engine.Web.Pages.MultiLanguage
         IList<EntityLangData> GetEntityLangDatas()
         {
             var jsonText = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubSystemKind == systemKind).ToList();
+            return JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubsystemKind == systemKind).ToList();
         }
 
         void SaveData()
@@ -31,7 +31,7 @@ namespace Engine.Web.Pages.MultiLanguage
             if (!titleIsEmpty)
             {
                 var jsonText = File.ReadAllText(filePath);
-                var others = JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubSystemKind != systemKind || t.TypeName != entityName).ToList();
+                var others = JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubsystemKind != systemKind || t.TypeName != entityName).ToList();
                 others.AddRange(entityLangDatas);
                 jsonText = JsonSerializer.Serialize(others);
                 File.WriteAllText(filePath, jsonText);
@@ -65,7 +65,7 @@ namespace Engine.Web.Pages.MultiLanguage
         {
             var jsonText = File.ReadAllText(filePath);
             entityType = systemKind.Value.GetEntityAssembly().GetTypes().Single(t => t.Name == entityName);
-            entityLangDatas = JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubSystemKind == systemKind && t.TypeName == entityName).ToList();
+            entityLangDatas = JsonSerializer.Deserialize<EntityLangData[]>(jsonText).Where(t => t.SubsystemKind == systemKind && t.TypeName == entityName).ToList();
             foreach (var info in entityType.GetProperties())
             {
                 var attr = info.GetCustomAttribute<DisplayNameAttribute>();
@@ -76,7 +76,7 @@ namespace Engine.Web.Pages.MultiLanguage
                     {
                         old = new EntityLangData()
                         {
-                            SubSystemKind = systemKind.Value,
+                            SubsystemKind = systemKind.Value,
                             TypeName = entityName,
                             MemberName = info.Name
                         };

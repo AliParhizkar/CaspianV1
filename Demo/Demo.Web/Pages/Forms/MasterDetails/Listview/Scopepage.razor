@@ -20,8 +20,11 @@
                 </DataGrid>
             </div>
         </TabPanelItem>
-        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
-            <Document FolderName="Batch" FileName="Batch-popup" />
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>First popup">
+            <Document Page="this" FolderName="Batch" FileName="First-popup" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Second popup">
+            <Document Page="this" FolderName="Batch" FileName="Second-popup" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>
@@ -31,51 +34,18 @@
         <fieldset class="c-container">
             <legend>Scope Properties</legend>
             <div class="row ps-3 pe-3 c-controls">
-                <StringTextBox @bind-Value="Service.UpsertData.Title" ColSpan="10" />
-                <StringTextBox @bind-Value="Service.UpsertData.EnTitle" ColSpan="6" TotalSpan="8" />
+                <StringTextBox @bind-Value="context.Title" ColSpan="10" />
+                <StringTextBox @bind-Value="context.EnTitle" ColSpan="6" TotalSpan="8" />
                 <div class="col-md-4 text-center">
                     <FormCommandButton ResetButtonTitle="Close" />
                 </div>
             </div>
         </fieldset>
     </CaspianForm>
-    <div style="margin-bottom:-20px;" class="p-3 pb-0 text-center">
-        <span class="d-membership">Evaluations Of Scope</span>
-    </div>
-    <DataGrid TEntity="Evaluation" DetailsService="Service" PageSize="5" ContentHeight="200">
-        <Columns>
-            <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.Year" />
-            <GridColumn Field="t => t.StartDate.ToPersianDateString()" />
-            <GridColumn Field="t => t.EndDate.ToPersianDateString()" />
-            <GridCommandColumns />
-        </Columns>
-    </DataGrid>
-    <TypeWindow TEntity="Evaluation" Service="Service" Title="Evaluation" Style="width:650px" OnOpen="InitializeOnEvaluationCreate">
-        <StringTextBox @bind-Value="context.Title" ColSpan="6" TotalSpan="9" />
-        <div class="col-md-3 text-center">
-            <button class="c-btn c-primary" type="submit">Save</button>
-            <button class="c-btn c-danger" type="reset">Close</button>
-        </div>
-        <StringTextBox @bind-Value="context.EnTitle" ColSpan="9" TotalSpan="12" />
-        <NumericTextBox @bind-Value="context.Year" ColSpan="3" />
-        <DropdownList @bind-Value="context.EvaluationTurn" ColSpan="3" />
-        <DatePicker @bind-Value="context.StartDate" ColSpan="3" />
-        <DatePicker @bind-Value="context.EndDate" ColSpan="3" />
-        <DatePicker @bind-Value="context.EvalDateFrom" ColSpan="3" />
-        <DatePicker @bind-Value="context.EvalDateTo" ColSpan="3" />
-        <DatePicker @bind-Value="context.ReviewDateFrom" ColSpan="3" />
-        <DatePicker @bind-Value="context.ReviewDateTo" ColSpan="3" />
-        <DatePicker @bind-Value="context.NotificationDateFrom" ColSpan="3" />
-        <DatePicker @bind-Value="context.NotificationDateTo" ColSpan="3" />
-    </TypeWindow>
+    <EvaluationComponent />
 </Window>
 
 @code
 {
-    void InitializeOnEvaluationCreate(Evaluation evaluation)
-    {
-        if (evaluation.Id == 0)
-            evaluation.Year = DateTime.Now.ToPersianDate().Year.Value;
-    }
+
 }

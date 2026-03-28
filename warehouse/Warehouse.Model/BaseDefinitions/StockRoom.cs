@@ -42,7 +42,21 @@ namespace Warehouse.Model
         [DisplayName("امکان عضویت در بیش از یک بخش")]
         public bool MemberInManyParts { get; set; }
 
-        [CheckOnDelete("انبار دارای محل فیزیکی کالا می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("انبار دارای محل فیزیکی می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<MaterialLocation> MaterialAddresses{ get; set; }
+
+        [CheckOnDelete("کالا(هایی) در این انباز ذخیره شده اند و امکان حذف آن وجود ندارد")]
+        public ICollection<GoodsPlacement> GoodsPlacements { get; set; }
+
+        [InverseProperty(nameof(PurchaseRequest.IssuerStockRoom))]
+        [CheckOnDelete("انبار بعنوان تحویل دهنده در درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<PurchaseRequest> PurchaseRequestsIssuer { get; set; }
+
+        [InverseProperty(nameof(PurchaseRequest.ReceiverStockRoom))]
+        [CheckOnDelete("انبار بعنوان تحویل گیرنده در درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<PurchaseRequest> PurchaseRequestsReceiver { get; set; }
+
+        [CheckOnDelete("انبار بعنوان محل رزرو کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<Reservation> Reservations { get; set; }
     }
 }

@@ -10,8 +10,6 @@ namespace Caspian.UI
 
         IList<string> SelectedNodesValue();
 
-        EventCallback OnInternalClose { get; set; }
-
         EventCallback OnInternalShow { get; set; }
 
         EventCallback<string> OnInternalChanged { get; set; }

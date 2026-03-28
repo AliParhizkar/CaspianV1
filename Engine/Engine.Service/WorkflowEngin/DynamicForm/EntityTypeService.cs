@@ -11,7 +11,7 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.Title).Required().UniqueAsync("موجودیتی با این عنوان در سیستم تعریف شده است");
             RuleFor(t => t.Namespace).Required();
             RuleFor(t => t.Name).Required();
-            RuleFor(t => t.SubSystem).Custom(t => t.SubSystem.HasEntityType(t.Namespace, t.Namespace), "نوع نامعتبر است");
+            RuleFor(t => t.Subsystem).Custom(t => t.Subsystem.HasEntityType(t.Namespace, t.Namespace), "نوع نامعتبر است");
         }
     }
 }

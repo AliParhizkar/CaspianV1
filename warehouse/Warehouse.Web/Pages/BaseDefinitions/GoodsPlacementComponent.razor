@@ -1,0 +1,32 @@
+﻿@inject IUIService<GoodsPlacement> Service
+<div class="p-3">
+    <EntitySearch Service="Service">
+
+
+    </EntitySearch>
+    <DataGrid TEntity="GoodsPlacement" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.StockRoom.Code" Title="کد انبار" />
+            <GridColumn Field="t => t.StockRoom.Title" Title="نام انبار" />
+            <GridColumn Field="t => t.Location.Code" Title="کد محل نگهداری" />
+            <GridColumn Field="t => t.Location.Title" Title="نام محل نگهداری" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="محل نگهداری کالا" Style="width:500px;">
+        <CaspianForm Service="Service">
+            <Content Context="location">
+                <ComboBox TValue="int" TEntity="StockRoom" @bind-Value="location.StockRoomId" TextExpression="t => t.Title" ColSpan="8" />
+                <LookupTree @bind-Value="location.LocationId" ColSpan="8" Disabled="location.StockRoomId == 0">
+                    <TreeView TEntity="MaterialLocation" TextFunc="t => t.Title" Selectable  FilterFunc="t => !context.HasValue() || t.Title.Contains(context)" ConditionExpression="t => location.StockRoomId == 0 || t.StockroomId == location.StockRoomId " />
+                </LookupTree>
+                <FormCommandButton ColSpan="8" />
+            </Content>
+        </CaspianForm>
+    </Window>
+</div>
+
+@code 
+{
+
+}

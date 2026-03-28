@@ -2,9 +2,10 @@
 @typeparam TEntity
 @attribute [CascadingTypeParameter(nameof(TEntity))]
 @inherits DataView<TEntity>
+
 <CascadingValue Value="this" Name="DataView">
     <div @ref="mainDiv" class="c-widget c-data-view">
-        <DataToolsBar TEntity="TEntity" ShowInsertIcon="ShowInsertIcon ?? showInsertIcon == true" OnInsertButoonClicked="CreateInsert" />
+        <DataToolsBar TEntity="TEntity" ShowInsertIcon="ShowInsertIcon ?? showInsertIcon == true" OnInsertButtonClicked="CreateInsert" />
         <div class="c-dataview-header">
             @HeaderTempalte
         </div>
