@@ -22,6 +22,46 @@ namespace Warehouse.Model.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte>("AccountType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("CodingLevelType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<byte>("NatureType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("ParentCodeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCodeId");
+
+                    b.ToTable("AccountingCodes", "acc", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("Accounting.Model.CostCenter", b =>
                 {
                     b.Property<int>("Id")
@@ -377,6 +417,84 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("Branches", "wh");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.DocumentPattern", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte>("ActiveStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("DefaultBase")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DocumentBases")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DocumentRelationshipInstance")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DocumentRelationshipType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("DocumentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("FromStockRoomFieldName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("GoodsType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("HasContractNo")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasOtherParty")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasReceiverIssuer")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasToStockRoom")
+                        .HasColumnType("bit");
+
+                    b.Property<byte>("InOutType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("InventoryImpactType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte?>("PurchaseType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("ReceiverIssuerFieldName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("RowsCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ToStockRoomFieldName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DocumentPatterns", "wh");
+                });
+
             modelBuilder.Entity("Warehouse.Model.Goods", b =>
                 {
                     b.Property<int>("Id")
@@ -429,6 +547,33 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("ProductClassId");
 
                     b.ToTable("Goods", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.GoodsFlow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("StockFlowId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsId");
+
+                    b.HasIndex("StockFlowId");
+
+                    b.ToTable("GoodsFlow", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.GoodsPlacement", b =>
@@ -675,72 +820,6 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("PropertiesList", "wh");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.PurchaseRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CostCenterId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("CostCenterType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("IssuerKeepCenterId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IssuerStockRoomId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Loadable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("No")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("ReceiverKeepCenterId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReceiverStockRoomId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("ReferenceDocumentType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int>("RequisitionerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("StockRoomDate")
-                        .HasColumnType("date");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CostCenterId");
-
-                    b.HasIndex("IssuerKeepCenterId");
-
-                    b.HasIndex("IssuerStockRoomId");
-
-                    b.HasIndex("ReceiverKeepCenterId");
-
-                    b.HasIndex("ReceiverStockRoomId");
-
-                    b.HasIndex("RequisitionerId");
-
-                    b.ToTable("PurchaseRequests", "wh");
-                });
-
             modelBuilder.Entity("Warehouse.Model.Reservation", b =>
                 {
                     b.Property<int>("Id")
@@ -756,7 +835,7 @@ namespace Warehouse.Model.Migrations
                     b.Property<int?>("CostCenterId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("DateOnly")
+                    b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
                     b.Property<DateOnly?>("ExpirationDate")
@@ -781,6 +860,9 @@ namespace Warehouse.Model.Migrations
                     b.Property<int?>("StockRoomId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CostCenterId");
@@ -789,7 +871,36 @@ namespace Warehouse.Model.Migrations
 
                     b.HasIndex("StockRoomId");
 
+                    b.HasIndex("SupplierId");
+
                     b.ToTable("Reservations", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.ReservationGoods", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Quantity")
+                        .HasPrecision(15, 3)
+                        .HasColumnType("float(15)");
+
+                    b.Property<int>("ReservationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsId");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("ReservationGoods", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StandardChangeUnit", b =>
@@ -821,6 +932,98 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("OtherUnitId");
 
                     b.ToTable("StandardChangeUnits", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.StockFlow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AccountingCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Branch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ContractNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("CostCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("DocumentPatternId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Loadable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("No")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("OtherKeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("OtherPartyType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("OtherStockRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("ReferenceDocumentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("RequisitionerId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("StockFlowType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateOnly?>("StockRoomDate")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("StockRoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountingCodeId");
+
+                    b.HasIndex("CostCenterId");
+
+                    b.HasIndex("DocumentPatternId");
+
+                    b.HasIndex("KeepCenterId");
+
+                    b.HasIndex("OtherKeepCenterId");
+
+                    b.HasIndex("OtherStockRoomId");
+
+                    b.HasIndex("RequisitionerId");
+
+                    b.HasIndex("StockRoomId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("StockFlow", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
@@ -893,6 +1096,39 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("SubstituteGoodsId");
 
                     b.ToTable("SubstituteProducts", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IdCard")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("PersonType")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suppliers", "wh");
+                });
+
+            modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
+                {
+                    b.HasOne("Accounting.Model.AccountingCode", "ParentCode")
+                        .WithMany("DetailsCode")
+                        .HasForeignKey("ParentCodeId");
+
+                    b.Navigation("ParentCode");
                 });
 
             modelBuilder.Entity("Accounting.Model.CostCenter", b =>
@@ -1000,6 +1236,25 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("ProductClass");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.GoodsFlow", b =>
+                {
+                    b.HasOne("Warehouse.Model.Goods", "Goods")
+                        .WithMany("GoodsFlows")
+                        .HasForeignKey("GoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.StockFlow", "StockFlow")
+                        .WithMany("GoodsFlows")
+                        .HasForeignKey("StockFlowId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Goods");
+
+                    b.Navigation("StockFlow");
+                });
+
             modelBuilder.Entity("Warehouse.Model.GoodsPlacement", b =>
                 {
                     b.HasOne("Warehouse.Model.Goods", "Goods")
@@ -1084,54 +1339,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("GoodsProperty");
                 });
 
-            modelBuilder.Entity("Warehouse.Model.PurchaseRequest", b =>
-                {
-                    b.HasOne("Accounting.Model.CostCenter", "CostCenter")
-                        .WithMany()
-                        .HasForeignKey("CostCenterId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Warehouse.Model.KeepCenter", "IssuerKeepCenter")
-                        .WithMany("PurchaseRequestsIssuer")
-                        .HasForeignKey("IssuerKeepCenterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Warehouse.Model.StockRoom", "IssuerStockRoom")
-                        .WithMany("PurchaseRequestsIssuer")
-                        .HasForeignKey("IssuerStockRoomId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Warehouse.Model.KeepCenter", "ReceiverKeepCenter")
-                        .WithMany("PurchaseRequestsReceiver")
-                        .HasForeignKey("ReceiverKeepCenterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Warehouse.Model.StockRoom", "ReceiverStockRoom")
-                        .WithMany("PurchaseRequestsReceiver")
-                        .HasForeignKey("ReceiverStockRoomId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Caspian.Engine.Model.User", "Requisitioner")
-                        .WithMany()
-                        .HasForeignKey("RequisitionerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CostCenter");
-
-                    b.Navigation("IssuerKeepCenter");
-
-                    b.Navigation("IssuerStockRoom");
-
-                    b.Navigation("ReceiverKeepCenter");
-
-                    b.Navigation("ReceiverStockRoom");
-
-                    b.Navigation("Requisitioner");
-                });
-
             modelBuilder.Entity("Warehouse.Model.Reservation", b =>
                 {
                     b.HasOne("Accounting.Model.CostCenter", "CostCenter")
@@ -1150,11 +1357,37 @@ namespace Warehouse.Model.Migrations
                         .HasForeignKey("StockRoomId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("Warehouse.Model.Supplier", "Supplier")
+                        .WithMany("Suppliers")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("CostCenter");
 
                     b.Navigation("KeepCenter");
 
                     b.Navigation("StockRoom");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.ReservationGoods", b =>
+                {
+                    b.HasOne("Warehouse.Model.Goods", "Goods")
+                        .WithMany("ReservationGoods")
+                        .HasForeignKey("GoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.Reservation", "Reservation")
+                        .WithMany("ReservationGoods")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Goods");
+
+                    b.Navigation("Reservation");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StandardChangeUnit", b =>
@@ -1174,6 +1407,72 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("MainUnit");
 
                     b.Navigation("OtherUnit");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.StockFlow", b =>
+                {
+                    b.HasOne("Accounting.Model.AccountingCode", "AccountingCode")
+                        .WithMany()
+                        .HasForeignKey("AccountingCodeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Accounting.Model.CostCenter", "CostCenter")
+                        .WithMany()
+                        .HasForeignKey("CostCenterId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.DocumentPattern", "DocumentPattern")
+                        .WithMany("StockFlows")
+                        .HasForeignKey("DocumentPatternId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "KeepCenter")
+                        .WithMany("StockFlows")
+                        .HasForeignKey("KeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "OtherKeepCenter")
+                        .WithMany("OtherStockFlows")
+                        .HasForeignKey("OtherKeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.StockRoom", "OtherStockRoom")
+                        .WithMany("OtherStockFlows")
+                        .HasForeignKey("OtherStockRoomId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Caspian.Engine.Model.User", "Requisitioner")
+                        .WithMany()
+                        .HasForeignKey("RequisitionerId");
+
+                    b.HasOne("Warehouse.Model.StockRoom", "StockRoom")
+                        .WithMany("StockFlows")
+                        .HasForeignKey("StockRoomId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.Supplier", "Supplier")
+                        .WithMany("StockFlows")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("AccountingCode");
+
+                    b.Navigation("CostCenter");
+
+                    b.Navigation("DocumentPattern");
+
+                    b.Navigation("KeepCenter");
+
+                    b.Navigation("OtherKeepCenter");
+
+                    b.Navigation("OtherStockRoom");
+
+                    b.Navigation("Requisitioner");
+
+                    b.Navigation("StockRoom");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
@@ -1218,6 +1517,11 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Goods");
 
                     b.Navigation("SubstituteGoods");
+                });
+
+            modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
+                {
+                    b.Navigation("DetailsCode");
                 });
 
             modelBuilder.Entity("Accounting.Model.CostCenter", b =>
@@ -1268,11 +1572,20 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Stocks");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.DocumentPattern", b =>
+                {
+                    b.Navigation("StockFlows");
+                });
+
             modelBuilder.Entity("Warehouse.Model.Goods", b =>
                 {
+                    b.Navigation("GoodsFlows");
+
                     b.Navigation("GoodsPlacements");
 
                     b.Navigation("OtherSubstitutes");
+
+                    b.Navigation("ReservationGoods");
 
                     b.Navigation("Substitutes");
                 });
@@ -1284,11 +1597,11 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
-                    b.Navigation("PurchaseRequestsIssuer");
-
-                    b.Navigation("PurchaseRequestsReceiver");
+                    b.Navigation("OtherStockFlows");
 
                     b.Navigation("Reservations");
+
+                    b.Navigation("StockFlows");
 
                     b.Navigation("Stocks");
                 });
@@ -1321,17 +1634,34 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Goods");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.Reservation", b =>
+                {
+                    b.Navigation("ReservationGoods");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.StockFlow", b =>
+                {
+                    b.Navigation("GoodsFlows");
+                });
+
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
                 {
                     b.Navigation("GoodsPlacements");
 
                     b.Navigation("MaterialAddresses");
 
-                    b.Navigation("PurchaseRequestsIssuer");
-
-                    b.Navigation("PurchaseRequestsReceiver");
+                    b.Navigation("OtherStockFlows");
 
                     b.Navigation("Reservations");
+
+                    b.Navigation("StockFlows");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
+                {
+                    b.Navigation("StockFlows");
+
+                    b.Navigation("Suppliers");
                 });
 #pragma warning restore 612, 618
         }

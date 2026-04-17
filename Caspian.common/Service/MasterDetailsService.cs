@@ -13,7 +13,9 @@ namespace Caspian.Common.Service
         public MasterDetailsService(IServiceProvider provider)
             : base(provider)
         {
-            var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
+            var detailsProperty = typeof(TMaster).GetProperties().SingleOrDefault(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail));
+            if (detailsProperty == null)
+                throw new CaspianException($"In Master-Details Service Type Master({typeof(TMaster)}) must have a property of  type Details(ICollection<{typeof(TDetail)}>)");
             Details = new List<TDetail>();
             UserId = provider.GetService<CaspianDataService>().UserId;
             ChangedEntities = new List<ChangedEntity<TDetail>>();

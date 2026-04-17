@@ -9,7 +9,7 @@ namespace Caspian.Report
     {
         IList<TableCellData> selectedCells;
         ChangeKind? changeKind;
-        int? changeColIndex, leftCellStartWidth, rightCellStartWidth, xStart, leftStart, difrentCurcer;
+        int? changeColIndex, leftCellStartWidth, rightCellStartWidth, xStart, leftStart, differentCursor;
         bool contextMenuStatus, statePushed;
         double left, top;
         string message;
@@ -468,7 +468,7 @@ namespace Caspian.Report
                     {
                         changeKind = ChangeKind.ColumnResize;
                         changeColIndex = 1;
-                        difrentCurcer = leftCell - (int)x;
+                        differentCursor = leftCell - (int)x;
                     }
                     var index = 2;
                     foreach (var cel in Data.HeaderCells)
@@ -478,7 +478,7 @@ namespace Caspian.Report
                         {
                             changeKind = ChangeKind.ColumnResize;
                             changeColIndex = index;
-                            difrentCurcer = leftCell - (int)x;
+                            differentCursor = leftCell - (int)x;
                         }
                         index++;
                     }
@@ -549,7 +549,7 @@ namespace Caspian.Report
                 int left;
                 Bound.ShowRuler(this, (int)x, out left);
                 var dif = xStart.Value - left;
-                dif += difrentCurcer.Value;
+                dif += differentCursor.Value;
                 if (changeColIndex.Value == 1)
                 {
                     Data.HeaderCells.ElementAt(changeColIndex.Value - 1).Width = rightCellStartWidth.Value + 2 * dif;

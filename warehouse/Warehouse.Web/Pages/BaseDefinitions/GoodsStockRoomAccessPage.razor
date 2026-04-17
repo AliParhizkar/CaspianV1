@@ -1,0 +1,136 @@
+﻿@page "/Warehouse/MaterialLocationGoodsPlacement/{MaterialLocationId:int}"
+@attribute [Source(27, "تخصیص کالا به محل نگهداری کالا")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+@if (materialLocation != null)
+{
+    <div class="row pt-3 ps-2 pe-2">
+        <div style="width:calc(50% - 25px)">
+            <EntitySearch Service="Service" TEntity="Goods" ColumnsCount="2">
+                <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+                <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+                <DropdownList @bind-Value="context.GoodsType" ColSpan="4" />
+                <ComboBox TEntity="ProductClass" TValue="int" @bind-Value="context.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">کالاهای غیرموجود در @(materialLocation.Title)</span>
+            </div>
+            <DataGrid Service="Service" TEntity="Goods">
+                <Columns>
+                    <GridColumn Field="t => t.Code" />
+                    <GridColumn Field="t => t.Name" />
+                    <GridColumn Field="t => t.GoodsType.EnumText()" />
+                    <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
+                </Columns>
+            </DataGrid>
+        </div>
+        <div style="width:50px;">
+            <div class="align-content-center text-center h-100">
+                <CaspianForm TEntity="GoodsPlacement" Service="Service" OnSubmit="e => e.Entity.StockRoomId = materialLocation.StockroomId">
+                    <div class="d-btn-container">
+                        <div>
+                            <IconButton type="button" @onclick="async () => await AddToAccess()" IconType="IconType.AngleDoubleLeft" />
+                        </div>
+                        <div>
+                            <IconButton IconType="IconType.AngleLeft" />
+                        </div>
+                        <div>
+                            <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleRight" />
+                        </div>
+                        <div>
+                            <IconButton @onclick="async () => await RemoveFromAccess()" type="button" IconType="IconType.AngleDoubleRight" />
+                        </div>
+                    </div>
+                </CaspianForm>
+            </div>
+        </div>
+        <div style="width:calc(50% - 25px)">
+            <EntitySearch Service="Service" TEntity="GoodsPlacement" ColumnsCount="2">
+                <StringTextBox @bind-Value="context.Goods.Code" ColSpan="4" Style="direction:ltr" />
+                <StringTextBox @bind-Value="context.Goods.Name" ColSpan="4" />
+                <DropdownList @bind-Value="context.Goods.GoodsType" ColSpan="4" />
+                <ComboBox TEntity="ProductClass" TValue="int" @bind-Value="context.Goods.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">کالاهای موجود در @(materialLocation.Title)</span>
+            </div>
+            <DataGrid Service="Service" TEntity="GoodsPlacement">
+                <Columns>
+                    <GridColumn Field="t => t.Goods.Code" />
+                    <GridColumn Field="t => t.Goods.Name" />
+                    <GridColumn Field="t => t.Goods.GoodsType.EnumText()" />
+                    <GridColumn Field="t => t.Goods.ProductClass.Name" Title="طبقه کالا" />
+                </Columns>
+            </DataGrid>
+        </div>
+    </div>
+}
+
+@code
+{
+    MaterialLocation materialLocation;
+    MembershipService<MaterialLocation, GoodsPlacement, Goods> Service;
+
+    protected override void OnInitialized()
+    {
+        Service =new MembershipService<MaterialLocation, GoodsPlacement, Goods>(base.ServiceProvider);
+        Service.MasterId = MaterialLocationId;
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<MaterialLocationService>();
+        materialLocation = await service.SingleAsync(MaterialLocationId);
+        await base.OnInitializedAsync();
+    }
+
+    async Task AddToAccess()
+    {
+        using var scope = CreateScope();
+
+        var query = Service.GetFilteredOthers(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با افزودن {count} کالا به {materialLocation.Title} موافقید؟"))
+        {
+            using var service = scope.GetService<GoodsPlacementService>();
+            var query1 = query.Select(t => new GoodsPlacement()
+            {
+                LocationId = MaterialLocationId,
+                StockRoomId = materialLocation.StockroomId,
+                GoodsId = t.Id
+            }).ToQueryString();
+
+            count = await query.ExecuteInsertAsync(t => new GoodsPlacement()
+            {
+                LocationId = materialLocation.Id,
+                GoodsId = t.Id,
+                StockRoomId = materialLocation.StockroomId,
+            }, scope);
+            base.ShowMessage($"تعداد {count} کالا با موفقیت به {materialLocation.Title} اضافه شد");
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+        }
+    }
+
+    async Task RemoveFromAccess()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredAccess(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با حذف {count} کالا از {materialLocation.Title} موافقید؟"))
+        {
+            await query.ExecuteDeleteAsync();
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            base.ShowMessage($"تعداد {count} کالا با موفقیت از {materialLocation.Title} حذف شد.");
+        }
+    }
+
+    [Parameter]
+    public int MaterialLocationId { get; set; }
+}

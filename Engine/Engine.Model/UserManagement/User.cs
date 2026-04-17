@@ -23,6 +23,9 @@ namespace Caspian.Engine.Model
         [DisplayName("Last name")]
         public string LName { get; set; }
 
+        [DisplayName("Name"), ComputedSqlColumn("[FName] + [LName]")]
+        public string Name { get; set; }
+
         [DisplayName("Password")]
         public string Password { get; set; }
 

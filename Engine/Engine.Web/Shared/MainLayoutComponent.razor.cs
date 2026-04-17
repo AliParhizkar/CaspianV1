@@ -98,8 +98,10 @@ namespace Caspian.Engine.Shared
             if (url.StartsWith("/"))
                 url = url.Substring(1);
             var strSubsystem = url.Split('/')[0];
-            var field = typeof(SubsystemKind).GetFields().Single(t => t.Name.Equals(strSubsystem,
+            var field = typeof(SubsystemKind).GetFields().SingleOrDefault(t => t.Name.Equals(strSubsystem,
                 StringComparison.OrdinalIgnoreCase));
+            if (field == null)
+                throw new CaspianException($"Url: {url} is invalid Can not find any subsystem with this URL");
             systemKind = (SubsystemKind)field.GetValue(null);
             if (PageId.HasValue)
             {

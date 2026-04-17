@@ -26,7 +26,10 @@ namespace Caspian.Common
         Accounting,
 
         [SubsystemMetaData("اموال و دارایی ثابت", Schema = "ivm")]
-        Investment
+        Investment,
+
+        [SubsystemMetaData("تدارکات", Schema = "pcm")]
+        Procurement
     }
 
     public static class SubsystemExtension

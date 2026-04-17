@@ -1,4 +1,5 @@
-﻿using Accounting.Model;
+﻿using Caspian.Common;
+using Accounting.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,7 +13,7 @@ namespace Warehouse.Model
         public int Id { get; set; }
 
         [DisplayName("تاریخ رزور")]
-        public DateOnly DateOnly { get; set; }
+        public DateOnly Date { get; set; }
 
         [DisplayName("تاریخ اعتبار")]
         public DateOnly? ExpirationDate { get; set; }
@@ -23,11 +24,17 @@ namespace Warehouse.Model
         [DisplayName("نوع طرف مقابل")]
         public OtherPartyType OtherPartyType { get; set; }
 
-        [DisplayName("طرف مقابل")]
+        [DisplayName("مرکز هزینه")]
         public int? CostCenterId { get; set; }
 
         [ForeignKey(nameof(CostCenterId))]
         public CostCenter CostCenter { get; set; }
+
+        [DisplayName("تامین کننده")]
+        public int? SupplierId { get; set; }
+
+        [ForeignKey(nameof(SupplierId))]
+        public Supplier Supplier { get; set; }
 
         [DisplayName("مبنای رزرو")]
         public ReservationBasis ReservationBasis { get; set; }
@@ -49,5 +56,8 @@ namespace Warehouse.Model
 
         [DisplayName("شعبه")]
         public string Branch { get; set; }
+
+        [CheckOnDelete("این رزرو دارای کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<ReservationGoods> ReservationGoods { get; set; }
     }
 }

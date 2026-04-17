@@ -1,0 +1,66 @@
+﻿@page "/Warehouse/GoodsDocumentIssuance/{DocumentPatterId:int}"
+@page "/Warehouse/GoodsDocumentIssuance/{DocumentPatterId:int}/{FlowId:int}"
+@inherits BasePage
+
+<div class="p-3 pt-2 pb-2 row c-controls">
+
+    @if (selectedPattern != null)
+    {
+        <div class="col-md-3">
+            <label>نوع سند</label>
+        </div>
+        <div class="col-md-8 text-center">
+            <span style=" background-color: #e4f0ff; padding: 0px 10px 7px; min-width: 100%; display: inline-block; color: #921b80; border-radius: 19px;">@selectedPattern.Title</span>
+        </div>
+        <div class="col-md-1 text-center">
+            <IconButton IconType="IconType.ArrowLeft" Href="/Warehouse/DocumentIssuance" />
+        </div>
+        <StockFlowComponent>
+            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="context.StockRoomId" TextExpression="t => t.Title" ColSpan="4" Title="@(selectedPattern.FromStockRoomFieldName)" TotalSpan="6" />
+            <DatePicker @bind-Value="context.Date" ColSpan="4" TotalSpan="6" />
+            @if (selectedPattern.HasOtherParty)
+            {
+                <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" TotalSpan="6" />
+                @if (context.OtherPartyType == OtherPartyType.CostCenter)
+                {
+                    <ComboBox TValue="int?" TEntity="Accounting.Model.CostCenter" @bind-Value="context.CostCenterId" TextExpression="t => t.Name" ColSpan="4" TotalSpan="6" />
+                }
+                else
+                {
+                    <ComboBox TValue="int?" TEntity="Supplier" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" TotalSpan="6" />
+                }
+            }
+            <div class="col-md-6 row">
+                <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="8" />
+                <StringTextBox @bind-Value="context.Branch" ColSpan="8" />
+                <ComboBox TValue="int?" TEntity="Accounting.Model.AccountingCode" @bind-Value="context.AccountingCodeId" TextExpression="t => t.Name" ColSpan="8" TotalSpan="12" />
+            </div>
+            <div class="col-md-6 row">
+                @if (selectedPattern.HasContractNo)
+                {
+                    <StringTextBox @bind-Value="context.ContractNo" ColSpan="8" />
+                }
+                <StringTextBox @bind-Value="context.Description" Rows="3" ColSpan="8" MultiLine />
+            </div>
+        </StockFlowComponent>
+    }
+</div>
+
+@code
+{
+    DocumentPattern selectedPattern;
+
+    [Parameter]
+    public int DocumentPatterId { get; set; }
+
+    [Parameter]
+    public int FlowId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<DocumentPatternService>();
+        selectedPattern = await service.SingleAsync(DocumentPatterId);
+        await base.OnInitializedAsync();
+    }
+
+}

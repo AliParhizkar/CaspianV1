@@ -35,6 +35,7 @@ namespace Caspian.UI
         protected bool? showInsertIcon;
         protected ElementReference mainDiv;
         protected ElementReference? inertButton;
+        protected IList<TEntity> selectedEntities;
 
         internal EventCallback<TEntity> OnInternalUpsert { get; set; }
 
@@ -131,6 +132,27 @@ namespace Caspian.UI
 
         public abstract Task<TEntity> SelectRowById(int id);
 
+        internal bool EntityIsSelected(TEntity entity)
+        {
+            if (selectedEntities == null)
+                return false;
+            return selectedEntities.Contains(entity);
+        }
+
+        internal void UpdateSelectedEntities(TEntity entity, bool isChecked)
+        {
+            if (selectedEntities == null)
+                selectedEntities = new List<TEntity>();
+            if (isChecked)
+                selectedEntities.Add(entity);
+            else
+                selectedEntities.Remove(entity);
+        }
+
+        /// <summary>
+        /// This method return selected row data 
+        /// </summary>
+        /// <returns>Selected row data</returns>
         public TEntity GetSelectedData()
         {
             if (SelectedRowIndex == null || items == null || items.Count < SelectedRowIndex.Value || SelectedRowIndex == -1)

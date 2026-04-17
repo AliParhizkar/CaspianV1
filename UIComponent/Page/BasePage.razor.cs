@@ -180,6 +180,7 @@ namespace Caspian.UI
                         (info.GetValue(this) as IInternalUIService).Dispose();
                 }
             }
+            PageService.Clear();
         }
     }
 }

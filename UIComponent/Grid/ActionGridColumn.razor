@@ -1,0 +1,17 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity where TEntity: class
+@{ 
+    
+    var isChecked = RowData != null && Grid.EntityIsSelected(RowData.Data);
+}
+
+<CheckBox Value="isChecked" />
+
+@code 
+{
+    [CascadingParameter(Name = "DataView")]
+    internal DataView<TEntity> Grid { get; set; }
+
+    [CascadingParameter(Name = "RowData")]
+    internal RowData<TEntity> RowData { get; set; }
+}

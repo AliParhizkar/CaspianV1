@@ -232,7 +232,7 @@ input {
         padding: 0 7px;
         margin: 2px;
         border-radius: 8px;
-        height: 32px;
+        height: 36px;
     }
 
     .c-multi-select:not(.t-state-disabled):hover {

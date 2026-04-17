@@ -152,13 +152,14 @@
         var count = await query.CountAsync();
         if (await Confirm($"آیا با افزودن {count} مشتری به گروه موافقید؟"))
         {
-            var service = scope.GetService<CustomerGroupMembershipService>();
-            service.GetAll().Intersect(query.Select(t => new CustomerGroupMembership()
+            count = await query.ExecuteInsertAsync(t => new CustomerGroupMembership()
             {
                 CustomerGroupId = (short)GroupId,
                 CustomerId = t.Id
-            }));
-            await service.SaveChangesAsync();
+            }, scope);
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} مشتری با موفقیت به گروه اضافه شد");
         }
     }
 
@@ -169,9 +170,10 @@
         var count = await query.CountAsync();
         if (await Confirm($"آیا با حذف {count} مشتری از گروه مشتریان موافقید؟"))
         {
-            await query.ExecuteDeleteAsync();
-            
+            count = await query.ExecuteDeleteAsync();
             await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} مشتری با موفقیت از گروه حذف شدند");
         }
     }
 

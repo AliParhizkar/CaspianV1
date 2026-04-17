@@ -8,20 +8,14 @@
     base.BuildRenderTree(__builder);
 }
 
-
+<div class="row p-5 c-controls" style="width:400px;margin:5px auto;background-color:white">
+    <CheckBox @bind-Value="flag" Title="برای تست" ColSpan="4" TotalSpan="12" />
+</div>
+<div style="width:400px;margin:20px auto;background-color:white;padding:5px 20px">
+    <CheckBox @bind-Value="flag" Title="برای تست" ColSpan="12" TotalSpan="12" />
+</div>
 
 @code
 {
-
-    public async void OnCreated(object args)
-    {
-
-    }
-
-    [Parameter]
-    public string FolderName { get; set; } = "BasePage";
-
-    [Parameter]
-    public string FileName { get; set; } = "Message";
-
+    bool flag;
 }

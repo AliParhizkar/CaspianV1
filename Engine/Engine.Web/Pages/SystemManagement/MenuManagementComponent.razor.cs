@@ -3,9 +3,9 @@ using Caspian.Common;
 using System.Reflection;
 using Caspian.Engine.Model;
 using Caspian.Engine.Service;
+using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
-using System.Linq.Dynamic.Core;
 
 namespace Caspian.Engine.SystemManagement
 {
@@ -23,7 +23,8 @@ namespace Caspian.Engine.SystemManagement
             if (Service.UpsertData.ShowOnMenu)
             {
                 var page = new AssemblyInfo().GetWebTypes(Subsystem)
-                    .SingleOrDefault(t => t.GetCustomAttribute<SourceAttribute>()?.Id == Service.UpsertData.SourceId);
+                    .SingleOrDefault(t => t.GetCustomAttribute<SourceAttribute>()?.Id == Service.UpsertData.SourceId &&
+                        t.GetCustomAttribute<SourceAttribute>()?.MasterPage == null);
                 if (page != null)
                 {
                     var urls = page.GetCustomAttributes<RouteAttribute>().Select(t => t.Template).Where(t => !t.Contains("{"));
@@ -49,8 +50,6 @@ namespace Caspian.Engine.SystemManagement
             using var service = CreateScope().GetService<MenuService>();
             foreach (var component in new AssemblyInfo().GetWebTypes(Subsystem))
             {
-                var menu = new Menu();
-                menu.SubsystemKind = Subsystem;
                 var routes = component.GetCustomAttributes<RouteAttribute>();
                 foreach (var url in routes)
                 {
@@ -65,8 +64,23 @@ namespace Caspian.Engine.SystemManagement
                 }
                 if (sourceAttr != null)
                 {
+                    if (sourceAttr.MasterPage != null)
+                    {
+                        if (sourceAttr.MasterPage == component)
+                            throw new CaspianException($"In page {component.Name} 'Master page' is of type page({component.Name})");
+                        var masterAttr = sourceAttr.MasterPage.GetCustomAttribute<SourceAttribute>();
+                        if (masterAttr == null)
+                            throw new CaspianException($"In page {component.Name} Master page ({sourceAttr.MasterPage.Name}) should be a page and have a Source Attribute");
+                        if (sourceAttr.Id != masterAttr.Id)
+                            throw new CaspianException($"In page {component.Name} (Id: {sourceAttr.Id}) Master Page {sourceAttr.MasterPage.Name} has different Id({masterAttr.Id})");
+                        else
+                            continue;
+                    }
+                    var menu = new Menu();
+                    menu.SubsystemKind = Subsystem;
                     menu.SourceId = sourceAttr.Id;
                     menu.Title = sourceAttr.Title;
+
                     var old = components.SingleOrDefault(t => t.SourceId == sourceAttr.Id);
                     if (old != null)
                     {
@@ -78,7 +92,7 @@ namespace Caspian.Engine.SystemManagement
                         throw new CaspianException(errorMessage);
                     }
                     components.Add(menu);
-                    dic.Add(sourceAttr.Id, component);
+                   dic.Add(sourceAttr.Id, component);
                 }
             }
             var menus = await service.GetAll().Where(t => t.SubsystemKind == Subsystem).ToListAsync();
@@ -96,12 +110,13 @@ namespace Caspian.Engine.SystemManagement
                 }
                 await service.SaveChangesAsync();
             }
-            foreach(var component in components.Where(t => !menus.Any(u => u.SourceId == t.SourceId)))
+            foreach (var component in components.Where(t => !menus.Any(u => u.SourceId == t.SourceId)))
             {
                 await service.AddAsync(component);
                 await service.SaveChangesAsync();
             }
             await Service.DataView.ResetGrid();
+            ShowMessage("منوها با موفقیت بروزرسانی شدند");
         }
     }
 }

@@ -1,0 +1,118 @@
+﻿@page "/Warehouse/StockRoomGoodsPlacement/{StockRoomId:int}"
+@attribute [Source(31, "تخصیص کالا به انبار")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="row pt-3 ps-2 pe-2">
+    <div style="width:calc(50% - 25px)">
+        <EntitySearch Service="Service" TEntity="Goods" ColumnsCount="2">
+            <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+            <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+            <DropdownList @bind-Value="context.GoodsType" ColSpan="4" />
+            <ComboBox TEntity="ProductClass" TValue="int" @bind-Value="context.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
+        </EntitySearch>
+        <div class="col-md-12 text-center">
+            <hr class="mt-0" />
+            <span class="d-membership">کالاهای غیرموجود در انبار</span>
+        </div>
+        <DataGrid Service="Service" TEntity="Goods">
+            <Columns>
+                <GridColumn Field="t => t.Code" />
+                <GridColumn Field="t => t.Name" />
+                <GridColumn Field="t => t.GoodsType.EnumText()" />
+                <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
+            </Columns>
+        </DataGrid>
+    </div>
+    <div style="width:50px;">
+        <div class="align-content-center text-center h-100">
+            <CaspianForm Service="Service">
+                <div class="d-btn-container">
+                    <div>
+                        <IconButton @onclick="AddToAccess" type="button" IconType="IconType.AngleDoubleLeft" />
+                    </div>
+                    <div>
+                        <IconButton IconType="IconType.AngleLeft" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleRight" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="RemoveFromAccess" IconType="IconType.AngleDoubleRight" />
+                    </div>
+                </div>
+            </CaspianForm>
+        </div>
+    </div>
+    <div style="width:calc(50% - 25px)">
+        <EntitySearch Service="Service" TEntity="GoodsPlacement" ColumnsCount="2">
+            <StringTextBox @bind-Value="context.Goods.Code" ColSpan="4" Style="direction:ltr" />
+            <StringTextBox @bind-Value="context.Goods.Name" ColSpan="4" />
+            <DropdownList @bind-Value="context.Goods.GoodsType" ColSpan="4" />
+            <ComboBox TEntity="ProductClass" TValue="int" @bind-Value="context.Goods.ProductClassId" TextExpression="t => t.Name" ColSpan="4" />
+        </EntitySearch>
+        <div class="col-md-12 text-center">
+            <hr class="mt-0" />
+            <span class="d-membership">کالاهای موجود در انبار</span>
+        </div>
+        <DataGrid Service="Service" TEntity="GoodsPlacement">
+            <Columns>
+                <GridColumn Field="t => t.Goods.Code" />
+                <GridColumn Field="t => t.Goods.Name" />
+                <GridColumn Field="t => t.Goods.GoodsType.EnumText()" />
+                <GridColumn Field="t => t.Goods.ProductClass.Name" Title="طبقه کالا" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+
+@code
+{
+    MembershipService<StockRoom, GoodsPlacement, Goods> Service;
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<StockRoom, GoodsPlacement, Goods>(base.ServiceProvider);
+        Service.MasterId = StockRoomId;
+        base.OnInitialized();
+    }
+
+    async Task AddToAccess()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredOthers(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با افزودن {count} کالا به انبار موافقید؟"))
+        {
+            var service = scope.GetService<GoodsPlacementService>();
+            count = await query.ExecuteInsertAsync(t => new GoodsPlacement()
+            {
+                GoodsId = t.Id,
+                StockRoomId = StockRoomId
+            }, scope);
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} کالا به انبار اضافه شد.");
+        }
+    }
+
+    async Task RemoveFromAccess()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredAccess(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با حذف {count} کالا از انبار موافقید؟"))
+        {
+            await query.ExecuteDeleteAsync();
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} کالا از انبار حذف شد.");
+        }
+    }
+
+    [Parameter]
+    public int StockRoomId { get; set; }
+}

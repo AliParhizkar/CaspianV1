@@ -21,6 +21,11 @@
                 <span class="d-tree-icon" @onclick="async () => await DeleteLocation(context)">
                     <span class="fa fa-trash"></span>
                 </span>
+                <span class="d-tree-icon" title="کالاها">
+                    <a href="/Warehouse/MaterialLocationGoodsPlacement/@(context.Value)">
+                        <span class="fa fa-wpforms"></span>
+                    </a>
+                </span>
             </AfterNodeTemplate>
         </TreeView>
     </div>

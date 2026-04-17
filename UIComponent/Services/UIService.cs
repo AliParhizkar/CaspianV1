@@ -516,7 +516,7 @@ namespace Caspian.UI
             return scope;
         }
 
-        async Task<bool> Confirm(string message)
+        protected async Task<bool> Confirm(string message)
         {
             if (baseComponentService.MessageBox == null)
                 throw new CaspianException("You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");

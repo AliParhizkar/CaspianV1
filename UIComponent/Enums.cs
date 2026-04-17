@@ -29,6 +29,12 @@ namespace Caspian.UI
         [Display(Name = "Angle-Right")]
         AngleRight,
 
+        [Display(Name = "arrow-left")]
+        ArrowLeft,
+
+        [Display(Name = "arrow-right")]
+        ArrowRight,
+
         [Display(Name = "Refresh")]
         Refresh,
 
@@ -66,7 +72,10 @@ namespace Caspian.UI
         Outdent,
 
         [Display(Name = "check")]
-        Check 
+        Check,
+
+        [Display(Name = "bars")]
+        Bar 
     }
 
     public enum BindingType

@@ -56,10 +56,4 @@ namespace Accounting.Model
         [Display(Name = "موقت")]
         Temporary
     }
-
-    public enum OtherPartyType: byte
-    {
-        [Display(Name = "مرکز هزینه")]
-        CostCenter
-    }
 }

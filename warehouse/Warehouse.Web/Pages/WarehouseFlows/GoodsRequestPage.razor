@@ -1,0 +1,49 @@
+﻿@page "/Warehouse/GoodsRequest"
+@attribute [Source(23, "درخواست کالا")]
+@inject UIService<StockFlow, GoodsFlow> Service
+@inject NavigationManager navigationManager
+@inherits BasePage
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <ComboBox TEntity="KeepCenter" TValue="int" @bind-Value="context.KeepCenterId" TextExpression="t => t.Name" ColSpan="4" Title="م.ن تحویل دهنده" />
+        <ComboBox TEntity="StockRoom" TValue="int?" @bind-Value="context.StockRoomId" TextExpression="t => t.Title" ColSpan="4" Title="انبار تحویل دهنده" />
+        <ComboBox TEntity="KeepCenter" TValue="int?" @bind-Value="context.OtherKeepCenterId" TextExpression="t => t.Name" ColSpan="4" Title="م.ن " />
+        <ComboBox TEntity="StockRoom" TValue="int?" @bind-Value="context.OtherStockRoomId" TextExpression="t => t.Title" ColSpan="4" />
+        <ComboBox TEntity="User" TValue="int?" @bind-Value="context.RequisitionerId" TextExpression="t => t.FName + t.LName" ColSpan="4" />
+        <DropdownList @bind-Value="context.OtherPartyType" SingleSelect ColSpan="4" />
+        @if (Service.Search.OtherPartyType == OtherPartyType.CostCenter)
+        {
+            <ComboBox TEntity="Accounting.Model.CostCenter" TValue="int?" @bind-Value="context.CostCenterId" TextExpression="t => t.Name" ColSpan="4" />
+        }
+        else
+        {
+            <ComboBox TEntity="Supplier" TValue="int?" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" />
+        }
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+    </EntitySearch>
+
+    <DataGrid TEntity="StockFlow" Service="Service" OnOpen="e => UpsertRequest(e)">
+        <Columns>
+            <GridColumn Field="t => t.Date.ToPersianDateString()" />
+            <GridColumn Field="t => t.ReferenceDocumentType.EnumText()" />
+            <GridColumn Field="t => t.OtherPartyType.EnumText()" />
+            <GridColumn Field="t => t.OtherPartyType == OtherPartyType.CostCenter ? t.CostCenter.Name : t.Supplier.User.Name" Title="طرف مقابل" />
+            <GridColumn Field="t => t.Requisitioner.FName + ' ' + t.Requisitioner.LName" Title="درخواست کننده" />
+            <GridColumn Field="t => t.KeepCenter.Name" Title="م.ن تحویل گیرنده" />
+            <GridColumn Field="t => t.StockRoom.Title" Title="انبار تحویل گیرنده" />
+            <GridColumn Field="t => t.OtherKeepCenter.Name" Title="م.ن تحویل دهنده" />
+            <GridColumn Field="t => t.OtherStockRoom.Title" Title="انبار تحویل دهنده" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    void UpsertRequest(StockFlow request)
+    {
+        var url = "/Warehouse/RequestGoods";
+        if (request.Id > 0)
+            url += $"/{request.Id}";
+        navigationManager.NavigateTo(url);
+    }
+}

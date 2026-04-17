@@ -30,7 +30,7 @@
             foreach (var item in items)
             {
                 var value = Convert.ChangeType(item.Value, type);
-                <div class="c-item">
+                <div class="c-item d-flex align-items-center" >
                     @RenderCheckBox(item.Text, value)
                 </div>
             }
@@ -46,12 +46,12 @@
         var className = flag ? "fa fa-check" : "";
         return __builder =>
         {
-            <span class="t-checkbox" @onclick="() => UpdateSelectedIds(!flag, value)">
+            <div class="t-checkbox" @onclick="() => UpdateSelectedIds(!flag, value)">
                 <span class="t-icon">
                     <i aria-hidden="true" class="@className"></i>
                 </span>
-                <span class="t-title">@title</span>
-            </span>
+            </div>
+            <div @onclick="() => UpdateSelectedIds(!flag, value)">@title</div>
         };
     }
 }

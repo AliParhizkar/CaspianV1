@@ -1,0 +1,46 @@
+﻿@page "/Warehouse/Reservation"
+@attribute [Source(24, "رزرو کالا")]
+@inject UIService<Reservation, ReservationGoods> Service
+@inject NavigationManager navigationManager
+@inherits BasePage
+
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <ComboBox TValue="int" TEntity="KeepCenter" @bind-Value="context.KeepCenterId" TextExpression="t => t.Name" ColSpan="4" />
+        <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="context.StockRoomId" TextExpression="t => t.Title" ColSpan="4" />
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+        <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" SingleSelect />
+        @if (context.OtherPartyType == OtherPartyType.CostCenter)
+        {
+            <ComboBox TValue="int?" TEntity="Accounting.Model.CostCenter" @bind-Value="context.CostCenterId" TextExpression="t => t.Name" ColSpan="4" />
+        }
+        else
+        {
+            <ComboBox TValue="int?" TEntity="Supplier" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" />
+        }
+        <DropdownList @bind-Value="context.ReservationType" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Reservation" Service="Service" OnOpen="NavigateToNewPage">
+        <Columns>
+            <GridColumn Field="t => t.KeepCenter.Name" Title="مرکز نگهداری" />
+            <GridColumn Field="t => t.StockRoom.Title" Title="انبار" />
+            <GridColumn Field="t => t.Date.ToPersianDateString()" />
+            <GridColumn Field="t => t.ReservationNo" />
+            <GridColumn Field="t => t.OtherPartyType == OtherPartyType.CostCenter ? t.CostCenter.Name : t.Supplier.User.Name" Title="طرف مقابل" />
+            <GridColumn Field="t => t.ReservationBasis.EnumText()" />
+            <GridColumn Field="t => t.ReservationType.EnumText()" />
+            <GridColumn Field="t => t.Branch" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    void NavigateToNewPage(Reservation reservation)
+    {
+        var url = "/Warehouse/ReservationGoods";
+        if (reservation.Id > 0)
+            url += $"/{reservation.Id}";
+        navigationManager.NavigateTo(url);
+    }
+}

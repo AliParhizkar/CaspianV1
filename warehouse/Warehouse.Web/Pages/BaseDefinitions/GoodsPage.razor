@@ -24,7 +24,7 @@
             <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
             <GridColumn Field="t => t.GoodsNature.EnumText()" />
             <GridColumn Field="t => t.ReservationLevel.EnumText()" />
-            <GridColumn Title="کالاهای مشابه">
+            <GridColumn Title="کالاهای مشابه" style="width:90px;">
                 <Template>
                     <IconButton Href='@($"/Warehouse/SubstituteProduct/{context.Data.Id}")' IconType="IconType.WpfForms" />
                 </Template>
@@ -70,7 +70,7 @@
                     <FormCommandButton ColSpan="8" />
                 </div>
             </ChildTabPanelItem>
-            <ChildrenTabPanelItem Children="t => t.GoodsPlacements" Title="انبار">
+            <ChildrenTabPanelItem Children="t => t.GoodsPlacements">
                 <GoodsPlacementComponent />
             </ChildrenTabPanelItem>
         </Content>

@@ -1,0 +1,22 @@
+﻿@typeparam TMaster
+@typeparam TAccess where TAccess:class
+
+
+
+@code 
+{
+    MembershipService<TMaster, TAccess, Goods> Service;
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<TMaster, TAccess, Goods>(Page.ServiceProvider);
+        Service.MasterId = MasterId;
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public int MasterId { get; set; }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+}

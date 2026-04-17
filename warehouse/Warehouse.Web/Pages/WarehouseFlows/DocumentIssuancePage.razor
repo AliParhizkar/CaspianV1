@@ -1,0 +1,122 @@
+﻿@page "/Warehouse/DocumentIssuance"
+@attribute [Source(23, "دور سند")]
+@inject UIService<StockFlow, GoodsFlow> Service
+@inject NavigationManager navigationManager
+@inherits BasePage
+
+<div class="p-3">
+    <div class="row c-controls">
+        <div class="col-md-1">
+            <IconButton IconType="IconType.Bar" @onclick="e => ShowContextMenu(e)" />
+        </div>
+        @if (selectedPattern != null)
+        {
+            <div class="col-md-3">
+                <label>نوع سند</label>
+            </div>
+            <div class="col-md-8 text-center">
+                <span style=" background-color: #e4f0ff; padding: 0px 10px 7px; min-width: 100%; display: inline-block; color: #921b80; border-radius: 19px;">@selectedPattern.Title</span>
+            </div>
+        }
+    </div>
+    @if (selectedPattern != null)
+    {
+        <EntitySearch Service="Service" ColumnsCount="2">
+            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="context.StockRoomId" TextExpression="t => t.Title" ColSpan="4" Title="@selectedPattern.FromStockRoomFieldName" />
+            <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="4" />
+            <ComboBox TValue="int?" TEntity="Accounting.Model.AccountingCode" @bind-Value="context.AccountingCodeId" TextExpression="t => t.Name" ColSpan="4" />
+            <DatePicker @bind-Value="context.Date" ColSpan="4" />
+            @if (selectedPattern.HasOtherParty)
+            {
+                <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" SingleSelect />
+                if (context.OtherPartyType == OtherPartyType.CostCenter)
+                {
+                    <ComboBox TValue="int?" TEntity="Accounting.Model.CostCenter" @bind-Value="context.CostCenterId" ColSpan="4" TextExpression="t => t.Name" />
+                }
+                else
+                {
+                    <ComboBox TValue="int?" TEntity="Supplier" @bind-Value="context.SupplierId" ColSpan="4" TextExpression="t => t.User.Name" />
+                }
+            }
+        </EntitySearch>
+        <DataGrid @key="selectedPattern.Id" TEntity="StockFlow" Service="Service" ConditionExpr="t => t.StockFlowType == StockFlowType.OpeningInventory" OnOpen="e => UpsertOpeningInventory(e)">
+            <Columns>
+                <GridColumn Field="t => t.Date.ToPersianDateString()" />
+                @if (!selectedPattern.HasOtherParty)
+                {
+                    <GridColumn Field="t => t.StockRoom.KeepCenter.Name" Title="مرکز نگهداری" />
+                    <GridColumn Field="t => t.StockRoom.Branch.Title" Title="شعبه" />
+                }
+                <GridColumn Field="t => t.StockRoom.Title" Title="@(selectedPattern.FromStockRoomFieldName)" />
+                @if (selectedPattern.HasOtherParty)
+                {
+                    <GridColumn Field="t => t.OtherPartyType == OtherPartyType.CostCenter ? t.CostCenter.Name : t.Supplier.User.Name" Title="طرف مقابل" />
+                }
+                <GridColumn Field="t => t.No" />
+                <GridColumn Field="t => t.AccountingCode.Code" Title="کد معین" />
+                <GridColumn Field="t => t.AccountingCode.Name" Title="نام معین" />
+                <GridColumn Field="t => t.Branch" />
+            </Columns>
+        </DataGrid>
+    }
+
+</div>
+<ContextMenu @bind-Status="status" Left="left" Top="top">
+    <ContextMenuItem Title="دائمی">
+        <ContextMenuItem Title="رسید">
+            @foreach (var item in documentPatterns.Where(t => t.InventoryImpactType == InventoryImpactType.Persist && t.InOutType == InOutType.Input))
+            {
+                var id = item.Id;
+                <ContextMenuItem Title="@(item.Title)" OnClick="async() => await SelectPattern(id)" />
+            }
+        </ContextMenuItem>
+        <ContextMenuItem Title="حواله">
+            @foreach (var item in documentPatterns.Where(t => t.InventoryImpactType == InventoryImpactType.Persist && t.InOutType == InOutType.Output))
+            {
+                var id = item.Id;
+                <ContextMenuItem Title="@(item.Title)" OnClick="async() => await SelectPattern(id)" />
+            }
+        </ContextMenuItem>
+    </ContextMenuItem>
+    <ContextMenuItem Title="موقتی" />
+    <ContextMenuItem Title="ضایعاتی" />
+ 
+
+</ContextMenu>
+
+@code
+{
+    double left;
+    double top;
+    DocumentPattern selectedPattern;
+    bool status;
+    IList<DocumentPattern> documentPatterns;
+
+    async Task SelectPattern(int PatternId)
+    {
+        using var service = CreateScope().GetService<DocumentPatternService>();
+        selectedPattern = await service.SingleAsync(PatternId);
+    }
+
+    void ShowContextMenu(MouseEventArgs e)
+    {
+        status = true;
+        left = e.ClientX - e.OffsetX - 160;
+        top = e.ClientY - e.OffsetY;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<DocumentPatternService>();
+        documentPatterns = await service.GetAll().ToListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    void UpsertOpeningInventory(StockFlow stockFlow)
+    {
+        var url = $"/Warehouse/GoodsDocumentIssuance/{selectedPattern.Id}";
+        if (stockFlow.Id > 0)
+            url += $"/{stockFlow.Id}";
+        navigationManager.NavigateTo(url);
+    }
+}

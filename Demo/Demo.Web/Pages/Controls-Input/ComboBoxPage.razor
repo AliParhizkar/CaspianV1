@@ -194,13 +194,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Control size</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="controlSize" />
-                            </div>
-                            <div class="col-md-12">
+                            <DropdownList @bind-Value="controlSize" ColSpan="8" TotalSpan="12" Title="Control size" />
+                            <div class="ps-2 pe-2">
                                 <ComboBox TEntity="Country" TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" Style="@GetStyle()" />
                             </div>
                         </div>
@@ -213,19 +208,14 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Enable/Disable</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="disable" />
-                            </div>
-                            <div class="col-md-4">
+                            <CheckBox @bind-Value="disable" ColSpan="8" TotalSpan="12" Title="Enable/Disable" />
+                            <div class="col-md-4 ps-2">
                                 <label>Action</label>
                             </div>
                             <div class="col-md-8 text-center">
                                 <button class="c-btn c-primary" @onclick="async () => await cmbCountry.FocusAsync()">Focus</button>
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 ps-2 pe-2">
                                 <ComboBox TEntity="Country" TValue="int?" @ref="cmbCountry" @bind-Value="countryId" Disabled="disable" TextExpression="t => t.Title" />
                             </div>
                         </div>
@@ -253,18 +243,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Product Category</label>
-                            </div>
-                            <div class="col-md-8">
-                                <ComboBox TEntity="ProductCategory" CascadeService="productCascadeService" TValue="int?" @bind-Value="productCategoryId" TextExpression="t => t.Title" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Product</label>
-                            </div>
-                            <div class="col-md-8">
-                                <ComboBox TEntity="Product" TValue="int?" CascadeService="productCascadeService" @bind-Value="productId" TextExpression="t => t.Title" />
-                            </div>
+                            <ComboBox TEntity="ProductCategory" CascadeService="productCascadeService" TValue="int?" @bind-Value="productCategoryId"
+                                      TextExpression="t => t.Title" ColSpan="8" TotalSpan="12" Title="Product Category" />
+                            <ComboBox TEntity="Product" TValue="int?" CascadeService="productCascadeService" @bind-Value="productId"
+                                      TextExpression="t => t.Title" ColSpan="8" TotalSpan="12" Title="Product" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -275,24 +257,12 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Country</label>
-                            </div>
-                            <div class="col-md-8">
-                                <ComboBox TEntity="Country" CascadeService="countryCascadeService " TValue="int?" @bind-Value="countryId" TextExpression="t => t.Title" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Province</label>
-                            </div>
-                            <div class="col-md-8">
-                                <ComboBox TEntity="Province" TValue="int?" CascadeService="countryCascadeService " @bind-Value="provinceId" TextExpression="t => t.Title" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>City</label>
-                            </div>
-                            <div class="col-md-8">
-                                <ComboBox TEntity="City" TValue="int?" CascadeService="countryCascadeService " @bind-Value="cityId" TextExpression="t => t.Title" />
-                            </div>
+                            <ComboBox TEntity="Country" CascadeService="countryCascadeService " TValue="int?" @bind-Value="countryId"
+                                      TextExpression="t => t.Title" ColSpan="8" TotalSpan="12" Title="Country" />
+                            <ComboBox TEntity="Province" TValue="int?" CascadeService="countryCascadeService " @bind-Value="provinceId"
+                                      TextExpression="t => t.Title" ColSpan="8" TotalSpan="12" Title="Province" />
+                            <ComboBox TEntity="City" TValue="int?" CascadeService="countryCascadeService " @bind-Value="cityId"
+                                      TextExpression="t => t.Title" ColSpan="8" TotalSpan="12" Title="City" />
                         </div>
                     </div>
                 </div>
@@ -319,25 +289,18 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Customer type</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="customerType" OnChange="() => cmbCustomer.EnableLoading()" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>Customer</label>
-                            </div>
-                            <div class="col-md-8">
-                                <ComboBox TEntity="Customer" TValue="int?" @ref="cmbCustomer" @bind-Value="customerId" TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' ConditionExpression="t => t.CustomerType == customerType" />
-                            </div>
+                            <DropdownList @bind-Value="customerType" OnChange="() => cmbCustomer.EnableLoading()" ColSpan="8" TotalSpan="12"
+                                          Title="Customer type" />
+                            <ComboBox TEntity="Customer" TValue="int?" @ref="cmbCustomer" @bind-Value="customerId" ColSpan="8" TotalSpan="12" Title="Customer"
+                                      TextExpression='t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' ConditionExpression="t => t.CustomerType == customerType" />
+
                         </div>
                     </div>
                 </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
-            <Document Page="this" FolderName="ComboBox" FileName="Cascade" />
+            <Document Page="this" FolderName="ComboBox" FileName="CustomCascade" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

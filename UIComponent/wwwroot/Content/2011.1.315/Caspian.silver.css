@@ -356,7 +356,7 @@ html input[disabled], textarea[disabled] {
 .t-grid tr td:not(.t-item) {
     font-family: iranyekan;
     text-align: center;
-    font-size: 13px;
+    font-size: 14px;
     box-sizing: border-box;
     padding:3px 0;
 }

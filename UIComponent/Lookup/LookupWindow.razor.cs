@@ -83,9 +83,12 @@ namespace Caspian.UI
         {
             if (grid == null)
             {
-                grid = Service.DataView as DataGrid<TEntity>;
-                BindGrid();
-                await UpdateGrid();
+                grid = Service.DataView as DataGrid<TEntity> ;
+                if (grid != null)
+                {
+                    BindGrid();
+                    await UpdateGrid();
+                }
             }
             await base.OnAfterRenderAsync(firstRender);
         }

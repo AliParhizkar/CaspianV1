@@ -48,15 +48,15 @@ namespace Warehouse.Model
         [CheckOnDelete("کالا(هایی) در این انباز ذخیره شده اند و امکان حذف آن وجود ندارد")]
         public ICollection<GoodsPlacement> GoodsPlacements { get; set; }
 
-        [InverseProperty(nameof(PurchaseRequest.IssuerStockRoom))]
-        [CheckOnDelete("انبار بعنوان تحویل دهنده در درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
-        public ICollection<PurchaseRequest> PurchaseRequestsIssuer { get; set; }
-
-        [InverseProperty(nameof(PurchaseRequest.ReceiverStockRoom))]
-        [CheckOnDelete("انبار بعنوان تحویل گیرنده در درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
-        public ICollection<PurchaseRequest> PurchaseRequestsReceiver { get; set; }
-
         [CheckOnDelete("انبار بعنوان محل رزرو کالا می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Reservation> Reservations { get; set; }
+
+        [InverseProperty(nameof(StockFlow.StockRoom))]
+        [CheckOnDelete("انبار دارای گردش (مبداء) می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<StockFlow> StockFlows { get; set; }
+
+        [InverseProperty(nameof(StockFlow.OtherStockRoom))]
+        [CheckOnDelete("انبار دارای گردش (مقابل) می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<StockFlow> OtherStockFlows { get; set; }
     }
 }

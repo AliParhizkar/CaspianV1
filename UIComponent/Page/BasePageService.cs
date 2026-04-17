@@ -4,15 +4,11 @@
     {
         Stack<Window> windows = new Stack<Window>();
 
-        public void Push(Window window)
-        { 
-            windows.Push(window); 
-        }
+        public void Push(Window window) => windows.Push(window);
 
-        public void Pop() 
-        {
-            windows.Pop();
-        }
+        public void Pop()  => windows.Pop();
+
+        public void Clear() => windows.Clear();
 
         public Window Peek()
         {

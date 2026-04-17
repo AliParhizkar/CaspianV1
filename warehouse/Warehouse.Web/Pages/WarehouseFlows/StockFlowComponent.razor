@@ -1,0 +1,58 @@
+﻿@inject UIService<StockFlow, GoodsFlow> Service
+
+<CaspianForm Service="Service">
+    @ChildContent(context)
+</CaspianForm>
+<div class="pt-2">
+    <DataGrid TEntity="GoodsFlow" DetailsService="Service" Inline>
+        <Columns>
+            <GridColumn Field="t => t.Goods.Name + '(' + t.Goods.Code + ')'" Title="کالا">
+                <EditTemplate>
+                    <Lookup TValue="int" TEntity="Goods" TextExpression="t => t.Name" @bind-Value="context.Data.GoodsId" HideHeader
+                            OpenOnFocus OnChange="async() => await SubmitDataAsync(context.Data)">
+                        <Pages.Lookups.GoodsLookupWindow IsReservation KeepCenterId="Service.UpsertData.KeepCenterId" StockRoomId="Service.UpsertData.StockRoomId" />
+                    </Lookup>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Quantity">
+                <EditTemplate>
+                    <NumericTextBox @ref="txtQuantity" @bind-Value="context.Data.Quantity" @onkeyup="async e => await SubmitDataAsync(e, context.UpsertMode.Value)" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Goods.MeasurementUnit.Name" Title="واحد سنجش">
+                <Template>
+                    <span>@context.Data.Goods?.MeasurementUnit?.Name</span>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+@code
+{
+    [Parameter]
+    public RenderFragment<StockFlow> ChildContent { get; set; }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    IControl txtQuantity;
+    CascadeService<KeepCenter, StockRoom> cascadeService = new CascadeService<KeepCenter, StockRoom>();
+
+    async Task SubmitDataAsync(GoodsFlow goodsFlow)
+    {
+        if (goodsFlow.GoodsId > 0)
+        {
+            goodsFlow.Quantity = 1;
+            using var service = Page.CreateScope().GetService<GoodsService>();
+            goodsFlow.Goods = await service.GetAll().Include(t => t.MeasurementUnit).SingleAsync(goodsFlow.GoodsId);
+            await txtQuantity.FocusAsync();
+        }
+    }
+
+    async Task SubmitDataAsync(KeyboardEventArgs e, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+            await Service.DetailDataView.ValidateAndUpsert(mode);
+    }
+}

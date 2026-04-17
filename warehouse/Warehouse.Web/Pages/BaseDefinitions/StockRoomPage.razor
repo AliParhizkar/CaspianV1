@@ -25,6 +25,11 @@
                     <IconButton IconType="IconType.ExternalLink" @onclick="() => OpenPopup(context.Data.Id)" />
                 </Template>
             </GridColumn>
+            <GridColumn style="width:60px;" Title="کالاها">
+                <Template>
+                    <IconButton IconType="IconType.WpfForms" Href="@($"/Warehouse/StockRoomGoodsPlacement/{context.Data.Id}")" Title="کالاها" />
+                </Template>
+            </GridColumn>
             <GridCommandColumns />
         </Columns>
     </DataGrid>

@@ -1,21 +1,18 @@
 ﻿@page "/Test1"
+@{
+    base.BuildRenderTree(__builder);
+}
 
-<div style="width:500px;margin:10px auto">
-    <RadioList @bind-Value="value">
-        <RadioItem Value="1" IconType="IconType.AngleDoubleDown" />
-        <RadioItem Value="2" IconType="IconType.AngleDoubleUp" />
-        <RadioItem Value="3" IconType="IconType.AngleDown" />
-        <RadioItem Value="4" IconType="IconType.AngleUp" />
-    </RadioList>
-</div>
+@inherits BasePage
 
-
-
-
-
-
+<button @onclick="async () => await ForTest()">ForTest</button>
 
 @code
 {
+    async Task ForTest()
+    {
+        await Confirm("برای تست");
+    }
+
     int value = 3;
 }

@@ -80,7 +80,7 @@ namespace Caspian.Common
                                 /// 1-1 relation check "Master" property is exist
                                 var relationProperty = type1.GetProperties().SingleOrDefault(t => t.PropertyType == type);
                                 if (relationProperty == null)
-                                    throw new CaspianException($"For a 1-1 relation, In type {type1.Name} we should have a property of type {type.Name}");
+                                    throw new CaspianException($"For a 1-1 relation, Type {type1.Name} should have a property of type {type.Name}");
                                 var relationAttr = relationProperty.GetCustomAttribute<ForeignKeyAttribute>();
                                 if (relationAttr == null || relationAttr.Name != type1.GetPrimaryKey(true).Name)
                                     throw new CaspianException($"For a 1-1 relation, Property {relationProperty.Name} in type {type1.Name} should has a ForeignKeyAttribute: ForeignKey(nameof({type1.GetPrimaryKey(true).Name}))");
@@ -91,7 +91,7 @@ namespace Caspian.Common
                                 {
                                     ///1-1 relation check "Detail" property is exist
                                     if (property.PropertyType.GetProperties().SingleOrDefault(t => t.PropertyType == type) == null)
-                                        throw new CaspianException($"For a 1-n relation, In type {property.PropertyType.Name} we should have a property of type {type.Name} please add it");
+                                        throw new CaspianException($"For a 1-n relation, Type {property.PropertyType.Name} should have a property of type {type.Name} please add it");
                                 }
                                 if (foreignKey.Name == pKeyName)
                                 {
@@ -116,9 +116,9 @@ namespace Caspian.Common
                                     if (count != 1)
                                     {
                                         if (relationsCount == 0)
-                                            throw new CaspianException($"On Type {property.PropertyType} we should have a property of type ICollection<{type.Name}>");
+                                            throw new CaspianException($"Type {property.PropertyType} should have a property of type ICollection<{type.Name}>");
                                         else
-                                            throw new CaspianException($"On Type {property.PropertyType} we have many properties of type ICollection<{type.Name}> and we should use InverseProperty({property.Name}) Relation Coun:{relationsCount}");
+                                            throw new CaspianException($"Type {property.PropertyType} have many properties of type ICollection<{type.Name}> and we should use InverseProperty({property.Name}) Relation Coun:{relationsCount}");
                                     }
                                     modelBuilder.Entity(type)
                                         .HasOne(property.Name)

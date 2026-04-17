@@ -1,0 +1,59 @@
+﻿@page "/Warehouse/DocumentPattern"
+@attribute [Source(25, "الگوی سند")]
+@inject IUIService<DocumentPattern> Service
+@inherits BasePage
+<div class="p-3">
+    <DataGrid TEntity="DocumentPattern" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.DocumentType.EnumText()" />
+            <GridColumn Field="t => t.PurchaseType.EnumText()" />
+            <GridColumn Field="t => t.InventoryImpactType.EnumText()" />
+            <GridColumn Field="t => t.InOutType.EnumText()" />
+            <GridColumn Field="t => t.FromStockRoomFieldName" />
+            <GridColumn Field="t => t.ToStockRoomFieldName" />
+            <GridColumn Field="t => t.ReceiverIssuerFieldName" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+<Window Service="Service" Style="width:800px;" Title="الگوی سند">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        @{
+            var fieldName = context.InOutType == InOutType.Input ? "تحویل گیرنده" : "تحویل دهنده";
+            if (context.Id == 0)
+            {
+                context.FromStockRoomFieldName = context.InOutType == InOutType.Input ? "انبار تحویل گیرنده" : "انبار تحویل دهنده";
+                if (context.DocumentRelationshipType == DocumentRelationshipType.Reflex && context.DocumentRelationshipInstance != DocumentRelationshipInstance.BargashAzMasraf)
+                    context.DocumentRelationshipInstance = DocumentRelationshipInstance.BargashtBeKharid;
+            }
+        }
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <DropdownList @bind-Value="context.DocumentType" ColSpan="4" />
+        <DropdownList @bind-Value="context.PurchaseType" ColSpan="4" Disabled="context.DocumentType != DocumentType.Purchase" />
+        <DropdownList @bind-Value="context.InOutType" ColSpan="4" />
+        <DropdownList @bind-Value="context.InventoryImpactType" ColSpan="4" />
+        <NumericTextBox @bind-Value="context.RowsCount" ColSpan="4" />
+        <StringTextBox @bind-Value="context.FromStockRoomFieldName" ColSpan="4" />
+        <CheckBox @bind-Value="context.HasToStockRoom" ColSpan="4" />
+        <StringTextBox @bind-Value="context.ToStockRoomFieldName" ColSpan="4" Disabled="!context.HasToStockRoom" />
+        <CheckBox @bind-Value="context.HasReceiverIssuer" ColSpan="4" Title="@(fieldName + " دارد")" />
+        <StringTextBox @bind-Value="context.ReceiverIssuerFieldName" ColSpan="4" Title="@(fieldName)" Disabled="!context.HasReceiverIssuer" />
+        <RadioList @bind-Value="context.DocumentRelationshipType" ColSpan="4" />
+        <DropdownList TValue="DocumentRelationshipInstance" @bind-Value="context.DocumentRelationshipInstance" ColSpan="4"
+                      FilterFunc="t => context.DocumentRelationshipType == DocumentRelationshipType.Atff ? t < DocumentRelationshipInstance.BargashtBeKharid : t > DocumentRelationshipInstance.RasidEnteghal" />
+        <MultiSelectBox @bind-Value="context.DocumentBases" ColSpan="4" />
+        <DropdownList @bind-Value="context.DefaultBase" ColSpan="4" />
+        <CheckBox @bind-Value="context.HasOtherParty" ColSpan="4" />
+        <CheckBox @bind-Value="context.HasContractNo" ColSpan="4" />
+        <DropdownList @bind-Value="context.ActiveStatus" ColSpan="4" />
+        <FormCommandButton ColSpan="6" TotalSpan="6" />
+    </CaspianForm>
+</Window>
+@code
+{
+
+}

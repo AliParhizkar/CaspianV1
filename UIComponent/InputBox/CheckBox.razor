@@ -22,8 +22,7 @@ else
                 if (ColSpan == TotalSpan)
                 {
                     
-                    var className = $"col-md-{TotalSpan}";
-                    <div class="@className">
+                    <div class="d-flex">
                         @RenderCheckBox(GetTitle())
                     </div>
                 }
@@ -42,7 +41,9 @@ else
             }
             else
             {
-                @RenderCheckBox(null)
+                <div style="display:flex">
+                    @RenderCheckBox(null)
+                </div>
             }
         };
     }
@@ -52,15 +53,17 @@ else
     {
         return __builder =>
         {
-            <span @ref="InputElement" class="t-checkbox" @attributes="attrs">
+            <div @ref="InputElement" class="t-checkbox" @attributes="attrs">
                 <span class="t-icon" @onclick="ChangeValue">
                     <i @attributes="@iconAtttrs" aria-hidden="true"></i>
                 </span>
-                @if (Title.HasValue()  && ColSpan == null || title != null)
+            </div>
+            <div class="c-checkbox-title">
+                @if (Title.HasValue() && ColSpan == null || title != null)
                 {
-                    <span class="t-title" @onclick="ChangeValue">@(title ?? Title)</span>
+                    <span class="t-title align-middle" @onclick="ChangeValue">@(title ?? Title)</span>
                 }
-            </span>
+            </div>
         };
     }
 

@@ -1,0 +1,78 @@
+﻿@page "/Warehouse/ReservationGoods"
+@attribute [Source(24, "رزرو کالا", MasterPage = typeof(ReservationPage))]
+@inject UIService<Reservation, ReservationGoods> Service
+@inject NavigationManager navigationManager
+@inherits BasePage
+
+<div class="p-3 pt-2 pb-2">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+        <DatePicker @bind-Value="context.ExpirationDate" ColSpan="4" />
+        <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" />
+        @if (context.OtherPartyType == OtherPartyType.CostCenter)
+        {
+            <ComboBox TValue="int?" TEntity="Accounting.Model.CostCenter" @bind-Value="context.CostCenterId" TextExpression="t => t.Name" ColSpan="4" />
+        }
+        else
+        {
+            <ComboBox TValue="int?" TEntity="Supplier" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" />
+        }
+        <StringTextBox @bind-Value="context.ReservationNo" Style="direction:ltr" ColSpan="4" />
+        <ComboBox CascadeService="cascadeService" TValue="int" TEntity="KeepCenter" @bind-Value="context.KeepCenterId"
+                  TextExpression="t => t.Name" ColSpan="4" />
+        <ComboBox CascadeService="cascadeService" TValue="int?" TEntity="StockRoom" @bind-Value="context.StockRoomId"
+                  TextExpression="t => t.Title" ColSpan="4" />
+        <DropdownList @bind-Value="context.ReservationType" ColSpan="4" />
+        <DropdownList @bind-Value="context.ReservationBasis" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Branch" ColSpan="4" />
+        <FormCommandButton ColSpan="8" TotalSpan="12" />
+    </CaspianForm>
+    <div class="pt-2">
+        <DataGrid TEntity="ReservationGoods" DetailsService="Service" Inline>
+            <Columns>
+                <GridColumn Field="t => t.Goods.Name + '(' + t.Goods.Code + ')'" Title="کالا">
+                    <EditTemplate>
+                        <Lookup TValue="int" TEntity="Goods" TextExpression="t => t.Name" @bind-Value="context.Data.GoodsId" HideHeader
+                                OpenOnFocus OnChange="async() => await SubmitDataAsync(context.Data)">
+                            <Pages.Lookups.GoodsLookupWindow IsReservation KeepCenterId="Service.UpsertData.KeepCenterId" StockRoomId="Service.UpsertData.StockRoomId" />
+                        </Lookup>
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field="t => t.Quantity">
+                    <EditTemplate>
+                        <NumericTextBox @ref="txtQuantity" @bind-Value="context.Data.Quantity" @onkeyup="async e => await SubmitDataAsync(e, context.UpsertMode.Value)" />
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field="t => t.Goods.MeasurementUnit.Name" Title="واحد سنجش">
+                    <Template>
+                        <span>@context.Data.Goods?.MeasurementUnit?.Name</span>
+                    </Template>
+                </GridColumn>
+                <GridCommandColumns />
+            </Columns>
+        </DataGrid>
+    </div>
+
+</div>
+@code
+{
+    IControl txtQuantity;
+    CascadeService<KeepCenter, StockRoom> cascadeService = new CascadeService<KeepCenter, StockRoom>();
+
+    async Task SubmitDataAsync(ReservationGoods reservationGoods)
+    {
+        if (reservationGoods.GoodsId > 0)
+        {
+            reservationGoods.Quantity = 1;
+            using var service = CreateScope().GetService<GoodsService>();
+            reservationGoods.Goods = await service.GetAll().Include(t => t.MeasurementUnit).SingleAsync(reservationGoods.GoodsId);
+            await txtQuantity.FocusAsync();
+        }
+    }
+
+    async Task SubmitDataAsync(KeyboardEventArgs e, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+            await Service.DetailDataView.ValidateAndUpsert(mode);
+    }
+}

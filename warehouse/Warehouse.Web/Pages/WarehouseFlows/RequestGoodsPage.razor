@@ -1,0 +1,85 @@
+﻿@page "/Warehouse/RequestGoods"
+@inherits BasePage
+@attribute [Source(23, "درخواست کالا", MasterPage = typeof(GoodsRequestPage))]
+@inject UIService<StockFlow, GoodsFlow> Service
+
+<div class="p-3">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        <DropdownList @bind-Value="context.ReferenceDocumentType" ColSpan="4" />
+        <ComboBox TValue="int?" TEntity="User" @bind-Value="context.RequisitionerId" TextExpression="t => t.FName + ' ' + t.LName" ColSpan="4" />
+        <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" />
+        @if (context.OtherPartyType == OtherPartyType.CostCenter)
+        {
+            <ComboBox TValue="int?" TEntity="Accounting.Model.CostCenter" @bind-Value="context.CostCenterId" TextExpression="t => t.Name" ColSpan="4" />
+        }
+        else
+        {
+            <ComboBox TValue="int?" TEntity="Supplier" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" />
+        }
+        <ComboBox CascadeService="service1" TValue="int" TEntity="KeepCenter" @bind-Value="context.KeepCenterId" Title="م.ن تحویل گیرنده"
+                    TextExpression="t => t.Name" ColSpan="4" />
+        <ComboBox CascadeService="service1" TValue="int?" TEntity="StockRoom" @bind-Value="context.StockRoomId" Title="انبار تحویل گیرنده"
+                    TextExpression="t => t.Title" ColSpan="4" />
+        <ComboBox CascadeService="service2" TValue="int?" TEntity="KeepCenter" @bind-Value="context.OtherKeepCenterId" Title="م.ن تحویل دهنده"
+                    TextExpression="t => t.Name" ColSpan="4" />
+        <ComboBox CascadeService="service2" TValue="int?" TEntity="StockRoom" @bind-Value="context.OtherStockRoomId" Title="انبار تحویل دهنده"
+                    TextExpression="t => t.Title" ColSpan="4" />
+        <StringTextBox @bind-Value="context.No" ColSpan="4" Style="direction:ltr" />
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+        <div class="col-md-6 row pb-2">
+            <StringTextBox @bind-Value="context.Description" ColSpan="8" TotalSpan="12" MultiLine />
+        </div>
+        <div class="col-md-6 row pb-2">
+            <DatePicker @bind-Value="context.StockRoomDate" ColSpan="8" TotalSpan="12" />
+            <CheckBox @bind-Value="context.Loadable" ColSpan="8" TotalSpan="12" />
+        </div>
+    </CaspianForm>
+
+    <DataGrid TEntity="GoodsFlow" DetailsService="Service" Inline>
+        <Columns>
+            <GridColumn Field="t => t.Goods.Name + '(' + t.Goods.Code + ')'" Title="کالا">
+                <EditTemplate>
+                    <Lookup TValue="int" TEntity="Goods" TextExpression="t => t.Name" @bind-Value="context.Data.GoodsId" HideHeader 
+                            OpenOnFocus OnChange="async() => await UpdateMeasurementUnitAsync(context.Data)">
+                        <Pages.Lookups.GoodsLookupWindow />
+                    </Lookup>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Quantity">
+                <EditTemplate>
+                    <NumericTextBox @ref="txtQuantity" @bind-Value="context.Data.Quantity" @onkeyup="async e => await SubmitDataAsync(e, context.UpsertMode.Value)" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Goods.MeasurementUnit.Name" Title="واحد سنجش" >
+                <Template>
+                    <span>@context.Data.Goods?.MeasurementUnit?.Name</span>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns> 
+    </DataGrid>
+</div>
+
+@code
+{
+    IControl txtQuantity;
+    CascadeService<KeepCenter, StockRoom> service1 = new CascadeService<KeepCenter, StockRoom>();
+    CascadeService<KeepCenter, StockRoom> service2 = new CascadeService<KeepCenter, StockRoom>();
+
+    async Task UpdateMeasurementUnitAsync(GoodsFlow requestGoods)
+    {
+        if (requestGoods.GoodsId > 0)
+        {
+            requestGoods.Quantity = 1;
+            using var service = CreateScope().GetService<GoodsService>();
+            requestGoods.Goods = await service.GetAll().Include(t => t.MeasurementUnit).SingleAsync(requestGoods.GoodsId);
+            await txtQuantity.FocusAsync();
+        }
+    }
+
+    async Task SubmitDataAsync(KeyboardEventArgs e, UpsertMode mode)
+    {
+        if (e.Key == "Enter" || e.Key == "NumpadEnter")
+            await Service.DetailDataView.ValidateAndUpsert(mode);
+    }
+}

@@ -157,17 +157,16 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Account"));
             app.MapCaspianProjectWhen<Accounting.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Accounting"));
-            app.MapCaspianProjectWhen<Demo.Web.App>(httpContext =>
-            {
-
-                return httpContext.Request.Path.StartsWithSegments("/Demo");
-            });
+            app.MapCaspianProjectWhen<Demo.Web.App>(httpContext => 
+                httpContext.Request.Path.StartsWithSegments("/Demo"));
             app.MapCaspianProjectWhen<Investment.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Investment"));
             app.MapCaspianProjectWhen<Marketing.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Marketing"));
             app.MapCaspianProjectWhen<Warehouse.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Warehouse"));
+            //app.MapCaspianProjectWhen<Procurement.Web.App>(httpContext =>
+            //    httpContext.Request.Path.StartsWithSegments("/Procurement"));
             #endregion
 
             app.MapAdditionalIdentityEndpoints();

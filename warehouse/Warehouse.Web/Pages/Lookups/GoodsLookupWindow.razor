@@ -1,0 +1,62 @@
+﻿@namespace Pages.Lookups
+
+@typeparam TValue
+@inherits LookupWindow<Goods, TValue>
+<div class="c-lookup-page" style="width:650px;">
+    @if (IsReservation && KeepCenterId == 0)
+    {
+        <span style="color:yellow;font-size:18px;font-weight:bold">لطفا ابتدا مرکز نگهدار یا انبار رزرو را انتخاب نموده، سپس اقدام به انتخاب کالا نمائید</span>
+    }
+    else
+    {
+        <EntitySearch Service="Service" ColumnsCount="3">
+            <StringTextBox @bind-Value="context.Code" ColSpan="4" />
+            <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+            <ComboBox TValue="int" TEntity="ProductClass" @bind-Value="context.ProductClassId" ColSpan="4" TextExpression="t => t.Name" />
+            <DropdownList @bind-Value="context.GoodsType" ColSpan="4" />
+        </EntitySearch>
+        <DataGrid Service="Service" TEntity="Goods" ContentHeight="200" OnDataBinding="BindData">
+            <Columns>
+                <GridColumn Field="t => t.Code" />
+                <GridColumn Field="t => t.Name" />
+                <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش" />
+                <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
+                <GridColumn Field="t => t.GoodsType.EnumText()" />
+                <GridColumn Field="t => t.GoodsNature.EnumText()" />
+            </Columns>
+        </DataGrid>
+    }
+
+</div>
+
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Name.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+
+    IQueryable<Goods> BindData(IQueryable<Goods> query)
+    {
+        if (IsReservation)
+        {
+            if (StockRoomId.HasValue)
+                query = query.Where(t => t.ReservationLevel == ReservationLevel.StockRoom && t.GoodsPlacements.Any(u => u.StockRoomId == StockRoomId.Value));
+            else
+                query = query.Where(t => t.ReservationLevel == ReservationLevel.KeepCenter && t.GoodsPlacements.Any(u => u.StockRoom.KeepCenterId == KeepCenterId));
+        }
+        return query;
+    }
+
+    [Parameter]
+    public int KeepCenterId{ get; set; }
+
+    [Parameter]
+    public int? StockRoomId { get; set; }
+
+    [Parameter]
+    public bool IsReservation { get; set; }
+}
+

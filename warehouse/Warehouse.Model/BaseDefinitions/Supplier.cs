@@ -1,31 +1,36 @@
-﻿using Caspian.Common;
+﻿using Caspian.Engine;
 using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Dynamic.Core.CustomTypeProviders;
 
 namespace Warehouse.Model
 {
-    //[Table("Supplier", Schema = "wh")]
-    //public class Supplier
-    //{
-    //    [Key]
-    //    public int Id { get; set; }
+    [Table("Suppliers", Schema = "pcm")]
+    public class Supplier
+    {
+        [Key]
+        public int Id { get; set; }
 
-    //    [DisplayName("کاربری مرتبط")]
-    //    public int RelatedUserId { get; set; }
+        [DisplayName("کد")]
+        public string Code { get; set; }
 
-    //    [ForeignKey(nameof(RelatedUserId))]
-    //    public User RelatedUser { get; set; }
+        [DisplayName("کاربر")]
+        public int UserId { get; set; }
 
-    //    [DisplayName("کد ملی")]
-    //    public string IdCard { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public User User { get; set; }
 
-    //    [DisplayName("نام پدر")]
-    //    public string ParentName { get; set; }
+        [DisplayName("تاریخ شروع ارتباط")]
+        public DateOnly? StartDate { get; set; }
 
-    //    [CheckOnDelete("کارپرداز دارای رسید می باشد و امکان حذف وی وجود ندارد")]
-    //    public ICollection<Receipt> Receipts { get; set; }
-    //}
+        [DisplayName("نوع فعالیت")]
+        public ActivityType ActivityType { get; set; }
+
+        [DisplayName("فعال")]
+        public bool IsActive { get; set; }
+
+        [MaxLength(200), DisplayName("توضیحات")]
+        public string Description { get; set; }
+    }
 }

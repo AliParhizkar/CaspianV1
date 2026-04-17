@@ -41,15 +41,15 @@ namespace Warehouse.Model
         [CheckOnDelete("مرکز نگهداری کالا دارای انبار می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<StockRoom> Stocks { get; set; }
 
-        [CheckOnDelete("مرکز نگهدارای کالا، بعنوان تحویل دهنده در درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
-        [InverseProperty(nameof(PurchaseRequest.IssuerKeepCenter))]
-        public ICollection<PurchaseRequest> PurchaseRequestsIssuer { get; set; }
-
-        [CheckOnDelete("مرکز نگهدارای کالا، بعنوان تحویل گیرنده در درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
-        [InverseProperty(nameof(PurchaseRequest.ReceiverKeepCenter))]
-        public ICollection<PurchaseRequest> PurchaseRequestsReceiver { get; set; }
-
         [CheckOnDelete("مرکز نگهدارای کالا بعنوان محل رزرو کالا می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Reservation> Reservations { get; set; }
+
+        [InverseProperty(nameof(StockFlow.KeepCenter))]
+        [CheckOnDelete("مرکز نگهداری دارای گردش (مبداء) می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<StockFlow> StockFlows { get; set; }
+
+        [InverseProperty(nameof(StockFlow.OtherKeepCenter))]
+        [CheckOnDelete("مرکز نگهداری دارای گردش (مقابل) می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<StockFlow> OtherStockFlows { get; set; }
     }
 }

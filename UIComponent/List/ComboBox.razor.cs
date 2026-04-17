@@ -5,11 +5,11 @@ using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using System.Linq.Dynamic.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
@@ -99,6 +99,8 @@ namespace Caspian.UI
                     await SetValue(value);
                     text = TextExpression.Compile().Invoke(item as TEntity);
                 }
+                if (OnInternalValueChanged.HasDelegate)
+                    await OnInternalValueChanged.InvokeAsync(Value);
             }
             Status = WindowStatus.Close;
         }

@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {
@@ -16,7 +17,6 @@ namespace Caspian.UI
     {
         bool onlyForSearch;
         protected PropertyInfo masterProperty;
-
 
         public MembershipService(IServiceProvider provider)
             :base(provider)
@@ -105,7 +105,9 @@ namespace Caspian.UI
             throw new NotImplementedException();
         }
 
-        public DataView<TOther> DataView { get; private set; }
+        DataView<TOther> ISearchService<TOther>.DataView { get { return OtherDataView; } }
+
+        public DataView<TOther> OtherDataView { get; private set; }
 
         public TOther Search { get; set; }
 
@@ -114,20 +116,20 @@ namespace Caspian.UI
             onlyForSearch = true;
         }
 
-        public IQueryable<TOther> GetFilteredOthers(IServiceScope scope) => DataView.GetQuery(scope);
+        public IQueryable<TOther> GetFilteredOthers(IServiceScope scope) => OtherDataView.GetQuery(scope);
 
         public IQueryable<TAccess> GetFilteredAccess(IServiceScope scope) => base.DataView.GetQuery(scope);
 
         void IInternalSearchService<TOther>.DataViewInitializer(DataView<TOther> dataView)
         {
-            DataView = dataView;
+            OtherDataView = dataView;
             if (dataView == null)
                 return;
             ///We don't want the Deletion-Message to be displayed.
-            dataView.DeleteMessage = "";
-            DataView.Search = Search;
-            DataView.ShowInsertIcon = false;
-            DataView.InsertIconState(!onlyForSearch);
+            OtherDataView.DeleteMessage = "";
+            OtherDataView.Search = Search;
+            OtherDataView.ShowInsertIcon = false;
+            OtherDataView.InsertIconState(!onlyForSearch);
             if (typeof(TOther) == typeof(User))
                 return;
             PropertyInfo masterIdInfo = null;
@@ -153,7 +155,7 @@ namespace Caspian.UI
             var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Any").LastOrDefault().MakeGenericMethod(typeof(TAccess));
             expression = Expression.Call(method, expression, innerExpr);
             expression = Expression.Not(expression);
-            DataView.InternalConditionExpr = expression;
+            OtherDataView.InternalConditionExpr = expression;
         }
 
         #region Methods overrided from base class
@@ -177,7 +179,7 @@ namespace Caspian.UI
 
         protected override void InitializeBeforeValidation(TAccess entity)
         {
-            var other = DataView.GetSelectedData();
+            var other = OtherDataView.GetSelectedData();
             if (other != null)
             {
                 PropertyInfo masterIdInfo, otherKey;
@@ -205,7 +207,7 @@ namespace Caspian.UI
         protected override async Task UpsertAndInitializeAfterValidate(TAccess entity)
         {
             await base.UpsertAndInitializeAfterValidate(entity);
-            await DataView.ReloadAsync();
+            await OtherDataView.ReloadAsync();
         }
 
         protected override async Task InitializeAfterRemove(TAccess entity)
@@ -222,7 +224,7 @@ namespace Caspian.UI
             }
             
             var otherKey = otherIdInfo.GetValue(entity);
-            await DataView.SelectRowById(Convert.ToInt32(otherKey));
+            await OtherDataView.SelectRowById(Convert.ToInt32(otherKey));
             StateHasChanged();
         }
 
@@ -230,7 +232,7 @@ namespace Caspian.UI
 
         public async Task AddAsync()
         {
-            var item = DataView.GetSelectedData();
+            var item = OtherDataView.GetSelectedData();
             if (item != null)
             {
                 var id = Convert.ToInt32(typeof(TOther).GetPrimaryKey().GetValue(item));
@@ -266,7 +268,7 @@ namespace Caspian.UI
                         otherIdInfo = typeof(TAccess).GetProperty(name);
                     }
                     var otherKey = otherIdInfo.GetValue(old);
-                    await DataView.SelectRowById(Convert.ToInt32(otherKey));
+                    await OtherDataView.SelectRowById(Convert.ToInt32(otherKey));
                     StateHasChanged();
                 }
             }

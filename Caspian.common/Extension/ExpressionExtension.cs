@@ -38,10 +38,10 @@ namespace Caspian.Common.Extension
                 var str = pathProperty.NormalizePropertyPath(isReport);
                 var info = type.GetProperty(str);
                 Expression memberExpr = param.CreateMemberExpresion(pathProperty);
-                string foreignkeyId;
-                if (expr.CheckConfilictByNullValue(out foreignkeyId))
+                string foreignKeyId; 
+                if (expr.CheckConfilictByNullValue(out foreignKeyId))
                 {
-                    Expression expr1 = param.CreateMemberExpresion(foreignkeyId);
+                    Expression expr1 = param.CreateMemberExpresion(foreignKeyId);
                     var test = Expression.Equal(expr1, Expression.Constant(null));
                     var nullableType = typeof(Nullable<>).MakeGenericType(memberExpr.Type);
                     var ifTrue = Expression.Convert(Expression.Constant(null), nullableType);

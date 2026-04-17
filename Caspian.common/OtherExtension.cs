@@ -31,11 +31,11 @@ namespace Caspian.Common
             return Convert.ToString(field);
         }
 
-        public static int? ConvertToInt(this Enum curentEnum)
+        public static int? ConvertToInt(this Enum currentEnum)
         {
-            if (curentEnum == null)
+            if (currentEnum == null)
                 return null;
-            return Convert.ToInt32(curentEnum);
+            return Convert.ToInt32(currentEnum);
         }
 
         internal static void FullCopy<TModel>(this TModel model, TModel newModel)

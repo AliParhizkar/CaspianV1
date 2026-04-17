@@ -26,13 +26,14 @@
         return __builder =>
         {
             <div class="@className">
-                <div class="c-from">
+                <div class="c-from d-flex align-items-center">
                     @switch (valueTypeControl)
                     {
                         case ValueTypeControl.Numeric:
                             <NumericTextBox TValue="object" ValueChanged="SearchByFromValue" placeholder="از" />
                             break;
                         case ValueTypeControl.Date:
+                            <span>از</span>
                             <DatePicker TValue="DateOnly?" ValueChanged="SearchByFromValue" placeholder="از" />
                             break;
                         case ValueTypeControl.Time:
@@ -43,13 +44,14 @@
                             break;
                     }
                 </div>
-                <div class="c-to">
+                <div class="c-to d-flex align-items-center pe-2">
                     @switch (valueTypeControl)
                     {
                         case ValueTypeControl.Numeric:
                             <NumericTextBox TValue="object" ValueChanged="SearchByToValue" placeholder="تا" />
                             break;
-                                case ValueTypeControl.Date:
+                        case ValueTypeControl.Date:
+                            <span>تا</span>
                             <DatePicker TValue="DateOnly?" ValueChanged="SearchByToValue" placeholder="تا" />
                             break;
                                 case ValueTypeControl.Time:

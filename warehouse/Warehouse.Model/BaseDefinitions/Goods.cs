@@ -61,7 +61,14 @@ namespace Warehouse.Model
         [InverseProperty(nameof(SubstituteProduct.SubstituteGoods))]
         public ICollection<SubstituteProduct> OtherSubstitutes { get; set; }
 
+        [DisplayName("انبار-بخش داخلی")]
         [CheckOnDelete("این کالا در انبار نگهداری می شود و امکان حذف آن وجود ندارد")]
         public ICollection<GoodsPlacement> GoodsPlacements { get; set; }
+
+        [CheckOnDelete("این کالا رزرو شده و امکان حذف آن وجود ندارد.")]
+        public ICollection<ReservationGoods> ReservationGoods { get; set; }
+
+        [CheckOnDelete("کالا دارای گردش در انبار می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<GoodsFlow> GoodsFlows { get; set; }
     }
 }

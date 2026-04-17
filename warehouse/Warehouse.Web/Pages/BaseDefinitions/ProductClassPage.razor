@@ -1,5 +1,5 @@
 ﻿@page "/Warehouse/ProductClass"
-@attribute [Source(25, "طبقه کالا")]
+@attribute [Source(30, "طبقه کالا")]
 @inherits BasePage
 @inject IUIService<ProductClass> Service
 @{
@@ -18,6 +18,11 @@
             <GridColumn Field="t => t.Name" />
             <GridColumn Field="t => t.Code" />
             <GridColumn Field="t => t.PricingMethod.EnumText()" />
+            <GridColumn Title="کالاها" style="width:50px;">
+                <Template>
+                    <IconButton  />
+                </Template>
+            </GridColumn>
             <GridCommandColumns />
         </Columns>
     </DataGrid>

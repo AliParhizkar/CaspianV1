@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,13 +11,14 @@ namespace Warehouse.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("انبار")]
-        public int StockRoomId { get; set; }
-
+        [DisplayName("کالا")]
         public int GoodsId { get; set; }
 
         [ForeignKey(nameof(GoodsId))]
         public Goods Goods { get; set; }
+
+        [DisplayName("انبار")]
+        public int StockRoomId { get; set; }
 
         [ForeignKey(nameof(StockRoomId))]
         public StockRoom StockRoom { get; set; }
