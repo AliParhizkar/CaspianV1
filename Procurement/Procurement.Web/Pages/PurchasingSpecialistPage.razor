@@ -1,0 +1,42 @@
+﻿@page "/Procurement/PurchasingSpecialist"
+@inject IUIService<PurchasingSpecialist> Service
+@inherits BasePage 
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        @{ 
+            if (Service.Search.User == null)
+                Service.Search.User = new User();
+        }
+        <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="4" SearchType="SearchType.StartWith" />
+        <StringTextBox @bind-Value="context.User.LName" ColSpan="4" Title="نام خانوادگی" />
+    </EntitySearch>
+    <DataGrid TEntity="PurchasingSpecialist" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.User.Name" Title="نام" />
+            <GridColumn Field="t => t.IsActive" style="width:80px;" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Style="width:450px" OnOpen="OpenWindow" Title="کارشناس خرید">
+        <CaspianForm Service="Service">
+            <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="8" />
+            <Lookup TValue="int" TEntity="User" TextExpression="t => t.Name" ColSpan="8" @bind-Value="context.UserId" OpenOnFocus Title="نام">
+                <UserLookupWindow />
+            </Lookup>
+            <CheckBox @bind-Value="context.IsActive" ColSpan="8" />
+            <StringTextBox ColSpan="8" MultiLine Rows="3" @bind-Value="context.Description"  />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div> 
+
+
+@code 
+{
+    void OpenWindow()
+    {
+        if (Service.UpsertData.Id == 0)
+            Service.UpsertData.IsActive = true;
+    }
+}

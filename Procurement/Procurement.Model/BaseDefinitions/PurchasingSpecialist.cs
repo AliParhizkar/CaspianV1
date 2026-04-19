@@ -11,7 +11,7 @@ namespace Procurement.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("کد کارشناس خرید")]
+        [DisplayName("کد")]
         public string Code { get; set; }
 
         [DisplayName("کاربر")]

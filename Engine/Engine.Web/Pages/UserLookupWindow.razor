@@ -1,12 +1,11 @@
 ﻿@namespace Caspian.Engine
-@typeparam TValue
-@inherits LookupWindow<User, TValue>
+@inherits LookupWindow<User, int>
 <div class="c-lookup-page" style="width:650px;">
     <EntitySearch Service="Service" ColumnsCount="2">
         <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
             <StringTextBox @bind-Value="context.FName" ColSpan="4" />
             <StringTextBox @bind-Value="context.LName" ColSpan="4" />
-            <StringTextBox @bind-Value="context.UserName" ColSpan="4" />
+            <StringTextBox @bind-Value="context.UserName" ColSpan="4" Title="نام کاربری" />
             <StringTextBox @bind-Value="context.MobileNumber" ColSpan="4" />
         </div>
     </EntitySearch>

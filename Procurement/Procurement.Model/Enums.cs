@@ -55,4 +55,22 @@ namespace Procurement.Model
         [Display(Name = "عالی")]
         Fentastek
     }
+
+    public enum ProcurementItemType: byte
+    {
+        [Display(Name = "کالا")]
+        Goods,
+
+        [Display(Name = "خدمات")]
+        Service
+    }
+
+    public enum PurchaseProcessType :byte
+    {
+        [Display(Name = "جزئی")]
+        Detail,
+
+        [Display(Name = "استعلامی")]
+        Eselami
+    }
 }

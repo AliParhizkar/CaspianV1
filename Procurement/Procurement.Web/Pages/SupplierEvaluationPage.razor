@@ -1,0 +1,43 @@
+﻿@page "/Procurement/SupplierEvaluation"
+@inherits BasePage
+@inject NavigationManager navigationManager
+@inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
+
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        @{
+            if (context.Supplier == null)
+                context.Supplier = new Supplier();
+            if (context.Supplier.User == null)
+                context.Supplier.User = new User();
+        }
+        <StringTextBox @bind-Value="context.Supplier.User.FName" ColSpan="4" Title="نام تامین کننده" />
+        <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Supplier.User.LName" ColSpan="4" Title="نام خانوادگی تامین کننده" />
+        <DropdownList @bind-Value="context.SupplierRank" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="SupplierEvaluation" OnOpen="UpsertOpening">
+        <Columns>
+            <GridColumn Field="t => t.Supplier.User.Name" Title="تامین کننده" />
+            <GridColumn Field="t => t.SupplierRank.EnumText()" />
+            <GridColumn Field="t => t.No" />
+            <GridColumn Field="t => t.EvaluationBaseType.EnumText()" />
+            <GridColumn Field='t => t.EvaluationBaseType == EvaluationBaseType.Rasid ? t.Receipt.No : "---"' Title="سند رارزیابی" />
+            <GridColumn Field="t => t.Date.ToPersianDateString()" />
+            <GridColumn Field="t => t.StartDate.ToPersianDateString()" />
+            <GridColumn Field="t => t.EndDate.ToPersianDateString()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    void UpsertOpening(SupplierEvaluation evaluation)
+    {
+        var url = $"/Procurement/SupplierEvaluationDetail";
+        if (evaluation.Id > 0)
+            url += $"/{evaluation.Id}";
+        navigationManager.NavigateTo(url);
+    }
+}

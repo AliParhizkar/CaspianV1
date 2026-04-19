@@ -1,0 +1,31 @@
+﻿@namespace Procurement.Web
+@inherits LookupWindow<EvaluationIndicator, int>
+<div class="c-lookup-page" style="width:600px;">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
+            <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+            <DropdownList @bind-Value="context.IndicatorType" ColSpan="4" />
+            <DropdownList @bind-Value="context.EffectingType" ColSpan="4" />
+            <NumericTextBox @bind-Value="context.Factor" ColSpan="4" />
+        </div>
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="EvaluationIndicator" ContentHeight="230">
+        <Columns Context="customer">
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field='t => t.IndicatorType.EnumText()' />
+            <GridColumn Field="t => t.EffectingType.EnumText()" />
+            <GridColumn Field="t => t.Minimum.DigitGrouping()" />
+            <GridColumn Field="t => t.Maximum.DigitGrouping()" />
+            <GridColumn Field="t => t.Factor.DigitGrouping()" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Title.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

@@ -103,6 +103,7 @@ namespace Main
             typeof(Marketing.Service.ProductCategoryService).Assembly.InjectServices(builder.Services);
             typeof(Warehouse.Service.BranchService).Assembly.InjectServices(builder.Services);
             typeof(Accounting.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
+            typeof(Procurement.Service.PurchasingSpecialistService).Assembly.InjectServices(builder.Services);
             #endregion
             builder.Services.AddControllers();
             #region Inject Context For each entity model
@@ -112,17 +113,12 @@ namespace Main
             builder.Services.AddScoped<Investment.Model.Context>();
             builder.Services.AddScoped<Marketing.Model.MarketingContext>();
             builder.Services.AddScoped<Warehouse.Model.Context>();
+            builder.Services.AddScoped<Procurement.Model.Context>();
             #endregion
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
             builder.Services.AddAuthenticationCore();
             var uri = builder.Environment.ContentRootPath;
-            //var names = File.ReadAllLines($"{uri}/names.txt");
-            //var families = File.ReadAllLines($"{uri}/families.txt");
-            //var result = names.Concat(families).Select(t => new Demo.Model.Test() { Name = t }).ToList();
-            //var context = new Demo.Model.Context();
-            //context.Set<Demo.Model.Test>().AddRange(result);
-            //context.SaveChanges();
             builder.Services.AddIdentityCore<User>(options => options.Password.RequireNonAlphanumeric = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
@@ -165,8 +161,8 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Marketing"));
             app.MapCaspianProjectWhen<Warehouse.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Warehouse"));
-            //app.MapCaspianProjectWhen<Procurement.Web.App>(httpContext =>
-            //    httpContext.Request.Path.StartsWithSegments("/Procurement"));
+            app.MapCaspianProjectWhen<Procurement.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/Procurement"));
             #endregion
 
             app.MapAdditionalIdentityEndpoints();

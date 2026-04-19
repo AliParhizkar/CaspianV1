@@ -1,0 +1,37 @@
+﻿@page "/Procurement/EvaluationIndicator"
+@inject IUIService<EvaluationIndicator> Service
+@inherits BasePage
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <NumericTextBox @bind-Value="context.Factor" ColSpan="4" />
+        <DropdownList @bind-Value="context.IndicatorType" ColSpan="4"SingleSelect />
+        <DropdownList @bind-Value="context.EffectingType" ColSpan="4" SingleSelect />
+    </EntitySearch>
+    <DataGrid TEntity="EvaluationIndicator" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.IndicatorType.EnumText()" />
+            <GridColumn Field="t => t.EffectingType.EnumText()" />
+            <GridColumn Field="t => t.Minimum.DigitGrouping()" />
+            <GridColumn Field="t => t.Maximum.DigitGrouping()" />
+            <GridColumn Field="t => t.Factor.DigitGrouping()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="شاخص ارزیابی" Style="width:450px">
+        <CaspianForm Service="Service">
+            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+            <DropdownList @bind-Value="context.IndicatorType" ColSpan="8" />
+            <DropdownList @bind-Value="context.EffectingType" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.Minimum" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.Maximum" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.Factor" ColSpan="8" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>
+@code 
+{
+
+}

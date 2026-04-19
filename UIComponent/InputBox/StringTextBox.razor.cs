@@ -109,8 +109,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
-            if (Id == null)
-                Id = "";
+            Id ??= "";
             if (EntitySearch != null)
             {
                 search = true;

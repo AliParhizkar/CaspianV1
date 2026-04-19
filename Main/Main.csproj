@@ -49,7 +49,7 @@
     <ProjectReference Include="..\Marketing\Marketing.Web\Marketing.Web.csproj" />
     <ProjectReference Include="..\Procurement\Procurement.Model\Procurement.Model.csproj" />
     <ProjectReference Include="..\Procurement\Procurement.Service\Procurement.Service.csproj" />
-    <ProjectReference Include="..\Procurement\Procurement.Service\Procurement.Web\Procurement.Web.csproj" />
+    <ProjectReference Include="..\Procurement\Procurement.Web\Procurement.Web.csproj" />
     <ProjectReference Include="..\Report\Common.Client\Common.Client.csproj" />
     <ProjectReference Include="..\Report\ReportGenerator.Client\ReportGenerator.Client.csproj" />
     <ProjectReference Include="..\Report\UIComponent.Client\UIComponent.Client.csproj" />

@@ -1,38 +1,17 @@
 ﻿@page "/Test"
+@using Procurement.Model;
 @using Caspian.Common.Extension 
 @inherits BasePage
+@inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
 @using Investment.Model
 @{
     base.BuildRenderTree(__builder);
-}
-<button @onclick="CheckTime">For Test</button>
 
-<div style="width:500px;margin: 5px auto">
-    <DataGrid TEntity="City" SelectType="SelectType.None">
-        <Columns>
-            <GridColumn Field="t => t.Title" />
-            <ActionGridColumn />
-        </Columns>
-    </DataGrid>
-</div>
+}
+
 
 
 
 @code
 {
-    WindowStatus status;
-    decimal value;
-
-    void CheckTime()
-    {
-        var tick = DateTime.Now.Ticks;
-        for (var i = 0; i < 100; i++)
-        {
-            var rqqqq = typeof(Customer).GetPrimaryKey();
-        }
-        tick = DateTime.Now.Ticks - tick;
-    }
-
-
-
 }

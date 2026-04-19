@@ -318,6 +318,9 @@ namespace Warehouse.Model.Migrations
                     b.Property<string>("MobileNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -1106,20 +1109,33 @@ namespace Warehouse.Model.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("IdCard")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<byte>("PersonType")
+                    b.Property<byte>("ActivityType")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly?>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers", "wh");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Suppliers", "pcm", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
@@ -1358,7 +1374,7 @@ namespace Warehouse.Model.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Warehouse.Model.Supplier", "Supplier")
-                        .WithMany("Suppliers")
+                        .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.NoAction);
 
@@ -1452,7 +1468,7 @@ namespace Warehouse.Model.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Warehouse.Model.Supplier", "Supplier")
-                        .WithMany("StockFlows")
+                        .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.NoAction);
 
@@ -1517,6 +1533,17 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Goods");
 
                     b.Navigation("SubstituteGoods");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
+                {
+                    b.HasOne("Caspian.Engine.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
@@ -1655,13 +1682,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Reservations");
 
                     b.Navigation("StockFlows");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
-                {
-                    b.Navigation("StockFlows");
-
-                    b.Navigation("Suppliers");
                 });
 #pragma warning restore 612, 618
         }

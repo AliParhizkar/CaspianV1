@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Warehouse.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,6 +38,9 @@ namespace Procurement.Model
 
         [DisplayName("تاریخ پایان اعتبار")]
         public DateOnly? EndDate { get; set; }
+
+        [DisplayName("تاریخ ارزیابی")]
+        public DateOnly? Date { get; set; }
 
         [CheckOnDelete("این ارزیابی دارای تامین کننده می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SupplierEvaluationDetail> Details { get; set; }

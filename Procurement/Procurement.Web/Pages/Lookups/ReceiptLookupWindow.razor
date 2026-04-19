@@ -1,0 +1,39 @@
+﻿@namespace Procurement.Web
+@inherits LookupWindow<Warehouse.Model.StockFlow, int?>
+@if (SupplierId == 0)
+{
+    <div style="text-align:center; color:deeppink;">لطفا  تامین کننده را مشخص نمایئد</div>
+}
+else
+{
+    <div class="c-lookup-page" style="width:600px;">
+        <EntitySearch Service="Service" ColumnsCount="2">
+            <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
+                <ComboBox TValue="int" TEntity="Warehouse.Model.KeepCenter" @bind-Value="context.KeepCenterId" TextExpression="t => t.Name"
+                          ColSpan="4" CascadeService="cascadeService" />
+                <StringTextBox @bind-Value="context.No" ColSpan="4" Style="direction:ltr" />
+                <ComboBox TValue="int?" TEntity="Warehouse.Model.StockRoom" @bind-Value="context.StockRoomId" TextExpression="t => t.Title"
+                          ColSpan="4" CascadeService="cascadeService" />
+                <DatePicker @bind-Value="context.Date" ColSpan="4" />
+            </div>
+        </EntitySearch>
+        <DataGrid Service="Service" TEntity="Warehouse.Model.StockFlow" ContentHeight="230"
+                  ConditionExpr="t => t.SupplierId == SupplierId && t.DocumentPattern.DocumentType == Warehouse.Model.DocumentType.Purchase">
+            <Columns Context="customer">
+                <GridColumn Field="t => t.KeepCenter.Name" Title="مرکز نگهداری" />
+                <GridColumn Field="t => t.StockRoom.Title" Title="انبار" />
+                <GridColumn Field="t => t.No" />
+                <GridColumn Field="t => t.Date.ToPersianDateString()" SortType="SortType.Decs" />
+            </Columns>
+        </DataGrid>
+    </div>
+}
+
+
+@code
+{
+    CascadeService<Warehouse.Model.KeepCenter, Warehouse.Model.StockRoom> cascadeService = new();
+
+    [Parameter]
+    public int SupplierId { get; set; }
+}

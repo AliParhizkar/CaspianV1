@@ -1,0 +1,76 @@
+﻿@page "/Procurement/SupplierEvaluationDetail"
+@inherits BasePage
+@inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
+<div class="p-3">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        <ComboBox TValue="int" TEntity="Supplier" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="4" />
+        <DropdownList @bind-Value="context.EvaluationBaseType" ColSpan="4" />
+        <Lookup TValue="int?" TEntity="Warehouse.Model.StockFlow" @bind-Value="context.ReceiptId" TextExpression="t => t.No"
+                ColSpan="4" OpenOnFocus HideHeader Disabled="context.EvaluationBaseType != EvaluationBaseType.Rasid">
+            <ReceiptLookupWindow SupplierId="context.SupplierId" />
+        </Lookup>
+        <DropdownList @bind-Value="context.SupplierRank" ColSpan="4" />
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+        <DatePicker @bind-Value="context.StartDate" ColSpan="4" />
+        <DatePicker @bind-Value="context.EndDate" ColSpan="4" />
+        <FormCommandButton ColSpan="4" TotalSpan="6" />
+    </CaspianForm>
+    <DataGrid DetailsService="Service" TEntity="SupplierEvaluationDetail" Inline>
+        <Columns>
+            <GridColumn Field="t => t.EvaluationIndicator.Title" Title="شاخص ارزیابی">
+                <EditTemplate>
+                    <Lookup TValue="int" TEntity="EvaluationIndicator" @bind-Value="context.Data.EvaluationIndicatorId" 
+                            TextExpression="t => t.Title" OpenOnFocus HideHeader OnChange="async () => await EvaluationIndicatorSelected(context.Data)">
+                        <EvaluationIndicatorLookup />
+                    </Lookup>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.EvaluationIndicator.Minimum.DigitGrouping()" Title="حداقل امتیاز" style="width:85px;" >
+                <Template>
+                    <span>@context.Data.EvaluationIndicator?.Minimum.DigitGrouping()</span>
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.Privilege.DigitGrouping()" style="width:100px">
+                <EditTemplate>
+                    <NumericTextBox @ref="txtPrivilege" @bind-Value="context.Data.Privilege" @onkeyup="async e => await Save(e, context.UpsertMode.Value)" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.EvaluationIndicator.Maximum.DigitGrouping()" Title="حداکثر امتیاز" style="width:85px">
+                <span>@context.Data.EvaluationIndicator?.Maximum.DigitGrouping()</span>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{ 
+    IControl txtPrivilege;
+    protected override void OnInitialized()
+    {
+        Service.OnCreate = t =>
+        {
+            t.Date = DateTime.Now.ToDateOnly();
+            t.StartDate = DateTime.Now.ToDateOnly();
+            t.EndDate = DateTime.Now.ToDateOnly();
+        };
+        base.OnInitialized();
+    }
+
+    async Task Save(KeyboardEventArgs e, UpsertMode upsertMode)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            await Service.DetailDataView.ValidateAndUpsert(upsertMode);
+    }
+
+    async Task EvaluationIndicatorSelected(SupplierEvaluationDetail detail)
+    {
+        if (detail.EvaluationIndicatorId > 0)
+        {
+            using var service = CreateScope().GetService<EvaluationIndicatorService>();
+            detail.EvaluationIndicator = await service.SingleAsync(detail.EvaluationIndicatorId);
+            await txtPrivilege.FocusAsync();
+        }
+    }
+}
