@@ -874,8 +874,6 @@ namespace Warehouse.Model.Migrations
 
                     b.HasIndex("StockRoomId");
 
-                    b.HasIndex("SupplierId");
-
                     b.ToTable("Reservations", "wh");
                 });
 
@@ -1024,8 +1022,6 @@ namespace Warehouse.Model.Migrations
 
                     b.HasIndex("StockRoomId");
 
-                    b.HasIndex("SupplierId");
-
                     b.ToTable("StockFlow", "wh");
                 });
 
@@ -1099,43 +1095,6 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("SubstituteGoodsId");
 
                     b.ToTable("SubstituteProducts", "wh");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte>("ActivityType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateOnly?>("StartDate")
-                        .HasColumnType("date");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Suppliers", "pcm", t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
                 });
 
             modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
@@ -1373,18 +1332,11 @@ namespace Warehouse.Model.Migrations
                         .HasForeignKey("StockRoomId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Warehouse.Model.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("CostCenter");
 
                     b.Navigation("KeepCenter");
 
                     b.Navigation("StockRoom");
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Warehouse.Model.ReservationGoods", b =>
@@ -1467,11 +1419,6 @@ namespace Warehouse.Model.Migrations
                         .HasForeignKey("StockRoomId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Warehouse.Model.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("AccountingCode");
 
                     b.Navigation("CostCenter");
@@ -1487,8 +1434,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Requisitioner");
 
                     b.Navigation("StockRoom");
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Warehouse.Model.StockRoom", b =>
@@ -1533,17 +1478,6 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Goods");
 
                     b.Navigation("SubstituteGoods");
-                });
-
-            modelBuilder.Entity("Warehouse.Model.Supplier", b =>
-                {
-                    b.HasOne("Caspian.Engine.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Accounting.Model.AccountingCode", b =>
