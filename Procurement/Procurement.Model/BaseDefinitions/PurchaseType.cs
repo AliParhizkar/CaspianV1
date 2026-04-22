@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Procurement.Model
 {
+    [Table("PurchaseTypes", Schema = "pcm")]
     public class PurchaseType
     {
         [Key]
@@ -17,7 +19,7 @@ namespace Procurement.Model
         [DisplayName("روند خرید")]
         public PurchaseProcessType PurchaseProcessType { get; set; }
 
-        [DisplayName("توضیحات")]
+        [DisplayName("توضیحات"), MaxLength(200)]
         public string Description { get; set; }
 
         [DisplayName("فعال")]

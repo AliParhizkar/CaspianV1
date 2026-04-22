@@ -1,0 +1,15 @@
+﻿@page "/Procurement/UserManagement/UserAccess/{UserId:int}"
+@attribute [Source(4, "دستیابی کاربران به منوها")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <UserAccessComponent SelectedUserId="UserId" SubSystem="SubsystemKind.Procurement" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int UserId { get; set; }
+}

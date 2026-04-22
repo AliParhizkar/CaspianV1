@@ -1,0 +1,29 @@
+﻿@namespace Procurement.Web
+@inherits LookupWindow<ProcurementItemGroup, int?>
+<div class="c-lookup-page" style="width:700px;">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
+            <ComboBox TValue="int?" TEntity="ProcurementItemGroup" @bind-Value="context.ParentGroupId" ColSpan="4" TextExpression="t => t.Name" />
+            <StringTextBox @bind-Value="context.Code" ColSpan="4" SearchType="SearchType.StartWith" Style="direction:ltr" />
+            <DropdownList @bind-Value="context.CodingLevels" ColSpan="4" />
+            <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        </div>
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="ProcurementItemGroup" ContentHeight="230">
+        <Columns Context="customer">
+            <GridColumn Field="t => t.ParentGroup.Name" Title="گروه بالاتر" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.CodingLevels.EnumText()" />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Code.StartsWith(LookupStringSearchValue) || t.Name.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

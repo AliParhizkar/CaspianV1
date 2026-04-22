@@ -1,0 +1,15 @@
+﻿@page "/Procurement/UserManagement/RoleAccess/{RoleId:int}"
+@attribute [Source(2, "دستیابی نقش به منوها")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <RoleAccessComponent SubSystem="SubsystemKind.Procurement" RoleId="RoleId" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

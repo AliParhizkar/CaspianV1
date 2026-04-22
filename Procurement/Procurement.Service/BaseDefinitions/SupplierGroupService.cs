@@ -1,0 +1,50 @@
+﻿using Caspian.Common;
+using Caspian.Common.Service;
+using Procurement.Model;
+
+namespace Procurement.Service
+{
+    public class SupplierGroupService: BaseService<SupplierGroup>
+    {
+        public static int[] CodingLevelsLength = { 1, 2, 2, 3};
+        public SupplierGroupService(IServiceProvider provider)
+            :base(provider)
+        {
+            RuleFor(t => t.Code).Required().UniqueAsync("گروه تامین کننده ای با این کد در سیستم تعریف شده است")
+                .CustomAsync(async t =>
+                {
+                    var length = CodingLevelsLength.TakeWhile((value, index) => index <= t.CodingLevels.ConvertToInt().Value).Sum();
+                    if (t.Code.Length != length)
+                        return $"طول کد باید {length} باشد";
+                    if (t.ParentGroupId.HasValue)
+                    {
+                        var parent = await SingleAsync(t.ParentGroupId.Value);
+                        if (!t.Code.StartsWith(parent.Code))
+                            return $"کد باید با {parent.Code} شروع شود";
+                    }
+                    return null;
+                });
+            RuleFor(t => t.Name).Required().UniqueAsync("گروه تامین کننده ای با این نام در سیستم وجود دارد");
+        }
+
+        public override async Task<SupplierGroup> AddAsync(SupplierGroup group)
+        {
+            if (group.ParentGroupId.HasValue)
+            {
+                var parent = await SingleAsync(group.ParentGroupId.Value);
+                group.CodingLevels = parent.CodingLevels + 1;
+            }
+            else
+                group.CodingLevels = CodingLevels.Level1;
+            return await base.AddAsync(group);
+        }
+
+        public override async Task UpdateAsync(SupplierGroup group)
+        {
+            var old = await SingleAsync(group.Id);
+            group.CodingLevels = old.CodingLevels;
+            group.ParentGroupId = old.ParentGroupId;
+            await base.UpdateAsync(group);
+        }
+    }
+}

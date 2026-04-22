@@ -1,0 +1,144 @@
+﻿@page "/Procurement/ProcurementItemGrouping/{GroupId:int}"
+@attribute [Source(19, "گروهبندی اقلام خریدنی")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="row p-3">
+    <div class="col-md-5">
+        <div>
+            <EntitySearch TEntity="ProcurementItem" Service="Service">
+                <DropdownList @bind-Value="context.ProcurementItemType" ColSpan="8" SingleSelect />
+                @if (context.ProcurementItemType == ProcurementItemType.Goods)
+                {
+                    <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" TextExpression="t => t.Name" 
+                            ColSpan="8" HideHeader OpenOnFocus>
+                        <Warehouse.Web.GoodsLookupWindow />
+                    </Lookup>
+                }
+                else
+                {
+                    <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ServiceId" TextExpression="t => t.Name" ColSpan="8"
+                            HideHeader OpenOnFocus>
+                        <ServiceLookupWindow />
+                    </Lookup>
+                }
+                <CheckBox @bind-Value="context.ISActive" ColSpan="8" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">سایر اقلام خریدنی</span>
+            </div>
+        </div>
+        <DataGrid TEntity="ProcurementItem" ContentHeight="250" Service="Service">
+            <Columns>
+                <GridColumn Field="t => t.ProcurementItemType.EnumText()" />
+                <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.Code : t.Service.Code" Title="کد" />
+                <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.Name : t.Service.Name" Title="نام" />
+                <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.MeasurementUnit.Name : t.Service.MeasurementUnit.Name" Title="واحد سنجش" />
+                <GridColumn Field="t => t.ISActive" />
+            </Columns>
+        </DataGrid>
+    </div>
+    <div class="col-md-1">
+        <div class="align-content-center h-100 text-center">
+            <CaspianForm Service="Service">
+                <div class="d-btn-container">
+                    <div>
+                        <IconButton @onclick="AddSelectedSuppliersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                    </div>
+                    <div>
+                        <IconButton IconType="IconType.AngleRight" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="DeleteSelectedSuppliersFromGroup" IconType="IconType.AngleDoubleLeft" />
+                    </div>
+                </div>
+            </CaspianForm>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <EntitySearch TEntity="ProcurementItemGrouping" Service="Service">
+                <DropdownList @bind-Value="context.ProcurementItem.ProcurementItemType" ColSpan="8" SingleSelect />
+                @if (context.ProcurementItem.ProcurementItemType == ProcurementItemType.Goods)
+                {
+                    <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.ProcurementItem.GoodsId" TextExpression="t => t.Name" ColSpan="8">
+                        <Warehouse.Web.GoodsLookupWindow />
+                    </Lookup>
+                }
+                else
+                {
+                    <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ProcurementItem.ServiceId" TextExpression="t => t.Name" ColSpan="8">
+                        <ServiceLookupWindow />
+                    </Lookup>
+                }
+                <CheckBox @bind-Value="context.ProcurementItem.ISActive" ColSpan="8" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">اقلام عضو گروه</span>
+            </div>
+        </div>
+        <DataGrid TEntity="ProcurementItemGrouping" Service="Service" ContentHeight="250" DeleteMessage="">
+            <Columns>
+                <GridColumn Field="t => t.ProcurementItem.ProcurementItemType.EnumText()" />
+                <GridColumn Field="t => t.ProcurementItem.ProcurementItemType == ProcurementItemType.Goods ? t.ProcurementItem.Goods.Code : t.ProcurementItem.Service.Code" Title="کد" />
+                <GridColumn Field="t => t.ProcurementItem.ProcurementItemType == ProcurementItemType.Goods ? t.ProcurementItem.Goods.Name : t.ProcurementItem.Service.Name" Title="نام" />
+                <GridColumn Field="t => t.ProcurementItem.ProcurementItemType == ProcurementItemType.Goods ? t.ProcurementItem.Goods.MeasurementUnit.Name : t.ProcurementItem.Service.MeasurementUnit.Name" Title="واحد سنجش" />
+                <GridColumn Field="t => t.ProcurementItem.ISActive" />
+                <GridCommandColumns HideEdit />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+@code
+{
+    MembershipService<ProcurementItemGroup, ProcurementItemGrouping, ProcurementItem> Service;
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<ProcurementItemGroup, ProcurementItemGrouping, ProcurementItem>(base.ServiceProvider);
+        Service.MasterId = GroupId;
+        base.OnInitialized();
+    }
+
+    async Task AddSelectedSuppliersToGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredOthers(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با افزودن {count} تامین کننده به گروه موافقید؟"))
+        {
+            count = await query.ExecuteInsertAsync(t => new SupplierGroupMembership()
+            {
+                SupplierGroupId = GroupId,
+                SupplierId = t.Id
+            }, scope);
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} تامین کننده با موفقیت به گروه اضافه شد");
+        }
+    }
+
+    async Task DeleteSelectedSuppliersFromGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredAccess(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با حذف {count} تامین کننده از گروه تامین کنندگان موافقید؟"))
+        {
+            count = await query.ExecuteDeleteAsync();
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} تامین کننده با موفقیت از گروه حذف شدند");
+        }
+    }
+
+    [Parameter]
+    public int GroupId { get; set; }
+}

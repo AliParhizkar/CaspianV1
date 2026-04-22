@@ -1,0 +1,125 @@
+﻿@page "/Procurement/SupplierGroupMembership/{GroupId:int}"
+@attribute [Source(18, "گروهبندی تامین کنندگان")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="row p-3">
+    <div class="col-md-5">
+        <div>
+            <EntitySearch TEntity="Supplier" Service="Service">
+                @{ 
+                    context.User = context.User ?? new User();
+                }
+                <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="8" />
+                <StringTextBox @bind-Value="context.User.LName" ColSpan="8" Title="نام خانوادگی" />
+                <StringTextBox @bind-Value="context.User.MobileNumber" ColSpan="8" SearchType="SearchType.StartWith" Title="همراه" Style="direction:ltr" />
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">سایر تامین کنندگان</span>
+            </div>
+        </div>
+        <DataGrid TEntity="Supplier" ContentHeight="250" Service="Service">
+            <Columns>
+                <GridColumn Field="@(t => t.Code)" />
+                <GridColumn Field="@(t => t.User.Name)" Title="نام"/>
+                <GridColumn Field="t => t.User.MobileNumber" Title="همراه" />
+                <GridColumn Field="t => t.ActivityType.EnumText()" />
+            </Columns>
+        </DataGrid>
+    </div>
+    <div class="col-md-1">
+        <div class="align-content-center h-100 text-center">
+            <CaspianForm Service="Service">
+                <div class="d-btn-container">
+                    <div>
+                        <IconButton @onclick="AddSelectedSuppliersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                    </div>
+                    <div>
+                        <IconButton IconType="IconType.AngleRight" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                    </div>
+                    <div>
+                        <IconButton type="button" @onclick="DeleteSelectedSuppliersFromGroup" IconType="IconType.AngleDoubleLeft" />
+                    </div>
+                </div>
+            </CaspianForm>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <EntitySearch TEntity="SupplierGroupMembership" Service="Service">
+                @{
+                    context.Supplier.User = context.Supplier.User ?? new User();
+                }
+                <StringTextBox @bind-Value="context.Supplier.Code" Style="direction:ltr" ColSpan="8" />
+                <StringTextBox @bind-Value="context.Supplier.User.LName" ColSpan="8" Title="نام خانوادگی" />
+                <StringTextBox @bind-Value="context.Supplier.User.MobileNumber" ColSpan="8" SearchType="SearchType.StartWith" Title="همراه" Style="direction:ltr" />
+
+            </EntitySearch>
+            <div class="col-md-12 text-center">
+                <hr class="mt-0" />
+                <span class="d-membership">تامین کنندگان عضو گروه</span>
+            </div>
+        </div>
+        <DataGrid TEntity="SupplierGroupMembership" Service="Service" ContentHeight="250" DeleteMessage="">
+            <Columns>
+                <GridColumn Field="@(t => t.Supplier.Code)" />
+                <GridColumn Field="@(t => t.Supplier.User.Name)" Title="نام" />
+                <GridColumn Field="t => t.Supplier.User.MobileNumber" Title="همراه" />
+                <GridColumn Field="t => t.Supplier.ActivityType.EnumText()" />
+                <GridCommandColumns HideEdit />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+@code
+{
+    MembershipService<SupplierGroup, SupplierGroupMembership, Supplier> Service;
+
+    protected override void OnInitialized()
+    {
+        Service = new MembershipService<SupplierGroup, SupplierGroupMembership, Supplier>(base.ServiceProvider);
+        Service.MasterId = GroupId;
+        base.OnInitialized();
+    }
+
+    async Task AddSelectedSuppliersToGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredOthers(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با افزودن {count} تامین کننده به گروه موافقید؟"))
+        {
+            count = await query.ExecuteInsertAsync(t => new SupplierGroupMembership()
+            {
+                SupplierGroupId = GroupId,
+                SupplierId = t.Id
+            }, scope);
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} تامین کننده با موفقیت به گروه اضافه شد");
+        }
+    }
+
+    async Task DeleteSelectedSuppliersFromGroup()
+    {
+        using var scope = CreateScope();
+        var query = Service.GetFilteredAccess(scope);
+        var count = await query.CountAsync();
+        if (await Confirm($"آیا با حذف {count} تامین کننده از گروه تامین کنندگان موافقید؟"))
+        {
+            count = await query.ExecuteDeleteAsync();
+            await Service.DataView.ReloadAsync();
+            await Service.OtherDataView.ReloadAsync();
+            ShowMessage($"تعداد {count} تامین کننده با موفقیت از گروه حذف شدند");
+        }
+    }
+
+    [Parameter]
+    public int GroupId { get; set; }
+}

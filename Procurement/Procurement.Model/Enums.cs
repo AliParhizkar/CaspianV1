@@ -73,4 +73,19 @@ namespace Procurement.Model
         [Display(Name = "استعلامی")]
         Eselami
     }
+
+    public enum CodingLevels: byte
+    {
+        [Display(Name = "سطح اول")]
+        Level1,
+
+        [Display(Name = "سطح دوم")]
+        Level2,
+
+        [Display(Name = "سطح سوم")]
+        Level3,
+
+        [Display(Name = "سطح چهارم")]
+        Level4
+    }
 }

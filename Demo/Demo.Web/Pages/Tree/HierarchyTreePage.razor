@@ -51,7 +51,7 @@
                     <hr />
                     <div class="row align-items-center">
                         <div class="col-md-1 d-tree-icon text-center pb-1">
-                            <span @onclick="async () => await ShowEditForm(null, false)" class="fa fa-plus"></span>
+                            <IconButton @onclick="async () => await ShowEditForm(null, false)" IconType="IconType.Plus" />
                         </div>
                         <div class="col-md-11 pb-1">
                             <StringTextBox @bind-Value="@organSearchCustomTemplate" OnChange="async () => await customTemplateTree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="Search ..." />

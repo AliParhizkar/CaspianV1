@@ -1,0 +1,15 @@
+﻿@page "/Procurement/SystemManagement/MenuManagement"
+@attribute [Source(1, "مدیریت منو")]
+@using Caspian.Engine.SystemManagement
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-3">
+    <MenuManagementComponent Subsystem="SubsystemKind.Procurement" />
+</div>
+
+@code
+{
+
+}

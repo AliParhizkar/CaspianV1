@@ -1291,6 +1291,8 @@ var caspian;
             }
             else if (this.search)
                 input.oninput = (e) => __awaiter(this, void 0, void 0, function* () { return yield this.bindOnInput(e); });
+            if (input.style.direction == 'ltr' && input.closest('.t-rtl'))
+                input.closest('.t-textbox').style.direction = 'rtl';
         }
         initializeTimer() {
             if (this.timerId)

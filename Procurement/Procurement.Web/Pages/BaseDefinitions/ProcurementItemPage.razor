@@ -1,0 +1,66 @@
+﻿@page "/Procurement/ProcurementItem"
+@inject IUIService<ProcurementItem> Service
+@attribute [Source(14, "قلم خریدنی")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <DropdownList @bind-Value="context.ProcurementItemType" SingleSelect ColSpan="4" />
+        @if (context.ProcurementItemType == ProcurementItemType.Goods)
+        {
+            <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" ColSpan="4" OpenOnFocus HideHeader
+                    TextExpression="t => t.Code + ')' + t.Name">
+                <Warehouse.Web.GoodsLookupWindow />
+            </Lookup>
+        }
+        else
+        {
+            <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ServiceId" ColSpan="4" OpenOnFocus HideHeader
+                    TextExpression="t => t.Code + ')' + t.Name">
+                <ServiceLookupWindow />
+            </Lookup>
+        }
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="ProcurementItem">
+        <Columns>
+            <GridColumn Field="t => t.ProcurementItemType.EnumText()" />
+            <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.Code : t.Service.Code" Title="کد کالا/خدمت" />
+            <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.Name : t.Service.Name" Title="نام کالا/خدمت" />
+            <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.MeasurementUnit.Name : t.Service.MeasurementUnit.Name" Title="واحد سنجش" />
+            <GridColumn Field="t => t.ISActive" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Style="width:400px" Title="قلم خریدنی" OnOpen="OnOpenWindow" >
+        <CaspianForm Service="Service">
+            <DropdownList @bind-Value="context.ProcurementItemType" SingleSelect ColSpan="8" />
+            @if (context.ProcurementItemType == ProcurementItemType.Goods)
+            {
+                <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" ColSpan="8" OpenOnFocus HideHeader
+                        TextExpression="t => t.Code + ')' + t.Name">
+                    <Warehouse.Web.GoodsLookupWindow />
+                </Lookup>
+            }
+            else
+            {
+                <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ServiceId" ColSpan="8" OpenOnFocus HideHeader
+                        TextExpression="t => t.Code + ')' + t.Name">
+                    <ServiceLookupWindow />
+                </Lookup>
+            }
+            <CheckBox @bind-Value="context.ISActive" ColSpan="8" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    void OnOpenWindow()
+    {
+        if (Service.UpsertData.Id == 0)
+            Service.UpsertData.ISActive = true;
+    }
+}

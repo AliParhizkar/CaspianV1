@@ -1,7 +1,11 @@
 ﻿@page "/Procurement/SupplierEvaluation"
 @inherits BasePage
+@attribute [Source(13, "ارزیابی تامین کنندگان")]
 @inject NavigationManager navigationManager
 @inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
+@{
+    base.BuildRenderTree(__builder);
+}
 
 <div class="p-3">
     <EntitySearch Service="Service" ColumnsCount="2">

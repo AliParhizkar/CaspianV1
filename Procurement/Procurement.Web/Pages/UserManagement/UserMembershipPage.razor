@@ -1,0 +1,15 @@
+﻿@page "/Procurement/UserManagement/UserMembership/{RoleId:int}"
+@attribute [Source(5, "عضویت کاربران در نقش ها")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <UserMembershipComponent RoleId="RoleId" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

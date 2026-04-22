@@ -54,6 +54,8 @@
             }
             else if (this.search)
                 input.oninput = async e => await this.bindOnInput(e);
+            if (input.style.direction == 'ltr' && input.closest('.t-rtl')) 
+                (input.closest('.t-textbox') as HTMLElement).style.direction= 'rtl'
         }
 
          initializeTimer() {

@@ -1,0 +1,25 @@
+﻿@namespace Procurement.Web
+@inherits LookupWindow<Service, int?>
+<div class="c-lookup-page" style="width:600px;">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="Service" ContentHeight="230">
+        <Columns>
+            <GridColumn Field="t => t.Code"/>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش" />
+        </Columns>
+    </DataGrid>
+</div>
+
+
+@code    
+{
+    protected override void OnInitialized()
+    {
+        InitialSearchExpression(t => LookupStringSearchValue == null || t.Name.Contains(LookupStringSearchValue) || t.Code.StartsWith(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

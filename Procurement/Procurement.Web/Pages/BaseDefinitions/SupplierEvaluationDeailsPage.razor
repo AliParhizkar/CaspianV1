@@ -1,6 +1,11 @@
 ﻿@page "/Procurement/SupplierEvaluationDetail"
 @inherits BasePage
+@attribute [Source(13, "ارزیابی تامین کنندگان", MasterPage = typeof(SupplierEvaluationPage))]
 @inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+
 <div class="p-3">
     <CaspianForm Service="Service" ColumnsCount="2">
         <ComboBox TValue="int" TEntity="Supplier" @bind-Value="context.SupplierId" TextExpression="t => t.User.Name" ColSpan="4" />
@@ -20,13 +25,13 @@
         <Columns>
             <GridColumn Field="t => t.EvaluationIndicator.Title" Title="شاخص ارزیابی">
                 <EditTemplate>
-                    <Lookup TValue="int" TEntity="EvaluationIndicator" @bind-Value="context.Data.EvaluationIndicatorId" 
+                    <Lookup TValue="int" TEntity="EvaluationIndicator" @bind-Value="context.Data.EvaluationIndicatorId"
                             TextExpression="t => t.Title" OpenOnFocus HideHeader OnChange="async () => await EvaluationIndicatorSelected(context.Data)">
                         <EvaluationIndicatorLookup />
                     </Lookup>
                 </EditTemplate>
             </GridColumn>
-            <GridColumn Field="t => t.EvaluationIndicator.Minimum.DigitGrouping()" Title="حداقل امتیاز" style="width:85px;" >
+            <GridColumn Field="t => t.EvaluationIndicator.Minimum.DigitGrouping()" Title="حداقل امتیاز" style="width:85px;">
                 <Template>
                     <span>@context.Data.EvaluationIndicator?.Minimum.DigitGrouping()</span>
                 </Template>
@@ -45,7 +50,7 @@
 </div>
 
 @code
-{ 
+{
     IControl txtPrivilege;
     protected override void OnInitialized()
     {

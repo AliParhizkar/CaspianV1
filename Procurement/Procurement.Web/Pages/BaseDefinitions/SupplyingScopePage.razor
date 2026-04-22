@@ -1,0 +1,118 @@
+﻿@page "/Procurement/SupplyingScope"
+@inject IUIService<SupplyingScope> Service
+@attribute [Source(21, "حوزه تامین")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div style="width:800px;margin:20px auto 5px auto">
+    <div class="c-controls c-header row align-items-center">
+        <CaspianContainer>
+            <Lookup TValue="int?" @bind-Value="supplierGroupId" TEntity="SupplierGroup" TextExpression="t => t.Code + ')' + t.Name" 
+                    ColSpan="7" Title="گروه تامین کنندگان" TotalSpan="9" OpenOnFocus HideHeader >
+                <SupplierGroupLookup />
+            </Lookup>
+        </CaspianContainer>
+    </div>
+    <div class="c-body p-3 pt-1">
+        @if (supplierGroupId.HasValue)
+        {
+            <div class="row">
+                <div class="col-md-5">
+                    <RadioList @bind-Value="isProcurementItemGroup">
+                        <RadioItem Value="true" Title="گروه اقلام خریدنی" />
+                        <RadioItem Value="false" Title="قلم خریدنی" />
+                    </RadioList>
+                </div>
+                <div class="col-md-7 text-center pb-2">
+                    @if (isProcurementItemGroup)
+                    {
+                        <span class="d-membership">گروه اقلام خریدنی</span>
+                    }
+                    else
+                    {
+                        <span class="d-membership">قلم خریدنی</span>
+                    }
+                </div>
+
+            </div>
+            @if (isProcurementItemGroup)
+            {
+                <EntitySearch Service="Service" ColumnsCount="2">
+                    @{
+                        context.ProcurementItemGroup = context.ProcurementItemGroup ?? new ProcurementItemGroup();
+                    }
+                    <StringTextBox @bind-Value="context.ProcurementItemGroup.Code" SearchType="SearchType.StartWith" ColSpan="4"
+                                   Title="کد گروه قلم خریدنی" Style="direction:ltr" />
+                    <StringTextBox @bind-Value="context.ProcurementItemGroup.Code" ColSpan="4" Title="نام گروه قلم خریدنی" />
+                </EntitySearch>
+
+                <DataGrid TEntity="SupplyingScope" Service="Service">
+                    <Columns>
+                        <GridColumn Field="t => t.ProcurementItemGroup.Code" Title="کد گروه قلم خریدنی" />
+                        <GridColumn Field="t => t.ProcurementItemGroup.Name" Title="نام گروه قلم خریدنی" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+                <Window Service="Service" Title="حوزه تامین-گروه قلم خریدنی" Style="width:450px;">
+                    <CaspianForm Service="Service" TEntity="SupplyingScope" OnSubmit="e => e.Entity.SupplierGroupId = supplierGroupId.Value">
+                        <Lookup TValue="int?" @bind-Value="context.ProcurementItemGroupId" TEntity="ProcurementItemGroup" ColSpan="8"
+                                TextExpression="t => t.Code + ')' + t.Name" HideHeader>
+                            <ProcurementItemGroupLookup />
+                        </Lookup>
+                        <FormCommandButton ColSpan="8" />
+                    </CaspianForm>
+                </Window>
+            }
+            else
+            {
+                <EntitySearch Service="Service" ColumnsCount="2">
+                    @{
+                        context.ProcurementItem = context.ProcurementItem ?? new ProcurementItem();
+                        var item = context.ProcurementItem;
+                    }
+                    <DropdownList @bind-Value="item.ProcurementItemType" ColSpan="4" SingleSelect />
+                    @if (item.ProcurementItemType == ProcurementItemType.Goods)
+                    {
+                        <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="item.GoodsId" HideHeader OpenOnFocus
+                                TextExpression="t => t.Name" ColSpan="4">
+                            <Warehouse.Web.GoodsLookupWindow />
+                        </Lookup>
+                    }
+                    else
+                    {
+                        <Lookup TValue="int?" TEntity="Service" @bind-Value="item.ServiceId" HideHeader OpenOnFocus
+                                TextExpression="t => t.Name" ColSpan="4">
+                            <ServiceLookupWindow />
+                        </Lookup>
+                    }
+                </EntitySearch>
+
+                <DataGrid TEntity="SupplyingScope" Service="Service">
+                    <Columns>
+                        <GridColumn Field="t => t.ProcurementItemGroup.Code" Title="کد گروه قلم خریدنی" />
+                        <GridColumn Field="t => t.ProcurementItemGroup.Name" Title="نام گروه قلم خریدنی" />
+                        <GridCommandColumns />
+                    </Columns>
+                </DataGrid>
+                <Window Service="Service" Title="حوزه تامین-گروه قلم خریدنی" Style="width:450px;">
+                    <CaspianForm Service="Service" TEntity="SupplyingScope" OnSubmit="e => e.Entity.SupplierGroupId = supplierGroupId.Value">
+                        <Lookup TValue="int?" @bind-Value="context.ProcurementItemGroupId" TEntity="ProcurementItemGroup" ColSpan="8"
+                                TextExpression="t => t.Code + ')' + t.Name" HideHeader>
+                            <ProcurementItemGroupLookup />
+                        </Lookup>
+                        <FormCommandButton ColSpan="8" />
+                    </CaspianForm>
+                </Window>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    bool isProcurementItemGroup = true;
+    int? supplierGroupId;
+
+
+}

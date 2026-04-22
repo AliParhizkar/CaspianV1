@@ -33,8 +33,8 @@ namespace Warehouse.Model
         [DisplayName("تامین کننده")]
         public int? SupplierId { get; set; }
 
-        //[ForeignKey(nameof(SupplierId))]
-        //public Supplier Supplier { get; set; }
+        [ForeignKey(nameof(SupplierId))]
+        public Supplier Supplier { get; set; }
 
         [DisplayName("مبنای رزرو")]
         public ReservationBasis ReservationBasis { get; set; }

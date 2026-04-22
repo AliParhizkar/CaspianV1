@@ -1,4 +1,5 @@
-﻿using Caspian.Engine.Model;
+﻿using Caspian.Common;
+using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,5 +26,8 @@ namespace Procurement.Model
 
         [MaxLength(200), DisplayName("توضیحات")]
         public string Description { get; set; }
+
+        [CheckOnDelete("کارشناس عضو واحد تامین می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<SupplyingUnitMembership> SupplyingUnitMemberships { get; set; }
     }
 }

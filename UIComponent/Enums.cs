@@ -38,10 +38,10 @@ namespace Caspian.UI
         [Display(Name = "Refresh")]
         Refresh,
 
-        [Display(Name = "External-Link")]
+        [Display(Name = "external-link")]
         ExternalLink,
 
-        [Display(Name = "Wpforms")]
+        [Display(Name = "wpforms")]
         WpfForms,
 
         [Display(Name = "File-Word-O")]

@@ -41,7 +41,8 @@ else
             }
             else
             {
-                <div style="display:flex">
+                var className = $"d-flex justify-content-{DefaultLayout.GetCssClassName()}";
+                <div class="@className">
                     @RenderCheckBox(null)
                 </div>
             }
@@ -77,6 +78,10 @@ else
 
     [Parameter]
     public bool CustomeSearch { get; set; }
+
+
+    [Parameter]
+    public DefaultLayout DefaultLayout { get; set; } = DefaultLayout.FlexStart;
 
     protected override void OnParametersSet()
     {

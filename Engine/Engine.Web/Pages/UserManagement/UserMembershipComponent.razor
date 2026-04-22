@@ -6,8 +6,8 @@
 <div class="row">
     <div class="col-md-5">
         <EntitySearch TEntity="User" Service="Service">
-            <StringTextBox @bind-Value="context.LName" ColSpan="8" />
-            <StringTextBox @bind-Value="context.UserName" ColSpan="8" />
+            <StringTextBox @bind-Value="context.LName" ColSpan="8" Title="نام خانوادگی" />
+            <StringTextBox @bind-Value="context.UserName" ColSpan="8" Title="نام کاربری" />
         </EntitySearch>
         <div class="col-md-12 text-center">
             <hr class="mb-0" />
@@ -36,8 +36,8 @@
     </div>
     <div class="col-md-6">
         <EntitySearch TEntity="UserMembership" Service="Service">
-            <StringTextBox @bind-Value="context.User.LName" ColSpan="8" />
-            <StringTextBox @bind-Value="context.User.UserName" ColSpan="8" />
+            <StringTextBox @bind-Value="context.User.LName" ColSpan="8" Title="نام خانوادگی" />
+            <StringTextBox @bind-Value="context.User.UserName" ColSpan="8" Title="نام کاربری"/>
         </EntitySearch>
         <div class="col-md-12 text-center">
             <hr class="mb-0" />

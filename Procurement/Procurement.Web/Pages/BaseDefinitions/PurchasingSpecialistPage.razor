@@ -1,9 +1,14 @@
 ﻿@page "/Procurement/PurchasingSpecialist"
 @inject IUIService<PurchasingSpecialist> Service
-@inherits BasePage 
+@inherits BasePage
+@attribute [Source(10, "کارشناس خرید")]
+@{ 
+    base.BuildRenderTree(__builder);
+}
+
 <div class="p-3">
     <EntitySearch Service="Service" ColumnsCount="2">
-        @{ 
+        @{
             if (Service.Search.User == null)
                 Service.Search.User = new User();
         }
@@ -25,14 +30,14 @@
                 <UserLookupWindow />
             </Lookup>
             <CheckBox @bind-Value="context.IsActive" ColSpan="8" />
-            <StringTextBox ColSpan="8" MultiLine Rows="3" @bind-Value="context.Description"  />
+            <StringTextBox ColSpan="8" MultiLine Rows="3" @bind-Value="context.Description" />
             <FormCommandButton ColSpan="8" />
         </CaspianForm>
     </Window>
-</div> 
+</div>
 
 
-@code 
+@code
 {
     void OpenWindow()
     {

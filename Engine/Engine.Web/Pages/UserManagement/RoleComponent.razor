@@ -5,7 +5,7 @@
     base.BuildRenderTree(__builder);
 }
 <EntitySearch Service="Service">
-    <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+    <StringTextBox @bind-Value="context.Name" ColSpan="8" Title="نام" />
 </EntitySearch>
 <DataGrid TEntity="Role" Service="Service" ContentHeight="400">
     <Columns>
@@ -25,7 +25,7 @@
 </DataGrid>
 <Window Service="Service" Title="Role properties" Style="width:400px">
     <CaspianForm Service="Service">
-        <StringTextBox @bind-Value="context.Name" ColSpan="9" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="9" Title="نام" />
         <div class="col-md-9">
             <FormCommandButton />
         </div>

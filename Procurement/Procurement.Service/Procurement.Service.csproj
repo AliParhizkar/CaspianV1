@@ -3,11 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\warehouse\Warehouse.Model\Warehouse.Model.csproj" />
+    <ProjectReference Include="..\..\warehouse\Warehouse.Service\Warehouse.Service.csproj" />
     <ProjectReference Include="..\Procurement.Model\Procurement.Model.csproj" />
   </ItemGroup>
 

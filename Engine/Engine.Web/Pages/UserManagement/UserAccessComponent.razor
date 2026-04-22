@@ -3,13 +3,13 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:250px">
-    <RadioList @bind-Value="displayType">
-        <RadioItem Value="0" Title="ساختار درختی" />
-        <RadioItem Value="1" Title="ساختار لیستی" />
+<div>
+    <RadioList @bind-Value="displayType" DefaultLayout="DefaultLayout.FlexStart">
+        <RadioItem IconType="IconType.Tree" Value="true" />
+        <RadioItem IconType="IconType.Outdent" Value="false" />
     </RadioList>
 </div>
-@if (displayType == 0)
+@if (displayType)
 {
     <UserAccessTreeComponent AccessUserId="UserId" SubSystem="SubSystem" />
 }
@@ -70,7 +70,7 @@ else
 
 @code
 {
-    int displayType;
+    bool displayType = true;
 
     MembershipService<User, MenuAccessibility, Menu> Service;
 

@@ -1,0 +1,43 @@
+﻿@page "/Procurement/PurchaseType"
+@inject IUIService<PurchaseType> Service
+@attribute [Source(20, "نوع خرید")]
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" SearchType="SearchType.StartWith" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <DropdownList @bind-Value="context.PurchaseProcessType" ColSpan="4" />
+        <CheckBox @bind-Value="context.IsActive" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="PurchaseType" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Code" style="width:95px" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.PurchaseProcessType.EnumText()" />
+            <GridColumn Field="t => t.IsActive" style="width:60px;" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="شاخص ارزیابی" Style="width:450px" OnOpen="OnWindowOpen">
+        <CaspianForm Service="Service">
+            <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
+            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+            <DropdownList @bind-Value="context.PurchaseProcessType" ColSpan="8" />
+            <CheckBox @bind-Value="context.IsActive" ColSpan="8" />
+            <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="3" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    void OnWindowOpen()
+    {
+        if (Service.UpsertData.Id == 0)
+            Service.UpsertData.IsActive = true;
+    }
+}

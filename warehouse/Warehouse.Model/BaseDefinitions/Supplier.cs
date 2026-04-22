@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Warehouse.Model
 {
-    [Table("Suppliers", Schema = "pcm11")]
+    [Table("Suppliers", Schema = "pcm")]
     public class Supplier
     {
         [Key]

@@ -4,14 +4,14 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:250px">
-    <RadioList @bind-Value="displayType">
-        <RadioItem Value="0" Title="ساختار درختی" />
-        <RadioItem Value="1" Title="ساختار لیستی" />
+<div>
+    <RadioList @bind-Value="displayType" DefaultLayout="DefaultLayout.FlexStart">
+        <RadioItem IconType="IconType.Tree" Value="true" />
+        <RadioItem IconType="IconType.Outdent" Value="false" />
     </RadioList>
 </div>
 
-@if (displayType == 0)
+@if (displayType)
 {
     <RoleAccessTreeComponent SubSystem="SubSystem" RoleId="RoleId" />
 }
@@ -38,7 +38,7 @@ else
         <div class="col-md-1">
             <div class="row align-content-center h-100">
                 <CaspianForm Service="Service">
-                    <div class="d-btn-container">
+                    <div class="d-btn-container text-center">
                         <IconButton IconType="IconType.AngleRight" />
                         <div>
                             <IconButton type="button" @onclick="async () => await Service.RemoveAsync()"
@@ -53,7 +53,6 @@ else
                 <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.Menu.MenuCategoryId"
                           ConditionExpression="t => t.SubsystemKind == SubSystem" TextExpression="t => t.Title" ColSpan="8" />
                 <StringTextBox @bind-Value="context.Menu.Title" ColSpan="8" />
-
             </EntitySearch>
             <div class="col-md-12 text-center">
                 <hr class="m-0 mt-3" />
@@ -72,7 +71,7 @@ else
 
 @code
 {
-    int displayType;
+    bool displayType = true;
 
     MembershipService<Role, MenuAccessibility, Menu> Service;
 

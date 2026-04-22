@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\Procurement\Procurement.Model\Procurement.Model.csproj" />
+    <ProjectReference Include="..\Procurement\Procurement.Service\Procurement.Service.csproj" />
+    <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Model\Warehouse.Model.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Service\Warehouse.Service.csproj" />
+  </ItemGroup>
+
+</Project>

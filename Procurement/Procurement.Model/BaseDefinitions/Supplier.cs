@@ -35,5 +35,8 @@ namespace Procurement.Model
 
         [CheckOnDelete("تامین کننده دراای ارزیابی می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SupplierEvaluation> SupplierEvaluations { get; set; }
+
+        [CheckOnDelete("تامین کننده عضو گروه می باشد و امکان حذف وی وجود ندارد")]
+        public ICollection<SupplierGroupMembership> Memberships { get; set; }
     }
 }

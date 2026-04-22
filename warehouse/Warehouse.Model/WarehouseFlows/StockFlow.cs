@@ -55,8 +55,8 @@ namespace Warehouse.Model
         [DisplayName("تامین کننده")]
         public int? SupplierId { get; set; }
 
-        //[ForeignKey(nameof(SupplierId))]
-        //public Supplier Supplier { get; set; }
+        [ForeignKey(nameof(SupplierId))]
+        public Supplier Supplier { get; set; }
 
         [DisplayName("شماره")]
         public string No { get; set; }

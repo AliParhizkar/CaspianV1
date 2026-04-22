@@ -1,0 +1,15 @@
+﻿@page "/Procurement/UserManagement/User"
+@attribute [Source(6, "مدیریت کاربران")]
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-4">
+    <UserComponent SubSystemKind="SubsystemKind.Procurement" />
+</div>
+
+@code
+{
+
+}

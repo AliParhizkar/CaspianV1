@@ -36,6 +36,7 @@ namespace Caspian.Common
             foreach (var type in allTypes)
                 modelBuilder.Entity(type);
             var types = modelBuilder.Model.GetEntityTypes().Select(t => t.ClrType);
+            IList<Type> otherAssembliesTypes = new List<Type>();
             foreach (var type in types)
             {
                 TableAttribute tableAttribute = type.GetCustomAttribute<TableAttribute>();
@@ -49,6 +50,11 @@ namespace Caspian.Common
                     {
                         t.ExcludeFromMigrations();
                     });
+                    continue;
+                }
+                else if (type.Assembly != assembly)
+                {
+                    otherAssembliesTypes.Add(type);
                     continue;
                 }
                 var pKeyName = type.GetPrimaryKey(true)?.Name;
@@ -182,10 +188,10 @@ namespace Caspian.Common
                     }
                 }
             }
-
+            foreach (var type in otherAssembliesTypes)
+                modelBuilder.Ignore(type);
             modelBuilder.HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
                .HasTranslation(e => new SqlFunctionExpression("JSON_VALUE", e, true, new[] { true, false }, typeof(String), null));
-            
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Warehouse.Model;
+﻿using Caspian.Common;
+using Warehouse.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,5 +29,11 @@ namespace Procurement.Model
 
         [DisplayName("فعال")]
         public bool ISActive { get; set; }
+
+        [CheckOnDelete("قلم خریدنی عضو گروه می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<ProcurementItemGrouping> Memberships { get; set; }
+
+        [CheckOnDelete("قلم خریدنی دارای حوزه ی تامین می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<SupplyingScope> SupplyingScopes { get; set; }
     }
 }

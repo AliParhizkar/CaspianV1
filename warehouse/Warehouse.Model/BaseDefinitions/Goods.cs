@@ -53,6 +53,9 @@ namespace Warehouse.Model
         [DisplayName("معلق در اسناد خروجی")]
         public bool SuspendedInOutcoming { get; set; }
 
+        [DisplayName("فعال")]
+        public bool IsActive { get; set; }
+
         [CheckOnDelete("محصول دارای محصول جایگزین می باشد و امکان حذف آن وجود ندارد")]
         [InverseProperty(nameof(SubstituteProduct.Goods))]
         public ICollection<SubstituteProduct> Substitutes { get; set; }

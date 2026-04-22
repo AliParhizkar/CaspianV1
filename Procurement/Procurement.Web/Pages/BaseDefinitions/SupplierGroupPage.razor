@@ -1,0 +1,126 @@
+﻿@page "/Procurement/SupplierGroup"
+@inject IUIService<SupplierGroup> Service
+@inherits BasePage
+@attribute [Source(16, "گروه تامین کنندگان")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="row align-items-center pt-4" style="width:700px;margin:auto">
+    <div class="col-md-1 d-tree-icon text-center pb-1">
+        <IconButton @onclick="async () => await ShowEditForm(null, false)" IconType="IconType.Plus" />
+    </div>
+    <div class="col-md-11 pb-1">
+        <StringTextBox @bind-Value="@searchText" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو با کد یا نام گروه" />
+    </div>
+    <div>
+        <TreeView @ref="tree" TEntity="SupplierGroup" style="height:calc(100vh - 100px)" TextFunc="t => t.Code + ')' + t.Name" 
+                  FilterFunc="t => !searchText.HasValue() || t.Code.StartsWith(searchText) || t.Name.Contains(searchText)">
+            <AfterNodeTemplate>
+                <span class="d-tree-icon">
+                    <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                    <span class="fa fa-pencil"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await DeleteGroup(context)">
+                    <span class="fa fa-trash"></span>
+                </span>
+                <span class="d-tree-icon" Title="گروهبندی تامین کنندگان">
+                    <a href="@($"/Procurement/SupplierGroupMembership/{context.Value}")">
+                        <span class="fa fa-wpforms"></span>
+                    </a>
+                </span>
+            </AfterNodeTemplate>
+        </TreeView>
+    </div>
+</div>
+
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="گروه تامین کننده">
+    <CaspianForm Model="group" TEntity="SupplierGroup" OnValidSubmit="UpsertGroup">
+        @{ 
+            var maskedText = "";
+            if (parent != null)
+                maskedText = parent.Code;
+            var length = SupplierGroupService.CodingLevelsLength[group.CodingLevels.ConvertToInt().Value];
+            for (var i = 0; i < length; i++)
+                maskedText += '_';
+        }
+
+        @if (parent != null)
+        {
+            <StringTextBox Value="@parent.Code" ColSpan="8" Title="کد گروه" Style="direction:ltr" />
+            <StringTextBox Value="@parent.Name" ColSpan="8" Title="نام گروه" />
+        }
+
+        <StringTextBox @ref="firstControl" @bind-Value="context.Code" Style="direction:ltr" ColSpan="8" MaskedText="@maskedText" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+@code
+{
+    SupplierGroup group;
+    SupplierGroup parent;
+    WindowStatus status;
+    string searchText;
+    TreeView<SupplierGroup> tree;
+    IControl firstControl;
+
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    {
+        using var service = CreateScope().GetService<SupplierGroupService>();
+        if (isUpdate)
+        {
+            ///Edit mode
+            var groupId = Convert.ToInt32(nodeView.Value);
+            group = await service.SingleAsync(groupId);
+        }
+        else
+        {
+            ///Insert mode
+            group = new SupplierGroup();
+            group.ParentGroupId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            if (group.ParentGroupId.HasValue)
+            {
+                var parentGroup = await service.SingleAsync(group.ParentGroupId.Value);
+                group.CodingLevels = parentGroup.CodingLevels + 1;
+            }
+        }
+        if (group.ParentGroupId.HasValue)
+            parent = await service.SingleAsync(group.ParentGroupId.Value);
+        else
+            parent = null;
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteGroup(NodeView node)
+    {
+        var groupId = Convert.ToInt32(node.Value);
+        using var service = CreateScope().GetService<SupplierGroupService>();
+        var group = await service.SingleAsync(groupId);
+        var result = await service.ValidateRemoveAsync(group);
+        if (result.IsValid)
+        {
+            service.Remove(group);
+            await service.SaveChangesAsync();
+            tree.RemoveFromTree(group);
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task<bool> UpsertGroup()
+    {
+        using var service = CreateScope().GetService<SupplierGroupService>();
+        if (group.Id == 0)
+            await service.AddAsync(group);
+        else
+            await service.UpdateAsync(group);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(group);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
+}
