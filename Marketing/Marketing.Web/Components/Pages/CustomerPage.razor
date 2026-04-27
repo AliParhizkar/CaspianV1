@@ -42,10 +42,7 @@
     {
         if (ConfigService.Config.CustomerHasManyAddresses)
         {
-            if (ConfigService.Config.CustomerIsMemberOfGroups)
-                CustomerAddressGroupsService.OnUpsert = ConfirmForAddress;
-            else
-                CustomerAddressService.OnUpsert = ConfirmForAddress;
+            CustomerAddressGroupsService.OnUpsert = ConfirmForAddress;
         }
         base.OnInitialized();
     }

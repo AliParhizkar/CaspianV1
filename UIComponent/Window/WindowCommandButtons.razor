@@ -22,7 +22,7 @@ else
     {
         return __builder =>
         {
-            <div class="c-window-action">
+            <div class="@($"c-window-action {CssClass}")">
                 <button class="c-btn c-primary" type="submit">@SubmitButtonTitle</button>
                 <button class="c-btn c-danger" type="button" @onclick="CloseWindow">@CancelButtonTitle</button>
             </div>
@@ -48,6 +48,9 @@ else
     {
         Window.Close();
     }
+
+    [Parameter]
+    public string CssClass { get; set; }
 
     [Parameter]
     public int? ColSpan { get; set; }

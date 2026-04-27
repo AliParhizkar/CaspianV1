@@ -1,13 +1,13 @@
-﻿using Warehouse.Model;
+﻿using Caspian.Common;
+using Warehouse.Model;
 using Caspian.Engine.Model;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Procurement.Model
 {
-    [Table("SupplyingUnits")]
+    [Table("SupplyingUnits", Schema = "pcm")]
     public class SupplyingUnit
     {
         [Key]
@@ -34,10 +34,13 @@ namespace Procurement.Model
         [MaxLength, DisplayName("توضیحات")]
         public string Description { get; set; }
 
-        public int? ParentId { get; set; }
+        [DisplayName("سطح کد")]
+        public CodingLevels CodingLevels { get; set; }
 
-        [ForeignKey(nameof(ParentId))]
-        public SupplyingUnit Parent { get; set; }
+        public int? ParentUnitId { get; set; }
+
+        [ForeignKey(nameof(ParentUnitId))]
+        public SupplyingUnit ParentUnit { get; set; }
 
         [CheckOnDelete("واحد تامین دارای عضو(اعضاء) می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SupplyingUnitMembership> SupplyingUnitMemberships { get; set; }

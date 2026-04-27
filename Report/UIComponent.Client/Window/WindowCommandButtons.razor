@@ -1,6 +1,7 @@
 ﻿@namespace Caspian.UI.Client
 @inject CaspianDataService DataService
-<div class="c-window-action">
+
+<div class="@($"c-window-action {CssClass}")">
     <button class="c-btn c-primary" type="submit">@SumitButtonTitle</button>
     <button class="c-btn c-danger" type="button" @onclick="CloseWindow">@CancelButtonTitle</button>
 </div>
@@ -21,6 +22,9 @@
         }
         base.OnInitialized();
     }
+
+    [Parameter]
+    public string CssClass { get; set; }
 
     protected void CloseWindow()
     {

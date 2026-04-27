@@ -26,7 +26,7 @@
             <GridColumn Field="t => t.SupplierRank.EnumText()" />
             <GridColumn Field="t => t.No" />
             <GridColumn Field="t => t.EvaluationBaseType.EnumText()" />
-            <GridColumn Field='t => t.EvaluationBaseType == EvaluationBaseType.Rasid ? t.Receipt.No : "---"' Title="سند رارزیابی" />
+            <GridColumn Field='t => t.EvaluationBaseType == EvaluationBaseType.Receipt ? t.Receipt.No : "---"' Title="سند رارزیابی" />
             <GridColumn Field="t => t.Date.ToPersianDateString()" />
             <GridColumn Field="t => t.StartDate.ToPersianDateString()" />
             <GridColumn Field="t => t.EndDate.ToPersianDateString()" />

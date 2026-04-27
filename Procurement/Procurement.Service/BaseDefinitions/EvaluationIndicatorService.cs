@@ -1,6 +1,6 @@
 ﻿using Caspian.Common;
-using Caspian.Common.Service;
 using Procurement.Model;
+using Caspian.Common.Service;
 
 namespace Procurement.Service
 {

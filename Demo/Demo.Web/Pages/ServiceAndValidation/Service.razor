@@ -33,11 +33,6 @@
         <TabPanelItem Title="C# code">
             <div class="p-4">
                 <Document Page="this" FolderName="Service" FileName="Service-Declaration" />
-                <hr />
-                <h5>Or in a simpler way</h5>
-                <div>
-                    <Document Page="this" FolderName="Service" FileName="Service-Declaration-1" />
-                </div>
             </div>
         </TabPanelItem>
         <TabPanelItem Title="Razor">
@@ -72,28 +67,28 @@
                         <span class="c-demo-description"></span>
                     </div>
                     <div class="col-md-6">
-                        <div class="row c-controls">
+                        <div class="row c-controls ps-5">
                             <ComboBox TEntity="SelectListItem" TValue="int?" @bind-Value="upsertCountryId" Source="countries" 
                                       OnChange="() => upsertResult = null" ColSpan="8" TotalSpan="12" Title="Country" />
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Country id</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <label style="color:red;">@(upsertCountryId?.ToString() ?? "---")</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Validation status</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <label style="color:red;">@(upsertResult == null ? "---" : upsertResult.IsValid == true ? "Is valid" : "Is invalid")</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Error message</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <label style="color:red;">@(upsertResult?.IsValid == false ? upsertResult.Errors[0] : "---")</label>
                             </div>
-                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                            <div class="pt-2 pe-5 col-md-12 text-center">
                                 <button class="c-btn c-primary" @onclick="async () => await CheckForeignKeyForUpsert()">Click to validate</button>
                             </div>
                         </div>
@@ -105,28 +100,28 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
+                        <div class="row ps-5 c-controls">
                             <ComboBox TEntity="Country" TValue="int?" @bind-Value="deleteCountryId" TextExpression="t => t.Title + '(' + t.Cities.Count() + ')'"
                                       OnChange="() => deleteResult = null" ColSpan="8" TotalSpan="12" Title="Country" />
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Country id</label>
                             </div>
                             <div class="pe-5 col-md-8 text-center">
                                 <label style="color:red;">@(deleteCountryId?.ToString() ?? "---")</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Validation status</label>
                             </div>
                             <div class="pe-5 col-md-8 text-center">
                                 <label style="color:red;">@(deleteResult == null ? "---" : deleteResult.IsValid == true ? "Is valid" : "Is invalid")</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Error message</label>
                             </div>
                             <div class="pe-5 col-md-8 text-center">
                                 <label style="color:red;">@(deleteResult?.IsValid == false ? deleteResult.Errors[0] : "---")</label>
                             </div>
-                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                            <div class="pt-2 pe-5 col-md-12 text-center">
                                 <button class="c-btn c-primary" @onclick="async () => await CheckForeignKeyForDelete()">Click to validate</button>
                             </div>
                         </div>
@@ -138,28 +133,28 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <div class="row c-controls">
+                        <div class="row ps-5 c-controls">
                             <DropdownList @bind-Value="orderType" Source='SelectListItem.CreateList("Salon", "Takeout", "Tel", "Internet", "Invalid order type")'
                                           OnChange="() => enumResult = null" ColSpan="8" TotalSpan="12" Title="Order Type" />
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Enum value</label>
                             </div>
-                            <div class="pe-5 col-md-8">
+                            <div class="col-md-8">
                                 <label style="color:red;">@(Convert.ToInt32(orderType))</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Validation status</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <label style="color:red;">@(enumResult == null ? "---" : enumResult.IsValid == true ? "Is valid" : "Is invalid")</label>
                             </div>
-                            <div class="ps-5 col-md-4">
+                            <div class="col-md-4">
                                 <label>Error message</label>
                             </div>
-                            <div class="pe-5 col-md-8 text-center">
+                            <div class="col-md-8 text-center">
                                 <label style="color:red;">@(enumResult?.IsValid == false ? enumResult.Errors[0] : "---")</label>
                             </div>
-                            <div class="pt-2 ps-5 pe-5 col-md-12 text-center">
+                            <div class="pt-2 pe-5 col-md-12 text-center">
                                 <button class="c-btn c-primary" @onclick="async () => await CheckEnum()">Click to validate</button>
                             </div>
                         </div>
@@ -168,10 +163,10 @@
             </div>
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Razor">
-            <Document FolderName="Service" FileName="BaseService" />
+            <Document FolderName="Service" Page="this" FileName="BaseService" />
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Service">
-            <Document FolderName="Service/Services" FileName="ValidationService" />
+            <Document FolderName="Service/Services" Page="this" FileName="ValidationService" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

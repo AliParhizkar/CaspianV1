@@ -1,6 +1,10 @@
 ﻿@page "/Accounting/CodingLevel"
 @attribute [Source(36, "تعریف سطوح کدینگ")]
 @inherits BasePage
+@{ 
+    base.BuildRenderTree(__builder);
+}
+
 @inject IUIService<CodingLevel> Service
 
 <div style="width:80%;margin:5px auto">

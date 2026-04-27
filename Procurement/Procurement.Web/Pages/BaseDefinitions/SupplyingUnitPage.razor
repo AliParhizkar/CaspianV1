@@ -1,12 +1,130 @@
-﻿@page "/Procurement/Supplying"
-@inject IUIService<> Service
-@attribute [Source(21, "حوزه تامین")]
+﻿@page "/Procurement/SupplyingUnit"
+@inject IUIService<SupplyingUnit> Service
+@attribute [Source(22, "واحد تامین")]
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
 
+<div class="row align-items-center pt-4" style="width:700px;margin:auto">
+    <div class="col-md-1 d-tree-icon text-center pb-1">
+        <IconButton @onclick="async () => await ShowEditForm(null, false)" IconType="IconType.Plus" />
+    </div>
+    <div class="col-md-11 pb-1">
+        <StringTextBox @bind-Value="@searchText" OnChange="async () => await tree.ReloadAsync()" BindingType="BindingType.OnInput" placeholder="جستجو با کد یا نام واحد" />
+    </div>
+    <div>
+        <TreeView @ref="tree" TEntity="SupplyingUnit" style="height:calc(100vh - 100px)" TextFunc="t => t.Code + ')' + t.Title"
+                  FilterFunc="t => !searchText.HasValue() || t.Code.StartsWith(searchText) || t.Title.Contains(searchText)">
+            <AfterNodeTemplate>
+                <span class="d-tree-icon">
+                    <span @onclick="async () => await ShowEditForm(context, false)" class="fa fa-plus"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await ShowEditForm(context, true)">
+                    <span class="fa fa-pencil"></span>
+                </span>
+                <span class="d-tree-icon" @onclick="async () => await DeleteGroup(context)">
+                    <span class="fa fa-trash"></span>
+                </span>
+                <span class="d-tree-icon" Title="کارشناسان خرید">
+                    <a href="@($"/Procurement/SupplyingUnitMembership/{context.Value}")">
+                        <span class="fa fa-wpforms"></span>
+                    </a>
+                </span>
+            </AfterNodeTemplate>
+        </TreeView>
+    </div>
+</div>
 
-@code {
+<Window @bind-Status="status" Style="width:450px;" OnOpen="async () => await firstControl.FocusAsync()" Title="واحد تامین">
+    <CaspianForm Model="unit" TEntity="SupplyingUnit" OnValidSubmit="UpsertGroup">
+        @{
+            var maskedText = "";
+            if (parent != null)
+                maskedText = parent.Code;
+            var length = SupplierGroupService.CodingLevelsLength[unit.CodingLevels.ConvertToInt().Value];
+            for (var i = 0; i < length; i++)
+                maskedText += '_';
+        }
 
+        @if (parent != null)
+        {
+            <StringTextBox Value="@parent.Code" ColSpan="8" Title="کد گروه" Style="direction:ltr" />
+            <StringTextBox Value="@parent.Title" ColSpan="8" Title="نام گروه" />
+        }
+        <StringTextBox @ref="firstControl" @bind-Value="context.Code" Style="direction:ltr" ColSpan="8" MaskedText="@maskedText" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <ComboBox TValue="int?" TEntity="Warehouse.Model.Branch" @bind-Value="context.BranchId" TextExpression="t => t.Title" ColSpan="8" />
+        <Lookup TValue="int?" TEntity="User" @bind-Value="context.ManagerId" TextExpression="t => t.Name" ColSpan="8">
+            <UserLookupWindow />
+        </Lookup>
+        <StringTextBox @bind-Value="context.Description" MultiLine Rows="3" ColSpan="8" />
+        <WindowCommandButtons CssClass="pt-2" ColSpan="9" />
+    </CaspianForm>
+</Window>
+@code
+{
+    SupplyingUnit unit;
+    SupplyingUnit parent;
+    WindowStatus status;
+    string searchText;
+    TreeView<SupplyingUnit> tree;
+    IControl firstControl;
+
+    async Task ShowEditForm(NodeView nodeView, bool isUpdate)
+    {
+        using var service = CreateScope().GetService<SupplyingUnitService>();
+        if (isUpdate)
+        {
+            ///Edit mode
+            var unitId = Convert.ToInt32(nodeView.Value);
+            unit = await service.SingleAsync(unitId);
+        }
+        else
+        {
+            ///Insert mode
+            unit = new SupplyingUnit();
+            unit.ParentUnitId = nodeView == null ? null : Convert.ToInt32(nodeView.Value);
+            if (unit.ParentUnitId.HasValue)
+            {
+                var parentGroup = await service.SingleAsync(unit.ParentUnitId.Value);
+                unit.CodingLevels = parentGroup.CodingLevels + 1;
+            }
+        }
+        if (unit.ParentUnitId.HasValue)
+            parent = await service.SingleAsync(unit.ParentUnitId.Value);
+        else
+            parent = null;
+        status = WindowStatus.Open;
+    }
+
+    async Task DeleteGroup(NodeView node)
+    {
+        var groupId = Convert.ToInt32(node.Value);
+        using var service = CreateScope().GetService<SupplierGroupService>();
+        var group = await service.SingleAsync(groupId);
+        var result = await service.ValidateRemoveAsync(group);
+        if (result.IsValid)
+        {
+            service.Remove(group);
+            await service.SaveChangesAsync();
+            tree.RemoveFromTree(unit);
+        }
+        else
+            ShowMessage(result.Errors.First().ErrorMessage);
+    }
+
+    async Task<bool> UpsertGroup()
+    {
+        using var service = CreateScope().GetService<SupplyingUnitService>();
+        if (unit.Id == 0)
+            await service.AddAsync(unit);
+        else
+            await service.UpdateAsync(unit);
+        await service.SaveChangesAsync();
+        tree.UpsertInTree(unit);
+        status = WindowStatus.Close;
+        StateHasChanged();
+        return true;
+    }
 }

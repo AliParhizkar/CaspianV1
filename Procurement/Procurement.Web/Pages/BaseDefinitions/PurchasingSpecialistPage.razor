@@ -26,7 +26,7 @@
     <Window Service="Service" Style="width:450px" OnOpen="OpenWindow" Title="کارشناس خرید">
         <CaspianForm Service="Service">
             <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="8" />
-            <Lookup TValue="int" TEntity="User" TextExpression="t => t.Name" ColSpan="8" @bind-Value="context.UserId" OpenOnFocus Title="نام">
+            <Lookup TValue="int" TEntity="User" TextExpression="t => t.Name" ColSpan="8" @bind-Value="context.UserId" Title="نام">
                 <UserLookupWindow />
             </Lookup>
             <CheckBox @bind-Value="context.IsActive" ColSpan="8" />

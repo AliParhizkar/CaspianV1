@@ -484,6 +484,8 @@ namespace Caspian.UI
             if (MasterId > 0)
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                if (service == null)
+                    throw new CaspianException($"Service of type IBaseService<{typeof(TEntity)} not 'Implemented' and 'Injected'");
                 var old = await service.SingleOrDefaultAsync(MasterId);
                 var pKey = typeof(TEntity).GetPrimaryKey();
                 if (old != null)

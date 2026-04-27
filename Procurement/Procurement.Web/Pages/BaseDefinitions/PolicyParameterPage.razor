@@ -1,0 +1,45 @@
+﻿@page "/Procurement/PolicyParameter"
+@inject IUIService<PolicyParameter> Service
+@inherits BasePage
+@attribute [Source(24, "پارامترهای سیاست خرید")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@*<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <DropdownList @bind-Value="context.Pol" ColSpan="4" />
+        <DropdownList @bind-Value="context.EffectingLevel" ColSpan="4" />
+        <DropdownList @bind-Value="context.CalculatingMethod" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Policy" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.PolicyKind.EnumText()" />
+            <GridColumn Field="t => t.EffectingLevel.EnumText()" />
+            <GridColumn Field="t => t.CalculatingMethod.EnumText()" />
+            <GridColumn Field="t => t.ParticipatoryApproach.EnumText()" />
+            <GridColumn Field="t => t.Definiteness.EnumText()" />
+            <GridColumn Field="t => t.StartDate.ToPersianDateString()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Style="width:800px" Title="سیاست خرید">
+        <CaspianForm Service="Service">
+            <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+            <DropdownList @bind-Value="context.PolicyKind" ColSpan="4" />
+            <DropdownList @bind-Value="context.EffectingLevel" ColSpan="4" />
+            <DropdownList @bind-Value="context.CalculatingMethod" ColSpan="4" />
+            <DropdownList @bind-Value="context.ParticipatoryApproach" ColSpan="4" />
+            <DropdownList @bind-Value="context.Definiteness" ColSpan="4" />
+            <DatePicker @bind-Value="context.StartDate" ColSpan="4" />
+            <FormCommandButton ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>*@
+
+@code
+{
+
+}

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Procurement.Model
 {
-    [Table("SupplyingUnitsMembership")]
+    [Table("SupplyingUnitsMembership", Schema = "pcm")]
     public class SupplyingUnitMembership
     {
         [Key]

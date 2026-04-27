@@ -120,7 +120,8 @@ namespace Caspian.UI
 
         async Task IEntitySearch.SearchAsync()
         {
-            await Service.DataView.ReloadAsync();
+            if (Service.DataView != null)
+                await Service.DataView.ReloadAsync();
         }
 
         async Task IEntitySearch.SelectNextRow()

@@ -31,6 +31,9 @@
 	<ItemGroup>
 		<Content Include="Help\**" CopyToPublishDirectory="PreserveNewest" />
 	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Aspose.Total.NET.lic" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Accounting\Accounting.Model\Accounting.Model.csproj" />
     <ProjectReference Include="..\Accounting\Accounting.Service\Accounting.Service.csproj" />

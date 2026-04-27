@@ -104,7 +104,6 @@ namespace Caspian.Engine.SystemManagement
                     old.IsDropped = true;
                 else
                 {
-                    old.SourceId = component.SourceId;
                     old.Title = component.Title;
                     old.IsDropped = false;
                 }

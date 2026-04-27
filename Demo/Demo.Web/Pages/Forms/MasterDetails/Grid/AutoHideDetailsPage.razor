@@ -221,7 +221,7 @@
     IList<WarehouseReceipt> receipts;
     async Task OpenInsert()
     {
-        await Service.DetailDataView.OpenForInsert(new ReceiptDetail() 
+        await Service.DetailDataView.OpenForInsert(new ReceiptDetail()
         {
             QuantityMain = 5
         });
@@ -270,11 +270,11 @@
         base.OnInitialized();
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (ReceiptId > 0)
             await Service.ReloadForUpdate(ReceiptId);
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
     }
 
 

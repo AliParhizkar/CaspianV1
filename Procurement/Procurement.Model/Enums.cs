@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Procurement.Model
 {
@@ -32,10 +34,10 @@ namespace Procurement.Model
     public enum EvaluationBaseType: byte
     {
         [Display(Name = "رسید انبار")]
-        Rasid,
+        Receipt,
 
         [Display(Name = "تحویل")]
-        Tahvi,
+        Delivery,
 
         [Display(Name = "سفارش")]
         Order
@@ -53,7 +55,7 @@ namespace Procurement.Model
         Good,
 
         [Display(Name = "عالی")]
-        Fentastek
+        Great
     }
 
     public enum ProcurementItemType: byte
@@ -71,7 +73,7 @@ namespace Procurement.Model
         Detail,
 
         [Display(Name = "استعلامی")]
-        Eselami
+        Inquiry
     }
 
     public enum CodingLevels: byte
@@ -87,5 +89,76 @@ namespace Procurement.Model
 
         [Display(Name = "سطح چهارم")]
         Level4
+    }
+
+    public enum PolicyParameterProperty: byte
+    {
+        [Display(Name = "منبع سند")]
+        DocumentSource,
+
+        Item2,
+
+        [Display(Name = "واحد/رمز تامین")]
+        SupplyingUnit,
+
+
+        [Display(Name = "روش پرداخت")]
+        PaymentMethod,
+
+        [Display(Name = "قلم خریدینی")]
+        ProcurementItem,
+
+        [Display(Name = "منبع قلم")]
+        ItemSource,
+
+        [Display(Name = "تامین کننده")]
+        Supplier,
+
+        [Display(Name = "نوع فعالیت تامین کننده")]
+        SupplierActiveType
+    }
+
+    public enum PolicyKind: byte
+    {
+
+    }
+
+    public enum EffectingLevel: byte
+    {
+        [Display(Name = "قلم سند تدارکات")]
+        DocumentItem,
+
+        [Display(Name = "سند تدارکات")]
+        Document
+    }
+
+    public enum CalculatingMethod: byte
+    {
+        [Display(Name = "درصدی")]
+        Percent,
+
+        [Display(Name = "مبلغی")]
+        Amount
+    }
+
+    public enum ParticipatoryApproach: byte
+    {
+        [Display(Name = "پیشنهادی")]
+        Voluntary,
+
+        [Display(Name = "اجباری")]
+        Compulsory,
+
+        [Display(Name = "اختیاری")]
+        Optional,
+    }
+
+    public enum Definiteness: byte
+    {
+        [Display(Name = "قطعی")]
+        Ghatei,
+
+        [Display(Name = "غیرقطعی")]
+        GhirGhatei
     }
 }
