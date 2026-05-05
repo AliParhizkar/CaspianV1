@@ -35,16 +35,16 @@
             <CaspianForm Service="Service">
                 <div class="d-btn-container">
                     <div>
-                        <IconButton @onclick="AddSelectedSuppliersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                        <IconButton @onclick="AddSelectedSuppliersToGroup" type="button" IconType="IconType.AngleDoubleLeft" />
                     </div>
                     <div>
-                        <IconButton IconType="IconType.AngleRight" />
+                        <IconButton IconType="IconType.AngleLeft" />
                     </div>
                     <div>
-                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleRight" />
                     </div>
                     <div>
-                        <IconButton type="button" @onclick="DeleteSelectedSuppliersFromGroup" IconType="IconType.AngleDoubleLeft" />
+                        <IconButton type="button" @onclick="DeleteSelectedSuppliersFromGroup" IconType="IconType.AngleDoubleRight" />
                     </div>
                 </div>
             </CaspianForm>

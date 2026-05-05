@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Procurement.Model
 {
+    [Table("PolicyParameters", Schema = "pcm")]
     public class PolicyParameter
     {
         [Key]
@@ -15,6 +17,7 @@ namespace Procurement.Model
         [DisplayName("ویژگی")]
         public PolicyParameterProperty Property { get; set; }
 
-
+        [CheckOnDelete("این پارامتر بعنوان شرط در سیاست خرید استفاده شده و امکان حذف آن وجود ندارد")]
+        public ICollection<PolicyParameterCondition> Conditions { get; set; }
     }
 }

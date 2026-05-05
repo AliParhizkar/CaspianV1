@@ -69,13 +69,6 @@
         base.OnInitialized();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (ReceiptId > 0)
-            await Service.ReloadForUpdate(ReceiptId.Value);
-        await base.OnInitializedAsync();
-    }
-
     async Task Save(KeyboardEventArgs e, UpsertMode upsertMode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")

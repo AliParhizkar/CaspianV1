@@ -12,7 +12,7 @@
         {
             <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" ColSpan="4" OpenOnFocus HideHeader
                     TextExpression="t => t.Code + ')' + t.Name">
-                <Warehouse.Web.GoodsLookupWindow />
+                <GoodsLookupWindow />
             </Lookup>
         }
         else
@@ -40,7 +40,7 @@
             {
                 <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" ColSpan="8" OpenOnFocus HideHeader
                         TextExpression="t => t.Code + ')' + t.Name">
-                    <Warehouse.Web.GoodsLookupWindow />
+                    <GoodsLookupWindow />
                 </Lookup>
             }
             else

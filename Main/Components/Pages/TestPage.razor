@@ -1,18 +1,26 @@
 ﻿@page "/Test1"
+@inherits BasePage
 @{
     base.BuildRenderTree(__builder);
 }
-
-@inherits BasePage
-
-<button @onclick="async () => await ForTest()">ForTest</button>
+@inject IUIService<Country> Service1
+<button @onclick="Clear">Clear</button>
+<span>@order.CustomerId</span>
+<div style="width:500px;margin:5px auto;">
+    <CaspianForm Model="order">
+        <Lookup TValue="int?" @bind-Value="context.CustomerId" TEntity="Customer" ColSpan="8"
+                TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
+            <Demo.Web.Pages.CustomerLookupWindow TValue="int?" />
+        </Lookup>
+    </CaspianForm>
+</div>
 
 @code
-{
-    async Task ForTest()
-    {
-        await Confirm("برای تست");
-    }
+{ 
+    Order order = new Order();
 
-    int value = 3;
+    void Clear()
+    {
+        order.CustomerId = 0;
+    }
 }

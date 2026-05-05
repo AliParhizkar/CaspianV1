@@ -42,6 +42,8 @@ namespace ReportGenerator.Controllers
             if (report.ReportType != Caspian.Engine.ReportType.Aggregate)
             {
                 var parameters = await GetService<ReportParamService>().GetAll().Where(t => t.ReportId == reportId).ToListAsync();
+                if (!parameters.Any())
+                    
                 maxDataLevel = parameters.Max(t => t.DataLevel);
             }
             ReportPageData pageData = new ReportPageData()

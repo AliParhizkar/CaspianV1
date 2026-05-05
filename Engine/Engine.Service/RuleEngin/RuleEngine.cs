@@ -134,6 +134,8 @@ namespace Caspian.Engine.Service
 
         public IList<Token> UpdateTokens(IList<Token> tokens)
         {
+            if (tokens == null)
+                return tokens;
             var stack = new Stack<OperatorType>();
             foreach (var token in tokens)
             {

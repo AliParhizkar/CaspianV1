@@ -45,40 +45,12 @@ namespace Caspian.Common.Extension
             return newEntity;
         }
 
-        //public static void FullCopy<TModel>(this TModel model, TModel newModel)
-        //{
-        //    foreach (var info in model.GetType().GetProperties())
-        //    {
-        //        var type = info.PropertyType;
-        //        if (info.SetMethod != null)
-        //        {
-        //            if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
-        //                info.SetValue(model, info.GetValue(newModel));
-        //            else if (type.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-        //                FullCopy(info.GetValue(model), info.GetValue(newModel));
-        //        }
-        //    }
-        //}
-
-        //public static void CopySimpleProperty<TModel>(this TModel model, TModel newModel)
-        //{
-        //    foreach (var info in typeof(TModel).GetProperties())
-        //    {
-        //        var type = info.PropertyType;
-        //        if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
-        //            info.SetValue(model, info.GetValue(newModel));
-        //    }
-        //}
-
-        //public static void FullCop<TModel>(this TModel model, TModel newModel)
-        //{
-        //    foreach (var info in typeof(TModel).GetProperties())
-        //    {
-        //        var type = info.PropertyType;
-        //        if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
-        //            info.SetValue(model, info.GetValue(newModel));
-        //    }
-        //}
+        public static bool IsEqual<TValue>(this TValue value, TValue other)
+        {
+            if (value == null)
+                return other == null;
+            return value.Equals(other);
+        }
 
         /// <summary>
         /// This method clear all entity property(properties that are entity) and return the entity

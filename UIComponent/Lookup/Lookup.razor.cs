@@ -251,7 +251,6 @@ namespace Caspian.UI
                     await SetTextAsync();
                 }
             });
-            
         }
 
         bool ILookup<TEntity>.AdvanceSearch { get { return advanceSearch; } }
@@ -287,6 +286,12 @@ namespace Caspian.UI
                 var dotnet = DotNetObjectReference.Create(this);
                 CaspianForm?.SetFirstControl(this);
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindLookup", InputElement, dotnet);
+            }
+
+            if (!Value.IsEqual(oldValue) && (Value == null || Value.Equals(0)))
+            {
+                oldValue = Value;
+                await jsRuntime.InvokeVoidAsync("caspian.common.setValueOnClient", InputElement, "");
             }
             await base.OnAfterRenderAsync(firstRender);
         }

@@ -92,13 +92,13 @@ namespace Caspian.UI
 
         protected override void DisposeResource()
         {
-            DetailDataView = null;
-            DetailForm = null;
-            DetailValidator = null;
-            ChangedEntities = new List<ChangedEntity<TDetail>>();
-            TypeWindow = null;
+            //DetailDataView = null;
+            //DetailForm = null;
+            //DetailValidator = null;
+            //ChangedEntities = new List<ChangedEntity<TDetail>>();
+            //TypeWindow = null;
 
-            base.DisposeResource();
+            //base.DisposeResource();
         }
 
         protected virtual Task SetChangedEntities()
@@ -127,7 +127,8 @@ namespace Caspian.UI
                 if (DetailDataView.Inline)
                     DetailDataView.Batch = true;
                 var value = typeof(TMaster).GetPrimaryKey().GetValue(base.UpsertData);
-                MasterId = Convert.ToInt32(value);
+                /// Why this code should be exist
+                //MasterId = Convert.ToInt32(value);
                 DetailDataView.InsertIconState(true);
                 DetailDataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
             }

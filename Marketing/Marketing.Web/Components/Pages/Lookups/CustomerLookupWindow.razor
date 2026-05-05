@@ -1,6 +1,6 @@
 ﻿@namespace Marketing.Web
 @typeparam TValue
-@inherits LookupWindow<Customer, TValue>
+@inherits LookupWindow<Customer, int>
 <div class="c-lookup-page" style="width:550px;">
     <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Name" ColSpan="4" BindingType="BindingType.OnChange" />

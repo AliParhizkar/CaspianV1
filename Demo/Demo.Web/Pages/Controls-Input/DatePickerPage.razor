@@ -6,7 +6,7 @@
 <h2>Date Picker</h2>
 <h3>Binding</h3>
 <p>
-    this component bind to <b>DateTime</b> or <b>Nullable DateTime</b>. It can be used in two modes, default mode (browser date picker) and custom mode. In custom mode this component moves(drop) up or down based on its location
+    this component bind to <b>DateOnly</b> or <b>Nullable DateOnly</b>. It can be used in two modes, default mode (browser date picker) and custom mode. In custom mode this component moves(drop) up or down based on its location
 </p>
 <TabPanel>
     <Tabs>
@@ -21,7 +21,7 @@
                         <div class="row c-controls">
                             <div class="col-md-12">
                                 <div class=" c-demo-control">
-                                    <DatePicker @bind-Value="date" PersianCalendar="false" />
+                                    <DatePicker @bind-Value="date" PersianCalendar="true" />
                                 </div>
                             </div>
                             <div class="ps-5 col-md-6">

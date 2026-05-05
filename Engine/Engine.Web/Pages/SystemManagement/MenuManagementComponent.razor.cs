@@ -64,6 +64,10 @@ namespace Caspian.Engine.SystemManagement
                 }
                 if (sourceAttr != null)
                 {
+                    if (sourceAttr.Id == 23)
+                    {
+
+                    }
                     if (sourceAttr.MasterPage != null)
                     {
                         if (sourceAttr.MasterPage == component)

@@ -162,7 +162,7 @@ namespace Caspian.UI
                 }
             }
             text = NoSelectText ?? (PageData?.Language == Language.Fa ? "لطفا انتخاب نمائید" : "Please select ...");
-            if (Value != null)
+            if (Value != null && EntitySearch == null)
             {
                 if (Source == null)
                 {

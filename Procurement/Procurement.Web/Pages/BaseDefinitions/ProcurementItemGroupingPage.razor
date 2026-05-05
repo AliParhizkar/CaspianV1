@@ -14,7 +14,7 @@
                 {
                     <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" TextExpression="t => t.Name" 
                             ColSpan="8" HideHeader OpenOnFocus>
-                        <Warehouse.Web.GoodsLookupWindow />
+                        <GoodsLookupWindow />
                     </Lookup>
                 }
                 else
@@ -46,16 +46,16 @@
             <CaspianForm Service="Service">
                 <div class="d-btn-container">
                     <div>
-                        <IconButton @onclick="AddSelectedSuppliersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
+                        <IconButton @onclick="AddSelectedSuppliersToGroup" type="button" IconType="IconType.AngleDoubleLeft" />
                     </div>
                     <div>
-                        <IconButton IconType="IconType.AngleRight" />
+                        <IconButton IconType="IconType.AngleLeft" />
                     </div>
                     <div>
-                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
+                        <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleRight" />
                     </div>
                     <div>
-                        <IconButton type="button" @onclick="DeleteSelectedSuppliersFromGroup" IconType="IconType.AngleDoubleLeft" />
+                        <IconButton type="button" @onclick="DeleteSelectedSuppliersFromGroup" IconType="IconType.AngleDoubleRight" />
                     </div>
                 </div>
             </CaspianForm>
@@ -68,7 +68,7 @@
                 @if (context.ProcurementItem.ProcurementItemType == ProcurementItemType.Goods)
                 {
                     <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.ProcurementItem.GoodsId" TextExpression="t => t.Name" ColSpan="8">
-                        <Warehouse.Web.GoodsLookupWindow />
+                        <GoodsLookupWindow />
                     </Lookup>
                 }
                 else
@@ -112,16 +112,16 @@
         using var scope = CreateScope();
         var query = Service.GetFilteredOthers(scope);
         var count = await query.CountAsync();
-        if (await Confirm($"آیا با افزودن {count} تامین کننده به گروه موافقید؟"))
+        if (await Confirm($"آیا با افزودن {count} قلم خریدنی به گروه موافقید؟"))
         {
-            count = await query.ExecuteInsertAsync(t => new SupplierGroupMembership()
+            count = await query.ExecuteInsertAsync(t => new ProcurementItemGrouping()
             {
-                SupplierGroupId = GroupId,
-                SupplierId = t.Id
+                ProcurementItemGroupId = GroupId,
+                ProcurementItemId = t.Id
             }, scope);
             await Service.DataView.ReloadAsync();
             await Service.OtherDataView.ReloadAsync();
-            ShowMessage($"تعداد {count} تامین کننده با موفقیت به گروه اضافه شد");
+            ShowMessage($"تعداد {count} قلم خریدنی با موفقیت به گروه اضافه شد");
         }
     }
 
@@ -130,12 +130,12 @@
         using var scope = CreateScope();
         var query = Service.GetFilteredAccess(scope);
         var count = await query.CountAsync();
-        if (await Confirm($"آیا با حذف {count} تامین کننده از گروه تامین کنندگان موافقید؟"))
+        if (await Confirm($"آیا با حذف {count} قلم خریدنی از گروه موافقید؟"))
         {
             count = await query.ExecuteDeleteAsync();
             await Service.DataView.ReloadAsync();
             await Service.OtherDataView.ReloadAsync();
-            ShowMessage($"تعداد {count} تامین کننده با موفقیت از گروه حذف شدند");
+            ShowMessage($"تعداد {count} ق با موفقیت از گروه حذف شدند");
         }
     }
 

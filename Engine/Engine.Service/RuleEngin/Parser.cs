@@ -26,10 +26,13 @@ namespace Caspian.Engine
 
         public IList<TokenKind> ValidTokenKinds()
         {
+
             StateMachin stateMachin = new StateMachin();
+            var list = stateMachin.ValidTokenKinds();
+            if (_Tokens == null)
+                return list;
             foreach (var token in _Tokens)
                 stateMachin.Move(token.TokenKind);
-            var list = stateMachin.ValidTokenKinds();
             if (_Tokens.Count(t => t.TokenKind == TokenKind.If) == 0)
                 list.Remove(TokenKind.Colon);
             var ifToken = _Tokens.LastOrDefault(t => t.TokenKind == TokenKind.If);

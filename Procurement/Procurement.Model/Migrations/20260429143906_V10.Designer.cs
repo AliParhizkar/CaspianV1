@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Procurement.Model;
 
@@ -11,9 +12,11 @@ using Procurement.Model;
 namespace Procurement.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260429143906_V10")]
+    partial class V10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -429,16 +432,13 @@ namespace Procurement.Model.Migrations
                     b.Property<byte>("Definiteness")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("DocumentKind")
-                        .HasColumnType("int");
-
                     b.Property<byte>("EffectingLevel")
                         .HasColumnType("tinyint");
 
                     b.Property<byte>("ParticipatoryApproach")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte?>("PolicyKind")
+                    b.Property<byte>("PolicyKind")
                         .HasColumnType("tinyint");
 
                     b.Property<DateOnly?>("StartDate")
@@ -473,7 +473,7 @@ namespace Procurement.Model.Migrations
                     b.ToTable("PolicyParameters", "pcm");
                 });
 
-            modelBuilder.Entity("Procurement.Model.PolicyParameterCondition", b =>
+            modelBuilder.Entity("Procurement.Model.PolicyParameterMembership", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -487,17 +487,13 @@ namespace Procurement.Model.Migrations
                     b.Property<int>("PolicyId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Value")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParameterId");
 
                     b.HasIndex("PolicyId");
 
-                    b.ToTable("PolicyParameterConditions", "pcm");
+                    b.ToTable("PolicyParametersMembership", "pcm");
                 });
 
             modelBuilder.Entity("Procurement.Model.ProcurementItem", b =>
@@ -1679,16 +1675,16 @@ namespace Procurement.Model.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Procurement.Model.PolicyParameterCondition", b =>
+            modelBuilder.Entity("Procurement.Model.PolicyParameterMembership", b =>
                 {
                     b.HasOne("Procurement.Model.PolicyParameter", "Parameter")
-                        .WithMany("Conditions")
+                        .WithMany("PolicyParameters")
                         .HasForeignKey("ParameterId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Procurement.Model.Policy", "Policy")
-                        .WithMany("Conditions")
+                        .WithMany("PolicyParameters")
                         .HasForeignKey("PolicyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2230,12 +2226,12 @@ namespace Procurement.Model.Migrations
 
             modelBuilder.Entity("Procurement.Model.Policy", b =>
                 {
-                    b.Navigation("Conditions");
+                    b.Navigation("PolicyParameters");
                 });
 
             modelBuilder.Entity("Procurement.Model.PolicyParameter", b =>
                 {
-                    b.Navigation("Conditions");
+                    b.Navigation("PolicyParameters");
                 });
 
             modelBuilder.Entity("Procurement.Model.ProcurementItem", b =>

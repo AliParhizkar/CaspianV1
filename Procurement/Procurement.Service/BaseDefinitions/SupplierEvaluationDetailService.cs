@@ -20,7 +20,7 @@ namespace Procurement.Service
                         return $"امتیاز باید بین مقادیر {evaluation.Minimum} تا {evaluation.Maximum} باشد";
                     return null;
                 });
-            RuleFor(t => t.SupplierEvaluationId).Custom(t => Source.Any(u => t.Id != u.Id &&
+            RuleFor(t => t.EvaluationIndicatorId).Custom(t => Source.Any(u => t.Id != u.Id &&
                 t.SupplierEvaluationId == u.SupplierEvaluationId && t.EvaluationIndicatorId == t.EvaluationIndicatorId
             ), "این شاخص برای ارزیابی امتیازدهی شده است");
         }

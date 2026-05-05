@@ -14,6 +14,8 @@
     <ProjectReference Include="..\Investment\Investment.Model\Investment.Model.csproj" />
     <ProjectReference Include="..\Investment\Investment.Service\Investment.Service.csproj" />
     <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Model\Warehouse.Model.csproj" />
+    <ProjectReference Include="..\warehouse\Warehouse.Service\Warehouse.Service.csproj" />
   </ItemGroup>
 
 </Project>

@@ -26,15 +26,16 @@
         </Columns>
     </DataGrid>
     <Window Service="Service" Style="width:800px" Title="سیاست خرید">
-        <CaspianForm Service="Service">
+        <CaspianForm Service="Service" ColumnsCount="2">
             <StringTextBox @bind-Value="context.Title" ColSpan="4" />
             <DropdownList @bind-Value="context.PolicyKind" ColSpan="4" />
-            <DropdownList @bind-Value="context.EffectingLevel" ColSpan="4" />
-            <DropdownList @bind-Value="context.CalculatingMethod" ColSpan="4" />
+            <RadioList @bind-Value="context.EffectingLevel" ColSpan="4" DefaultLayout="DefaultLayout.FlexStart" />
+            <RadioList @bind-Value="context.CalculatingMethod" ColSpan="4" DefaultLayout="DefaultLayout.FlexStart" />
             <DropdownList @bind-Value="context.ParticipatoryApproach" ColSpan="4" />
-            <DropdownList @bind-Value="context.Definiteness" ColSpan="4" />
+            <RadioList @bind-Value="context.Definiteness" ColSpan="4" DefaultLayout="DefaultLayout.FlexStart" />
+            <MultiSelectBox @bind-Value="context.DocumentKind" ColSpan="10" TotalSpan="12" DefaultLayout="DefaultLayout.FlexStart" />
             <DatePicker @bind-Value="context.StartDate" ColSpan="4" />
-            <FormCommandButton ColSpan="8" />
+            <FormCommandButton ColSpan="4" TotalSpan="6" />
         </CaspianForm>
     </Window>
 </div>

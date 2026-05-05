@@ -102,13 +102,9 @@ namespace Caspian.UI
 
         public async Task FocusAsync()
         {
-            if (firstControl?.InputElement != null) 
-                await firstControl.FocusAsync();
-            else if (firstControl?.InputElement != null)
-            {
+            if (firstControl?.InputElement == null)
                 await Task.Delay(300);
-                await firstControl.FocusAsync();
-            }
+            await firstControl.FocusAsync();
         }
 
         public void AddControl(IControl control)
@@ -197,8 +193,7 @@ namespace Caspian.UI
             {
                 EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).OtherType;
             }
-
-            var qqq = EditContext.Validate();
+            EditContext.Validate();
             if (OnBeforeValidate.HasDelegate)
                 await OnBeforeValidate.InvokeAsync();
             if (ValidationValidator == null)

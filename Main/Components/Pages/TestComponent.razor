@@ -2,18 +2,18 @@
 @using Procurement.Model;
 @using Caspian.Common.Extension 
 @inherits BasePage
-@inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
+@inject IUIService<Country> Service
 @using Investment.Model
 @{
     base.BuildRenderTree(__builder);
-
 }
 
-<div style="margin:10px auto;width:500px">
-    <StringTextBox Style="direction:ltr" />
-</div>
-
-
 @code
-{
+{    
+    protected override void OnInitialized()
+    {
+        Service.MasterId = 1256985;
+        var qqqq = Service.MasterId;
+        base.OnInitialized();
+    }
 }

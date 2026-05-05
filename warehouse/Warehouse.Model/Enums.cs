@@ -339,7 +339,5 @@ namespace Warehouse.Model
     {
         [Display(Name = "موجودی اول دوره")]
         OpeningInventory,
-
-
     }
 }

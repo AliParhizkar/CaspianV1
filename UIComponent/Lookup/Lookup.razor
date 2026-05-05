@@ -37,7 +37,7 @@ else
                     @if (status == WindowStatus.Open)
                     {
                         <div class="t-HelpWindow">
-                            @if (!HideHeader)
+                            @if (!HideHeader && advanceSearch)
                             {
                                 <div class="t-header">
                                     <div class="t-window-title">@(WindowTitle)</div>

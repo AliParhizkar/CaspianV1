@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System.ComponentModel;
+﻿using Caspian.Common.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace Procurement.Model
@@ -160,5 +159,27 @@ namespace Procurement.Model
 
         [Display(Name = "غیرقطعی")]
         GhirGhatei
+    }
+
+    [EnumType(IsBitwise = true)]
+    public enum DocumentKind
+    {
+        [Display(Name = "پیش فاکتور")]
+        preFactor = 1,
+
+        [Display(Name = "فاکتور")]
+        Factor = 2,
+
+        [Display(Name = "دستور خرید")]
+        PurchaseOrder = 4,
+
+        [Display(Name = "سفارش خرید")]
+        Order = 8,
+
+        [Display(Name = "درخواست خرید")]
+        PurchaseRequest = 16,
+
+        [Display(Name = "قرارداد خرید")]
+        PurchaseContract = 32
     }
 }

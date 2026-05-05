@@ -1155,6 +1155,7 @@ input[type=time]{
     background-color: #e5e5e5;
     overflow: hidden;
     display: flex;
+    justify-content:center;
 }
 .c-hidden {
     visibility:hidden;
@@ -2153,7 +2154,7 @@ form > tr {
     text-align: justify !important;
     background-color: white;
     color: #635145;
-    z-index: 9999999;
+    z-index: 10000000;
     border-radius: 8px;
     box-shadow: 3px 2px 5px 1px rgb(0 0 0 / 20%);
     position: absolute;

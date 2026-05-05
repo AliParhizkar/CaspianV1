@@ -259,18 +259,18 @@ namespace Caspian.UI
 
         protected virtual void DisposeResource()
         {
-            (this as IInternalUIService<TEntity>).OtherType = default;
-            Is1To1RelationshipService = default;
-            MasterId = default;
-            Window = default;
-            EntityTabPanel = default;
-            DataView = default;
-            Form = default;
-            Search = Activator.CreateInstance<TEntity>();
-            UpsertData = Activator.CreateInstance<TEntity>();
-            if (UpsertData is BaseEntity baseEntity)
-                baseEntity.UpsertUserId = UserId;
-            OnUpsert = default;
+            //(this as IInternalUIService<TEntity>).OtherType = default;
+            //Is1To1RelationshipService = default;
+            //MasterId = default;
+            //Window = default;
+            //EntityTabPanel = default;
+            //DataView = default;
+            //Form = default;
+            //Search = Activator.CreateInstance<TEntity>();
+            //UpsertData = Activator.CreateInstance<TEntity>();
+            //if (UpsertData is BaseEntity baseEntity)
+            //    baseEntity.UpsertUserId = UserId;
+            //OnUpsert = default;
         }
 
         protected virtual void DataViewInitializer()

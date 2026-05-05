@@ -17,10 +17,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\Common.Component\Common.Component.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
     <ProjectReference Include="..\..\Engine\Engine.Web\Engine.Web.csproj" />
-    <ProjectReference Include="..\..\Finantial.Web\Finantial.Web.csproj" />
     <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
     <ProjectReference Include="..\..\warehouse\Warehouse.Model\Warehouse.Model.csproj" />
     <ProjectReference Include="..\Procurement.Model\Procurement.Model.csproj" />

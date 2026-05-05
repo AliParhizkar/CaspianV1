@@ -109,7 +109,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-9 ps-4">
-                        <DataGrid TEntity="ReceiptDetail" DetailsService="Service" Inline AutoHide ContentHeight="200">
+                        <DataGrid TEntity="ReceiptDetail" DetailsService="Service" Inline AutoHide Batch ContentHeight="200">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material" style="min-width:180px">
                                     <EditTemplate>

@@ -46,13 +46,13 @@ namespace Caspian.UI
 
         protected override void DisposeResource()
         {
-            ChangedEntities.Clear();
-            (this as ISimpleBatchService).ThirdLevelProperty = null;
-            DetailDataView = null;
-            DetailValidator = null;
-            TypeWindow = null;
-            DetailForm = null;
-            base.DisposeResource();
+            //ChangedEntities.Clear();
+            //(this as ISimpleBatchService).ThirdLevelProperty = null;
+            //DetailDataView = null;
+            //DetailValidator = null;
+            //TypeWindow = null;
+            //DetailForm = null;
+            //base.DisposeResource();
         }
 
         protected override async Task SetChangedEntities()

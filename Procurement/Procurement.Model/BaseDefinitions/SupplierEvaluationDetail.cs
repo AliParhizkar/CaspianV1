@@ -10,12 +10,13 @@ namespace Procurement.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("شاخص ارزیابی")]
+        [DisplayName("ارزیابی تامین کننده")]
         public int SupplierEvaluationId { get; set; }
 
         [ForeignKey(nameof(SupplierEvaluationId))]
         public SupplierEvaluation SupplierEvaluation { get; set; }
 
+        [DisplayName("شاخص ارزیابی")]
         public int EvaluationIndicatorId { get; set; }
 
         [ForeignKey(nameof(EvaluationIndicatorId))]

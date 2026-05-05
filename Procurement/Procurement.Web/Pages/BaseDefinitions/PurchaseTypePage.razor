@@ -21,7 +21,7 @@
             <GridCommandColumns />
         </Columns>
     </DataGrid>
-    <Window Service="Service" Title="شاخص ارزیابی" Style="width:450px" OnOpen="OnWindowOpen">
+    <Window Service="Service" Title="نوع خرید" Style="width:450px" OnOpen="OnWindowOpen">
         <CaspianForm Service="Service">
             <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
             <StringTextBox @bind-Value="context.Title" ColSpan="8" />
