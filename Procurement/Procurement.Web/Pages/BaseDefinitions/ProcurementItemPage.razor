@@ -12,14 +12,14 @@
         {
             <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" ColSpan="4" OpenOnFocus HideHeader
                     TextExpression="t => t.Code + ')' + t.Name">
-                <GoodsLookupWindow />
+                <GoodsLookupWindow TValue="int?" />
             </Lookup>
         }
         else
         {
             <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ServiceId" ColSpan="4" OpenOnFocus HideHeader
                     TextExpression="t => t.Code + ')' + t.Name">
-                <ServiceLookupWindow />
+                <ServiceLookupWindow TValue="int?" />
             </Lookup>
         }
     </EntitySearch>
@@ -40,14 +40,14 @@
             {
                 <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" ColSpan="8" OpenOnFocus HideHeader
                         TextExpression="t => t.Code + ')' + t.Name">
-                    <GoodsLookupWindow />
+                    <GoodsLookupWindow TValue="int?" />
                 </Lookup>
             }
             else
             {
                 <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ServiceId" ColSpan="8" OpenOnFocus HideHeader
                         TextExpression="t => t.Code + ')' + t.Name">
-                    <ServiceLookupWindow />
+                    <ServiceLookupWindow TValue="int?" />
                 </Lookup>
             }
             <CheckBox @bind-Value="context.ISActive" ColSpan="8" />

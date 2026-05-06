@@ -1,0 +1,67 @@
+﻿@page "/Procurement/Seller"
+@inject IUIService<Seller> Service
+@inherits BasePage
+@attribute [Source(26, "تعریف فروشنده")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <DropdownList @bind-Value="context.PersonType" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.IdCard" ColSpan="4" Style="direction:ltr" MaxLength="11" />
+        <StringTextBox @bind-Value="context.EconomicCode" ColSpan="4" Style="direction:ltr" />
+    </EntitySearch>
+    <DataGrid TEntity="Seller" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.PersonType.EnumText()" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.EconomicCode" />
+            <GridColumn Field="t => t.IdCard" />
+            <GridColumn Field="t => t.Citizenship.EnumText()" />
+            <GridColumn Field="t => t.Province.Title" Title="استان"  />
+            <GridColumn Field="t => t.City.Title" Title="شهر" />
+            <GridColumn Field="t => t.AreaCode + t.Tell" Title="تلفن" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Style="width:800px" Title="فروشنده">
+        <CaspianForm Service="Service" ColumnsCount="2">
+            <RadioList @bind-Value="context.PersonType" ColSpan="4" DefaultLayout="DefaultLayout.FlexStart" />
+            <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+            <StringTextBox @bind-Value="context.EconomicCode" ColSpan="4" Style="direction:ltr" />
+            <RadioList @bind-Value="context.Citizenship" ColSpan="4" DefaultLayout="DefaultLayout.FlexStart" />
+            <StringTextBox @bind-Value="context.IdCard" ColSpan="4" Style="direction:ltr" MaxLength="11" />
+            <ComboBox TValue="int?" TEntity="Warehouse.Model.Location" @bind-Value="context.ProvinceId" ColSpan="4"
+                      OnChange="() => cmbCity.EnableLoading()" TextExpression="t => t.Title"
+                      ConditionExpression="t => t.LocationType == Warehouse.Model.LocationType.Province" />
+            <StringTextBox @bind-Value="context.PostCode" ColSpan="4" Style="direction:ltr" />
+            <ComboBox @ref="cmbCity" TValue="int?" TEntity="Warehouse.Model.Location" @bind-Value="context.CityId" ColSpan="4"
+                      TextExpression="t => t.Title" ConditionExpression="t => t.ParentId == context.ProvinceId" />
+            <StringTextBox @bind-Value="context.AreaCode" ColSpan="4" Style="direction:ltr" />
+            <StringTextBox @bind-Value="context.Tell" ColSpan="4" Style="direction:ltr" />
+            <div class="col-md-6 row">
+                <StringTextBox @bind-Value="context.Tell2" ColSpan="8" Style="direction:ltr" />
+                <StringTextBox @bind-Value="context.Fax" ColSpan="8" Style="direction:ltr" />
+            </div>
+            <div class="col-md-6 row">
+                <StringTextBox @bind-Value="context.Address" MultiLine ColSpan="8" />
+            </div>
+            <div class="col-md-6 row">
+                <StringTextBox @bind-Value="context.Email" ColSpan="8" Style="direction:ltr" />
+                <CheckBox @bind-Value="context.IsActive" ColSpan="8"   />
+            </div>
+            <div class="col-md-6 row">
+                <StringTextBox @bind-Value="context.Description" MultiLine ColSpan="8" />
+            </div>
+
+            <FormCommandButton ColSpan="4" TotalSpan="6" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    ComboBox<Warehouse.Model.Location, int?> cmbCity;
+}

@@ -1956,6 +1956,7 @@ form > tr {
 .t-radios .t-title {
     padding: 0 5px;
     font-size:14px;
+    cursor:default;
 }
 .t-radios .t-radio {
     white-space: nowrap;

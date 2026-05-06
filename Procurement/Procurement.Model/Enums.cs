@@ -15,19 +15,19 @@ namespace Procurement.Model
     public enum IndicatorType: byte
     {
         [Display(Name = "کمی")]
-        Kammi,
+        Quantitative,
 
         [Display(Name = "کیفی")]
-        Kifi
+        Qualitative
     }
 
     public enum EffectingType: byte
     {
         [Display(Name = "اولیه")]
-        Avalieh,
+        Primary,
 
         [Display(Name = "با مبناء")]
-        BaMabna
+        WithBasis
     }
 
     public enum EvaluationBaseType: byte
@@ -155,10 +155,10 @@ namespace Procurement.Model
     public enum Definiteness: byte
     {
         [Display(Name = "قطعی")]
-        Ghatei,
+        Definite,
 
         [Display(Name = "غیرقطعی")]
-        GhirGhatei
+        Indefinite
     }
 
     [EnumType(IsBitwise = true)]
@@ -181,5 +181,14 @@ namespace Procurement.Model
 
         [Display(Name = "قرارداد خرید")]
         PurchaseContract = 32
+    }
+
+    public enum Citizenship: byte
+    {
+        [Display(Name = "ایرانی")]
+        Iranian,
+
+        [Display(Name = "خارجی")]
+        Foreigner
     }
 }

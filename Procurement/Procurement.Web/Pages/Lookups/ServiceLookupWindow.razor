@@ -1,5 +1,6 @@
 ﻿@namespace Procurement.Web
-@inherits LookupWindow<Service, int?>
+@typeparam TValue 
+@inherits LookupWindow<Service, TValue>
 <div class="c-lookup-page" style="width:600px;">
     <EntitySearch Service="Service" ColumnsCount="2">
         <StringTextBox @bind-Value="context.Name" ColSpan="4" />

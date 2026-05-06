@@ -41,7 +41,7 @@
                 <EditTemplate>
                     <Lookup TValue="int" TEntity="Goods" TextExpression="t => t.Name" @bind-Value="context.Data.GoodsId" HideHeader 
                             OpenOnFocus OnChange="async() => await UpdateMeasurementUnitAsync(context.Data)">
-                        <GoodsLookupWindow  />
+                        <GoodsLookupWindow TValue="int" />
                     </Lookup>
                 </EditTemplate>
             </GridColumn>

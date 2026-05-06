@@ -14,14 +14,14 @@
                 {
                     <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.GoodsId" TextExpression="t => t.Name" 
                             ColSpan="8" HideHeader OpenOnFocus>
-                        <GoodsLookupWindow />
+                        <GoodsLookupWindow TValue="int?" />
                     </Lookup>
                 }
                 else
                 {
                     <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ServiceId" TextExpression="t => t.Name" ColSpan="8"
                             HideHeader OpenOnFocus>
-                        <ServiceLookupWindow />
+                        <ServiceLookupWindow TValue="int?" />
                     </Lookup>
                 }
                 <CheckBox @bind-Value="context.ISActive" ColSpan="8" />
@@ -68,13 +68,13 @@
                 @if (context.ProcurementItem.ProcurementItemType == ProcurementItemType.Goods)
                 {
                     <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="context.ProcurementItem.GoodsId" TextExpression="t => t.Name" ColSpan="8">
-                        <GoodsLookupWindow />
+                        <GoodsLookupWindow TValue="int?" />
                     </Lookup>
                 }
                 else
                 {
                     <Lookup TValue="int?" TEntity="Service" @bind-Value="context.ProcurementItem.ServiceId" TextExpression="t => t.Name" ColSpan="8">
-                        <ServiceLookupWindow />
+                        <ServiceLookupWindow TValue="int?" />
                     </Lookup>
                 }
                 <CheckBox @bind-Value="context.ProcurementItem.ISActive" ColSpan="8" />

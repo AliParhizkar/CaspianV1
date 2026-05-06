@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Caspian.Common;
-using System.Reflection;
 using System.Collections;
 using Microsoft.JSInterop;
 using Caspian.Engine.Model;
@@ -285,7 +284,7 @@ namespace Caspian.UI
                 if (value != 0)
                 {
                     using var service = CreateScope().GetService<BaseService<TEntity>>();
-                    UpsertData = await service.GetAll().SingleAsync(value);
+                    UpsertData = await service.SingleAsync(value);
                 }
                 else
                 {
@@ -448,34 +447,23 @@ namespace Caspian.UI
         {
             (this as IInternalUIService<TEntity>).OtherType = childType;
             
-            if (childType != typeof(TEntity) && UpsertData != null)
+            if (childType != typeof(TEntity) && UpsertData != null && !childType.IsCollectionType()) 
             {
-                if (childType.IsCollectionType())
+                MasterId = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
+                var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
+                var detail = info.GetValue(UpsertData);
+                if (detail == null)
                 {
-                    var entityType = childType.GetGenericArguments()[0];
-                    var serviceType = typeof(IUIService<>).MakeGenericType(entityType);
-                    var service = ServiceProvider.GetService(serviceType) as IInternalUIService;
-                    var id = typeof(TEntity).GetPrimaryKey().GetValue(UpsertData);
-                    service.InternalMasterId = Convert.ToInt32(id);
-                    service.InternalMasterType = typeof(TEntity);
-                }
-                else
-                {
-                    var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
-                    var detail = info.GetValue(UpsertData);
-                    if (detail == null)
+                    if (MasterId > 0)
                     {
-                        if (MasterId > 0)
-                        {
-                            using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                            var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
-                            detail = info.GetValue(old);
-                        }
-                        if (detail == null)
-                            detail = Activator.CreateInstance(childType);
+                        using var service = CreateScope().GetService<IBaseService<TEntity>>();
+                        var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
+                        detail = info.GetValue(old);
                     }
-                    info.SetValue(UpsertData, detail);
+                    if (detail == null)
+                        detail = Activator.CreateInstance(childType);
                 }
+                info.SetValue(UpsertData, detail);
             }
         }
 

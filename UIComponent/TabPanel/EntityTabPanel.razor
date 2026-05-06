@@ -71,19 +71,19 @@
 
     public void ChangeState()
     {
-        var index = 1;
-        foreach(var item in tabpanelItems)
-        {
-            if (item.IsChildrenTabPanelItem())
-            {
-                var type = item.GetEntityType().GetGenericArguments()[0];
-                type = typeof(IUIService<>).MakeGenericType(type);
-                var service = (Service as UIService<TEntity>).ServiceProvider.GetService(type) as IUIService;
-                service.MasterId = Service.MasterId;
-                tabPanel.DisableItem(index, Service.MasterId == 0);
-            }
-            index++;
-        }
-        StateHasChanged();
+        //var index = 1;
+        //foreach(var item in tabpanelItems)
+        //{
+        //    if (item.IsChildrenTabPanelItem())
+        //    {
+        //        //var type = item.GetEntityType().GetGenericArguments()[0];
+        //        //type = typeof(IUIService<>).MakeGenericType(type);
+        //        //var service = (Service as UIService<TEntity>).ServiceProvider.GetService(type) as IUIService;
+        //        //service.MasterId = Service.MasterId;
+        //        //tabPanel.DisableItem(index, Service.MasterId == 0);
+        //    }
+        //    index++;
+        //}
+        //StateHasChanged();
     }
 }

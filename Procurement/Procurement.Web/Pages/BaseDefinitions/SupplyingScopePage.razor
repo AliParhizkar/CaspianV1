@@ -76,14 +76,14 @@
                     {
                         <Lookup TValue="int?" TEntity="Warehouse.Model.Goods" @bind-Value="item.GoodsId" HideHeader OpenOnFocus
                                 TextExpression="t => t.Name" ColSpan="4">
-                            <GoodsLookupWindow />
+                            <GoodsLookupWindow TValue="int?" />
                         </Lookup>
                     }
                     else
                     {
                         <Lookup TValue="int?" TEntity="Service" @bind-Value="item.ServiceId" HideHeader OpenOnFocus
                                 TextExpression="t => t.Name" ColSpan="4">
-                            <ServiceLookupWindow />
+                            <ServiceLookupWindow TValue="int?" />
                         </Lookup>
                     }
                 </EntitySearch>

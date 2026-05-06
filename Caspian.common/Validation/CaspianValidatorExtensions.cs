@@ -296,7 +296,7 @@ namespace Caspian.Common
                 if (telNumber.HasValue())
                 {
                     var strTelNumber = telNumber.ToString();
-                    if (strTelNumber.Length != 11)
+                    if (strTelNumber.Length > 11 || strTelNumber.Length < 8)
                         context.AddFailure("شماره تلفن باید 11 رقم باشد.");
                     if (!strTelNumber.StartsWith("0") || strTelNumber.StartsWith("09"))
                         context.AddFailure("فرمت شماره تلفن نادرست است");
@@ -304,15 +304,31 @@ namespace Caspian.Common
             });
         }
 
-        public static IRuleBuilderOptionsConditions<TModel, TProperty> ShortTelNumber<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder)
+        public static IRuleBuilderOptionsConditions<TModel, string> AreaCode<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
+        {
+            return ruleBuilder.Custom((areaCode, context) =>
+            {
+                if (areaCode.HasValue())
+                {
+                    if (areaCode.Length != 3)
+                        context.AddFailure("پیش کد شهر باید 3 رقم باشد");
+                    else if (!areaCode.StartsWith("0") || areaCode.StartsWith("09"))
+                        context.AddFailure("فرمت پیش کد شهر نامعتبر می باشد");
+                }
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, string> ShortTelNumber<TModel>(this IRuleBuilder<TModel, string> ruleBuilder)
         {
             return ruleBuilder.Custom((telNumber, context) =>
             {
-                if (telNumber != null)
+                if (telNumber.HasValue())
                 {
                     var strTelNumber = telNumber.ToString();
-                    if (strTelNumber.Length > 8 || strTelNumber.StartsWith("0"))
-                        context.AddFailure("شماره تلفن باید 8 رقم باشد و با صفر شروع نشود.");
+                    if (strTelNumber.Length > 8 || strTelNumber.Length < 5)
+                        context.AddFailure("شماره تلفن باید بین 5 تا 8 رقم باشد");
+                    else if (strTelNumber.StartsWith("0"))
+                        context.AddFailure("فرمت شماره تلفن نادرست است");
                 }
             });
         }

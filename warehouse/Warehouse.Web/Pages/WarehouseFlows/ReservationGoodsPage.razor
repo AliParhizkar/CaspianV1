@@ -34,7 +34,7 @@
                     <EditTemplate>
                         <Lookup TValue="int" TEntity="Goods" TextExpression="t => t.Name" @bind-Value="context.Data.GoodsId" HideHeader
                                 OpenOnFocus OnChange="async() => await SubmitDataAsync(context.Data)">
-                            <GoodsLookupWindow IsReservation KeepCenterId="Service.UpsertData.KeepCenterId" StockRoomId="Service.UpsertData.StockRoomId" />
+                            <GoodsLookupWindow TValue="int" IsReservation KeepCenterId="Service.UpsertData.KeepCenterId" StockRoomId="Service.UpsertData.StockRoomId" />
                         </Lookup>
                     </EditTemplate>
                 </GridColumn>
