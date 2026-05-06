@@ -8,16 +8,26 @@
 <TabPanelItem Title="@title" Disable="Service.MasterId == 0">
     @if (ChildContent != null)
     {
-        @ChildContent
+        <CascadingValue Value="serviceData">
+            @ChildContent
+        </CascadingValue>
     }
 </TabPanelItem>
 
+
 @code
 {
+    MasterServiceData serviceData;
     string title;
 
     protected override void OnInitialized()
     {
+        serviceData = new MasterServiceData()
+        {
+            MasterId = Service.MasterId,
+            MasterType = typeof(TEntity),
+            DetailType = typeof(TDetail)
+        };
         TabPanel.AddTabpanelItem(this);
         if (Children.Body.NodeType == ExpressionType.MemberAccess)
         {
@@ -48,7 +58,7 @@
             title = Title;
         var value = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
         var masterId = Convert.ToInt32(value);
-        Service.MasterId = masterId;
+        serviceData.MasterId = Service.MasterId = masterId;
         base.OnParametersSet();
     }
 

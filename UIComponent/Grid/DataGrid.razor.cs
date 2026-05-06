@@ -353,10 +353,7 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment SearchTemplate { get; set; }
 
-        public void SelectRow(int rowIndex)
-        {
-            SelectedRowIndex = rowIndex;
-        }
+        public void SelectRow(int rowIndex) => SelectedRowIndex = rowIndex;
 
         public async Task SelectFirstPage()
         {

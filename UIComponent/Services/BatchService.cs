@@ -90,17 +90,6 @@ namespace Caspian.UI
             await base.InitializeAfterUpsert(tempEntity, upsertMode);
         }
 
-        protected override void DisposeResource()
-        {
-            //DetailDataView = null;
-            //DetailForm = null;
-            //DetailValidator = null;
-            //ChangedEntities = new List<ChangedEntity<TDetail>>();
-            //TypeWindow = null;
-
-            //base.DisposeResource();
-        }
-
         protected virtual Task SetChangedEntities()
         {
             if (Form?.ValidationValidator?.Validator != null)

@@ -59,7 +59,7 @@ namespace Caspian.UI
 
         public Window Window { get; private set; }
 
-        public bool Is1To1RelationshipService { get; private set; }
+        internal bool Is1To1RelationshipService { get; private set; }
 
         public IEntityTabPanel EntityTabPanel { get; private set; }
 
@@ -256,25 +256,10 @@ namespace Caspian.UI
             return Task.CompletedTask;
         }
 
-        protected virtual void DisposeResource()
-        {
-            //(this as IInternalUIService<TEntity>).OtherType = default;
-            //Is1To1RelationshipService = default;
-            //MasterId = default;
-            //Window = default;
-            //EntityTabPanel = default;
-            //DataView = default;
-            //Form = default;
-            //Search = Activator.CreateInstance<TEntity>();
-            //UpsertData = Activator.CreateInstance<TEntity>();
-            //if (UpsertData is BaseEntity baseEntity)
-            //    baseEntity.UpsertUserId = UserId;
-            //OnUpsert = default;
-        }
-
         protected virtual void DataViewInitializer()
         {
             DataView.Search = Search;
+            
             DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? !HideInsertIcon;
             DataView.HideFooter = DataView.HideFooter ?? hideFooter;
             
@@ -518,10 +503,5 @@ namespace Caspian.UI
         }
 
         IDictionary<string, ICollection> IInternalSearchService<TEntity>.EnumFields { get; set; }
-
-        void IInternalUIService.Dispose()
-        {
-            DisposeResource();
-        }
     }
 }

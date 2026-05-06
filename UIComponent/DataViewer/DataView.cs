@@ -42,6 +42,12 @@ namespace Caspian.UI
         internal Expression InternalConditionExpr { get; set; }
 
         /// <summary>
+        /// Data of Master-Service that initialized in Children Tab panel 
+        /// </summary>
+        [CascadingParameter]
+        internal MasterServiceData MasterServiceData { get; set; }
+
+        /// <summary>
         /// Return total count of records base on grid query
         /// </summary>
         public int Total { get; protected set; }
@@ -206,7 +212,9 @@ namespace Caspian.UI
                 throw new CaspianException($"Service of type {type} not implemented");
 
             if (Service != null)
+            {
                 (Service as IInternalSearchService<TEntity>).DataViewInitializer(this);
+            }
             if (DetailsService != null)
                 (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitializer(this);
             base.OnInitialized();

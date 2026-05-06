@@ -51,6 +51,12 @@ namespace Caspian.UI
         [Parameter]
         public EventCallback<TEntity> OnValidSubmit { get; set; }
 
+        /// <summary>
+        /// Data of Master-Service that initialized in Children Tab panel 
+        /// </summary>
+        [CascadingParameter]
+        internal MasterServiceData MasterServiceData { get; set; }
+
         internal EventCallback<TEntity> OnInternalSubmit { get; set; }
 
         internal EventCallback<TEntity> OnInternalValidSubmit { get; set; }

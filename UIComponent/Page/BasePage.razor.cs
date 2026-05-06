@@ -168,19 +168,6 @@ namespace Caspian.UI
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        public virtual void Dispose()
-        {
-            //scope.Dispose();
-            foreach (var info in this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic))
-            {
-                if (info.GetCustomAttribute<InjectAttribute>() != null)
-                {
-                    var interfaces = info.PropertyType.GetInterfaces();
-                    if (info.PropertyType.GetInterfaces().Contains(typeof(IUIService)))
-                        (info.GetValue(this) as IInternalUIService).Dispose();
-                }
-            }
-            PageService.Clear();
-        }
+        public virtual void Dispose() => PageService.Clear();
     }
 }

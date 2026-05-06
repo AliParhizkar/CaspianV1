@@ -9,7 +9,6 @@ using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.UI
 {

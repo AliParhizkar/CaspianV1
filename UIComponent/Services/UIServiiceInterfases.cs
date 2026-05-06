@@ -42,7 +42,7 @@ namespace Caspian.UI
     internal interface IInternalUIService : IUIService
     {
         void WindowInitializer(Window window);
-        void Dispose();
+
         Window Window { get; }
 
         /// <summary>
