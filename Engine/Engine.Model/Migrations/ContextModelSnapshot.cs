@@ -285,7 +285,7 @@ namespace Engine.Model.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<byte>("SubSystem")
+                    b.Property<byte>("Subsystem")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
@@ -554,13 +554,13 @@ namespace Engine.Model.Migrations
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
 
-                    b.Property<bool>("ShowonMenu")
+                    b.Property<bool>("ShowOnMenu")
                         .HasColumnType("bit");
 
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
@@ -621,7 +621,7 @@ namespace Engine.Model.Migrations
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
 
-                    b.Property<byte>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
@@ -926,6 +926,12 @@ namespace Engine.Model.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasComputedColumnSql("[FName] + ' ' + [LName]");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -939,8 +945,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(50)
@@ -965,6 +971,28 @@ namespace Engine.Model.Migrations
                     b.ToTable("Users", "cmn");
                 });
 
+            modelBuilder.Entity("Caspian.Engine.Model.UserClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserClaim");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.UserLogin", b =>
                 {
                     b.Property<int>("Id")
@@ -986,8 +1014,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PageUrl")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasMaxLength(50)
@@ -1285,7 +1313,7 @@ namespace Engine.Model.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<byte>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")

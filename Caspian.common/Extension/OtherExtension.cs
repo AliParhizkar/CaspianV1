@@ -2,12 +2,12 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("UIComponent")]
+[assembly: InternalsVisibleTo("Engine.Service")]
 namespace Caspian.Common.Extension
 {
     public static class OtherExtension
     {
-
-        public static TEntity CreateNewEntity<TEntity>(this TEntity entity)
+        internal static TEntity CreateNewEntity<TEntity>(this TEntity entity)
             where TEntity : class
         {
             return CreateNewObjectAndCopy(typeof(TEntity), entity) as TEntity;
@@ -32,7 +32,7 @@ namespace Caspian.Common.Extension
             return newObj;
         }
 
-        public static TModel CreateNewSimpleEntity<TModel>(this TModel model)
+        internal static TModel CreateNewSimpleEntity<TModel>(this TModel model)
             where TModel : class
         {
             var newEntity = Activator.CreateInstance<TModel>();
@@ -45,7 +45,7 @@ namespace Caspian.Common.Extension
             return newEntity;
         }
 
-        public static bool IsEqual<TValue>(this TValue value, TValue other)
+        internal static bool IsEqual<TValue>(this TValue value, TValue other)
         {
             if (value == null)
                 return other == null;
@@ -72,7 +72,7 @@ namespace Caspian.Common.Extension
             return entity;
         }
 
-        public static void CopyEntity<TEntity>(this TEntity entity, TEntity newObject)
+        internal static void CopyEntity<TEntity>(this TEntity entity, TEntity newObject)
         {
             var entityType = entity.GetType();
             var keyName = entityType.GetPrimaryKey().Name;
@@ -85,7 +85,7 @@ namespace Caspian.Common.Extension
             }
         }
 
-        public static object GetMyValue(this object obj, string strName, bool checkNull = true)
+        internal static object GetMyValue(this object obj, string strName, bool checkNull = true)
         {
             if (checkNull == false && obj == null)
                 return null;

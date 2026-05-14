@@ -1,0 +1,49 @@
+﻿<div class="p-3" style="width:750px">
+    <DataGrid PageSize="100" ContentHeight="180" DetailsService="Service" TEntity="RequestGoodsSupplier" Batch Inline >
+        <Columns>
+            <GridColumn Field="t => t.Supplier.Code" style="width:80px">
+                <Template>
+                    <span>@context.Data.Supplier?.Code</span>
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.Supplier.User.Name" Title="تامین کننده">
+                <EditTemplate>
+                    <Lookup TValue="int" @bind-Value="context.Data.SupplierId" TEntity="Supplier" OnChange="async () => await UpdateSupplierAsync(context.Data)" TextExpression="t => t.User.Name" Title="تامین کننده">
+                        <SupplierLookupWindow />
+                    </Lookup>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Supplier.User.MobileNumber" style="width:80px" >
+                <Template>
+                    <span>@context.Data.Supplier?.User?.MobileNumber</span>
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.Supplier.StartDate.ToPersianDateString()" style="width:120px" >
+                <Template>
+                    <span>@context.Data.Supplier?.StartDate.ToPersianDateString()</span>
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.Supplier.ActivityType.EnumText()" style="width:120px" >
+                <Template>
+                    <span>@context.Data.Supplier?.ActivityType.EnumText()</span>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    async Task UpdateSupplierAsync(RequestGoodsSupplier detail)
+    {
+        using var service = Page.CreateScope().GetService<SupplierService>();
+        detail.Supplier = detail.SupplierId == 0 ? null : await (service.GetAll().Include(t => t.User).SingleAsync(detail.SupplierId));
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    [Parameter]
+    public UIService<PurchaseRequestGoods, RequestGoodsSupplier> Service { get; set; }
+}

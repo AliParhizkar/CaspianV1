@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
+using Syncfusion.Blazor;
 
 namespace Main
 {
@@ -26,8 +27,10 @@ namespace Main
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
+            builder.Environment.CreateFileAndFolder();
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
+            builder.Services.AddSyncfusionBlazor();
             builder.Logging.AddCaspianConsoleLogger(builder);
             var persistKeyPath = Path.Combine(builder.Environment.ContentRootPath, "PersistKey");
             builder.Services.AddDataProtection()
@@ -39,15 +42,6 @@ namespace Main
             {
                 CS.Con = builder.Configuration.GetConnectionString("TestDB");
                 domain = ".localhost";
-            }
-            else
-            {
-                CS.Con = builder.Configuration.GetConnectionString("ServerDb");
-                domain = builder.Configuration.GetSection("Authentication:Domain").Value;
-            }
-           
-            if (!builder.Environment.IsProduction())
-            {
                 #region Localization
                 // Set the resx file folder path to access
                 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -58,6 +52,11 @@ namespace Main
                             .AddSupportedCultures(supportedCultures)
                             .AddSupportedUICultures(supportedCultures);
                 #endregion
+            }
+            else
+            {
+                CS.Con = builder.Configuration.GetConnectionString("ServerDb");
+                domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
 
             MultiLanguage.CanDefineLanguage = Convert.ToBoolean(builder.Configuration.GetSection("ChangePage").Value);
@@ -87,9 +86,17 @@ namespace Main
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
             builder.Services.AddScoped<ReportParamService>();
             builder.Services.AddCaspianUIComponentsServices();
+            if (!builder.Environment.IsDevelopment())
+            {
+                using var context = new Caspian.Engine.Model.Context();
+                context.Database.Migrate();
+                UserService.AddFirstUser();
+            }
+
             builder.Services.AddSingleton(t =>
             {
                 using var context = new Caspian.Engine.Model.Context();
+                
                 return new SingletonMenuService()
                 {
                     Categories = context.Set<MenuCategory>().ToList(),
@@ -134,8 +141,6 @@ namespace Main
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.CreateFileAndFolder();
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

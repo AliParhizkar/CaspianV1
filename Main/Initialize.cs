@@ -7,14 +7,14 @@ namespace Main
 {
     public static class Initialize
     {
-        public static void CreateFileAndFolder(this WebApplication app)
+        public static void CreateFileAndFolder(this IWebHostEnvironment environment)
         {
-            if (app.Environment.IsDevelopment())
+            if (!environment.IsDevelopment())
             {
                 var foldersName = new string[] { "Errors", "Data", "Report", "Report\\Images", "Report\\Print", "Report\\View" };
-                foreach(var folderName in foldersName)
+                foreach (var folderName in foldersName)
                 {
-                    var path = $"{app.Environment.ContentRootPath}\\{folderName}";
+                    var path = $"{environment.ContentRootPath}\\{folderName}";
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
                 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,5 +25,8 @@ namespace Procurement.Model
 
         [DisplayName("فعال")]
         public bool IsActive { get; set; }
+
+        [CheckOnDelete("نوع خرید دارای سفارش خرید می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<PurchaseRequestGoods> PurchaseRequestGoods { get; set; }
     }
 }

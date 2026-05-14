@@ -29,5 +29,8 @@ namespace Procurement.Model
 
         [CheckOnDelete("کارشناس عضو واحد تامین می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SupplyingUnitMembership> SupplyingUnitMemberships { get; set; }
+
+        [CheckOnDelete("کارشناس خرید دارای درخواست کالا می باشد و امکان حذف وی وجود ندارد")]
+        public ICollection<PurchaseRequestGoods> PurchasingSpecialists { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace Caspian.Engine.Model
 
         public DateTime LoginDate { get; set; }
 
+        [MaxLength(500)]
         public string PageUrl { get; set; }
     }
 }

@@ -191,4 +191,9 @@ namespace Procurement.Model
         [Display(Name = "خارجی")]
         Foreigner
     }
+
+    public enum PurchaseRequestType: byte
+    {
+
+    }
 }

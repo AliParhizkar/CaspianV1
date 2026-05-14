@@ -1,0 +1,45 @@
+﻿@typeparam TValue
+@inherits LookupWindow<StockFlow, TValue>
+@namespace Common.Component
+<div class="c-lookup-page" style="width:600px;">
+    <EntitySearch TEntity="StockFlow" Service="Service" ColumnsCount="2">
+        <ComboBox CascadeService="cascadeService" TValue="int" @bind-Value="context.KeepCenterId" TEntity="KeepCenter" TextExpression="t => t.Name" ColSpan="4" />
+        <DropdownList SingleSelect @bind-Value="context.OtherPartyType" ColSpan="4" />
+        <ComboBox CascadeService="cascadeService" TValue="int?" @bind-Value="context.StockRoomId" TEntity="StockRoom" TextExpression="t => t.Title" ColSpan="4" />
+        @if (context.OtherPartyType == OtherPartyType.CostCenter)
+        {
+            <ComboBox TValue="int?" @bind-Value="context.CostCenterId" TEntity="CostCenter" TextExpression="t => t.Name" ColSpan="4"  />
+        }
+        else
+        {
+            <Lookup TValue="int?" @bind-Value="context.SupplierId" TEntity="Procurement.Model.Supplier" TextExpression="t => t.User.Name" ColSpan="4">
+                <SupplierLookupWindow />
+            </Lookup>
+        }
+        <StringTextBox @bind-Value="context.No" Style="direction:ltr" />
+    </EntitySearch>
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="StockFlow" ContentHeight="200">
+            <Columns>
+                <GridColumn Field="t => t.KeepCenter.Name" Title="مرکز نگهداری" />
+                <GridColumn Field="t => t.StockRoom.Title" Title="انبار" />
+                <GridColumn Field="t => t.OtherPartyType.EnumText()" />
+                <GridColumn Field="t => t.OtherPartyType == OtherPartyType.CostCenter ? t.CostCenter.Name : t.Supplier.User.Name" Title="طرف مقابل"  />
+                <GridColumn Field="t => t.No" />
+                <GridColumn Field="t => t.Date.ToPersianDateString()" />
+                <GridColumn Field="t => t.Branch" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    CascadeService<KeepCenter, StockRoom> cascadeService = new CascadeService<KeepCenter, StockRoom>();
+
+    protected override void OnInitialized()
+    {
+        base.InitialSearchExpression(t => LookupStringSearchValue == null || t.No.StartsWith(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

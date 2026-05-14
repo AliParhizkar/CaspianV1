@@ -1,0 +1,250 @@
+﻿@page "/Procurement/PurchaseRequestGoods"
+@page "/Procurement/PurchaseRequestGoods/{RequestId:int}"
+@inherits BasePage
+@attribute [Source(30, "درخواست کالا", MasterPage = typeof(PurchaseRequestPage))]
+@inject UIService<PurchaseRequest, PurchaseRequestGoods> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <CaspianForm Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="4" />
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+        <DropdownList @bind-Value="context.ProcurementItemType" ColSpan="4" />
+        <ComboBox TValue="int" @bind-Value="context.KeepCenterId" TEntity="Warehouse.Model.KeepCenter" TextExpression="t => t.Name"
+                  ColSpan="4" />
+        <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" />
+        <Lookup TValue="int?" @bind-Value="context.RequesterId" TEntity="User" TextExpression="t => t.Name" ColSpan="4">
+            <UserLookupWindow />
+        </Lookup>
+        <div class="col-md-6 row">
+            @if (context.OtherPartyType == Warehouse.Model.OtherPartyType.CostCenter)
+            {
+                <ComboBox TValue="int?" @bind-Value="context.CostCenterId" TEntity="Accounting.Model.CostCenter"
+                          TextExpression="t => t.Name" ColSpan="8" />
+            }
+            else
+            {
+                <Lookup TValue="int?" @bind-Value="context.SupplierId" TEntity="Supplier" TextExpression="t => t.User.Name" ColSpan="8">
+                    <SupplierLookupWindow />
+                </Lookup>
+            }
+            <DropdownList @bind-Value="context.PurchaseRequestType" ColSpan="8" />
+        </div>
+        <div class="col-md-6 row">
+            <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine />
+        </div>
+        <FormCommandButton ColSpan="6" TotalSpan="12" />
+    </CaspianForm>
+    
+    <DataGrid DetailsService="Service" TEntity="PurchaseRequestGoods" Inline TableWidth="1500">
+        <Columns>
+            <GridColumn Field="t => t.ReferenceDocumentType.EnumText()" >
+                <EditTemplate>
+                    <DropdownList @bind-Value="context.Data.ReferenceDocumentType" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.GoodsFlowId" Title="مبنا/قلم خریدنی">
+                <EditTemplate>
+                    @if (context.Data.ReferenceDocumentType == Warehouse.Model.ReferenceDocumentType.PurchaseRequest)
+                    {
+                        <Lookup TValue="int?" @bind-Value="context.Data.GoodsFlowId" TEntity="Warehouse.Model.GoodsFlow" 
+                                TextExpression="t => t.Goods.Name" AutoHide>
+                            <GoodsFlowLookupWindow />
+                        </Lookup>
+                    }
+                    else
+                    {
+                        <Lookup TValue="int?" @bind-Value="context.Data.ProcurementItemId" TEntity="ProcurementItem" 
+                                TextExpression="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.Name : t.Service.Name" AutoHide>
+                            <ProcurementItemLookupWindow />
+                        </Lookup>
+                    }
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Amount.DigitGrouping()" style="width:80px">
+                <EditTemplate>
+                    <NumericTextBox @bind-Value="context.Data.Amount" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.NeedDate" style="width:150px">
+                <EditTemplate>
+                    <DatePicker @bind-Value="context.Data.NeedDate" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field='t => t.UrgentPurchase.Title' Title="فوریت خرید">
+                <EditTemplate>
+                    <ComboBox TValue="int?" @bind-Value="context.Data.UrgentPurchaseId" TEntity="UrgentPurchase" TextExpression="t => t.Title" />
+                </EditTemplate>
+                <Template>
+                    <span>@context.Data.UrgentPurchase?.Title</span>
+                </Template>
+            </GridColumn>
+            <GridColumn Field="t => t.SupplyingUnitId">
+                <EditTemplate>
+                    <Lookup TValue="int?" @bind-Value="context.Data.SupplyingUnitId" TEntity="SupplyingUnit" TextExpression="t => t.Code + '-' + t.Title">
+                        <SupplyingUnitLokup />
+                    </Lookup>
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.PurchaseTypeId">
+                <EditTemplate>
+                    <ComboBox TValue="int?" @bind-Value="context.Data.PurchaseTypeId" OnChange="async() => await PurchaseTypeChanged(context.Data)" TEntity="PurchaseType" TextExpression="t => t.Code + '-' + t.Title" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.InquiryDeadline">
+                <EditTemplate>
+                    <DatePicker @bind-Value="context.Data.InquiryDeadline" Disabled="context.Data.PurchaseType?.PurchaseProcessType != PurchaseProcessType.Inquiry" />
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.SupplierId" Title="گیرنده(گان)">
+                <EditTemplate>
+                    @if (context.Data.PurchaseType?.PurchaseProcessType == PurchaseProcessType.Inquiry)
+                    {
+                        <IconButton IconType="IconType.AngleDoubleDown" />
+                    }
+                    else
+                    {
+                        <Lookup TValue="int?" @bind-Value="context.Data.SupplierId" TEntity="Supplier" TextExpression="t => t.User.Name">
+                            <SupplierLookupWindow />
+                        </Lookup>
+                    }
+                </EditTemplate>
+            </GridColumn>
+            <GridColumn Field="t => t.Description" Title="شرح" style="width:60px;text-align:center">
+                @if (context.UpsertMode == null)
+                {
+                    <button class="c-btn c-primary" disabled="disabled">...</button>
+                }
+                else
+                {
+                    if (context.UpsertMode == UpsertMode.Insert)
+                    {
+                        <button @ref="btnDescripOninsert" @onclick="() => ShowDesccription(context.Data, UpsertMode.Insert)" class="c-btn c-primary">...</button>
+                    }
+                    else
+                    {
+                        <button @ref="btnDescripOnEdit" @onclick="() => ShowDesccription(context.Data, UpsertMode.Edit)" class="c-btn c-primary">...</button>
+                    }
+                }
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<PopupWindow @bind-Status="status" TargetElement="targetElement" TargetHorizontalAnchor="HorizontalAnchor.Right" OffsetLeft="5"
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Left" VerticalAnchor="VerticalAnchor.Middle">
+    <div style="width:450px;" class="row c-controls p-2">
+        <DropdownList Value="selecteRequestGoods?.ReferenceDocumentType" ColSpan="6" TotalSpan="9" Title="نوع مبناء" Disabled />
+        <div class="col-md-3 text-center">
+            <button @onclick="ChangeComment" style="width:60px" class="c-btn c-primary">ثبت</button>
+        </div>
+        <StringTextBox Value="@purchaseItemName" ColSpan="9" TotalSpan="12" Title="مبناء/قلم خریدنی" />
+        <StringTextBox @bind-Value="comment" MultiLine ColSpan="9" TotalSpan="12" Title="توضیحات" Rows="3" />
+    </div>
+</PopupWindow>
+<PopupWindow Top="top" Left="left" Status="supplierStatus" StatusChanged="status => supplierStatus = status">
+   <RequestGoodsSupplierComponent Service="requestGoodsSupplierService" Page="this" />
+</PopupWindow>
+@code
+{
+    IDictionary<int, UIService<PurchaseRequestGoods, RequestGoodsSupplier>> requestGoodsSupplierServices;
+    UIService<PurchaseRequestGoods, RequestGoodsSupplier> requestGoodsSupplierService;
+    string comment, purchaseItemName;
+    IControl txtPrivilege;
+    WindowStatus status;
+    ElementReference targetElement, btnDescripOninsert, btnDescripOnEdit;
+    PurchaseRequestGoods selecteRequestGoods;
+    double left, top;
+    WindowStatus supplierStatus;
+
+    protected override void OnInitialized()
+    {
+        requestGoodsSupplierServices = new Dictionary<int, UIService<PurchaseRequestGoods, RequestGoodsSupplier>>();
+        Service.MasterId = RequestId ?? 0;
+        Service.OnCreate = t =>
+        {
+            t.Date = DateTime.Now.ToDateOnly();
+        };
+        base.OnInitialized();
+    }
+
+
+    void OpenRequestGoodsSupplier(EMouseEventArgs e, PurchaseRequestGoods detail)
+    {
+        left = e.ClientX - e.OffsetX + e.Width + 15;
+        top = e.ClientY - e.OffsetY - 100;
+        if (top < 10)
+            top = 10;
+        requestGoodsSupplierService = requestGoodsSupplierServices.SingleOrDefault(t => t.Key == detail.Id).Value;
+        if (requestGoodsSupplierService == null)
+        {
+            requestGoodsSupplierService = new UIService<PurchaseRequestGoods, RequestGoodsSupplier>(Service.ServiceProvider);
+            requestGoodsSupplierService.MasterId = detail.Id;
+            requestGoodsSupplierServices.Add(detail.Id, requestGoodsSupplierService);
+        }
+        supplierStatus = WindowStatus.Open;
+    }
+
+    async Task PurchaseTypeChanged(PurchaseRequestGoods detail)
+    {
+        if (detail.PurchaseTypeId.HasValue)
+        {
+            var service = CreateScope().GetService<PurchaseTypeService>();
+            var old = await service.SingleAsync(detail.PurchaseTypeId.Value);
+            detail.PurchaseType = old;
+        }
+        else
+            detail.PurchaseType = null;
+    }
+
+    void ChangeComment()
+    {
+        selecteRequestGoods.Description = comment;
+        status = WindowStatus.Close;
+    }
+
+    async Task ShowDesccription(PurchaseRequestGoods detail, UpsertMode upsertMode)
+    {
+        using var scope = CreateScope();
+        if (detail.GoodsFlowId.HasValue)
+        {
+            var goodsFlow = await scope.GetService<Warehouse.Service.GoodsFlowService>().GetAll().Include(t => t.Goods).SingleAsync(detail.GoodsFlowId.Value);
+            purchaseItemName = goodsFlow.Goods.Name;
+        }
+        else if (detail.ProcurementItemId.HasValue)
+        {
+            var procurementItem = await scope.GetService<ProcurementItemService>().GetAll().Include(t => t.Goods).Include(t => t.Service).SingleAsync(detail.ProcurementItemId.Value);
+            purchaseItemName = procurementItem.Service?.Name ?? procurementItem.Goods?.Name;
+        }
+        selecteRequestGoods = detail;
+        comment = detail.Description;
+        status = WindowStatus.Open;
+        if (upsertMode == UpsertMode.Insert)
+            targetElement = btnDescripOninsert;
+        else
+            targetElement = btnDescripOnEdit;
+        await Task.Delay(10);
+    }
+
+    [Parameter]
+    public int? RequestId { get; set; }
+
+
+    async Task Save(KeyboardEventArgs e, UpsertMode upsertMode)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            await Service.DetailDataView.ValidateAndUpsert(upsertMode);
+    }
+
+    async Task EvaluationIndicatorSelected(SupplierEvaluationDetail detail)
+    {
+        if (detail.EvaluationIndicatorId > 0)
+        {
+            using var service = CreateScope().GetService<EvaluationIndicatorService>();
+            detail.EvaluationIndicator = await service.SingleAsync(detail.EvaluationIndicatorId);
+            await txtPrivilege.FocusAsync();
+        }
+    }
+}

@@ -34,7 +34,9 @@
                     if (element.getBoundingClientRect().top > window.outerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         animate.style.marginTop = '-275px';
-                        setTimeout(async () => calendar.style.bottom = '-0', 20);
+                        let leftScroll = animate.parentElement.getPosition().left - animate.parentElement.getBoundingClientRect().left;
+                        animate.style.marginRight = `${leftScroll}px`;
+                        setTimeout(async () => calendar.style.bottom = '5px', 20);
                     }
                     else {
                         animate.classList.add('c-animate-down');

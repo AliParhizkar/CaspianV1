@@ -16,6 +16,8 @@ namespace Caspian.UI
             ChangedEntities = new List<ChangedEntity<TDetail>>();
         }
 
+        public int MasterId { get; set; }
+
         void IInternalBatchService<TDetail>.SetDetailsProperty(IList<TDetail> details)
         {
             var property = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
@@ -88,6 +90,13 @@ namespace Caspian.UI
                 DetailDataView.CancelInternalUpdate();
             }
             await base.InitializeAfterUpsert(tempEntity, upsertMode);
+        }
+
+        protected override async Task InitializeOnUpsert(TMaster master)
+        {
+            var value = typeof(TMaster).GetPrimaryKey().GetValue(master);
+            MasterId = Convert.ToInt32(value);
+            await base.InitializeOnUpsert(master);
         }
 
         protected virtual Task SetChangedEntities()

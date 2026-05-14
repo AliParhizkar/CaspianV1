@@ -1,0 +1,59 @@
+﻿@page "/Procurement/PurchaseRequest"
+@inject UIService<PurchaseRequest, PurchaseRequestGoods> Service
+@attribute [Source(30, "درخواست خرید")]
+@inject NavigationManager navigationManager
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="4" />
+        <DatePicker @bind-Value="context.Date" ColSpan="4" />
+        <DropdownList @bind-Value="context.ProcurementItemType" ColSpan="4" />
+        <ComboBox TValue="int" @bind-Value="context.KeepCenterId" TEntity="Warehouse.Model.KeepCenter" TextExpression="t => t.Name"
+                  ColSpan="4" />
+        <Lookup TValue="int?" @bind-Value="context.RequesterId" TEntity="User" TextExpression="t => t.Name" ColSpan="4">
+            <UserLookupWindow />
+        </Lookup>
+        <DropdownList @bind-Value="context.PurchaseRequestType" ColSpan="4" />
+        <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" />
+        @if (context.OtherPartyType == Warehouse.Model.OtherPartyType.CostCenter)
+        {
+            <ComboBox TValue="int?" @bind-Value="context.CostCenterId" TEntity="Accounting.Model.CostCenter"
+                      TextExpression="t => t.Name" ColSpan="4" />
+        }
+        else
+        {
+            <Lookup TValue="int?" @bind-Value="context.SupplierId" TEntity="Supplier" TextExpression="t => t.User.Name" ColSpan="4">
+                <SupplierLookupWindow />
+            </Lookup>
+        }
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="PurchaseRequest" OnOpen="UpsertOpening">
+        <Columns>
+            <GridColumn Field="t => t.No" />
+            <GridColumn Field="t => t.Date.ToPersianDateString()" />
+            <GridColumn Field="t => t.ProcurementItemType.EnumText()" />
+            <GridColumn Field="t => t.KeepCenter.Name" Title="م.ن درخواست کننده" />
+            <GridColumn Field="t => t.Requester.Name" Title="درخواست کننده" />
+            <GridColumn Field="t => t.OtherPartyType.EnumText()" />
+            <GridColumn Title="طرف مقابل"
+                        Field="t => t.OtherPartyType == Warehouse.Model.OtherPartyType.CostCenter ? t.CostCenter.Name : t.Supplier.User.Name" />
+            <GridColumn Field="t => t.PurchaseRequestType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+
+@code
+{
+    void UpsertOpening(PurchaseRequest request)
+    {
+        var url = $"/Procurement/PurchaseRequestGoods";
+        if (request.Id > 0)
+            url += $"/{request.Id}";
+        navigationManager.NavigateTo(url);
+    }
+}

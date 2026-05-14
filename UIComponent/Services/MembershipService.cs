@@ -31,6 +31,8 @@ namespace Caspian.UI
             HideInsertIcon = true;
         }
 
+        public int MasterId { get; set; }
+
         protected override void DataViewInitializer()
         {
             if (MasterId > 0)

@@ -1,5 +1,4 @@
 @namespace Demo.Web.Pages
-@inject UIService<Customer, CustomerGroupMembership> Service
 <CaspianForm Service="Service">
     <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
     <div class="row" style="align-content:flex-start">
@@ -24,5 +23,6 @@
 
 @code
 {
-
+    [Parameter]
+    public UIService<Customer, CustomerGroupMembership> Service { get; set; }
 }

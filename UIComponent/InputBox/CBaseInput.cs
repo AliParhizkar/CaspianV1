@@ -230,10 +230,7 @@ namespace Caspian.UI
         protected override void OnParametersSet()
         {
             CaspianContainer?.SetControl(this);
-            if (CaspianContainer == null)
-                disabled = Disabled;
-            else
-                disabled = CaspianContainer?.Disabled == true;
+            disabled = CaspianContainer?.Disabled == true || Disabled ? true : false;
             CaspianForm?.AddControl(this);
 
             if (InputAttributes == null)

@@ -1,0 +1,11 @@
+﻿@page "/Demo/SystemManagement/WorkflowGroup"
+@attribute [Source(20, "Workflow Group")]
+@inherits BasePage
+@{base.BuildRenderTree(__builder);}
+
+<Caspian.Engine.WorkFlow.WorkflowGroupComponent Subsystem="SubsystemKind.Demo" />
+
+@code 
+{
+
+}

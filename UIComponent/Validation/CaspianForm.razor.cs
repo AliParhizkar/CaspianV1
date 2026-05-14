@@ -55,7 +55,7 @@ namespace Caspian.UI
         /// Data of Master-Service that initialized in Children Tab panel 
         /// </summary>
         [CascadingParameter]
-        internal MasterServiceData MasterServiceData { get; set; }
+        internal MasterDetailsCrudServiceData CrudServiceData { get; set; }
 
         internal EventCallback<TEntity> OnInternalSubmit { get; set; }
 
@@ -196,10 +196,8 @@ namespace Caspian.UI
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
-            if ((Service as IInternalUIService<TEntity>)?.OtherType != null)
-            {
-                EditContext.Properties["DetailType"] = (Service as IInternalUIService<TEntity>).OtherType;
-            }
+            if ((Service as UIService<TEntity>).OtherCrudServiceData?.OtherType != null )
+                EditContext.Properties["DetailType"] = (Service as UIService<TEntity>).OtherCrudServiceData.OtherType;
             EditContext.Validate();
             if (OnBeforeValidate.HasDelegate)
                 await OnBeforeValidate.InvokeAsync();

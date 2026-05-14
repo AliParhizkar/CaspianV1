@@ -58,8 +58,14 @@
     <DataGrid Service="CategoryService" TEntity="MenuCategory" ConditionExpr="t => t.SubsystemKind == Subsystem">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.IconFont" >
+            <GridColumn Field="t => t.IconFont">
                 <span class="c-icon @(context.Data.IconFont)"></span>
+            </GridColumn>
+            <GridColumn Field="t => t.Ordering" style="width:95px;text-align:center;" SortType="SortType.Asc">
+                <Template>
+                    <IconButton IconType="@IconType.AngleUp" @onclick="async () => await IncPOrder(context.Data.Id)" />
+                    <IconButton IconType="@IconType.AngleDown" @onclick="async () => await DecPOrder(context.Data.Id)" />
+                </Template>
             </GridColumn>
             <GridCommandColumns />
         </Columns>
@@ -68,6 +74,7 @@
         <CaspianForm TEntity="MenuCategory" Service="CategoryService" OnSubmit="t => t.Entity.SubsystemKind = Subsystem">
             <StringTextBox @bind-Value="context.Title" ColSpan="9" />
             <StringTextBox @bind-Value="context.IconFont" ColSpan="9" />
+            <NumericTextBox Value="context.Ordering" ColSpan="9" TotalSpan="12" Title="ترتیب" />
             <FormCommandButton ColSpan="9" />
         </CaspianForm>
     </Window>
@@ -75,5 +82,23 @@
 
 @code
 {
+    async Task IncPOrder(int id)
+    {
+        using var service = CreateScope().GetService<MenuCategoryService>();
+        await service.IncOrderingAsync(id);
+        await service.SaveChangesAsync();
+        var grid = CategoryService.DataView;
+        await grid.ReloadAsync();
+        await grid.SelectPrevRow();
+    }
 
+    async Task DecPOrder(int id)
+    {
+        using var service = CreateScope().GetService<MenuCategoryService>();
+        await service.DecOrderingAsync(id);
+        await service.SaveChangesAsync();
+        var grid = CategoryService.DataView;
+        await grid.ReloadAsync();
+        await grid.SelectNextRow();
+    }
 }

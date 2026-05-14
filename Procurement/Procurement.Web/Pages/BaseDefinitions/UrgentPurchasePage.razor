@@ -1,0 +1,33 @@
+﻿@page "/Procurement/UrgentPurchase"
+@inject IUIService<UrgentPurchase> Service
+@inherits BasePage
+@attribute [Source(31, "فوریت خرید")]
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <CheckBox @bind-Value="context.IsActive" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="UrgentPurchase" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.IsActive" style="width:50px;" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Style="width:350px" Title="فوریت خرید" OnOpen="() => Service.UpsertData.IsActive = true">
+        <CaspianForm Service="Service" >
+            <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+            <CheckBox @bind-Value="context.IsActive" ColSpan="9" />
+            <FormCommandButton ColSpan="9" />
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+
+}

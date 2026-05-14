@@ -35,5 +35,8 @@ namespace Procurement.Model
 
         [CheckOnDelete("قلم خریدنی دارای حوزه ی تامین می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SupplyingScope> SupplyingScopes { get; set; }
+
+        [CheckOnDelete("قلم خریدنی سفارش داده شده و امکان حذف آن وجود ندارد")]
+        public ICollection<PurchaseRequestGoods> PurchaseRequestGoods { get; set; }
     }
 }

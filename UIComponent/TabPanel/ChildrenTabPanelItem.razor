@@ -1,11 +1,10 @@
 ﻿@namespace Caspian.UI
-@inject IUIService<TDetail> Service 
 @inject IServiceProvider ServiceProvider
 @typeparam TEntity where TEntity : class
 @typeparam TDetail where TDetail : class
 @implements IEntityTabPanelItem
 
-<TabPanelItem Title="@title" Disable="Service.MasterId == 0">
+<TabPanelItem Title="@title" Disable="(TabPanel.Service as UIService<TEntity>).CrudId.GetValueOrDefault() == 0">
     @if (ChildContent != null)
     {
         <CascadingValue Value="serviceData">
@@ -17,14 +16,14 @@
 
 @code
 {
-    MasterServiceData serviceData;
+    MasterDetailsCrudServiceData serviceData;
     string title;
 
     protected override void OnInitialized()
     {
-        serviceData = new MasterServiceData()
+        serviceData = new MasterDetailsCrudServiceData()
         {
-            MasterId = Service.MasterId,
+            MasterId = (TabPanel.Service as UIService<TEntity>).CrudId ?? 0,
             MasterType = typeof(TEntity),
             DetailType = typeof(TDetail)
         };
@@ -34,7 +33,6 @@
             var info = (Children.Body as MemberExpression).Member as PropertyInfo;
             title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
         }
-        Service.MasterId = TabPanel.Service.MasterId;
         base.OnInitialized();
     }
 
@@ -56,9 +54,8 @@
     {
         if (Title != null)
             title = Title;
-        var value = typeof(TEntity).GetPrimaryKey().GetValue(TabPanel.Service.UpsertData);
-        var masterId = Convert.ToInt32(value);
-        serviceData.MasterId = Service.MasterId = masterId;
+        var masterId = (TabPanel.Service as  UIService<TEntity>).CrudId ?? 0;
+        serviceData.MasterId = masterId;
         base.OnParametersSet();
     }
 

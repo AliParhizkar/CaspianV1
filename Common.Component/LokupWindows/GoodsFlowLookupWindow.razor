@@ -1,0 +1,40 @@
+﻿@typeparam TValue
+@inherits LookupWindow<GoodsFlow, TValue>
+@namespace Common.Component
+<div class="c-lookup-page" style="width:800px;">
+    <EntitySearch TEntity="GoodsFlow" Service="Service" ColumnsCount="2">
+        <Lookup TValue="int" @bind-Value="context.GoodsId" TEntity="Goods" TextExpression="t => t.Name" ColSpan="4" AutoHide >
+            <GoodsLookupWindow /> 
+        </Lookup>
+        <NumericTextBox @bind-Value="context.Quantity" ColSpan="4" />
+        <Lookup TValue="int" @bind-Value="context.StockFlowId" TEntity="StockFlow" TextExpression="t => t.No" ColSpan="8" TotalSpan="12">
+            <StockFlowLookupWindow />
+        </Lookup>
+    </EntitySearch>
+
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="GoodsFlow" ContentHeight="200">
+            <Columns>
+                <GridColumn Field="t => t.Goods.Code" Title="کد کالا" />
+                <GridColumn Field="t => t.Goods.Name" Title="نام کالا" />
+                <GridColumn Field="t => t.Goods.MeasurementUnit.Name" Title="واحد سنجش" />
+                <GridColumn Field="t => t.Goods.ProductClass.Name" Title="طبقه کالا" />
+                <GridColumn Field="t => t.StockFlow.No" Title="شماره سفارش" />
+                <GridColumn Field="t => t.StockFlow.Date.ToPersianDate()"/>
+                <GridColumn Field="t => t.StockFlow.KeepCenter.Name" Title="مرکز نگهداری"/>
+                <GridColumn Field="t => t.StockFlow.StockRoom.Title" Title="انبار"/>
+                <GridColumn Field="t => t.Quantity" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.InitialSearchExpression(t => LookupStringSearchValue == null || t.StockFlow.No.StartsWith(LookupStringSearchValue) ||
+            t.Goods.Name.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

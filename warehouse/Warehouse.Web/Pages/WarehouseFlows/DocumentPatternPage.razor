@@ -44,7 +44,7 @@
         <StringTextBox @bind-Value="context.ReceiverIssuerFieldName" ColSpan="4" Title="@(fieldName)" Disabled="!context.HasReceiverIssuer" />
         <RadioList @bind-Value="context.DocumentRelationshipType" ColSpan="4" />
         <DropdownList TValue="DocumentRelationshipInstance" @bind-Value="context.DocumentRelationshipInstance" ColSpan="4"
-                      FilterFunc="t => context.DocumentRelationshipType == DocumentRelationshipType.Atff ? t < DocumentRelationshipInstance.BargashtBeKharid : t > DocumentRelationshipInstance.RasidEnteghal" />
+                      FilterFunc="t => context.DocumentRelationshipType == DocumentRelationshipType.Inflection ? t < DocumentRelationshipInstance.BargashtBeKharid : t > DocumentRelationshipInstance.RasidEnteghal" />
         <MultiSelectBox @bind-Value="context.DocumentBases" ColSpan="4" />
         <DropdownList @bind-Value="context.DefaultBase" ColSpan="4" />
         <CheckBox @bind-Value="context.HasOtherParty" ColSpan="4" />

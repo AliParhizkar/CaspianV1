@@ -1,5 +1,6 @@
 ﻿@namespace Procurement.Web
-@inherits LookupWindow<Warehouse.Model.StockFlow, int?>
+@typeparam TValue
+@inherits LookupWindow<Warehouse.Model.StockFlow, TValue>
 @if (SupplierId == 0)
 {
     <div style="text-align:center; color:deeppink;">لطفا  تامین کننده را مشخص نمایئد</div>

@@ -353,8 +353,6 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment SearchTemplate { get; set; }
 
-        public void SelectRow(int rowIndex) => SelectedRowIndex = rowIndex;
-
         public async Task SelectFirstPage()
         {
             if (this.pageNumber != 1)
@@ -383,40 +381,7 @@ namespace Caspian.UI
                 SelectRow(0);
         }
 
-        public async Task SelectNextRow()
-        {
-            if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
-            {
-                if (SelectedRowIndex.Value + 1 < PageSize && SelectedRowIndex.Value + 1 < items.Count)
-                    SelectRow(SelectedRowIndex.Value + 1);
-                else
-                {
-                    if (pageNumber < PageCount)
-                    {
-                        SelectRow(0);
-                        await ChangePageNumber(pageNumber + 1);
-                        StateHasChanged();
-                    }
-                }
-            }
-        }
 
-        public async Task SelectPrevRow()
-        {
-            if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
-            {
-                if (SelectedRowIndex.Value > 0)
-                    SelectRow(SelectedRowIndex.Value - 1);
-                else
-                {
-                    if (pageNumber < 1)
-                    {
-                        await ChangePageNumber(pageNumber - 1);
-                        SelectRow(PageSize - 1);
-                    }
-                }
-            }
-        }
 
         public override async Task<TEntity> SelectRowById(int id)
         {

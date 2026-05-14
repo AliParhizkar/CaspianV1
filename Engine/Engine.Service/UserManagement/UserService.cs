@@ -3,6 +3,7 @@ using Caspian.Engine.Model;
 using Caspian.Common.Service;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Caspian.Engine.Service
 {
@@ -76,19 +77,36 @@ namespace Caspian.Engine.Service
             await base.UpdateAsync(entity);
         }
 
-        public async Task<User> UserIsvalidAsync(string userName, string password)
-        {
-            var md5Password = CreateMD5(password);
-            var query = new UserService(ServiceProvider).GetAll();
-            return await query.SingleOrDefaultAsync(t => t.UserName == userName && t.Password == md5Password);
-        }
-
         public static string CreateMD5(string input)
         {
             using var md5 = MD5.Create();
             var inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
             byte[] hashBytes = md5.ComputeHash(inputBytes);
             return Convert.ToHexString(hashBytes);
+        }
+
+        public static void AddFirstUser()
+        {
+            using var context = new Context();
+            if (!context.Set<User>().Any())
+            {
+                var user = new User()
+                {
+                    UserName = "admin",
+                    ConcurrencyStamp = "80dc35cd-0333-4877-b63c-3ae9ee7a929b",
+                    LName = "مدیر سیستم",
+                    Email = "Ali@gmail.com",
+                    NormalizedUserName = "ADMIN",
+                    NormalizedEmail = "Ali@gmail.com",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = "LEBVHBFAN4XKRPLEXVJ7XA4FEEYJNZ7C",
+                };
+                user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "Ali123456");
+
+                context.Set<User>().Add(user);
+                context.SaveChanges();
+            }
         }
     }
 }

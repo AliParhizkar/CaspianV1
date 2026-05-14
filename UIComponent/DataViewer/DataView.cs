@@ -45,7 +45,7 @@ namespace Caspian.UI
         /// Data of Master-Service that initialized in Children Tab panel 
         /// </summary>
         [CascadingParameter]
-        internal MasterServiceData MasterServiceData { get; set; }
+        internal MasterDetailsCrudServiceData CrudServiceData { get; set; }
 
         /// <summary>
         /// Return total count of records base on grid query
@@ -668,6 +668,44 @@ namespace Caspian.UI
             source .Clear();
             Total = 0;
             items.Clear();
+        }
+
+        public async Task SelectNextRow()
+        {
+            if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
+            {
+                if (SelectedRowIndex.Value + 1 < PageSize && SelectedRowIndex.Value + 1 < items.Count)
+                    SelectRow(SelectedRowIndex.Value + 1);
+                else
+                {
+                    if (pageNumber < PageCount)
+                    {
+                        SelectRow(0);
+                        await ChangePageNumber(pageNumber + 1);
+                        StateHasChanged();
+                    }
+                }
+            }
+        }
+
+
+        public void SelectRow(int rowIndex) => SelectedRowIndex = rowIndex;
+
+        public async Task SelectPrevRow()
+        {
+            if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
+            {
+                if (SelectedRowIndex.Value > 0)
+                    SelectRow(SelectedRowIndex.Value - 1);
+                else
+                {
+                    if (pageNumber < 1)
+                    {
+                        await ChangePageNumber(pageNumber - 1);
+                        SelectRow(PageSize - 1);
+                    }
+                }
+            }
         }
 
         public async Task ReloadAsync()

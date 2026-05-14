@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Scopes", Schema = "HR")]
+    [Table("Scopes", Schema = "Demo")]
     public class Scope
     {
         [Key]

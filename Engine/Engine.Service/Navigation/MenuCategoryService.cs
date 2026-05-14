@@ -29,22 +29,34 @@ namespace Caspian.Engine.Service
             await base.UpdateAsync(entity);
         }
 
-        public async Task IncPriorityAsync(MenuCategory curent, MenuCategory next)
+
+        public async Task IncOrderingAsync(int id)
         {
-            var temp = curent.Ordering;
-            curent.Ordering = next.Ordering;
-            next.Ordering = temp;
-            await base.UpdateAsync(curent);
-            await base.UpdateAsync(next);
+            var old = await SingleAsync(id);
+            var pre = await GetAll().Where(t => t.SubsystemKind == old.SubsystemKind && t.Ordering < old.Ordering)
+                .OrderByDescending(t => t.Ordering).FirstOrDefaultAsync();
+            if (pre != null)
+            {
+                var temp = old.Ordering;
+                old.Ordering = pre.Ordering;
+                pre.Ordering = temp;
+                await base.UpdateAsync(pre);
+                await base.UpdateAsync(old);
+            }
         }
 
-        public async Task DecPriorityAsync(MenuCategory curent, MenuCategory pre)
+        public async Task DecOrderingAsync(int id)
         {
-            var temp = curent.Ordering;
-            curent.Ordering = pre.Ordering;
-            pre.Ordering = temp;
-            await base.UpdateAsync(curent);
-            await base.UpdateAsync(pre);
+            var old = await SingleAsync(id);
+            var next = await GetAll().Where(t => t.Ordering > old.Ordering).OrderBy(t => t.Ordering).FirstOrDefaultAsync();
+            if (next != null)
+            {
+                var temp = old.Ordering;
+                old.Ordering = next.Ordering;
+                next.Ordering = temp;
+                await base.UpdateAsync(next);
+                await base.UpdateAsync(old);
+            }
         }
     }
 }

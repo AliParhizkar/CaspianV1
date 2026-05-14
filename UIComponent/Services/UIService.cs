@@ -43,11 +43,10 @@ namespace Caspian.UI
             return new EnumSearch<TValue>(lambda.Body, (this as IInternalSearchService<TEntity>).EnumFields);
         }
 
-        int IInternalUIService.InternalMasterId { get; set; }
-
-        Type IInternalUIService.InternalMasterType { get; set; }
-
-        Type IInternalUIService.OtherType { get; set; }
+        /// <summary>
+        /// For one to one relation use this data
+        /// </summary>
+        internal MasterOtherCrudService OtherCrudServiceData { get; private set; }
 
         IList<ValueTypeContainer> IInternalSearchService<TEntity>.ValueTypes { get; set; }
 
@@ -55,11 +54,7 @@ namespace Caspian.UI
 
         public IServiceProvider ServiceProvider { get; private set; }
 
-        public int MasterId { get; set; }
-
         public Window Window { get; private set; }
-
-        internal bool Is1To1RelationshipService { get; private set; }
 
         public IEntityTabPanel EntityTabPanel { get; private set; }
 
@@ -112,20 +107,21 @@ namespace Caspian.UI
         {
             ///Before Calling this method Validation is done. an we don't need to do it(validation) again 
             (service as BaseService<TEntity>).CheckValidation = false;
-            service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).OtherType;
+            
+            service.OtherTypeIn1To1Relationship = OtherCrudServiceData?.OtherType;
             /// In One-To-One Relationship Before Upsert maybe we have many One-To-One Relationship data, But we save only one of them.
             /// We clear other One-To-One relationship data and keep this data in tempEntity object to use it to reset data after Upsert
             TEntity tempEntity = default;
-            if (Is1To1RelationshipService)
+            if (OtherCrudServiceData != null)
             {
                 var properties = typeof(TEntity).GetOneToOneProperties();
-                service.OtherTypeIn1To1Relationship = (this as IInternalUIService<TEntity>).OtherType != typeof(TEntity) ? (this as IInternalUIService<TEntity>).OtherType : null;
+                service.OtherTypeIn1To1Relationship = OtherCrudServiceData.OtherType != typeof(TEntity) ? OtherCrudServiceData.OtherType : null;
                 tempEntity = Activator.CreateInstance<TEntity>();
                 foreach (var property in properties)
                 {
                     var value = property.GetValue(UpsertData);
                     property.SetValue(tempEntity, value);
-                    if (property.PropertyType != (this as IInternalUIService<TEntity>).OtherType)
+                    if (property.PropertyType != OtherCrudServiceData.OtherType)
                         property.SetValue(UpsertData, null);
                 }
             }
@@ -137,15 +133,12 @@ namespace Caspian.UI
             if (upsertMode == UpsertMode.Insert)
                 return CaspianDataService.Language == Language.En ? "Registration was done successfully" : "ثبت با موفقیت انجام شد.";
             return CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
-
         }
 
         protected virtual async Task InitializeAfterUpsert(TEntity tempEntity, UpsertMode upsertMode)
         {
-            if (Is1To1RelationshipService)
+            if (OtherCrudServiceData != null)
             {
-                var value1 = typeof(TEntity).GetPrimaryKey().GetValue(UpsertData);
-                MasterId = Convert.ToInt32(value1);
                 var properties = typeof(TEntity).GetOneToOneProperties();
                 if (properties != null)
                 {
@@ -162,15 +155,13 @@ namespace Caspian.UI
                 {
                     var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
                     await DataView.SelectRowById(id);
-                    if ((this as IInternalUIService).InternalMasterType != null)
-                        DataView.ChangeState();
                     if (Window == null)
                         StateHasChanged();
                 }
                 else
                     await DataView.ReloadAsync();
             }
-            if (Is1To1RelationshipService)
+            if (OtherCrudServiceData != null)
                EntityTabPanel.ChangeState();
             else
             {
@@ -200,11 +191,12 @@ namespace Caspian.UI
         /// </summary>
         protected virtual void InitializeBeforeValidation(TEntity entity)
         {
-            var service = this as IInternalUIService;
-            if (service.InternalMasterType != null)
+            var data = Form.CrudServiceData;
+            if (data?.DetailType == typeof(TEntity))
             {
-                var info = typeof(TEntity).GetForeignKey(service.InternalMasterType);
-                info.SetValue(entity, Convert.ChangeType(service.InternalMasterId, info.PropertyType.GetUnderlyingType()));
+                var info = typeof(TEntity).GetForeignKey(data.MasterType);
+                var foreignKeyType = info.PropertyType.GetUnderlyingType();
+                info.SetValue(entity, Convert.ChangeType(data.MasterId, foreignKeyType));
             }
         }
 
@@ -252,46 +244,67 @@ namespace Caspian.UI
         /// </summary>
         protected virtual Task InitializeValidatorService(IBaseService<TEntity> service)
         {
-            (service as BaseService<TEntity>).SetBatchServiceData(MasterId, typeof(TEntity));
+            (service as BaseService<TEntity>).SetBatchServiceData(CrudId ?? 0, typeof(TEntity));
             return Task.CompletedTask;
+        }
+
+        internal int? CrudId
+        {
+            get
+            {
+                if (UpsertData == null)
+                    return null;
+                var value = typeof(TEntity).GetPrimaryKey().GetValue(UpsertData);
+                return Convert.ToInt32(value);
+            }
+        }
+
+        protected virtual async Task InitializeOnUpsert(TEntity entity)
+        {
+            var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+            if (value != 0)
+            {
+                using var service = CreateScope().GetService<BaseService<TEntity>>();
+                UpsertData = await service.SingleAsync(value);
+            }
+            else
+            {
+                UpsertData = Activator.CreateInstance<TEntity>();
+                if (UpsertData is BaseEntity baseEntity)
+                    baseEntity.UpsertUserId = UserId;
+            }
+            if (OtherCrudServiceData != null)
+                OtherCrudServiceData.OtherType = null;
+            if (Form != null)
+                Form.Model = UpsertData;
+            if (Window != null)
+                await Window.Open();
+            StateHasChanged();
+            await Task.Delay(100);
+            if (Form != null)
+                await Form.FocusAsync();
         }
 
         protected virtual void DataViewInitializer()
         {
             DataView.Search = Search;
-            
             DataView.ShowInsertIcon = DataView.ShowInsertIcon ?? !HideInsertIcon;
             DataView.HideFooter = DataView.HideFooter ?? hideFooter;
             
-            DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, async entity =>
+            if (DataView.CrudServiceData != null)
             {
-                var value = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
-                if (value != 0)
+                var data = DataView.CrudServiceData;
+                if (data.DetailType == typeof(TEntity))
                 {
-                    using var service = CreateScope().GetService<BaseService<TEntity>>();
-                    UpsertData = await service.SingleAsync(value);
+                    var param = Expression.Parameter(typeof(TEntity), "t");
+                    var masterInfo = typeof(TEntity).GetForeignKey(data.MasterType);
+                    Expression expr = Expression.Property(param, masterInfo);
+                    var masterId = Convert.ChangeType(data.MasterId, masterInfo.PropertyType);
+                    DataView.InternalConditionExpr = Expression.Equal(expr, Expression.Constant(masterId));
                 }
-                else
-                {
-                    UpsertData = Activator.CreateInstance<TEntity>();
-                    var otherType = (this as IInternalUIService).OtherType;
-                    if (otherType != null)
-                    {
-                        var info = typeof(TEntity).GetForeignKey(otherType);
-                        info.SetValue(UpsertData, MasterId);
-                    }
-                    if (UpsertData is BaseEntity baseEntity)
-                        baseEntity.UpsertUserId = UserId;
-                }
-                if (Form != null)
-                    Form.Model = UpsertData;
-                if (Window != null)
-                    await Window.Open();
-                StateHasChanged();
-                await Task.Delay(100);
-                if (Form != null)
-                    await Form.FocusAsync();
-            });
+            }
+
+            DataView.OnInternalUpsert = EventCallback.Factory.Create<TEntity>(this, InitializeOnUpsert);
 
             DataView.OnInternalDelete = EventCallback.Factory.Create<TEntity>(this, async entity =>
             {
@@ -319,18 +332,18 @@ namespace Caspian.UI
         #endregion
 
         #region Methods for Initialize Components. This Methods Call from components(DataView, Form, TypeWindow, ...) For intialize
-        public void ChildTabPanelItemInitialize(Type detailType) => (this as IInternalUIService<TEntity>).OtherType = detailType;
+        public void ChildTabPanelItemInitialize(Type detailType) => OtherCrudServiceData.OtherType = detailType;
         
         void IInternalUIService<TEntity>.TabPanelInitializer(IEntityTabPanel tabPanel)
         {
             EntityTabPanel = tabPanel;
-            Is1To1RelationshipService = true;
+            OtherCrudServiceData = new MasterOtherCrudService();
         }
 
         void IInternalUIService<TEntity>.FormInitializer(CaspianForm<TEntity> form)
         {
             Form = form;
-
+            
             if (UpsertData == null)
             {
                 UpsertData = Activator.CreateInstance<TEntity>();
@@ -430,19 +443,17 @@ namespace Caspian.UI
         /// </summary>
         async Task IInternalUIService<TEntity>.UpdateChildOfModelAsync(Type childType)
         {
-            (this as IInternalUIService<TEntity>).OtherType = childType;
-            
+            OtherCrudServiceData.OtherType = childType;
             if (childType != typeof(TEntity) && UpsertData != null && !childType.IsCollectionType()) 
             {
-                MasterId = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(UpsertData));
                 var info = typeof(TEntity).GetProperties().Single(t => t.PropertyType == childType);
                 var detail = info.GetValue(UpsertData);
                 if (detail == null)
                 {
-                    if (MasterId > 0)
+                    if (CrudId > 0)
                     {
                         using var service = CreateScope().GetService<IBaseService<TEntity>>();
-                        var old = await service.GetAll().Include(info.Name).SingleAsync(MasterId);
+                        var old = await service.GetAll().Include(info.Name).SingleAsync(CrudId.Value);
                         detail = info.GetValue(old);
                     }
                     if (detail == null)
@@ -454,20 +465,20 @@ namespace Caspian.UI
 
         async Task IInternalUIService<TEntity>.FetchAsync()
         {
-            if (MasterId > 0)
+            if (CrudId > 0)
             {
                 using var service = CreateScope().GetService<IBaseService<TEntity>>();
                 if (service == null)
                     throw new CaspianException($"Service of type IBaseService<{typeof(TEntity)} not 'Implemented' and 'Injected'");
-                var old = await service.SingleOrDefaultAsync(MasterId);
+                var old = await service.SingleOrDefaultAsync(CrudId.Value);
                 var pKey = typeof(TEntity).GetPrimaryKey();
                 if (old != null)
                 {
                     UpsertData.CopyEntity(old);
                     if (pKey.PropertyType == typeof(int))
-                        pKey.SetValue(UpsertData, MasterId);
+                        pKey.SetValue(UpsertData, CrudId);
                     else
-                        pKey.SetValue(UpsertData, Convert.ChangeType(MasterId, pKey.PropertyType));
+                        pKey.SetValue(UpsertData, Convert.ChangeType(CrudId.Value, pKey.PropertyType));
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿@namespace Procurement.Web
-@inherits LookupWindow<SupplierGroup, int?>
+@typeparam TValue
+@inherits LookupWindow<SupplierGroup, TValue>
 <div class="c-lookup-page" style="width:700px;">
     <EntitySearch Service="Service" ColumnsCount="2">
         <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
@@ -12,8 +13,8 @@
     <DataGrid Service="Service" TEntity="SupplierGroup" ContentHeight="230">
         <Columns Context="customer">
             <GridColumn Field="t => t.ParentGroup.Name" Title="گروه بالاتر" />
-            <GridColumn Field= "t => t.Code" />
-            <GridColumn Field= "t => t.Name" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
             <GridColumn Field="t => t.CodingLevels.EnumText()" />
         </Columns>
     </DataGrid>

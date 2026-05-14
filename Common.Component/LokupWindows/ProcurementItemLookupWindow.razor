@@ -1,0 +1,43 @@
+﻿@typeparam TValue
+@inherits LookupWindow<ProcurementItem, TValue>
+@namespace Common.Component
+<div class="c-lookup-page" style="width:800px;">
+    <EntitySearch TEntity="ProcurementItem" Service="Service" ColumnsCount="2">
+        <DropdownList SingleSelect @bind-Value="context.ProcurementItemType" ColSpan="4" />
+        @if (context.ProcurementItemType == ProcurementItemType.Service)
+        {
+            <ComboBox TValue="int?" @bind-Value="context.ServiceId" TEntity="Service" TextExpression="t => t.Name" ColSpan="4" />
+        }
+        else
+        {
+            <Lookup TValue="int?" @bind-Value="context.GoodsId" TEntity="Goods" TextExpression="t => t.Name" ColSpan="4" AutoHide>
+                <GoodsLookupWindow />
+            </Lookup>
+        }
+    </EntitySearch>
+
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="ProcurementItem" ContentHeight="200">
+            <Columns>
+                <GridColumn Field="t => t.Goods.Code" Title="کد کالا" />
+                <GridColumn Field="t => t.Goods.Name" Title="نام کالا" />
+                <GridColumn Field="t => t.Goods.MeasurementUnit.Name" Title="واحد سنجش" />
+                <GridColumn Field="t => t.Goods.ProductClass.Name" Title="طبقه کالا" />
+                <GridColumn Field="t => t.Service.Code" Title="کد خدمت" />
+                <GridColumn Field="t => t.Service.Name" Title="نام خدمت" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.InitialSearchExpression(t => LookupStringSearchValue == null || t.ProcurementItemType == ProcurementItemType.Service && 
+            (t.Service.Code.StartsWith(LookupStringSearchValue) || t.Service.Name.Contains(LookupStringSearchValue)) || 
+            t.ProcurementItemType == ProcurementItemType.Goods && 
+            (t.Goods.Code.StartsWith(LookupStringSearchValue) || t.Goods.Name.Contains(LookupStringSearchValue)));
+        base.OnInitialized();
+    }
+}

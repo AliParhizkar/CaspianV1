@@ -279,10 +279,12 @@ var caspian;
                         });
                     }
                     let animate = ctr.getElementsByClassName('t-animation-container')[0];
+                    let leftScroll = animate.parentElement.getPosition().left - animate.parentElement.getBoundingClientRect().left;
+                    animate.style.marginRight = `${leftScroll}px`;
                     let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
                     height = Math.min(250, height);
                     height = Math.max(height, 30);
-                    animate.style.height = `${height + 7}px`;
+                    animate.style.height = `${height + 4}px`;
                     let loc = ctr.getBoundingClientRect();
                     animate.style.width = `${loc.width + 7}px`;
                     if (loc.top > window.innerHeight / 2) {
@@ -312,18 +314,21 @@ var caspian;
             });
         }
         bindObserverForSize(ul) {
-            const observer = new ResizeObserver(t => {
-                let height = t[0].target.getBoundingClientRect().height;
-                if (height > 250)
-                    height = 250;
-                if (height < 30)
-                    height = 30;
-                let animate = t[0].target.closest('.t-animation-container');
-                animate.style.height = `${height + 3}px`;
-                if (animate.classList.contains('c-animate-up'))
-                    animate.style.marginTop = `${-height - 40}px`;
-            });
-            observer.observe(ul);
+            //const observer = new ResizeObserver(t => {
+            //    let height = t[0].target.getBoundingClientRect().height;
+            //    if (height > 250)
+            //        height = 250;
+            //    if (height < 30)
+            //        height = 30;
+            //    let animate = (t[0].target.closest('.t-animation-container') as HTMLElement);
+            //    animate.style.height = `${height + 3}px`;
+            //    if (animate.classList.contains('c-animate-up')) {
+            //        let loc = animate.closest('.t-combobox').getBoundingClientRect();
+            //        let dif = animate.getBoundingClientRect().top - loc.top;
+            //        animate.style.marginTop = `${-height - dif - 5}px`;
+            //    }
+            //});
+            //observer.observe(ul);
         }
     }
     caspian.ComboBox = ComboBox;
@@ -561,7 +566,9 @@ var caspian;
                     if (element.getBoundingClientRect().top > window.outerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         animate.style.marginTop = '-275px';
-                        setTimeout(() => __awaiter(this, void 0, void 0, function* () { return calendar.style.bottom = '-0'; }), 20);
+                        let leftScroll = animate.parentElement.getPosition().left - animate.parentElement.getBoundingClientRect().left;
+                        animate.style.marginRight = `${leftScroll}px`;
+                        setTimeout(() => __awaiter(this, void 0, void 0, function* () { return calendar.style.bottom = '5px'; }), 20);
                     }
                     else {
                         animate.classList.add('c-animate-down');

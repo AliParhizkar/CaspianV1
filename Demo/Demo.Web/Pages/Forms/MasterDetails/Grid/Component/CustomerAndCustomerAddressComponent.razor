@@ -1,5 +1,4 @@
 ﻿@namespace Demo.Web.Pages
-@inject UIService<Customer, CustomerAddress> Service
 <TabPanel>
     <Tabs>
         <TabPanelItem Title="Customer">
@@ -22,7 +21,7 @@
         </TabPanelItem>
         <TabPanelItem Title="Addresses">
             <div class="p-2">
-                <DataGrid TEntity="CustomerAddress" DetailsService="Service" PageSize="5" ContentHeight="150" Inline AutoHide >
+                <DataGrid TEntity="CustomerAddress" DetailsService="Service" PageSize="5" ContentHeight="150" Inline AutoHide>
                     <Columns Context="con">
                         <GridColumn style="width:220px;" Field="t => t.AddressType.Title" Title="Address Type">
                             <EditTemplate>
@@ -47,7 +46,8 @@
     </Tabs>
 </TabPanel>
 
-@code 
+@code
 {
-
+    [Parameter]
+    public UIService<Customer, CustomerAddress> Service { get; set; }
 }

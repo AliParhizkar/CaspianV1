@@ -19,7 +19,7 @@ namespace Warehouse.Service
             RuleFor(t => t.ReceiverIssuerFieldName).Required(t => t.HasReceiverIssuer)
                 .Custom(t => !t.HasReceiverIssuer && t.ReceiverIssuerFieldName != null, "مقدار این فیلد باید خالی باشد");
             RuleFor(t => t.DocumentRelationshipType)
-                .Custom(t => t.DocumentRelationshipType == DocumentRelationshipType.Atff && t.DocumentRelationshipInstance > DocumentRelationshipInstance.RasidEnteghal, "این نوع سند از نوع عطف نمی باشد")
+                .Custom(t => t.DocumentRelationshipType == DocumentRelationshipType.Inflection && t.DocumentRelationshipInstance > DocumentRelationshipInstance.RasidEnteghal, "این نوع سند از نوع عطف نمی باشد")
                 .Custom(t => t.DocumentRelationshipType == DocumentRelationshipType.Reflex && t.DocumentRelationshipInstance < DocumentRelationshipInstance.BargashtBeKharid, "این نوع سند از نوع برگشتی نمی باشد");
             RuleFor(t => t.DocumentBases).CustomValue(t => t == 0, "حداقل یکی از مقادیر مبناها باید انتخاب شود");
             RuleFor(t => t.DefaultBase).Custom(t => (t.DocumentBases & t.DefaultBase) != t.DefaultBase, "مبنای پیشفرض باید در لیست مبناها باشد");

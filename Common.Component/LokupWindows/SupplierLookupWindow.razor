@@ -1,0 +1,36 @@
+﻿@typeparam TValue
+@inherits LookupWindow<Procurement.Model.Supplier, TValue>
+@namespace Common.Component
+<div class="c-lookup-page" style="width:600px;">
+    <EntitySearch TEntity="Procurement.Model.Supplier" Service="Service" ColumnsCount="2">
+        @{
+            context.User = new Caspian.Engine.Model.User();
+        }
+        <StringTextBox @bind-Value="context.User.FName" ColSpan="4" />
+        <StringTextBox @bind-Value="context.User.LName" ColSpan="4" />
+        <StringTextBox @bind-Value="context.User.MobileNumber" ColSpan="4" />
+        <DropdownList @bind-Value="context.ActivityType" ColSpan="4" SingleSelect />
+    </EntitySearch>
+    <div class="p-2">
+        <DataGrid Service="Service" TEntity="Procurement.Model.Supplier" ContentHeight="200">
+            <Columns>
+                <GridColumn Field="t => t.Code" />
+                <GridColumn Field="t => t.User.FName" Title="نام" />
+                <GridColumn Field="t => t.User.MobileNumber" Title="همراه" />
+                <GridColumn Field="t => t.StartDate.ToPersianDateString()" />
+                <GridColumn Field="t => t.ActivityType.EnumText()" />
+                <GridColumn Field="t => t.IsActive" />
+            </Columns>
+        </DataGrid>
+    </div>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.InitialSearchExpression(t => LookupStringSearchValue == null || t.User.MobileNumber.StartsWith(LookupStringSearchValue) ||
+            t.User.Name.Contains(LookupStringSearchValue));
+        base.OnInitialized();
+    }
+}

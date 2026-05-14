@@ -47,5 +47,8 @@ namespace Procurement.Model
 
         [CheckOnDelete("واحد تامین دارای زیرمجموعه می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<SupplyingUnit> Units { get; set; }
+
+        [CheckOnDelete("واحد تامین دارای درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<PurchaseRequestGoods> PurchaseRequestGoods { get; set; }
     }
 }

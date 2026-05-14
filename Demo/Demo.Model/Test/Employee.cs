@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Employees", Schema = "HR")]
+    [Table("Employees", Schema = "Demo")]
     public class Employee
     {
         [Key]
@@ -72,7 +72,7 @@ namespace Demo.Model
         public ReligionAndSubReligion ReligionAndSubReligion { get; set; }
     }
 
-    [Table("Families", Schema = "HR")]
+    [Table("Families", Schema = "demo")]
     public class Family
     {
         [Key]
@@ -94,7 +94,7 @@ namespace Demo.Model
         public Employee Employee { get; set; }
     }
 
-    [Table("Addresses", Schema = "HR")]
+    [Table("Addresses", Schema = "Demo")]
     public class Address
     {
         [Key]
@@ -106,7 +106,7 @@ namespace Demo.Model
         public Employee Employee { get; set; }
     }
 
-    [Table("IdentificationDetails", Schema = "hr")]
+    [Table("IdentificationDetails", Schema = "demo")]
     public class IdentificationDetail
     {
         [Key]
@@ -167,7 +167,7 @@ namespace Demo.Model
         public Employee Employee { get; set; }
     }
 
-    [Table("ReligionAndSubReligion", Schema = "HR")]
+    [Table("ReligionAndSubReligion", Schema = "demo")]
     public class ReligionAndSubReligion
     {
         [Key]
@@ -189,7 +189,7 @@ namespace Demo.Model
         public Employee Employee { get; set; }
     }
 
-    [Table("SubReligions", Schema = "HR")]
+    [Table("SubReligions", Schema = "demo")]
     public class SubReligion
     {
         [Key]

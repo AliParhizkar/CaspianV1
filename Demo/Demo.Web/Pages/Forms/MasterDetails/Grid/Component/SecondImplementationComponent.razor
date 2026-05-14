@@ -1,5 +1,4 @@
 ﻿@namespace Demo.Web.Pages
-@inject UIService<Customer, CustomerGroupMembership> Service
 <CaspianForm Service="Service">
     @{
         var customerType = context.CustomerType;
@@ -24,4 +23,6 @@
 
 @code
 {
+    [Parameter]
+    public UIService<Customer, CustomerGroupMembership> Service { get; set; }
 }

@@ -23,7 +23,7 @@
                     <StringTextBox @bind-Value="employee.FileNo" ColSpan="4" />
                     <ComboBox TValue="int?" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.EmployeeTypeId"
                                 ConditionExpression="t => t.DataType == SimpleDataType.EmployeeType" ColSpan="4" />
-                    <StringTextBox @bind-Value="employee.IdCard" MaxLength="10" MaskedText="----------" ColSpan="4" />
+                    <StringTextBox @bind-Value="employee.IdCard" MaxLength="10" ColSpan="4" />
                 </div>
             </div>
             <div>

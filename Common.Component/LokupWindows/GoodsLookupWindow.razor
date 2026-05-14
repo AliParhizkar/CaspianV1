@@ -1,33 +1,26 @@
 ﻿@namespace Common.Component
 @typeparam TValue
 @inherits LookupWindow<Goods, TValue>
-@if (IsReservation && KeepCenterId == null)
-{
-    <span style="color:red">لطفا محل رزرو کالا (انبار یا مرکز نگهداری) را مشخص نمائید</span>
-}
-else
-{
-    <div class="c-lookup-page" style="width:600px;">
-        <EntitySearch Service="Service" ColumnsCount="2">
-            <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
-                <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
-                <StringTextBox @bind-Value="context.Name" ColSpan="4" />
-                <ComboBox TValue="int" @bind-Value="context.ProductClassId" TEntity="ProductClass" TextExpression="t => t.Name" ColSpan="4" />
-                <DropdownList @bind-Value="context.GoodsType" ColSpan="4" />
-            </div>
-        </EntitySearch>
-        <DataGrid Service="Service" TEntity="Goods" ContentHeight="230" OnDataBinding="BindGrid">
-            <Columns Context="customer">
-                <GridColumn Field="t => t.Code" />
-                <GridColumn Field="t => t.Name" />
-                <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
-                <GridColumn Field="t => t.GoodsType.EnumText()" />
-                <GridColumn Field="t => t.GoodsNature.EnumText()" />
-                <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش" />
-            </Columns>
-        </DataGrid>
-    </div>
-}
+<div class="c-lookup-page" style="width:600px;">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <div class="row mb-2 p-1" style="border: 1px solid #d2d2d2; border-radius: 8px;">
+            <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
+            <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+            <ComboBox TValue="int" @bind-Value="context.ProductClassId" TEntity="ProductClass" TextExpression="t => t.Name" ColSpan="4" />
+            <DropdownList @bind-Value="context.GoodsType" ColSpan="4" />
+        </div>
+    </EntitySearch>
+    <DataGrid Service="Service" TEntity="Goods" ContentHeight="230" OnDataBinding="BindGrid">
+        <Columns Context="customer">
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.ProductClass.Name" Title="طبقه کالا" />
+            <GridColumn Field="t => t.GoodsType.EnumText()" />
+            <GridColumn Field="t => t.GoodsNature.EnumText()" />
+            <GridColumn Field="t => t.MeasurementUnit.Name" Title="واحد سنجش" />
+        </Columns>
+    </DataGrid>
+</div>
 
 @code
 {

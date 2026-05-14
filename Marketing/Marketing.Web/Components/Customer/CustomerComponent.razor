@@ -21,7 +21,7 @@
 }
 
 <Window Style="width:550px;" Service="Service" Title="مشتری" OnOpen="SetCustomerNumber">
-    <CaspianForm Service="Service" TEntity="Customer" OnSubmit="SetCustomerId">
+    <CaspianForm Service="Service" TEntity="Customer">
         <CaspianValidationValidator TModel="Customer" ValidatorType="typeof(CustomerService)" />
         <StringTextBox @bind-Value="context.Name" ColSpan="8" />
         <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" Style="direction:ltr" MaxLength="11" />
@@ -43,12 +43,6 @@
     string customerNumber;
     [Parameter]
     public IUIService<Customer> Service { get; set; }
-
-    void SetCustomerId(CancelableEvent<Customer> e)
-    {
-        if (SimpleMode)
-            e.Entity.Id = Service.MasterId;
-    }
 
     async Task SetCustomerNumber()
     {

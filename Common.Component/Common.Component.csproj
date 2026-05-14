@@ -13,6 +13,8 @@
     <ProjectReference Include="..\Caspian.common\Caspian.common.csproj" />
     <ProjectReference Include="..\Investment\Investment.Model\Investment.Model.csproj" />
     <ProjectReference Include="..\Investment\Investment.Service\Investment.Service.csproj" />
+    <ProjectReference Include="..\Procurement\Procurement.Model\Procurement.Model.csproj" />
+    <ProjectReference Include="..\Procurement\Procurement.Service\Procurement.Service.csproj" />
     <ProjectReference Include="..\UIComponent\UIComponent.csproj" />
     <ProjectReference Include="..\warehouse\Warehouse.Model\Warehouse.Model.csproj" />
     <ProjectReference Include="..\warehouse\Warehouse.Service\Warehouse.Service.csproj" />

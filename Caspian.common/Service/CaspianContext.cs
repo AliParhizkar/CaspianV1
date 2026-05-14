@@ -44,6 +44,8 @@ namespace Caspian.Common
                     throw new CaspianException($"Type {type.FullName} is a entity and haven't any TableAttribute");
                 if (!tableAttribute.Schema.HasValue())
                     throw new CaspianException($"in Type {type.FullName} schema is null or empty");
+                if (!typeof(SubsystemKind).GetFields().Any(t => t.GetCustomAttribute<SubsystemMetaDataAttribute>()?.Schema?.ToLower() == tableAttribute.Schema?.ToLower()))
+                    throw new CaspianException($"In type {type.FullName} schema is \"{tableAttribute.Schema}\" and there isn't any subsystem with this schema");
                 if (tableAttribute.Schema != schema)
                 {
                     modelBuilder.Entity(type).ToTable(tableAttribute.Name, tableAttribute.Schema, t =>

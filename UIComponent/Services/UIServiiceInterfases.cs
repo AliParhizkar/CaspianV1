@@ -1,5 +1,4 @@
-﻿
-using Caspian.Common;
+﻿using Caspian.Common;
 using System.Collections;
 using System.Linq.Expressions;
 
@@ -36,7 +35,6 @@ namespace Caspian.UI
     {
         Task OpenWindow(int? id);
         Task CloseWindow();
-        int MasterId { get; set; }
     }
 
     internal interface IInternalUIService : IUIService
@@ -44,21 +42,6 @@ namespace Caspian.UI
         void WindowInitializer(Window window);
 
         Window Window { get; }
-
-        /// <summary>
-        /// It's Used in One-To-One Relationship.For Example in Employee(Entity) and Address(Other Type) 
-        /// </summary>
-        Type OtherType { get; set; }
-
-        /// <summary>
-        /// It's used in Master-Details CRUD when we save only Single detail we use this to set foreign key property
-        /// </summary>
-        int InternalMasterId { get; set; }
-
-        /// <summary>
-        /// It's used in Master-Details CRUD when we save only Single detail we use this to find foreign key property
-        /// </summary>
-        Type InternalMasterType { get; set; }
     }
 
     internal interface IInternalUIService<TEntity> : IInternalUIService, IInternalSearchService<TEntity>, IUIService<TEntity>  where TEntity : class

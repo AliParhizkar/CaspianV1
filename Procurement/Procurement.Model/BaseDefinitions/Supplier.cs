@@ -38,5 +38,14 @@ namespace Procurement.Model
 
         [CheckOnDelete("تامین کننده عضو گروه می باشد و امکان حذف وی وجود ندارد")]
         public ICollection<SupplierGroupMembership> Memberships { get; set; }
+
+        [CheckOnDelete("تامین کننده دراای در خواست خرید می باشد و امکان حذف وی وجود ندارد")]
+        public ICollection<PurchaseRequest> PurchaseRequests { get; set; }
+
+        [CheckOnDelete("امکان حذف تامین کننده وجود ندارد")]
+        public ICollection<PurchaseRequestGoods> PurchaseRequestGoods { get; set; }
+
+        [CheckOnDelete("امکان حذف تامین کننده وجود ندارد")]
+        public ICollection<RequestGoodsSupplier> RequestGoodsSuppliers { get; set; }
     }
 }

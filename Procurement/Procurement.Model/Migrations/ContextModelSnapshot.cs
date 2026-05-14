@@ -581,6 +581,129 @@ namespace Procurement.Model.Migrations
                     b.ToTable("ProcurementItemsGrouping", "pcm");
                 });
 
+            modelBuilder.Entity("Procurement.Model.PurchaseRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CostCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("KeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("No")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("OtherPartyType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("ProcurementItemType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte?>("PurchaseRequestType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("RequesterId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CostCenterId");
+
+                    b.HasIndex("KeepCenterId");
+
+                    b.HasIndex("RequesterId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("PurchaseRequests", "pcm");
+                });
+
+            modelBuilder.Entity("Procurement.Model.PurchaseRequestGoods", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("GoodsFlowId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("InquiryDeadline")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("NeedDate")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("ProcurementItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PurchaseRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchaseTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PurchasingSpecialistId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("ReferenceDocumentType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplyingUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UrgentPurchaseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsFlowId");
+
+                    b.HasIndex("ProcurementItemId");
+
+                    b.HasIndex("PurchaseRequestId");
+
+                    b.HasIndex("PurchaseTypeId");
+
+                    b.HasIndex("PurchasingSpecialistId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasIndex("SupplyingUnitId");
+
+                    b.HasIndex("UrgentPurchaseId");
+
+                    b.ToTable("PurchaseRequestsGoods", "pcm");
+                });
+
             modelBuilder.Entity("Procurement.Model.PurchaseType", b =>
                 {
                     b.Property<int>("Id")
@@ -639,6 +762,29 @@ namespace Procurement.Model.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PurchasingSpecialist", "pcm");
+                });
+
+            modelBuilder.Entity("Procurement.Model.RequestGoodsSupplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PurchaseRequestGoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseRequestGoodsId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("RequestGoodsSuppliers", "pcm");
                 });
 
             modelBuilder.Entity("Procurement.Model.Seller", b =>
@@ -989,6 +1135,26 @@ namespace Procurement.Model.Migrations
                     b.HasIndex("SupplyingUnitId");
 
                     b.ToTable("SupplyingUnitsMembership", "pcm");
+                });
+
+            modelBuilder.Entity("Procurement.Model.UrgentPurchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UrgentPurchases", "pcm");
                 });
 
             modelBuilder.Entity("Warehouse.Model.BarcodePattern", b =>
@@ -1820,6 +1986,97 @@ namespace Procurement.Model.Migrations
                     b.Navigation("ProcurementItemGroup");
                 });
 
+            modelBuilder.Entity("Procurement.Model.PurchaseRequest", b =>
+                {
+                    b.HasOne("Accounting.Model.CostCenter", "CostCenter")
+                        .WithMany()
+                        .HasForeignKey("CostCenterId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "KeepCenter")
+                        .WithMany()
+                        .HasForeignKey("KeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Caspian.Engine.Model.User", "Requester")
+                        .WithMany()
+                        .HasForeignKey("RequesterId");
+
+                    b.HasOne("Procurement.Model.Supplier", "Supplier")
+                        .WithMany("PurchaseRequests")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("CostCenter");
+
+                    b.Navigation("KeepCenter");
+
+                    b.Navigation("Requester");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Procurement.Model.PurchaseRequestGoods", b =>
+                {
+                    b.HasOne("Warehouse.Model.GoodsFlow", "GoodsFlow")
+                        .WithMany()
+                        .HasForeignKey("GoodsFlowId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Procurement.Model.ProcurementItem", "ProcurementItem")
+                        .WithMany("PurchaseRequestGoods")
+                        .HasForeignKey("ProcurementItemId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Procurement.Model.PurchaseRequest", "PurchaseRequest")
+                        .WithMany("Goods")
+                        .HasForeignKey("PurchaseRequestId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Procurement.Model.PurchaseType", "PurchaseType")
+                        .WithMany("PurchaseRequestGoods")
+                        .HasForeignKey("PurchaseTypeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Procurement.Model.PurchasingSpecialist", "PurchasingSpecialist")
+                        .WithMany("PurchasingSpecialists")
+                        .HasForeignKey("PurchasingSpecialistId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Procurement.Model.Supplier", "Supplier")
+                        .WithMany("PurchaseRequestGoods")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Procurement.Model.SupplyingUnit", "SupplyingUnit")
+                        .WithMany("PurchaseRequestGoods")
+                        .HasForeignKey("SupplyingUnitId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Procurement.Model.UrgentPurchase", "UrgentPurchase")
+                        .WithMany("Goods")
+                        .HasForeignKey("UrgentPurchaseId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("GoodsFlow");
+
+                    b.Navigation("ProcurementItem");
+
+                    b.Navigation("PurchaseRequest");
+
+                    b.Navigation("PurchaseType");
+
+                    b.Navigation("PurchasingSpecialist");
+
+                    b.Navigation("Supplier");
+
+                    b.Navigation("SupplyingUnit");
+
+                    b.Navigation("UrgentPurchase");
+                });
+
             modelBuilder.Entity("Procurement.Model.PurchasingSpecialist", b =>
                 {
                     b.HasOne("Caspian.Engine.Model.User", "User")
@@ -1829,6 +2086,25 @@ namespace Procurement.Model.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Procurement.Model.RequestGoodsSupplier", b =>
+                {
+                    b.HasOne("Procurement.Model.PurchaseRequestGoods", "PurchaseRequestGoods")
+                        .WithMany("RequestGoodsSuppliers")
+                        .HasForeignKey("PurchaseRequestGoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Procurement.Model.Supplier", "Supplier")
+                        .WithMany("RequestGoodsSuppliers")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("PurchaseRequestGoods");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Procurement.Model.Seller", b =>
@@ -2335,6 +2611,8 @@ namespace Procurement.Model.Migrations
                 {
                     b.Navigation("Memberships");
 
+                    b.Navigation("PurchaseRequestGoods");
+
                     b.Navigation("SupplyingScopes");
                 });
 
@@ -2347,8 +2625,25 @@ namespace Procurement.Model.Migrations
                     b.Navigation("SupplyingScopes");
                 });
 
+            modelBuilder.Entity("Procurement.Model.PurchaseRequest", b =>
+                {
+                    b.Navigation("Goods");
+                });
+
+            modelBuilder.Entity("Procurement.Model.PurchaseRequestGoods", b =>
+                {
+                    b.Navigation("RequestGoodsSuppliers");
+                });
+
+            modelBuilder.Entity("Procurement.Model.PurchaseType", b =>
+                {
+                    b.Navigation("PurchaseRequestGoods");
+                });
+
             modelBuilder.Entity("Procurement.Model.PurchasingSpecialist", b =>
                 {
+                    b.Navigation("PurchasingSpecialists");
+
                     b.Navigation("SupplyingUnitMemberships");
                 });
 
@@ -2360,6 +2655,12 @@ namespace Procurement.Model.Migrations
             modelBuilder.Entity("Procurement.Model.Supplier", b =>
                 {
                     b.Navigation("Memberships");
+
+                    b.Navigation("PurchaseRequestGoods");
+
+                    b.Navigation("PurchaseRequests");
+
+                    b.Navigation("RequestGoodsSuppliers");
 
                     b.Navigation("SupplierEvaluations");
                 });
@@ -2380,9 +2681,16 @@ namespace Procurement.Model.Migrations
 
             modelBuilder.Entity("Procurement.Model.SupplyingUnit", b =>
                 {
+                    b.Navigation("PurchaseRequestGoods");
+
                     b.Navigation("SupplyingUnitMemberships");
 
                     b.Navigation("Units");
+                });
+
+            modelBuilder.Entity("Procurement.Model.UrgentPurchase", b =>
+                {
+                    b.Navigation("Goods");
                 });
 
             modelBuilder.Entity("Warehouse.Model.BarcodePattern", b =>

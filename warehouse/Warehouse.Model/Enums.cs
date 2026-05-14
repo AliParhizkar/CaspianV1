@@ -142,12 +142,6 @@ namespace Warehouse.Model
         PurchaseRequest
     }
 
-    public enum PurchaseRequestType: byte
-    {
-        [Display(Name = "مصرف")]
-        Consumption
-    }
-
     public enum ReservationBasis: byte
     {
         [Display(Name = "درخواست کالا")]
@@ -211,7 +205,7 @@ namespace Warehouse.Model
         BetweenStockTransfer,
 
         [Display(Name = "انبارگردانی")]
-        Anbargardany,
+        Warehousing,
 
         [Display(Name = "سایر")]
         Others
@@ -250,7 +244,7 @@ namespace Warehouse.Model
     public enum DocumentRelationshipType: byte
     {
         [Display(Name ="عطف")]
-        Atff,
+        Inflection,
 
         [Display(Name = "برگشتی")]
         Reflex 
@@ -259,10 +253,10 @@ namespace Warehouse.Model
     public enum DocumentRelationshipInstance: byte
     {
         [Display(Name = "حواله تبدیل کالا")]
-        HavalehTabdilKala,
+        GoodsRemittanceReceipt,
 
         [Display(Name = "رسید تبدیل کالا")]
-        RasidTabdilKala,
+        GoodsConversionReceipt,
 
         [Display(Name = "حواله انتقال")]
         HavalehEnteghal,

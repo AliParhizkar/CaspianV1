@@ -41,7 +41,6 @@ namespace Demo.Service
                 await base.UpdateAsync(pre);
                 await base.UpdateAsync(old);
             }
-            
         }
 
         public async Task DecOrderingAsync(int id)
@@ -70,5 +69,6 @@ namespace Demo.Service
             entity.Ordering = old.Ordering;
             await base.UpdateAsync(entity);
         }
+
     }
 }
