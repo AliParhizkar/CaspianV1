@@ -3,24 +3,11 @@
 @{
     base.BuildRenderTree(__builder);
 }
-@inject IUIService<Country> Service1
-<button @onclick="Clear">Clear</button>
-<span>@order.CustomerId</span>
-<div style="width:500px;margin:5px auto;">
-    <CaspianForm Model="order">
-        <Lookup TValue="int?" @bind-Value="context.CustomerId" TEntity="Customer" ColSpan="8"
-                TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName">
-            <Demo.Web.Pages.CustomerLookupWindow TValue="int?" />
-        </Lookup>
-    </CaspianForm>
+<div style="width:500px;">
+
 </div>
 
 @code
 { 
-    Order order = new Order();
-
-    void Clear()
-    {
-        order.CustomerId = 0;
-    }
+    DateOnly 
 }

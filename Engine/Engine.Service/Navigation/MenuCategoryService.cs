@@ -48,7 +48,7 @@ namespace Caspian.Engine.Service
         public async Task DecOrderingAsync(int id)
         {
             var old = await SingleAsync(id);
-            var next = await GetAll().Where(t => t.Ordering > old.Ordering).OrderBy(t => t.Ordering).FirstOrDefaultAsync();
+            var next = await GetAll().Where(t => t.SubsystemKind == old.SubsystemKind && t.Ordering > old.Ordering).OrderBy(t => t.Ordering).FirstOrDefaultAsync();
             if (next != null)
             {
                 var temp = old.Ordering;

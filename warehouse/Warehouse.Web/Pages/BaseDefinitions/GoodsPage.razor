@@ -46,22 +46,24 @@
                     <DropdownList @bind-Value="goods.ReservationLevel" ColSpan="4" />
                     <div class="col-md-6 row">
                         <DropdownList @bind-Value="goods.GoodsNature" ColSpan="8" TotalSpan="12" />
-                        <RadioList @bind-Value="goods.GoodsType" ShowTitle>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <RadioItem Value="GoodsType.Purchased" />
+                        <div class="ps-1 pe-1">
+                            <MultiSelectBox @bind-Value="goods.GoodsType" ShowTitle>
+                                <div class="row w-100">
+                                    <div class="col-md-6">
+                                        <CheckBox Value="GoodsType.Purchased" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <CheckBox Value="GoodsType.Salable" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <CheckBox Value="GoodsType.Construction" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <CheckBox Value="GoodsType.OutOfStockItem" />
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <RadioItem Value="GoodsType.Salable" />
-                                </div>
-                                <div class="col-md-6">
-                                    <RadioItem Value="GoodsType.Construction" />
-                                </div>
-                                <div class="col-md-6">
-                                    <RadioItem Value="GoodsType.OutOfStockItem" />
-                                </div>
-                            </div>
-                        </RadioList>
+                            </MultiSelectBox>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <CheckBox @bind-Value="goods.SuspendedInIncoming" ColSpan="12" TotalSpan="12" />
@@ -70,8 +72,14 @@
                     <FormCommandButton ColSpan="8" />
                 </div>
             </ChildTabPanelItem>
+            <ChildrenTabPanelItem Children="t => t.PropertiesOfGoods">
+                <PropertyOfGoodsComponent Page="this" />
+            </ChildrenTabPanelItem>
             <ChildrenTabPanelItem Children="t => t.GoodsPlacements">
                 <GoodsPlacementComponent />
+            </ChildrenTabPanelItem>
+            <ChildrenTabPanelItem Children="t => t.GoodsOrderings">
+                <GoodsOrderingComponent />
             </ChildrenTabPanelItem>
         </Content>
     </EntityTabPanel>

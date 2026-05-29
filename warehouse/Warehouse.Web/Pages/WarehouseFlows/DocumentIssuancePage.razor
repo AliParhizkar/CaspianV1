@@ -1,20 +1,20 @@
 ﻿@page "/Warehouse/DocumentIssuance"
-@attribute [Source(23, "دور سند")]
+@attribute [Source(22, "گردش سند")]
 @inject UIService<StockFlow, GoodsFlow> Service
 @inject NavigationManager navigationManager
 @inherits BasePage
 
 <div class="p-3">
     <div class="row c-controls">
-        <div class="col-md-1">
+        <div class="col-md-1" style="width:50px">
             <IconButton IconType="IconType.Bar" @onclick="e => ShowContextMenu(e)" />
         </div>
         @if (selectedPattern != null)
         {
-            <div class="col-md-3">
+            <div class="col-md-2" style="width:calc(16.6663% - 50px)">
                 <label>نوع سند</label>
             </div>
-            <div class="col-md-8 text-center">
+            <div class="col-md-9 text-center">
                 <span style=" background-color: #e4f0ff; padding: 0px 10px 7px; min-width: 100%; display: inline-block; color: #921b80; border-radius: 19px;">@selectedPattern.Title</span>
             </div>
         }
@@ -109,6 +109,7 @@
     {
         using var service = CreateScope().GetService<DocumentPatternService>();
         documentPatterns = await service.GetAll().ToListAsync();
+        selectedPattern = documentPatterns.First();
         await base.OnInitializedAsync();
     }
 

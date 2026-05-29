@@ -174,7 +174,6 @@ namespace Caspian.UI
                     if (OnCreate != null)
                         OnCreate(UpsertData);
                     StateHasChanged();
-                    await Form.FocusAsync();
                 }
                 else
                     await Window.Close();
@@ -270,6 +269,14 @@ namespace Caspian.UI
             else
             {
                 UpsertData = Activator.CreateInstance<TEntity>();
+                /// In Master-Detail Crud set masterId in detail
+                if (DataView?.CrudServiceData != null)
+                {
+                    if (DataView?.CrudServiceData.DetailType != typeof(TEntity))
+                        throw new CaspianException($"Type bad initialized in list view");
+                    var masterInfo = typeof(TEntity).GetForeignKey(DataView.CrudServiceData.MasterType);
+                    masterInfo.SetValue(UpsertData, DataView.CrudServiceData.MasterId);
+                }
                 if (UpsertData is BaseEntity baseEntity)
                     baseEntity.UpsertUserId = UserId;
             }

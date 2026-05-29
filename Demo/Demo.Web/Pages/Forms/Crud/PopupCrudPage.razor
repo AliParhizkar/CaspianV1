@@ -2,7 +2,6 @@
 @inherits BasePage
 @attribute [Source(43, "Popup Crud")]
 @inject IUIService<ProductCategory> Service
-@inject IUIService<Product> ProductService
 @{
     base.BuildRenderTree(__builder);
 }
@@ -39,7 +38,7 @@
 </TabPanel>
 <Window @bind-Status="status" Title="Product" Style="width:850px">
     <Content>
-        <PopupProductPage CategoryId="popupCategoryId.Value" Service="ProductService" />
+        <PopupProductPage CategoryId="popupCategoryId.Value" Page="this" />
     </Content>
 </Window>
 @code

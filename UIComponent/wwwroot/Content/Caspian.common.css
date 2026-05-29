@@ -200,8 +200,6 @@ input {
         text-align: center;
     }
 
-
-
 .t-dropdown .t-input {
     display: inline-block;
     line-height: 28px;
@@ -232,7 +230,7 @@ input {
         padding: 0 7px;
         margin: 2px;
         border-radius: 8px;
-        height: 36px;
+        min-height: 36px;
     }
 
     .c-multi-select:not(.t-state-disabled):hover {

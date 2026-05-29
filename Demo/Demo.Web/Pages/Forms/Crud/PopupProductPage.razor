@@ -1,4 +1,6 @@
-﻿<TabPanel>
+﻿@inject IUIService<Product> Service
+
+<TabPanel>
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="row pb-3 pe-3">
@@ -16,8 +18,8 @@
                     <Window Service="Service" Title="Product CRUD" Style="width:500px">
                         <CaspianForm TEntity="Product" Service="Service" OnSubmit="SetCategory">
                             <StringTextBox @bind-Value="context.Title" ColSpan="8" />
-                            <NumericTextBox @bind-Value="context.Price" ColSpan="8" />
-                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" />
+                            <NumericTextBox @bind-Value="context.Price" ColSpan="8" DigitGrouping />
+                            <NumericTextBox @bind-Value="context.TakeoutPrice" ColSpan="8" DigitGrouping />
                             <MultiSelectBox @bind-Value="context.Meal" ColSpan="8" />
                             <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
                             <WindowCommandButtons ColSpan="8" />
@@ -38,11 +40,17 @@
     [Parameter]
     public int CategoryId { get; set; }
 
-    [Parameter]
-    public IUIService<Product> Service { get; set; }
-
     void SetCategory(CancelableEvent<Product> e)
     {
         e.Entity.ProductCategoryId = CategoryId;
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Service.OnUpsert = async (provider, product) => product.Id > 0 || product.Price > 0 && product.TakeoutPrice > 0 || await Page.Confirm("آیا با ثبت موافقید؟");
+        base.OnInitialized();
     }
 }

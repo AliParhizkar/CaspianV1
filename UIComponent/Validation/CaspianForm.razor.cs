@@ -196,7 +196,7 @@ namespace Caspian.UI
             FormAppState.AllControlsIsValid = true;
             FormAppState.ErrorMessage = null;
             ErrorMessage = null;
-            if ((Service as UIService<TEntity>).OtherCrudServiceData?.OtherType != null )
+            if ((Service as UIService<TEntity>)?.OtherCrudServiceData?.OtherType != null )
                 EditContext.Properties["DetailType"] = (Service as UIService<TEntity>).OtherCrudServiceData.OtherType;
             EditContext.Validate();
             if (OnBeforeValidate.HasDelegate)

@@ -51,5 +51,8 @@ namespace Warehouse.Model
         [InverseProperty(nameof(StockFlow.OtherKeepCenter))]
         [CheckOnDelete("مرکز نگهداری دارای گردش (مقابل) می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<StockFlow> OtherStockFlows { get; set; }
+
+        [CheckOnDelete("کالا دارای اطلاعات سفارش گذاری می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<GoodsOrdering> GoodsOrderings { get; set; }
     }
 }

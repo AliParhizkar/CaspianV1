@@ -3,10 +3,10 @@
 namespace Caspian.Common
 {
     public enum SubsystemKind: byte
-    { 
-        /// <summary>
-        /// بخش اصلی
-        /// </summary>
+    {
+        [SubsystemMetaData("Main", Schema = "dbo")]
+        Main = 0,
+
         [SubsystemMetaData("Engine", Schema = "cmn")]
         Engine = 1,
 

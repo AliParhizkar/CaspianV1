@@ -7,7 +7,7 @@
 }
 <div class="p-4 pb-0">
     <EntitySearch Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Code" ColSpan="4" TotalSpan="5" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="4" TotalSpan="5" Style="direction:ltr" />
         <StringTextBox @bind-Value="context.Name" ColSpan="6" TotalSpan="7" />
     </EntitySearch>
 </div>
@@ -23,7 +23,7 @@
 <Window Service="Service" Title="الگوی بارکد" Style="width:450px">
     <CaspianForm TEntity="BarcodePattern" Service="Service">
         <StringTextBox @bind-Value="context.Name" ColSpan="8" />
-        <StringTextBox @bind-Value="context.Code" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
         <FormCommandButton ColSpan="8" />
     </CaspianForm>
 </Window>

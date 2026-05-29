@@ -1,0 +1,17 @@
+﻿@page "/Warehouse/BeginingInventory"
+@attribute [Source(33, "موجودی اول دوره")]
+@inject UIService<StockFlow, GoodsFlow> Service
+@inject NavigationManager navigationManager
+@inherits BasePage
+    <DocumentIssuanceComponent Service="Service" SelectedPattern="selectedPattern"  />
+@code
+{
+    DocumentPattern selectedPattern;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<DocumentPatternService>();
+        selectedPattern = await service.GetAll().SingleAsync(t => t.DocumentType == DocumentType.Warehousing);
+        await base.OnInitializedAsync();
+    }
+}

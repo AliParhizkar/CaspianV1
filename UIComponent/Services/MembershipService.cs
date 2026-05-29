@@ -149,7 +149,7 @@ namespace Caspian.UI
             innerExpr = Expression.Lambda(innerExpr, u);
             var accessListProperties = typeof(TOther).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
             if (masterProperty != null)
-                accessListProperties = accessListProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property == masterProperty.Name);
+                accessListProperties = accessListProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property != masterProperty.Name);
             if (accessListProperties.Count() == 0)
                 throw new CaspianException("Error: Type " + typeof(TOther).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
             Expression expression = Expression.Property(Expression.Parameter(typeof(TOther), "t"), accessListProperties.Single());
@@ -207,8 +207,11 @@ namespace Caspian.UI
 
         protected override async Task UpsertAndInitializeAfterValidate(TAccess entity)
         {
+            Console.WriteLine($"{DateTime.Now.Microsecond}A");
             await base.UpsertAndInitializeAfterValidate(entity);
+            Console.WriteLine($"{DateTime.Now.Microsecond}B");
             await OtherDataView.ReloadAsync();
+            Console.WriteLine($"{DateTime.Now.Microsecond}C");
         }
 
         protected override async Task InitializeAfterRemove(TAccess entity)

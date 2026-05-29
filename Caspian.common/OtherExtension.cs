@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
+using Caspian.Common.Attributes;
 
 
 namespace Caspian.Common
@@ -22,13 +23,32 @@ namespace Caspian.Common
             DisplayAttribute da;
             if (field == null)
                 return null;
+            var type = field.GetType();
+            if (type.GetCustomAttribute<EnumTypeAttribute>()?.IsBitwise == true)
+            {
+                var value = field.ConvertToInt();
+                var text = string.Empty;
+                foreach(var field1 in type.GetFields())
+                {
+                    if (!field1.IsSpecialName)
+                    {
+                        var value1 = Convert.ToInt32(field1.GetValue(null));
+                        if ((value & value1) == value1)
+                        {
+                            var attr = field1.GetCustomAttribute<DisplayAttribute>();
+                            if (text != string.Empty)
+                                text += ", ";
+                            text += attr?.Name ?? Convert.ToString(field1);
+                        }
+                    }
+                }
+                return text;
+            }
             var fi = field.GetType().GetField(field.ToString());
             if (fi == null)
                 throw new Exception("هیچ فیلدی برای " + field.GetType().Name + " با مقدار " + field + " تعریف نشده است.");
             da = fi.GetCustomAttribute<DisplayAttribute>();
-            if (da != null)
-                return da.Name;
-            return Convert.ToString(field);
+            return da?.Name ?? Convert.ToString(field);
         }
 
         public static int? ConvertToInt(this Enum currentEnum)

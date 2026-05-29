@@ -210,13 +210,8 @@ namespace Caspian.UI
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
                 throw new CaspianException($"Service of type {type} not implemented");
-
-            if (Service != null)
-            {
-                (Service as IInternalSearchService<TEntity>).DataViewInitializer(this);
-            }
-            if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitializer(this);
+            (Service as IInternalSearchService<TEntity>)?.DataViewInitializer(this);
+            (DetailsService as IInternalBatchService<TEntity>)?.DetailDataViewInitializer(this);
             base.OnInitialized();
         }
 
@@ -369,7 +364,6 @@ namespace Caspian.UI
             }
             StateHasChanged();
             await FocusInsertButtonAsync();
-            
         }
 
         internal IList<TEntity>  GetSource() => source;
@@ -520,6 +514,8 @@ namespace Caspian.UI
             }
         }
 
+
+
         async Task UpdateEntityForForeignKey(TEntity entity)
         {
             var type = typeof(TEntity);
@@ -530,21 +526,18 @@ namespace Caspian.UI
                 {
                     var foreignKeyInfo = type.GetProperty(attr.Name);
                     var value = foreignKeyInfo.GetValue(entity);
-                    if (value != null && !value.Equals(0))
+                    if (value?.Equals(0) == false)
                     {
                         if (expressionList?.ContainsKey(info.Name) == true)
                         {
-
                             var selectExpr = expressionList[info.Name];
                             var query = GetQueryForType(info.PropertyType, value);
                             var list = await query.Select(selectExpr).ToDynamicListAsync();
                             var result = list.SingleOrDefault();
                             var foreignKeyValue = Activator.CreateInstance(info.PropertyType);
                             foreach (PropertyInfo info1 in result.GetType().GetProperties())
-                            {
                                 if (info1.IsCollectible)
                                     IQueryableExtension.UpdateEntity(foreignKeyValue, info1.Name, info1.GetValue(result));
-                            }
                             info.SetValue(entity, foreignKeyValue);
                         }
                     }
@@ -797,10 +790,8 @@ namespace Caspian.UI
 
         public void Dispose()
         {
-            if (Service != null)
-                (Service as IInternalSearchService<TEntity>).DataViewInitializer(null); 
-            if (DetailsService != null)
-                (DetailsService as IInternalBatchService<TEntity>).DetailDataViewInitializer(null);
+            (Service as IInternalSearchService<TEntity>)?.DataViewInitializer(null); 
+            (DetailsService as IInternalBatchService<TEntity>)?.DetailDataViewInitializer(null);
         }
     }
 }

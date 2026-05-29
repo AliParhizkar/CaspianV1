@@ -73,5 +73,13 @@ namespace Warehouse.Model
 
         [CheckOnDelete("کالا دارای گردش در انبار می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<GoodsFlow> GoodsFlows { get; set; }
+
+        [CheckOnDelete("کالا دارای ویژگی می باشد و امکان حذف آن وجود ندارد")]
+        [DisplayName("ویژگی های کالا")]
+        public ICollection<PropertyOfGoods> PropertiesOfGoods { get; set; }
+
+        [CheckOnDelete("کالا دارای اطلاعات سفارش گذاری می باشد و امکان حذف آن وجود ندارد")]
+        [DisplayName("اطلاعات سفارش گذاری")]
+        public ICollection<GoodsOrdering> GoodsOrderings { get; set; }
     }
 }

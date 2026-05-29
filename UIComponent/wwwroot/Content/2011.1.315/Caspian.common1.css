@@ -18,7 +18,7 @@
 .t-datepicker .t-input {
     direction: ltr
 }
-.t-radios.c-container .c-title {
+.t-radios.c-container .c-title, .c-multi-select .c-title {
     font-size: 12px;
     color: #343434;
     margin-right: 2px;
@@ -27,14 +27,18 @@
     margin-top: -16px;
     font-weight: bold;
 }
-.t-radios.c-container {
-    border: 1px solid #dbdbdb;
-    padding: 5px 5px 5px 0;
-    margin: 4px;
-    width: calc(100% - 16px) !important;
-    border-radius: 4px;
-    background-color: #f6fbff;
+.c-multi-select .c-title {
+    margin-top: -12px!important;
 }
+
+    .t-radios.c-container {
+        border: 1px solid #dbdbdb;
+        padding: 5px 5px 5px 0;
+        margin: 4px;
+        width: calc(100% - 16px) !important;
+        border-radius: 4px;
+        background-color: #f6fbff;
+    }
 .d-membership {
     text-align: center;
     color: #4f9995;
@@ -379,12 +383,13 @@ button:disabled {
     margin:0;
     padding:6px 0;
 }
-.c-context-menu-left {
+
+.t-rtl .c-context-menu-right, .t-ltr .c-context-menu-left {
     left: 100%;
 }
 
-.c-context-menu-right {
-    right: 100%;
+.t-ltr .c-context-menu-right, .t-rtl .c-context-menu-left {
+    right: calc(100% + 2px);
 }
 
 .c-context-menu-item {
@@ -3703,10 +3708,6 @@ html body .t-grid tbody .t-button-icon {
 
 .c-context-menu {
     min-width: 8rem;
-}
-
-.c-context-menu-left {
-    left: 100%;
 }
 
 .c-context-menu-right {

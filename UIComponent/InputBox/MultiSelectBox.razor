@@ -15,7 +15,6 @@ else
     @RenderMultiSelect()
 }
 
-
 @code 
 {
     RenderFragment RenderMultiSelect()
@@ -28,26 +27,37 @@ else
             else if (ErrorMessage.HasValue())
                 className += " t-state-error";
             <div @ref="InputElement" tabindex="@(TabIndex ?? 0)" class="@className" error-message="@ErrorMessage">
-                @{
-                    var diabledValue = Convert.ToInt64(DisabledValue);
-                }
-                @foreach (var item in Items)
+                @if (ChildContent == null)
                 {
-                    var keyValue = Convert.ToInt64(item.Key);
-                    if (!disabled)
+                    var diabledValue = Convert.ToInt64(DisabledValue);
+                    foreach (var item in Items)
                     {
-                        if ((diabledValue & keyValue) == keyValue)
-                            disabled = true;
+                        var keyValue = Convert.ToInt64(item.Key);
+                        if (!disabled)
+                        {
+                            if ((diabledValue & keyValue) == keyValue)
+                                disabled = true;
+                        }
+                        var value = (keyValue & Convert.ToInt64(Value)) == keyValue;
+                        <div>
+                            <CheckBox Disabled="disabled" Title="@item.Value" Value="value"
+                                      ValueChanged="@(async (bool flag) =>
+                                {
+                                    if (flag || Convert.ToInt64(Value) > 0)
+                                      await ChangValue(item.Key, flag);
+                                })" />
+                        </div>
                     }
-                    var value = (keyValue & Convert.ToInt64(Value)) == keyValue;
-                    <div>
-                        <CheckBox Disabled="disabled" Title="@item.Value" Value="value"
-                                  ValueChanged="@(async (bool flag) =>
-                                  {
-                                      if (flag || Convert.ToInt64(Value) > 0)
-                                        await ChangValue(item.Key, flag);
-                                  })" />
-                    </div>
+                }
+                else
+                {
+                    if (ShowTitle)
+                    {
+                        <span class="c-title">@GetTitle()</span>
+                    }
+                    <CascadingValue Value="this">
+                        @ChildContent
+                    </CascadingValue>
                 }
             </div>
         };

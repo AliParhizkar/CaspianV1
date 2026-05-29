@@ -98,6 +98,7 @@ namespace Caspian.UI
             }
             else
                 Value = default;
+            BindEditContext();
             if (ValueChanged.HasDelegate)
                 await ValueChanged.InvokeAsync(Value);
             if (OnChange.HasDelegate)

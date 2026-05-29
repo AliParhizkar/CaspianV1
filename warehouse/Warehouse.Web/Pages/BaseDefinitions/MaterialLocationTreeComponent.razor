@@ -45,6 +45,7 @@
 
 @code
 {
+
     string titleSearch, codeSearch;
     MaterialLocation location;
     WindowStatus status;
@@ -84,18 +85,21 @@
 
     async Task DeleteLocation(NodeView node)
     {
-        var locationId = Convert.ToInt32(node.Value);
-        using var service = Page.CreateScope().GetService<MaterialLocationService>();
-        var location = await service.SingleAsync(locationId);
-        var result = await service.ValidateRemoveAsync(location);
-        if (result.IsValid)
+        if (await Page.Confirm("آیا با حذف موافقید؟"))
         {
-            service.Remove(location);
-            await service.SaveChangesAsync();
-            tree.RemoveFromTree(location);
+            var locationId = Convert.ToInt32(node.Value);
+            using var service = Page.CreateScope().GetService<MaterialLocationService>();
+            var location = await service.SingleAsync(locationId);
+            var result = await service.ValidateRemoveAsync(location);
+            if (result.IsValid)
+            {
+                service.Remove(location);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(location);
+            }
+            else
+                Page.ShowMessage(result.Errors.First().ErrorMessage);
         }
-        else
-            Page.ShowMessage(result.Errors.First().ErrorMessage);
     }
 
     async Task<bool> UpsertLocation()

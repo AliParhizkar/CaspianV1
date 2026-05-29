@@ -9,7 +9,7 @@ namespace Warehouse.Service
         public LocationService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Code).UniqueAsync("محل جغرافیایی با این کد درسیستم تعریف شده است");
+            RuleFor(t => t.Code).Required().UniqueAsync("محل جغرافیایی با این کد درسیستم تعریف شده است");
             RuleFor(t => t.Title).Required().UniqueAsync(t => t.ParentId, "محل جغرافیایی با این نام درسیستم تعریف شده است");
             RuleFor(t => t.LocationType).CustomAsync(async t =>
             {

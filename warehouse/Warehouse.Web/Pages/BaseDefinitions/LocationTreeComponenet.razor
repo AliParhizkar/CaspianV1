@@ -93,9 +93,12 @@
         var result = await service.ValidateRemoveAsync(location);
         if (result.IsValid)
         {
-            service.Remove(location);
-            await service.SaveChangesAsync();
-            tree.RemoveFromTree(location);
+            if (await Page.Confirm("آیا با حذف موافقید؟"))
+            {
+                service.Remove(location);
+                await service.SaveChangesAsync();
+                tree.RemoveFromTree(location);
+            }
         }
         else
             Page.ShowMessage(result.Errors.First().ErrorMessage);

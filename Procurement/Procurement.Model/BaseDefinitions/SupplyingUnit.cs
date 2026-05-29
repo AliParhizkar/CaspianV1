@@ -50,5 +50,8 @@ namespace Procurement.Model
 
         [CheckOnDelete("واحد تامین دارای درخواست کالا می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<PurchaseRequestGoods> PurchaseRequestGoods { get; set; }
+
+        [CheckOnDelete("واحد تامین دارای استعلام قیمت می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<PriceInquiry> PriceInquiries { get; set; }
     }
 }

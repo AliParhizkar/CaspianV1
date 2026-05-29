@@ -1,0 +1,64 @@
+﻿<div class="p-3">
+    <div class="row c-controls">
+        <div class="col-md-1" style="width:50px">
+            
+        </div>
+        @if (SelectedPattern != null)
+        {
+            <div class="col-md-2" style="width:calc(16.6663% - 50px)">
+                <label>نوع سند</label>
+            </div>
+            <div class="col-md-9 text-center">
+                <span style=" background-color: #e4f0ff; padding: 0px 10px 7px; min-width: 100%; display: inline-block; color: #921b80; border-radius: 19px;">@SelectedPattern.Title</span>
+            </div>
+        }
+    </div>
+    @if (SelectedPattern != null)
+    {
+        <EntitySearch Service="Service" ColumnsCount="2">
+            <ComboBox TValue="int?" TEntity="StockRoom" @bind-Value="context.StockRoomId" TextExpression="t => t.Title" ColSpan="4" Title="@SelectedPattern.FromStockRoomFieldName" />
+            <StringTextBox @bind-Value="context.No" Style="direction:ltr" ColSpan="4" />
+            <ComboBox TValue="int?" TEntity="Accounting.Model.AccountingCode" @bind-Value="context.AccountingCodeId" TextExpression="t => t.Name" ColSpan="4" />
+            <DatePicker @bind-Value="context.Date" ColSpan="4" />
+            @if (SelectedPattern.HasOtherParty)
+            {
+                <DropdownList @bind-Value="context.OtherPartyType" ColSpan="4" SingleSelect />
+                if (context.OtherPartyType == OtherPartyType.CostCenter)
+                {
+                    <ComboBox TValue="int?" TEntity="Accounting.Model.CostCenter" @bind-Value="context.CostCenterId" ColSpan="4" TextExpression="t => t.Name" />
+                }
+                else
+                {
+                    <ComboBox TValue="int?" TEntity="Supplier" @bind-Value="context.SupplierId" ColSpan="4" TextExpression="t => t.User.Name" />
+                }
+            }
+        </EntitySearch>
+        <DataGrid @key="SelectedPattern.Id" TEntity="StockFlow" Service="Service" ConditionExpr="t => t.StockFlowType == StockFlowType.OpeningInventory">
+            <Columns>
+                <GridColumn Field="t => t.Date.ToPersianDateString()" />
+                @if (!SelectedPattern.HasOtherParty)
+                {
+                    <GridColumn Field="t => t.StockRoom.KeepCenter.Name" Title="مرکز نگهداری" />
+                }
+                <GridColumn Field="t => t.StockRoom.Title" Title="@(SelectedPattern.FromStockRoomFieldName)" />
+                @if (SelectedPattern.HasOtherParty)
+                {
+                    <GridColumn Field="t => t.OtherPartyType == OtherPartyType.CostCenter ? t.CostCenter.Name : t.Supplier.User.Name" Title="طرف مقابل" />
+                }
+                <GridColumn Field="t => t.No" />
+                <GridColumn Field="t => t.AccountingCode.Code" Title="کد معین" />
+                <GridColumn Field="t => t.AccountingCode.Name" Title="نام معین" />
+                <GridColumn Field="t => t.Branch" />
+            </Columns>
+        </DataGrid>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public DocumentPattern SelectedPattern { get; set; }
+
+    [Parameter]
+    public UIService<StockFlow, GoodsFlow> Service { get; set; }
+}

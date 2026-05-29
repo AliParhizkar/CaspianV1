@@ -1,4 +1,8 @@
 ﻿@page "/Warehouse/Location"
+@{ 
+    base.BuildRenderTree(__builder);
+}
+
 @attribute [Source(28, "موفعیت جغراقیایی")]
 @inject IUIService<Location> Service
 @inherits BasePage

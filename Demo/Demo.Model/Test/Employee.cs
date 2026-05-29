@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Employees", Schema = "Demo")]
+    [Table("Employees", Schema = "demo")]
     public class Employee
     {
         [Key]
@@ -94,7 +94,7 @@ namespace Demo.Model
         public Employee Employee { get; set; }
     }
 
-    [Table("Addresses", Schema = "Demo")]
+    [Table("Addresses", Schema = "demo")]
     public class Address
     {
         [Key]

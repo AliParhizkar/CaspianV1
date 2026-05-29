@@ -226,6 +226,12 @@ var caspian;
         constructor(input, Pageable, dotnet) {
             this.bindObserver(input, Pageable, dotnet);
             let control = input.closest('.t-combobox').getElementsByClassName('t-inputbox-wrap')[0];
+            input.parentElement.onkeydown = e => {
+                if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+                    if (e.target.closest('.t-combobox').getElementsByClassName('t-animation-container').length > 0)
+                        e.preventDefault();
+                }
+            };
             input.onkeyup = e => {
                 if (e.key == 'ArrowDown' || e.key == 'ArrowUp') {
                     let selected = e.target.closest('.t-combobox').getElementsByClassName('t-state-selected')[0];
@@ -272,7 +278,7 @@ var caspian;
                 let ctr = t[0].target;
                 let group = ctr.getElementsByClassName('t-group')[0];
                 if (group) {
-                    this.bindObserverForSize(group.getElementsByClassName('t-reset')[0]);
+                    this.bindObserverForItems(group.getElementsByClassName('t-reset')[0]);
                     if (pageable) {
                         group.onscrollend = () => __awaiter(this, void 0, void 0, function* () {
                             yield dotnet.invokeMethodAsync('IncPageNumberInvokable');
@@ -283,15 +289,15 @@ var caspian;
                     animate.style.marginRight = `${leftScroll}px`;
                     let height = group.getElementsByClassName('t-reset')[0].getBoundingClientRect().height;
                     height = Math.min(250, height);
-                    height = Math.max(height, 30);
-                    animate.style.height = `${height + 4}px`;
+                    height = Math.max(height, 35);
+                    animate.style.height = `${height + 10}px`;
                     let loc = ctr.getBoundingClientRect();
                     animate.style.width = `${loc.width + 7}px`;
                     if (loc.top > window.innerHeight / 2) {
                         animate.classList.add('c-animate-up');
                         setTimeout(() => group.style.bottom = '0', 10);
                         let dif = animate.getBoundingClientRect().top - loc.top;
-                        animate.style.marginTop = `${-height - dif - 5}px`;
+                        animate.style.marginTop = `${-height - dif - 12}px`;
                     }
                     else {
                         animate.classList.add('c-animate-down');
@@ -313,22 +319,26 @@ var caspian;
                 subtree: false
             });
         }
-        bindObserverForSize(ul) {
-            //const observer = new ResizeObserver(t => {
-            //    let height = t[0].target.getBoundingClientRect().height;
-            //    if (height > 250)
-            //        height = 250;
-            //    if (height < 30)
-            //        height = 30;
-            //    let animate = (t[0].target.closest('.t-animation-container') as HTMLElement);
-            //    animate.style.height = `${height + 3}px`;
-            //    if (animate.classList.contains('c-animate-up')) {
-            //        let loc = animate.closest('.t-combobox').getBoundingClientRect();
-            //        let dif = animate.getBoundingClientRect().top - loc.top;
-            //        animate.style.marginTop = `${-height - dif - 5}px`;
-            //    }
-            //});
-            //observer.observe(ul);
+        bindObserverForItems(ul) {
+            const mutationObserver = new MutationObserver(t => {
+                let ctr = t[0].target;
+                let height = ctr.getBoundingClientRect().height + 10;
+                height = Math.min(250, height);
+                height = Math.max(35, height);
+                let animate = ctr.closest('.t-animation-container');
+                if (animate.classList.contains('c-animate-up')) {
+                    let difHeight = animate.getBoundingClientRect().height - height;
+                    let marginTop = animate.style.marginTop;
+                    marginTop = marginTop.substring(0, marginTop.length - 2);
+                    animate.style.marginTop = `${parseFloat(marginTop) + difHeight}px`;
+                }
+                animate.style.height = `${height}px`;
+            });
+            mutationObserver.observe(ul, {
+                attributes: false,
+                childList: true,
+                subtree: false
+            });
         }
     }
     caspian.ComboBox = ComboBox;

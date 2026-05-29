@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Lookups\**" />
+    <Content Remove="Pages\Lookups\**" />
+    <EmbeddedResource Remove="Pages\Lookups\**" />
+    <None Remove="Pages\Lookups\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
@@ -26,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Lookups\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

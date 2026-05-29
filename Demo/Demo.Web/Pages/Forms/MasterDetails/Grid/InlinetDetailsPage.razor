@@ -136,7 +136,7 @@
                                         {
                                             if (con.UpsertMode == null)
                                             {
-                                                <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
+                                                <div class="d-price">@(con.Data.Price.DigitGrouping())</div>
                                             }
                                             else
                                             {
@@ -147,9 +147,9 @@
                                         {
                                             if (con.Data.Discount > 0)
                                             {
-                                                <div class="d-price d-discount">@(con.Data.Discount + con.Data.Price)$</div>
+                                                <div class="d-price d-discount">@(con.Data.Discount + con.Data.Price)</div>
                                             }
-                                            <div class="d-price">@(con.Data.Price.DigitGrouping())$</div>
+                                            <div class="d-price">@(con.Data.Price.DigitGrouping())</div>
                                         }
                                     </Template>
                                 </GridColumn>
@@ -267,14 +267,12 @@
 
     async Task AddText(string text)
     {
-        if (selectedOrderDetail.Descript.HasValue())
-        {
-            var str = selectedOrderDetail.Descript.Substring(0, selectionStart);
-            var index = str.LastIndexOf(' ') + 1;
-            str = str.Substring(0, index) + text + selectedOrderDetail.Descript.Substring(selectionStart);
-            selectedOrderDetail.Descript = str;
-            await txtDescript.SetSelection(selectionStart + text.Length - 1);
-        }
+        selectedOrderDetail.Descript = selectedOrderDetail.Descript ?? "";
+        var str = selectedOrderDetail.Descript.Substring(0, selectionStart);
+        var index = str.LastIndexOf(' ') + 1;
+        str = str.Substring(0, index) + text + selectedOrderDetail.Descript.Substring(selectionStart);
+        selectedOrderDetail.Descript = str;
+        await txtDescript.SetSelection(selectionStart + text.Length - 1);
     }
 
     void SearchDescription(EKeyboardEventArgs e)

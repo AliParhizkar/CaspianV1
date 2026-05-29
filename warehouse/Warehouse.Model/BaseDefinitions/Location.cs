@@ -29,7 +29,7 @@ namespace Warehouse.Model
         [CheckOnDelete("محل جغرافیایی دارای زیرمجموعه می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<Location> Locations { get; set; }
 
-        [CheckOnDelete("مرکز نگهداری کالا دارای انبار می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("محل جغرافیایی دارای مرکزنگهداری می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<KeepCenter> KeepCenters { get; set; }
     }
 }

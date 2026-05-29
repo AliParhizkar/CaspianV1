@@ -1,6 +1,10 @@
 ﻿@page "/Demo/HierarchyTree"
 @attribute [Source(73, "Hierarchy Tree")]
 @inherits BasePage
+@{ 
+    base.BuildRenderTree(__builder);
+}
+
 <h2>Hierarchy Tree</h2>
 <p>
     Hierarchical entities have a <b>relationship with themselves</b>.
@@ -126,7 +130,7 @@
         using var service = CreateScope().GetService<OrganUnitService>();
         var organUnit = await service.SingleAsync(organUnitId);
         var result = await service.ValidateRemoveAsync(organUnit);
-        if (result.IsValid)
+        if (result.IsValid && await Confirm("آیا با حذف موافقید؟"))
         {
             service.Remove(organUnit);
             await service.SaveChangesAsync();

@@ -26,7 +26,7 @@
     <CaspianForm TEntity="MeasurementUnit" Service="Service">
         <StringTextBox @bind-Value="context.Name" ColSpan="9" />
         <DropdownList @bind-Value="context.MeasurementDimension" ColSpan="9" />
-        <StringTextBox @bind-Value="context.ShortName" ColSpan="9" />
+        <StringTextBox @bind-Value="context.ShortName" ColSpan="9" Style="direction:ltr" />
         <DropdownList @bind-Value="context.ActiveStatus" ColSpan="9" />
         <FormCommandButton ColSpan="9" />
     </CaspianForm>

@@ -12,16 +12,30 @@ namespace Demo.Model.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "HR");
-
-            migrationBuilder.EnsureSchema(
                 name: "demo");
 
-            migrationBuilder.EnsureSchema(
-                name: "hr");
-
-            migrationBuilder.EnsureSchema(
-                name: "Demo");
+            migrationBuilder.CreateTable(
+                name: "AccountCoding",
+                schema: "demo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Level = table.Column<int>(type: "int", nullable: false),
+                    ParentCodeId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountCoding", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountCoding_AccountCoding_ParentCodeId",
+                        column: x => x.ParentCodeId,
+                        principalSchema: "demo",
+                        principalTable: "AccountCoding",
+                        principalColumn: "Id");
+                });
 
             migrationBuilder.CreateTable(
                 name: "AddressTypes",
@@ -58,7 +72,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,7 +168,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,7 +212,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Scopes",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -213,7 +227,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateTable(
                 name: "SimpleData",
-                schema: "Demo",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -224,20 +238,6 @@ namespace Demo.Model.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SimpleData", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Test",
-                schema: "demo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Test", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -286,8 +286,8 @@ namespace Demo.Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AddressTypeId = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ZipCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ZipCode = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -339,7 +339,7 @@ namespace Demo.Model.Migrations
                         principalSchema: "cmn",
                         principalTable: "PersianDatesTable",
                         principalColumn: "Date",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_couriers_CourierId",
                         column: x => x.CourierId,
@@ -430,7 +430,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Evaluations",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -455,14 +455,14 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_Evaluations_Scopes_ScopeId",
                         column: x => x.ScopeId,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "Scopes",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Employees",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -485,32 +485,32 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_Employees_SimpleData_CostCenterId",
                         column: x => x.CostCenterId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Employees_SimpleData_EmployeeTypeId",
                         column: x => x.EmployeeTypeId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Employees_SimpleData_EmploymentTypeId",
                         column: x => x.EmploymentTypeId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Employees_SimpleData_ScopeId",
                         column: x => x.ScopeId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "SubReligions",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -524,7 +524,7 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_SubReligions_SimpleData_ReligionId",
                         column: x => x.ReligionId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                 });
@@ -562,7 +562,9 @@ namespace Demo.Model.Migrations
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     CountryId = table.Column<int>(type: "int", nullable: false),
                     ProvinceId = table.Column<int>(type: "int", nullable: true),
-                    ActiveType = table.Column<byte>(type: "tinyint", nullable: false)
+                    ActiveType = table.Column<byte>(type: "tinyint", nullable: false),
+                    UpsertDate = table.Column<DateTime>(type: "datetime2(2)", precision: 2, nullable: true),
+                    UpsertUserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -578,6 +580,12 @@ namespace Demo.Model.Migrations
                         column: x => x.ProvinceId,
                         principalSchema: "demo",
                         principalTable: "Provinces",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Cities_Users_UpsertUserId",
+                        column: x => x.UpsertUserId,
+                        principalSchema: "cmn",
+                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
@@ -621,6 +629,7 @@ namespace Demo.Model.Migrations
                     Descript = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Result = table.Column<int>(type: "int", nullable: false, computedColumnSql: "[Price] * [Quantity]")
                 },
@@ -643,7 +652,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateTable(
                 name: "ProductsDescription",
-                schema: "Demo",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -664,7 +673,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Addresses",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
@@ -676,15 +685,15 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_Addresses_Employees_Id",
                         column: x => x.Id,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "CourseStudies",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -698,14 +707,14 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_CourseStudies_Employees_EmployeeId",
                         column: x => x.EmployeeId,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "Employees",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Families",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
@@ -719,21 +728,21 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_Families_Employees_Id",
                         column: x => x.Id,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Families_SimpleData_WifeJobId",
                         column: x => x.WifeJobId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ReligionAndSubReligion",
-                schema: "HR",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
@@ -746,27 +755,27 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_ReligionAndSubReligion_Employees_Id",
                         column: x => x.Id,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ReligionAndSubReligion_SimpleData_ReligionId",
                         column: x => x.ReligionId,
-                        principalSchema: "Demo",
+                        principalSchema: "demo",
                         principalTable: "SimpleData",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ReligionAndSubReligion_SubReligions_SubReligionId",
                         column: x => x.SubReligionId,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "SubReligions",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "IdentificationDetails",
-                schema: "hr",
+                schema: "demo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
@@ -812,10 +821,10 @@ namespace Demo.Model.Migrations
                     table.ForeignKey(
                         name: "FK_IdentificationDetails_Employees_Id",
                         column: x => x.Id,
-                        principalSchema: "HR",
+                        principalSchema: "demo",
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_IdentificationDetails_Provinces_BirthProvinceId",
                         column: x => x.BirthProvinceId,
@@ -861,6 +870,12 @@ namespace Demo.Model.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccountCoding_ParentCodeId",
+                schema: "demo",
+                table: "AccountCoding",
+                column: "ParentCodeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cities_CountryId",
                 schema: "demo",
                 table: "Cities",
@@ -873,6 +888,12 @@ namespace Demo.Model.Migrations
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_UpsertUserId",
+                schema: "demo",
+                table: "Cities",
+                column: "UpsertUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Countries _UpsertUserId",
                 schema: "demo",
                 table: "Countries ",
@@ -880,7 +901,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_CourseStudies_EmployeeId",
-                schema: "HR",
+                schema: "demo",
                 table: "CourseStudies",
                 column: "EmployeeId");
 
@@ -910,73 +931,73 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_CostCenterId",
-                schema: "HR",
+                schema: "demo",
                 table: "Employees",
                 column: "CostCenterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_EmployeeTypeId",
-                schema: "HR",
+                schema: "demo",
                 table: "Employees",
                 column: "EmployeeTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_EmploymentTypeId",
-                schema: "HR",
+                schema: "demo",
                 table: "Employees",
                 column: "EmploymentTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_ScopeId",
-                schema: "HR",
+                schema: "demo",
                 table: "Employees",
                 column: "ScopeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Evaluations_ScopeId",
-                schema: "HR",
+                schema: "demo",
                 table: "Evaluations",
                 column: "ScopeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Families_WifeJobId",
-                schema: "HR",
+                schema: "demo",
                 table: "Families",
                 column: "WifeJobId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentificationDetails_BirthCityId",
-                schema: "hr",
+                schema: "demo",
                 table: "IdentificationDetails",
                 column: "BirthCityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentificationDetails_BirthCountryId",
-                schema: "hr",
+                schema: "demo",
                 table: "IdentificationDetails",
                 column: "BirthCountryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentificationDetails_BirthProvinceId",
-                schema: "hr",
+                schema: "demo",
                 table: "IdentificationDetails",
                 column: "BirthProvinceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentificationDetails_RegCityId",
-                schema: "hr",
+                schema: "demo",
                 table: "IdentificationDetails",
                 column: "RegCityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentificationDetails_RegCountryId",
-                schema: "hr",
+                schema: "demo",
                 table: "IdentificationDetails",
                 column: "RegCountryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdentificationDetails_RegProvinceId",
-                schema: "hr",
+                schema: "demo",
                 table: "IdentificationDetails",
                 column: "RegProvinceId");
 
@@ -1042,7 +1063,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductsDescription_ProductId",
-                schema: "Demo",
+                schema: "demo",
                 table: "ProductsDescription",
                 column: "ProductId");
 
@@ -1066,19 +1087,19 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReligionAndSubReligion_ReligionId",
-                schema: "HR",
+                schema: "demo",
                 table: "ReligionAndSubReligion",
                 column: "ReligionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReligionAndSubReligion_SubReligionId",
-                schema: "HR",
+                schema: "demo",
                 table: "ReligionAndSubReligion",
                 column: "SubReligionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubReligions_ReligionId",
-                schema: "HR",
+                schema: "demo",
                 table: "SubReligions",
                 column: "ReligionId");
 
@@ -1099,12 +1120,16 @@ namespace Demo.Model.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AccountCoding",
+                schema: "demo");
+
+            migrationBuilder.DropTable(
                 name: "Addresses",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "CourseStudies",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "CustomerGroupsMembership",
@@ -1116,15 +1141,15 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "Evaluations",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "Families",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "IdentificationDetails",
-                schema: "hr");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "Meetings",
@@ -1140,7 +1165,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductsDescription",
-                schema: "Demo");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "ReceiptDetails",
@@ -1148,10 +1173,6 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReligionAndSubReligion",
-                schema: "HR");
-
-            migrationBuilder.DropTable(
-                name: "Test",
                 schema: "demo");
 
             migrationBuilder.DropTable(
@@ -1164,7 +1185,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "Scopes",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "Cities",
@@ -1188,11 +1209,11 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "Employees",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "SubReligions",
-                schema: "HR");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "Provinces",
@@ -1220,7 +1241,7 @@ namespace Demo.Model.Migrations
 
             migrationBuilder.DropTable(
                 name: "SimpleData",
-                schema: "Demo");
+                schema: "demo");
 
             migrationBuilder.DropTable(
                 name: "Countries ",

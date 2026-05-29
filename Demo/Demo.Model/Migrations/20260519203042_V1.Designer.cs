@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250511033159_V1")]
+    [Migration("20260519203042_V1")]
     partial class V1
     {
         /// <inheritdoc />
@@ -34,30 +34,26 @@ namespace Demo.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ErrorFileName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("LineNumber")
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<short>("RepetitionTimes")
                         .HasColumnType("smallint");
 
                     b.Property<string>("SourceCodeFileName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("SubSystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Version")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -80,7 +76,6 @@ namespace Demo.Model.Migrations
 
                     b.Property<DateTime>("RegisterDate")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasPrecision(2)
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
@@ -115,23 +110,20 @@ namespace Demo.Model.Migrations
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
 
-                    b.Property<bool>("ShowonMenu")
+                    b.Property<bool>("ShowOnMenu")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Source")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int");
 
-                    b.Property<byte?>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("URL")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -183,18 +175,16 @@ namespace Demo.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("IconFont")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Ordering")
                         .HasColumnType("int");
 
-                    b.Property<byte>("SubSystemKind")
+                    b.Property<byte>("SubsystemKind")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -219,8 +209,7 @@ namespace Demo.Model.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("PersianDate")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short>("Year")
                         .HasColumnType("smallint");
@@ -242,16 +231,13 @@ namespace Demo.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -273,23 +259,19 @@ namespace Demo.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("FName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -298,42 +280,37 @@ namespace Demo.Model.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("MobileNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -369,6 +346,35 @@ namespace Demo.Model.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Demo.Model.AccountCoding", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCodeId");
+
+                    b.ToTable("AccountCoding", "demo");
+                });
+
             modelBuilder.Entity("Demo.Model.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -380,7 +386,7 @@ namespace Demo.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses", "HR");
+                    b.ToTable("Addresses", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.AddressType", b =>
@@ -421,11 +427,20 @@ namespace Demo.Model.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("UpsertDate")
+                        .HasPrecision(2)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpsertUserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
 
                     b.HasIndex("ProvinceId");
+
+                    b.HasIndex("UpsertUserId");
 
                     b.ToTable("Cities", "demo");
                 });
@@ -503,7 +518,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("CourseStudies", "HR");
+                    b.ToTable("CourseStudies", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Customer", b =>
@@ -563,8 +578,8 @@ namespace Demo.Model.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("AddressTypeId")
                         .HasColumnType("int");
@@ -579,8 +594,8 @@ namespace Demo.Model.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ZipCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -690,7 +705,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("ScopeId");
 
-                    b.ToTable("Employees", "HR");
+                    b.ToTable("Employees", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Evaluation", b =>
@@ -746,7 +761,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("ScopeId");
 
-                    b.ToTable("Evaluations", "HR");
+                    b.ToTable("Evaluations", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Family", b =>
@@ -768,7 +783,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("WifeJobId");
 
-                    b.ToTable("Families", "HR");
+                    b.ToTable("Families", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.IdentificationDetail", b =>
@@ -827,7 +842,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("RegProvinceId");
 
-                    b.ToTable("IdentificationDetails", "hr");
+                    b.ToTable("IdentificationDetails", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.MainUnit", b =>
@@ -976,6 +991,9 @@ namespace Demo.Model.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -1123,7 +1141,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsDescription", "Demo");
+                    b.ToTable("ProductsDescription", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Province", b =>
@@ -1201,7 +1219,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("SubReligionId");
 
-                    b.ToTable("ReligionAndSubReligion", "HR");
+                    b.ToTable("ReligionAndSubReligion", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Scope", b =>
@@ -1222,7 +1240,7 @@ namespace Demo.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scopes", "HR");
+                    b.ToTable("Scopes", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.SimpleData", b =>
@@ -1242,7 +1260,7 @@ namespace Demo.Model.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SimpleData", "Demo");
+                    b.ToTable("SimpleData", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.SubReligion", b =>
@@ -1264,7 +1282,7 @@ namespace Demo.Model.Migrations
 
                     b.HasIndex("ReligionId");
 
-                    b.ToTable("SubReligions", "HR");
+                    b.ToTable("SubReligions", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Subunit", b =>
@@ -1293,23 +1311,6 @@ namespace Demo.Model.Migrations
                     b.HasIndex("MainUnitId");
 
                     b.ToTable("Subunits", "demo");
-                });
-
-            modelBuilder.Entity("Demo.Model.Test", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Test", "demo");
                 });
 
             modelBuilder.Entity("Demo.Model.Warehouse", b =>
@@ -1365,7 +1366,7 @@ namespace Demo.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.ExceptionData", "ExceptionData")
                         .WithMany("Details")
                         .HasForeignKey("ExceptionDataId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
@@ -1383,8 +1384,7 @@ namespace Demo.Model.Migrations
                 {
                     b.HasOne("Caspian.Engine.Model.MenuCategory", "MenuCategory")
                         .WithMany("Menus")
-                        .HasForeignKey("MenuCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("MenuCategoryId");
 
                     b.Navigation("MenuCategory");
                 });
@@ -1394,13 +1394,12 @@ namespace Demo.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.Menu", "Menu")
                         .WithMany("Accessibilities")
                         .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.Role", "Role")
                         .WithMany("MenuAccessibilities")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("RoleId");
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
                         .WithMany("Accessibilities")
@@ -1418,7 +1417,7 @@ namespace Demo.Model.Migrations
                     b.HasOne("Caspian.Engine.Model.Role", "Role")
                         .WithMany("Memberships")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Caspian.Engine.Model.User", "User")
@@ -1430,6 +1429,16 @@ namespace Demo.Model.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Demo.Model.AccountCoding", b =>
+                {
+                    b.HasOne("Demo.Model.AccountCoding", "ParentCode")
+                        .WithMany("ChildrenCodes")
+                        .HasForeignKey("ParentCodeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ParentCode");
                 });
 
             modelBuilder.Entity("Demo.Model.Address", b =>
@@ -1455,9 +1464,15 @@ namespace Demo.Model.Migrations
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("Caspian.Engine.Model.User", "UpsertUser")
+                        .WithMany()
+                        .HasForeignKey("UpsertUserId");
+
                     b.Navigation("Country");
 
                     b.Navigation("Province");
+
+                    b.Navigation("UpsertUser");
                 });
 
             modelBuilder.Entity("Demo.Model.Country", b =>
@@ -1853,6 +1868,11 @@ namespace Demo.Model.Migrations
                     b.Navigation("ExceptionDetails");
 
                     b.Navigation("Memberships");
+                });
+
+            modelBuilder.Entity("Demo.Model.AccountCoding", b =>
+                {
+                    b.Navigation("ChildrenCodes");
                 });
 
             modelBuilder.Entity("Demo.Model.AddressType", b =>

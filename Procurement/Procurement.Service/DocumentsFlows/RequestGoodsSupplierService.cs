@@ -8,7 +8,7 @@ namespace Procurement.Service
         public RequestGoodsSupplierService(IServiceProvider provider)
             :base(provider)
         {
-
+            
         }
     }
 }

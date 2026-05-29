@@ -32,13 +32,14 @@
         @if (context.PropertyType == PropertyType.Number)
         {
             <NumericTextBox @bind-Value="context.MinimumValue" ColSpan="8" />
-            <NumericTextBox @bind-Value="context.MaxLength" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.MaximumValue" ColSpan="8" />
+            <NumericTextBox @bind-Value="context.MaxLength" ColSpan="8" Title="تعداد ارقام" />
             <NumericTextBox @bind-Value="context.NumberDigit" ColSpan="8" />
         }
         else if (context.PropertyType == PropertyType.String)
         {
             <NumericTextBox @bind-Value="context.MaxLength" ColSpan="8" Disabled="context.FixLength == true" />
-            <CheckBox TValue="bool" Value="context.FixLength == true" ValueChanged="t => context.FixLength = t" 
+            <CheckBox TValue="bool" Value="context.FixLength == true" ValueChanged="t => context.FixLength = t"
                       Title="طول ثابت" ColSpan="8" Disabled="context.MaxLength != null" />
             <NumericTextBox @bind-Value="context.Length" ColSpan="8" Disabled="context.FixLength != true" />
         }

@@ -10,6 +10,7 @@ namespace Warehouse.Service
             :base(provider)
         {
             RuleFor(t => t.GoodsId).UniqueAsync(t => t.SubstituteGoodsId, "این حالت جایگزینی قبلا تعریف شده است");
+            RuleFor(t => t.Rate).Custom(t => t.Rate <= 0, "نسبت جایگزینی باید بزرگتر از صفر باشد");
         }
     }
 }

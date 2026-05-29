@@ -126,7 +126,7 @@ namespace Caspian.UI
                 }
                 shouldRender = true;
             }
-            else if (e.Key == "Enter")
+            else if (e.Key == "Enter" || e.Key == "NumpadEnter")
             {
                 if (SelectedIndex == -1)
                     SelectedIndex = 0;
@@ -144,7 +144,8 @@ namespace Caspian.UI
                         await SetValue(typeof(TEntity).GetPrimaryKey().GetValue(temp));
                         text = TextExpression.Compile().Invoke(temp);
                     }
-                    Status = WindowStatus.Close;
+                    if (Status == WindowStatus.Open)
+                        Status = WindowStatus.Close;
                 }
                 shouldRender = true;
             }
@@ -164,7 +165,7 @@ namespace Caspian.UI
                 Status = WindowStatus.Close;
                 shouldRender = true;
             }
-            else if (e.Key != "Enter" && e.Key != "Tab")
+            else if (e.Key != "Enter" && e.Key != "NumpadEnter" && e.Key != "Tab")
             {
                 if (Status == WindowStatus.Close)
                     Status = WindowStatus.Open;

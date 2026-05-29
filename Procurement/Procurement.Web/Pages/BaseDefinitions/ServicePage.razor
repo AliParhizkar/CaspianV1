@@ -7,11 +7,11 @@
 }
 
 <div class="p-3">
-    <EntitySearch Service="Service" ColumnsCount="2">
-        <StringTextBox @bind-Value="context.Code" SearchType="SearchType.StartWith" ColSpan="4" Style="direction:ltr" />
-        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    <EntitySearch Service="Service">
+        <StringTextBox @bind-Value="context.Code" SearchType="SearchType.StartWith" ColSpan="2" TotalSpan="3" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="3" TotalSpan="4"  />
         <ComboBox TValue="int" TEntity="Warehouse.Model.MeasurementUnit" @bind-Value="context.MeasurementUnitId" 
-                  TextExpression="t => t.Name" ColSpan="4" />
+                  TextExpression="t => t.Name" ColSpan="3" TotalSpan="5" />
     </EntitySearch>
     <DataGrid TEntity="Service" Service="Service">
         <Columns>

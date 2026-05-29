@@ -169,6 +169,31 @@ namespace Caspian.UI
             return ErrorMessage != null;
         }
 
+        protected void BindEditContext()
+        {
+            if (CurrentEditContext != null && !reseting)
+            {
+                var model = CurrentEditContext.Model;
+                FormAppState.AllControlsIsValid = true;
+                FormAppState.ErrorMessage = null;
+                if (_FieldName.HasValue())
+                {
+                    var info = model.GetType().GetProperty(_FieldName);
+                    if (info == null && !Validate())
+                    {
+                        FormAppState.AllControlsIsValid = false;
+                        FormAppState.Control = this;
+                    }
+                    else if (info != null)
+                    {
+                        var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
+                        info.SetValue(model, Value);
+                        CurrentEditContext.NotifyFieldChanged(field);
+                    }
+                }
+            }
+        }
+
         public virtual async Task SetValue(object obj, bool isMultiselect = false)
         {
             var readOnly = false;
@@ -191,32 +216,13 @@ namespace Caspian.UI
                     else
                         Value = (TValue)Convert.ChangeType(obj, type);
                 }
-                if (CurrentEditContext != null && !reseting)
-                {
-                    var model = CurrentEditContext.Model;
-                    FormAppState.AllControlsIsValid = true;
-                    FormAppState.ErrorMessage = null;
-                    if (_FieldName.HasValue())
-                    {
-                        var info = model.GetType().GetProperty(_FieldName);
-                        if (info == null && !Validate())
-                        {
-                            FormAppState.AllControlsIsValid = false;
-                            FormAppState.Control = this;
-                        }
-                        else if (info != null)
-                        {
-                            var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
-                            info.SetValue(model, Value);
-                            CurrentEditContext.NotifyFieldChanged(field);
-                        }
-                    }
-                }
+
                 reseting = false;
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
                 if (OnChange.HasDelegate)
                     await OnChange.InvokeAsync();
+                BindEditContext();
                 EntitySearch?.EnableLoadData();
             }
         }

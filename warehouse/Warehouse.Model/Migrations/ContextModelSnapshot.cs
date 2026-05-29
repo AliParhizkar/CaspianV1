@@ -582,6 +582,48 @@ namespace Warehouse.Model.Migrations
                     b.ToTable("GoodsFlow", "wh");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.GoodsOrdering", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConsumeUltimate")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("EconomicOrder")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KeepCenterId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MaximumInventory")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("MinimumInventory")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("OrderingPoint")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsId");
+
+                    b.HasIndex("KeepCenterId");
+
+                    b.ToTable("GoodsOrderings", "wh");
+                });
+
             modelBuilder.Entity("Warehouse.Model.GoodsPlacement", b =>
                 {
                     b.Property<int>("Id")
@@ -648,6 +690,34 @@ namespace Warehouse.Model.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GoodsProperties", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.InventoryControlAgent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte>("ActiveStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("CombinedInventory")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("GoodsPropertiesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsPropertiesId");
+
+                    b.ToTable("InventoryControlAgents", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
@@ -824,6 +894,48 @@ namespace Warehouse.Model.Migrations
                     b.HasIndex("GoodsPropertyId");
 
                     b.ToTable("PropertiesList", "wh");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.PropertyOfGoods", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool?>("BooleanField")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly?>("DateField")
+                        .HasColumnType("date");
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoodsPropertiesId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("NumericField")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int?>("PropertyListIdField")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StringField")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GoodsId");
+
+                    b.HasIndex("GoodsPropertiesId");
+
+                    b.HasIndex("PropertyListIdField");
+
+                    b.ToTable("PropertiesOfGoods", "wh");
                 });
 
             modelBuilder.Entity("Warehouse.Model.Reservation", b =>
@@ -1274,6 +1386,25 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("StockFlow");
                 });
 
+            modelBuilder.Entity("Warehouse.Model.GoodsOrdering", b =>
+                {
+                    b.HasOne("Warehouse.Model.Goods", "Goods")
+                        .WithMany("GoodsOrderings")
+                        .HasForeignKey("GoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.KeepCenter", "KeepCenter")
+                        .WithMany("GoodsOrderings")
+                        .HasForeignKey("KeepCenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Goods");
+
+                    b.Navigation("KeepCenter");
+                });
+
             modelBuilder.Entity("Warehouse.Model.GoodsPlacement", b =>
                 {
                     b.HasOne("Warehouse.Model.Goods", "Goods")
@@ -1298,6 +1429,17 @@ namespace Warehouse.Model.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("StockRoom");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.InventoryControlAgent", b =>
+                {
+                    b.HasOne("Warehouse.Model.GoodsProperties", "GoodsProperties")
+                        .WithMany("InventoryControlAgents")
+                        .HasForeignKey("GoodsPropertiesId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("GoodsProperties");
                 });
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
@@ -1356,6 +1498,32 @@ namespace Warehouse.Model.Migrations
                         .IsRequired();
 
                     b.Navigation("GoodsProperty");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.PropertyOfGoods", b =>
+                {
+                    b.HasOne("Warehouse.Model.Goods", "Goods")
+                        .WithMany("PropertiesOfGoods")
+                        .HasForeignKey("GoodsId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.GoodsProperties", "GoodsProperty")
+                        .WithMany("PropertiesOfGoods")
+                        .HasForeignKey("GoodsPropertiesId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse.Model.PropertyList", "PropertyList")
+                        .WithMany("PropertyOfGoods")
+                        .HasForeignKey("PropertyListIdField")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Goods");
+
+                    b.Navigation("GoodsProperty");
+
+                    b.Navigation("PropertyList");
                 });
 
             modelBuilder.Entity("Warehouse.Model.Reservation", b =>
@@ -1611,9 +1779,13 @@ namespace Warehouse.Model.Migrations
                 {
                     b.Navigation("GoodsFlows");
 
+                    b.Navigation("GoodsOrderings");
+
                     b.Navigation("GoodsPlacements");
 
                     b.Navigation("OtherSubstitutes");
+
+                    b.Navigation("PropertiesOfGoods");
 
                     b.Navigation("ReservationGoods");
 
@@ -1622,11 +1794,17 @@ namespace Warehouse.Model.Migrations
 
             modelBuilder.Entity("Warehouse.Model.GoodsProperties", b =>
                 {
+                    b.Navigation("InventoryControlAgents");
+
                     b.Navigation("Properties");
+
+                    b.Navigation("PropertiesOfGoods");
                 });
 
             modelBuilder.Entity("Warehouse.Model.KeepCenter", b =>
                 {
+                    b.Navigation("GoodsOrderings");
+
                     b.Navigation("OtherStockFlows");
 
                     b.Navigation("Reservations");
@@ -1662,6 +1840,11 @@ namespace Warehouse.Model.Migrations
             modelBuilder.Entity("Warehouse.Model.ProductClass", b =>
                 {
                     b.Navigation("Goods");
+                });
+
+            modelBuilder.Entity("Warehouse.Model.PropertyList", b =>
+                {
+                    b.Navigation("PropertyOfGoods");
                 });
 
             modelBuilder.Entity("Warehouse.Model.Reservation", b =>

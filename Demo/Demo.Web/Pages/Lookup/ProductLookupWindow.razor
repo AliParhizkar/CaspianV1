@@ -11,8 +11,8 @@
     <DataGrid Service="Service" TEntity="Product" ContentHeight="200" HidePageSize>
         <Columns>
             <GridColumn Field="t => t.ProductCategory.Title" Title="Category" />
-            <GridColumn Field="t => t.Code" style="width:70px" />
-            <GridColumn Field="t => t.Title"  />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.Price.DigitGrouping()" />
         </Columns>
     </DataGrid>
 </div>

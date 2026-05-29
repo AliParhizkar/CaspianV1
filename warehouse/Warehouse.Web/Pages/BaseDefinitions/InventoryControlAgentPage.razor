@@ -1,0 +1,40 @@
+﻿@page "/Warehouse/InventoryControlAgent"
+@attribute [Source(11, "عامل کنترل موجودی")]
+@inherits BasePage
+@inject IUIService<InventoryControlAgent> Service
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <ComboBox TValue="int" TEntity="GoodsProperties" @bind-Value="context.GoodsPropertiesId" TextExpression="t => t.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <DropdownList @bind-Value="context.ActiveStatus" SingleSelect ColSpan="4" />
+        <CheckBox @bind-Value="context.CombinedInventory" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="InventoryControlAgent" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.GoodsProperties.Name" Title="نوع" />
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveStatus.EnumText()" />
+            <GridColumn Field="t => t.CombinedInventory" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="عامل کنترل موجودی" Style="width:400px">
+    <CaspianForm TEntity="InventoryControlAgent" Service="Service" >
+        <ComboBox TValue="int" TEntity="GoodsProperties" @bind-Value="context.GoodsPropertiesId" TextExpression="t => t.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <DropdownList @bind-Value="context.ActiveStatus" SingleSelect ColSpan="8" />
+        <CheckBox @bind-Value="context.CombinedInventory" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

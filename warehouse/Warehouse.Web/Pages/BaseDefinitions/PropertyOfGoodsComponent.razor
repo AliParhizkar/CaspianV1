@@ -1,0 +1,94 @@
+﻿@inject IUIService<PropertyOfGoods> Service
+
+<div class="p-3">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        @{ context.Goods = context.Goods ?? new Goods();}
+        <StringTextBox @bind-Value="context.Goods.Name" Title="نام کالا" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Goods.Code" Title="کد کالا" ColSpan="4" Style="direction:ltr" SearchType="SearchType.StartWith" />
+    </EntitySearch>
+    <DataGrid TEntity="PropertyOfGoods" Service="Service" >
+        <Columns>
+            <GridColumn Field="t => t.GoodsProperty.PropertyType.EnumText()" />
+            <GridColumn Field="t => t.GoodsProperty.Name" />
+            <GridColumn Field="t => t.BooleanField" DataField />
+            <GridColumn Field="t => t.StringField" DataField />
+            <GridColumn Field="t => t.NumericField" DataField />
+            <GridColumn Field="t => t.PropertyList.Name" DataField />
+            <GridColumn Field="t => t.DateField" Title="مقدار">
+                <Template>
+                    <span>
+                        @switch (context.Data?.GoodsProperty.PropertyType)
+                        {
+                            case PropertyType.Boolean:
+                                <CheckBox Value="context.Data.BooleanField" />
+                                break;
+                            case PropertyType.Date:
+                                <span>@context.Data.DateField.ToPersianDateString()</span>
+                                break;
+                            case PropertyType.List:
+                                <span>@context.Data.PropertyList.Name</span>
+                                break;
+                            case PropertyType.Number:
+                                <span>@context.Data.NumericField.DigitGrouping()</span>
+                                break;
+                            case PropertyType.String:
+                                <span>@context.Data.StringField</span>
+                                break;
+                        }
+                    </span>
+                </Template>
+            </GridColumn>
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="ویژگی کالا" Style="width:400px">
+        <CaspianForm TEntity="PropertyOfGoods" Service="Service">
+            <Content>
+                <ComboBox TValue="int" @bind-Value="context.GoodsPropertiesId" TEntity="GoodsProperties" TextExpression="t => t.Name" 
+                          ColSpan="8" OnChange="async () => await GoodsProperty(context.GoodsPropertiesId)" />
+                @if (property != null)
+                {
+                    var title = property.Name;
+                    switch(property.PropertyType)
+                    {
+                        case PropertyType.Boolean:
+                            <CheckBox @bind-Value="context.BooleanField" Title="@(title)"  ColSpan="8" />
+                            break;
+                        case PropertyType.Date:
+                            <DatePicker @bind-Value="context.DateField" Title="@(title)" ColSpan="8" />
+                            break;
+                        case PropertyType.List:
+                            <ComboBox TValue="int?" @bind-Value="context.PropertyListIdField" TEntity="PropertyList" Title="@(title)"
+                                      TextExpression="t => t.Name" ConditionExpression="t => t.GoodsPropertyId == property.Id" ColSpan="8" />
+                            break;
+                        case PropertyType.Number:
+                            <NumericTextBox @bind-Value="context.NumericField" ColSpan="8" Title="@(title)" />
+                            break;
+                        case PropertyType.String:
+                            <StringTextBox @bind-Value="context.StringField" ColSpan="8" Title="@(title)" />
+                            break;
+                    }
+                }
+                <FormCommandButton ColSpan="8" />
+            </Content>
+        </CaspianForm>
+    </Window>
+</div>
+
+@code
+{
+    GoodsProperties property;
+    async Task GoodsProperty(int? id)
+    {
+        if (id == null)
+            property = null;
+        else
+        {
+            using var service = Page.CreateScope().GetService<GoodsPropertiesService>();
+            property = await service.SingleAsync(id.Value);
+        }
+    }
+
+    [Parameter]
+    public BasePage Page { get; set; }
+}

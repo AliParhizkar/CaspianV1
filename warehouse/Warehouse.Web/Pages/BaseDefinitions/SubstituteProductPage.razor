@@ -9,14 +9,14 @@
         <div>
             <EntitySearch TEntity="Goods" Service="Service">
                 <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
-                <StringTextBox @bind-Value="context.Name" ColSpan="8"  />
+                <StringTextBox @bind-Value="context.Name" ColSpan="8" />
             </EntitySearch>
             <div class="col-md-12 text-center">
                 <hr class="mt-0" />
                 <span class="d-membership">لیست کالاها</span>
             </div>
         </div>
-        <DataGrid TEntity="Goods" ContentHeight="250" Service="Service" >
+        <DataGrid TEntity="Goods" ContentHeight="250" Service="Service">
             <Columns>
                 <GridColumn Field="t => t.Name" />
                 <GridColumn Field="t => t.Code" />
@@ -24,17 +24,14 @@
             </Columns>
         </DataGrid>
     </div>
-    <div class="col-md-1" style="max-width:60px;">
+    <div class="col-md-1" style="width:60px;">
         <div class="align-content-center text-center h-100">
-            <CaspianForm Service="Service">
-                
-                <div class="d-btn-container">
-                    <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
-                    <div class="pt-3">
-                        <IconButton IconType="IconType.AngleRight" />
-                    </div>
+            <div class="d-btn-container">
+                <IconButton IconType="IconType.AngleLeft" @onclick="async () => await Service.Form.SubmitAsync()"/>
+                <div class="pt-3">
+                    <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleRight" />
                 </div>
-            </CaspianForm>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
@@ -53,11 +50,19 @@
             <Columns>
                 <GridColumn Field="t => t.SubstituteGoods.Name" />
                 <GridColumn Field="t => t.SubstituteGoods.Code" />
-                <GridColumn Field="t => t.SubstituteGoods.ProductClass.Name" Title="طبقه کالا" />
+                <GridColumn Field="t => t.Rate.DigitGrouping()" />
+                <GridColumn Field="t => t.DuplicateRelation" Title="رابطه عکس" style="width:100px;" />
                 <GridCommandColumns HideEdit />
             </Columns>
         </DataGrid>
     </div>
+    <CaspianForm Service="Service">
+        <div class="row pt-3">
+            <div class="col-md-2"></div>
+            <NumericTextBox @bind-Value="context.Rate" ColSpan="2" TotalSpan="4" />
+            <CheckBox @bind-Value="context.DuplicateRelation" ColSpan="2" TotalSpan="4" />
+        </div>
+    </CaspianForm>
 </div>
 
 @code

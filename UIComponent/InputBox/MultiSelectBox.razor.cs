@@ -27,8 +27,21 @@ namespace Caspian.UI
             await base.SetValue(Value, true);
         }
 
+        internal async Task UpdateValueAsync(TValue value)
+        {
+            int value1 = Convert.ToInt32(Value), value2 = Convert.ToInt32(value);
+            if ((value1 & value2) == value2)
+                Value = (TValue)((dynamic)Value - (dynamic)value);
+            else
+                Value = (dynamic)Value | (dynamic)value;
+            await base.SetValue(Value, true);
+        }
+
         [Parameter]
         public DefaultLayout DefaultLayout { get; set; } = DefaultLayout.SpaceBetween;
+
+        [Parameter]
+        public bool ShowTitle { get; set; }
 
         protected override void OnInitialized()
         {
@@ -55,5 +68,13 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindMultiSelect", InputElement);
             await base.OnAfterRenderAsync(firstRender);
         }
+
+        internal void SetValue()
+        {
+
+        }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
     }
 }

@@ -58,8 +58,11 @@
     <DataGrid Service="CategoryService" TEntity="MenuCategory" ConditionExpr="t => t.SubsystemKind == Subsystem">
         <Columns>
             <GridColumn Field="t => t.Title" />
-            <GridColumn Field="t => t.IconFont">
+            <GridColumn Field="t => t.IconFont" style="width:60px;">
                 <span class="c-icon @(context.Data.IconFont)"></span>
+            </GridColumn>
+            <GridColumn Title="منوها" style="width:60px;">
+                <IconButton IconType="IconType.ExternalLink" @onclick="() => OpenMenuOrdringWindow(context.Data.Id)" />
             </GridColumn>
             <GridColumn Field="t => t.Ordering" style="width:95px;text-align:center;" SortType="SortType.Asc">
                 <Template>
@@ -78,10 +81,35 @@
             <FormCommandButton ColSpan="9" />
         </CaspianForm>
     </Window>
+    <Window Title="Menu Ordering" Style="width:550px" @bind-Status="status">
+        <DataGrid @ref="grvMenu" TEntity="Menu" ConditionExpr="t => t.MenuCategoryId == selectedCategoryId" PageSize="20" ContentHeight="350">
+            <Columns>
+                <GridColumn Field="t => t.Title" />
+                <GridColumn Field="t => t.Ordering" style="width:95px;text-align:center;" SortType="SortType.Asc">
+                    <Template>
+                        <IconButton IconType="@IconType.AngleUp" @onclick="async () => await IncMenuPOrder(context.Data.Id)" />
+                        <IconButton IconType="@IconType.AngleDown" @onclick="async () => await DecMenuPOrder(context.Data.Id)" />
+                    </Template>
+                </GridColumn>
+            </Columns>
+        </DataGrid>
+    </Window>
 </Window>
+
+
 
 @code
 {
+    int? selectedCategoryId;
+    WindowStatus status;
+    DataGrid<Menu> grvMenu;
+
+    void OpenMenuOrdringWindow(int categoryId)
+    {
+        selectedCategoryId = categoryId;
+        status = WindowStatus.Open;
+    }
+
     async Task IncPOrder(int id)
     {
         using var service = CreateScope().GetService<MenuCategoryService>();
@@ -100,5 +128,23 @@
         var grid = CategoryService.DataView;
         await grid.ReloadAsync();
         await grid.SelectNextRow();
+    }
+
+    async Task IncMenuPOrder(int id)
+    {
+        using var service = CreateScope().GetService<MenuService>();
+        await service.IncOrderingAsync(id);
+        await service.SaveChangesAsync();
+        await grvMenu.ReloadAsync();
+        await grvMenu.SelectPrevRow();
+    }
+
+    async Task DecMenuPOrder(int id)
+    {
+        using var service = CreateScope().GetService<MenuService>();
+        await service.DecOrderingAsync(id);
+        await service.SaveChangesAsync();
+        await grvMenu.ReloadAsync();
+        await grvMenu.SelectNextRow();
     }
 }

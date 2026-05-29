@@ -43,12 +43,11 @@ else
             {
                 var className = $"d-flex justify-content-{DefaultLayout.GetCssClassName()}";
                 <div class="@className">
-                    @RenderCheckBox(null)
+                    @RenderCheckBox(title)
                 </div>
             }
         };
     }
-
 
     RenderFragment RenderCheckBox(string title)
     {
@@ -72,6 +71,7 @@ else
     TValue oldValue;
     IDictionary<string, object> iconAtttrs = new Dictionary<string, object>();
     Dictionary<string, object> attrs;
+    string title;
 
     [Parameter]
     public bool TwoState { get; set; }
@@ -79,9 +79,23 @@ else
     [Parameter]
     public bool CustomeSearch { get; set; }
 
+    [CascadingParameter]
+    internal MultiSelectBox<TValue> MultiSelect { get; set; }
 
     [Parameter]
     public DefaultLayout DefaultLayout { get; set; } = DefaultLayout.FlexStart;
+
+    protected override void OnInitialized()
+    {
+        if (!Title.HasValue())
+        {
+            if (MultiSelect != null && Value?.GetType().IsEnum == true)
+                title = typeof(TValue).GetField(Value.ToString()).GetCustomAttribute<System.ComponentModel.DataAnnotations.DisplayAttribute>()?.Name;
+        }
+        else
+            title = Title;
+        base.OnInitialized();
+    }
 
     protected override void OnParametersSet()
     {
@@ -111,19 +125,21 @@ else
         }
         else
         {
+            var value = false;
             if (typeof(TValue) == typeof(bool) || typeof(TValue) == typeof(bool?))
+                value = Convert.ToBoolean(Value);
+            else if (MultiSelect != null)
+                value = (Convert.ToInt32(MultiSelect.Value) & Convert.ToInt32(Value)) == Convert.ToInt32(Value);
+
+            if (value)
             {
-                var value = Convert.ToBoolean(Value);
-                if (value)
-                {
-                    iconAtttrs["class"] = "fa fa-check";
-                    className += " t-selected";
-                }
-                else
-                {
-                    iconAtttrs.Remove("class");
-                    className += " t-unselected";
-                }
+                iconAtttrs["class"] = "fa fa-check";
+                className += " t-selected";
+            }
+            else
+            {
+                iconAtttrs.Remove("class");
+                className += " t-unselected";
             }
         }
         attrs.Add("class", className);
@@ -133,6 +149,8 @@ else
     {
         if (disabled)
             return;
+        if (MultiSelect != null)
+            await MultiSelect.UpdateValueAsync(Value);
         bool? tempValue = true;
         var type = typeof(TValue);
         if (type == typeof(bool) || type == typeof(bool?))

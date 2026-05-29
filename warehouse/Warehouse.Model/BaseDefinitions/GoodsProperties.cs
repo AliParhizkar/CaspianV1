@@ -20,7 +20,7 @@ namespace Warehouse.Model
         [DisplayName("حداقل مقدار")]
         public decimal? MinimumValue { get; set; }
 
-        [DisplayName("حداقل مقدار")]
+        [DisplayName("حداکثر مقدار")]
         public decimal? MaximumValue { get; set; }
 
         [DisplayName("تعداد ارقام اعشار")]
@@ -36,6 +36,12 @@ namespace Warehouse.Model
         public int? Length { get; set; }
 
         [CheckOnDelete("ویزگی دارای ایتم های لیست می باشد و امکان حذف آن وجود ندارد.")]
-        public IList<PropertyList> Properties { get; set; }
+        public ICollection<PropertyList> Properties { get; set; }
+
+        [CheckOnDelete("مشخصه دارای عامل کنترل موجودی می باشد و امکان حذف آن وجود ندارد")]
+        public ICollection<InventoryControlAgent> InventoryControlAgents { get; set; }
+
+        [CheckOnDelete("این مشخصه بعنوان مشخصه ی کالا ثبت شده است و امکان حذف آن وجود ندارد")]
+        public ICollection<PropertyOfGoods> PropertiesOfGoods { get; set; }
     }
 }

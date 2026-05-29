@@ -327,7 +327,7 @@ namespace Caspian.UI
                     if (OnChange.HasDelegate)
                         await OnChange.InvokeAsync();
                 }
-
+                BindEditContext();
                 EntitySearch?.EnableLoadData();
             }
         }

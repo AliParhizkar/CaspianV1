@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,8 @@ namespace Warehouse.Model
 
         [ForeignKey(nameof(GoodsPropertyId))]
         public GoodsProperties GoodsProperty { get; set; }
+
+        [CheckOnDelete("این آیتم بعنوان ویژگی تعریف شده و امکان حذف آن وجود ندارد")]
+        public ICollection<PropertyOfGoods> PropertyOfGoods { get; set; }
     }
 }

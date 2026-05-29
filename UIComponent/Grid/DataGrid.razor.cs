@@ -350,9 +350,6 @@ namespace Caspian.UI
         [Parameter]
         public RenderFragment ToolsBar { get; set; }
 
-        [Parameter]
-        public RenderFragment SearchTemplate { get; set; }
-
         public async Task SelectFirstPage()
         {
             if (this.pageNumber != 1)
@@ -380,8 +377,6 @@ namespace Caspian.UI
             if (SelectType == SelectType.Single)
                 SelectRow(0);
         }
-
-
 
         public override async Task<TEntity> SelectRowById(int id)
         {
