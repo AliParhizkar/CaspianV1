@@ -1,12 +1,13 @@
-﻿using FluentValidation;
-using System.Reflection;
+﻿using Caspian.Common.Extension;
 using Caspian.Common.Service;
-using System.Linq.Expressions;
-using Caspian.Common.Extension;
-using FluentValidation.Results;
+using FluentValidation;
 using FluentValidation.Internal;
+using FluentValidation.Results;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Caspian.Common
 {
@@ -24,20 +25,19 @@ namespace Caspian.Common
             else
                 Language= Language.Fa;
             Context = provider.GetService(contextType) as CaspianContext;
-            //var data = provider.GetService(typeof(CaspianDataService)) as CaspianDataService;
-            //UserId = data.UserId;
-            //if (!data.Language.HasValue)
-            //    data.Language = Language;
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
                 var param = Expression.Parameter(typeof(TModel), "t");
-                if (type.IsEnum)
+                if (type.IsEnum || new Type[] { typeof(DateOnly), typeof(DateTime) }.Contains(type.GetUnderlyingType()))
                 {
                     Expression expr = Expression.Property(param, info);
                     expr = Expression.Convert(expr, typeof(object));
                     expr = Expression.Lambda(expr, param);
-                    RuleFor(expr as Expression<Func<TModel, object>>).CheckEnum(info);
+                    if (type.IsEnum)
+                        RuleFor(expr as Expression<Func<TModel, object>>).CheckEnum(info);
+                    else
+                        RuleFor(expr as Expression<Func<TModel, object>>).CheckDate(info);
                 }
                 if (type.Name != "PersianDateTable")
                 {

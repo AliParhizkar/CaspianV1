@@ -540,13 +540,32 @@ namespace Caspian.Common
             });
         }
 
+        public static void CheckDate<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info)
+        {
+            ruleBuilder.Custom((value, context) =>
+            {
+                if (value != null)
+                {
+                    var type = value.GetType().GetUnderlyingType();
+                    DateOnly date = type == typeof(DateTime) ? Convert.ToDateTime(value).ToDateOnly() : (DateOnly)(value as object);
+                    if (date.Year < 1000)
+                    {
+                        var attr = info.GetCustomAttribute<DisplayNameAttribute>();
+                        var name = attr?.DisplayName ?? info.Name;
+                        context.AddFailure($"لطفا {name} را مشخص نمائید");
+                    }
+                }
+            });
+        }
+
         public static void CheckEnum<TModel, TProperty>(this IRuleBuilder<TModel, TProperty> ruleBuilder, PropertyInfo info)
         {
             ruleBuilder.Custom((value, context) =>
             {
                 if (value != null)
                 {
-                    bool isValid = false, isBitwise = false; ; var tempValue = Convert.ToInt64(value);
+                    bool isValid = false, isBitwise = false; 
+                    var tempValue = Convert.ToInt64(value);
                     if (Enum.IsDefined(info.PropertyType, value))
                         isValid = true;
                     else

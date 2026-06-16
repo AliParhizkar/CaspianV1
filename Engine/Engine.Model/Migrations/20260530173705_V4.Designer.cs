@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Engine.Model.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20260510154349_V4")]
+    [Migration("20260530173705_V4")]
     partial class V4
     {
         /// <inheritdoc />
@@ -948,8 +948,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PasswordHash")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(50)
@@ -974,6 +974,28 @@ namespace Engine.Model.Migrations
                     b.ToTable("Users", "cmn");
                 });
 
+            modelBuilder.Entity("Caspian.Engine.Model.UserClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserClaim");
+                });
+
             modelBuilder.Entity("Caspian.Engine.Model.UserLogin", b =>
                 {
                     b.Property<int>("Id")
@@ -995,8 +1017,8 @@ namespace Engine.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PageUrl")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasMaxLength(50)

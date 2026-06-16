@@ -22,7 +22,6 @@ namespace Caspian.Engine.Model
 
         public string ErrorFileName { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime RegisterDate { get; set; }
 
         [CheckOnDelete(false)]

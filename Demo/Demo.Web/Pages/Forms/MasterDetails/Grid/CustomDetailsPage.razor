@@ -1,6 +1,6 @@
 ﻿@page "/Demo/Batch/Custom/Details"
 @page "/Demo/Batch/Custom/Details/{OrderId:int}"
-@attribute [Source(52, "Batch Custom Details")]
+@attribute [Source(51, "Batch Custom Details", MasterPage = typeof(CustomMasterPage))]
 @inject UIService<Order, OrderDetail> Service
 @inherits BasePage
 @{

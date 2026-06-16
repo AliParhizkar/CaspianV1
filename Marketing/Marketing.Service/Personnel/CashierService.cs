@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Marketing.Service
 {
-    public class CashierService : BaseService<Cashier>, IBaseService<Cashier>
+    public class CashierService : BaseService<Cashier>
     {
         public CashierService(IServiceProvider provider)
             : base(provider)

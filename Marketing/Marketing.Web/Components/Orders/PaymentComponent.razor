@@ -17,7 +17,7 @@
     <span @onclick="() => Order.AccountingAmount = Customer.AccountBalance" class="fa fa-check c-small-icon"></span>
 </div>
 
-<NumericTextBox Style="@GetStyle()" Value="GetRemain()" readonly ColSpan="8" TotalSpan="12" DigitGrouping Title="مانده" />
+<NumericTextBox Style="@GetStyle()" Value="GetRemain()" readonly ColSpan="9" TotalSpan="12" DigitGrouping Title="مانده" />
 @code
 {
     string GetStyle()

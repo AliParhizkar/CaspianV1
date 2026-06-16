@@ -1,19 +1,21 @@
-using Caspian.UI;
+﻿using Caspian.UI;
 using UIComponent;
-using Engine.Model;
 using Aspose.Words;
+using Engine.Model;
 using Caspian.Common;
+using Syncfusion.Blazor;
 using Caspian.UI.Service;
-using System.Globalization;
 using Caspian.Engine.Model;
+using System.Globalization;
 using Caspian.Engine.Service;
 using Engine.Web.Pages.Account;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Components.Authorization;
-using Syncfusion.Blazor;
+
 
 namespace Main
 {
@@ -22,16 +24,20 @@ namespace Main
         static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder();
-            
             ConfigureCulture();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
             builder.Environment.CreateFileAndFolder();
+            builder.Services.AddLogging(loggerBuilder =>
+            {
+                loggerBuilder.ClearProviders();
+                loggerBuilder.AddConsole();
+                loggerBuilder.AddProvider(new CaspianConsoleLoggerProvider(builder));
+            });
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Services.AddSyncfusionBlazor();
-            builder.Logging.AddCaspianConsoleLogger(builder);
             var persistKeyPath = Path.Combine(builder.Environment.ContentRootPath, "PersistKey");
             builder.Services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(persistKeyPath))
@@ -58,7 +64,6 @@ namespace Main
                 CS.Con = builder.Configuration.GetConnectionString("ServerDb");
                 domain = builder.Configuration.GetSection("Authentication:Domain").Value;
             }
-
             MultiLanguage.CanDefineLanguage = Convert.ToBoolean(builder.Configuration.GetSection("ChangePage").Value);
             if (builder.Environment.IsStaging())
             {
@@ -67,9 +72,9 @@ namespace Main
                     options.Cookie.Name = ".AspNet.SharedCookie";
                     options.Cookie.Domain = domain;
                     options.Cookie.Path = "/";
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
                 });
             }
-
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddAuthentication(options =>
             {
@@ -80,23 +85,15 @@ namespace Main
             builder.Services.AddScoped<Caspian.Common.Client.CaspianDataService>();
             builder.Services.AddScoped<Caspian.UI.Client.BasePageService>();
             builder.Services.AddScoped<CaspianDataService>();
-
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
             builder.Services.AddScoped<ReportParamService>();
             builder.Services.AddCaspianUIComponentsServices();
-            if (!builder.Environment.IsDevelopment())
-            {
-                using var context = new Caspian.Engine.Model.Context();
-                context.Database.Migrate();
-                UserService.AddFirstUser();
-            }
-
             builder.Services.AddSingleton(t =>
             {
                 using var context = new Caspian.Engine.Model.Context();
-                
+
                 return new SingletonMenuService()
                 {
                     Categories = context.Set<MenuCategory>().ToList(),
@@ -131,23 +128,29 @@ namespace Main
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
             var app = builder.Build();
-            // Configure the HTTP request pipeline.
-            
             if (app.Environment.IsDevelopment())
-                app.UseWebAssemblyDebugging();
-            else 
             {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseWebAssemblyDebugging();
+                app.UseDeveloperExceptionPage();
             }
-            app.UseHttpsRedirection();
+            else
+            {
+                /// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                //app.UseHsts();
+            }
+            if (!builder.Environment.IsDevelopment())
+            {
+                using var context = new Caspian.Engine.Model.Context();
+                //context.Database.Migrate();
+                //UserService.AddFirstUser();
+            }
+            // Configure the HTTP request pipeline.
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseAntiforgery();
-
             app.MapRazorComponents<Main.Components.App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
@@ -169,7 +172,6 @@ namespace Main
             app.MapCaspianProjectWhen<Procurement.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Procurement"));
             #endregion
-
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();
             ////if (!builder.Environment.IsDevelopment())
@@ -191,30 +193,4 @@ namespace Main
             CultureInfo.DefaultThreadCurrentUICulture = culture;
         }
     }
-
-    public static class CaspianWebAppPipelineExtension
-    {
-        public static void MapCaspianProjectWhen<TAppComponent>(this IApplicationBuilder appBuilder, Func<HttpContext, bool> func)
-           where TAppComponent : ComponentBase
-        {
-            appBuilder.MapWhen(func, app =>
-            {
-                app.UseHsts();
-                app.UseRouting();
-                app.UseHttpsRedirection();
-
-                app.UseStaticFiles();
-                app.UseAntiforgery();
-
-                app.UseAuthentication();
-                app.UseAuthorization();
-
-                app.UseEndpoints(endpoint =>
-                {
-                    endpoint.MapRazorComponents<TAppComponent>()
-                    .AddInteractiveServerRenderMode();
-                });
-            });
-        }
-    }    
 }

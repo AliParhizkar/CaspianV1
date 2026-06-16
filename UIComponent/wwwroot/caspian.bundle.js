@@ -1525,12 +1525,13 @@ var caspian;
                 document.body.appendChild(odv);
             else
                 main.appendChild(odv);
+            const visibleTime = 5500;
             setTimeout(() => {
                 odv.style.top = '30px';
             }, 5);
             this.infoTimer = setTimeout(() => {
                 this.hideMessage();
-            }, 5500);
+            }, visibleTime);
             if (this.intervalId)
                 clearInterval(this.intervalId);
             let value = 250;
@@ -1538,7 +1539,10 @@ var caspian;
                 let progress = odv.lastElementChild;
                 progress.style.width = value + 'px';
                 value -= 0.5;
-            }, 11);
+                if (value <= 0) {
+                    clearInterval(this.intervalId);
+                }
+            }, visibleTime / 500);
         }
         static getPixelsPerCentimetre() {
             let div = document.createElement("div");
@@ -1551,9 +1555,11 @@ var caspian;
         static hideMessage() {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);
+            if (this.intervalId)
+                clearInterval(this.intervalId);
             setTimeout(() => {
                 document.getElementById('outMessage').remove();
-            }, 300);
+            }, 10);
         }
         static BindWindowClickForMainLayout(dotnet) {
             let container = document.getElementsByClassName('c-packages-container')[0];

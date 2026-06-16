@@ -191,7 +191,7 @@ namespace Caspian.UI
         protected virtual void InitializeBeforeValidation(TEntity entity)
         {
             var data = Form.CrudServiceData;
-            if (data?.DetailType == typeof(TEntity))
+            if (data != null)
             {
                 var info = typeof(TEntity).GetForeignKey(data.MasterType);
                 var foreignKeyType = info.PropertyType.GetUnderlyingType();
@@ -272,8 +272,6 @@ namespace Caspian.UI
                 /// In Master-Detail Crud set masterId in detail
                 if (DataView?.CrudServiceData != null)
                 {
-                    if (DataView?.CrudServiceData.DetailType != typeof(TEntity))
-                        throw new CaspianException($"Type bad initialized in list view");
                     var masterInfo = typeof(TEntity).GetForeignKey(DataView.CrudServiceData.MasterType);
                     masterInfo.SetValue(UpsertData, DataView.CrudServiceData.MasterId);
                 }
@@ -300,13 +298,13 @@ namespace Caspian.UI
             
             if (DataView.CrudServiceData != null)
             {
-                var data = DataView.CrudServiceData;
-                if (data.DetailType == typeof(TEntity))
+                var dataService = DataView.CrudServiceData;
+                if (dataService != null)
                 {
                     var param = Expression.Parameter(typeof(TEntity), "t");
-                    var masterInfo = typeof(TEntity).GetForeignKey(data.MasterType);
+                    var masterInfo = typeof(TEntity).GetForeignKey(dataService.MasterType);
                     Expression expr = Expression.Property(param, masterInfo);
-                    var masterId = Convert.ChangeType(data.MasterId, masterInfo.PropertyType);
+                    var masterId = Convert.ChangeType(dataService.MasterId, masterInfo.PropertyType);
                     DataView.InternalConditionExpr = Expression.Equal(expr, Expression.Constant(masterId));
                 }
             }

@@ -51,14 +51,14 @@ namespace Caspian.Common
             return "";
         }
 
-        public static string ConvertToBrowserDate(this DateTime? date)
+        public static string ConvertToBrowserDate(this DateOnly? date)
         {
             if (date == null)
                 return "";
-            return date.ConvertToBrowserDate();
+            return date.Value.ConvertToBrowserDate();
         }
 
-        public static string ConvertToBrowserDate(this DateTime date)
+        public static string ConvertToBrowserDate(this DateOnly date)
         {
             var str = date.Year.ToString() + '-';
             if (date.Month < 10)
@@ -174,6 +174,13 @@ namespace Caspian.Common
         public static string ToPersianDateString(this DateOnly date)
         {
             return date.ToPersianDate().ToShortDateString();
+        }
+
+        public static string ToShortDateString(this DateOnly? date)
+        {
+            if (date == null)
+                return string.Empty;
+            return date.Value.ToShortDateString();
         }
 
         public static string ToPersianDateString(this DateOnly? date)

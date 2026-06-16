@@ -14,15 +14,14 @@ namespace Caspian.UI
     }
 
     /// <summary>
-    /// Use this class to send Master-Service data to Details-Service in tab panel component
+    /// Use this class to send Master-Service data (Master Id & Master Type) to Details-Service in tab panel component, 
+    /// To find foreign key property (by Master type) and initialize it (by Master Id)
     /// </summary>
     internal class MasterDetailsCrudServiceData
     {
         public int MasterId { get; set; }
 
         public Type MasterType { get; set; }
-
-        public Type DetailType { get; set; }
     }
 
     /// <summary>

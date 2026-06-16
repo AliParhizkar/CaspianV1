@@ -1,7 +1,8 @@
 ﻿using Caspian.Common;
-using Microsoft.JSInterop;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Caspian.UI
 {
@@ -31,7 +32,7 @@ namespace Caspian.UI
                     var dateOnly = new DateOnly(date.Year, date.Month, date.Day);
                     Value = (TValue)Convert.ChangeType(dateOnly, type);
                 }
-                text = date.ToShortDateString();
+                SetDateString(date);
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
                 Status = WindowStatus.Close;
@@ -65,7 +66,7 @@ namespace Caspian.UI
         public bool ParentControlIsValueSearch { get; set; }
 
         [Parameter]
-        public bool PersianCalendar { get; set; }
+        public bool PersianCalendar { get; set; } = true;
 
         [Parameter]
         public bool OpenOnFocus { get; set; }
@@ -115,12 +116,21 @@ namespace Caspian.UI
                 }
                 else
                     date = Convert.ToDateTime(Value);
-                if (DefaultMode)
-                    text = date.ConvertToBrowserDate();
-                else
-                    text = date.ToShortDateString();
+                SetDateString(date.ToDateOnly());
             }
             base.OnParametersSet();
+        }
+
+        void SetDateString(DateOnly? date)
+        {
+            if (date == null)
+                text = string.Empty;
+            else if (DefaultMode)
+                text = date.ConvertToBrowserDate();
+            else if (PersianCalendar)
+                text = date.ToPersianDateString();
+            else
+                text = date.ToShortDateString();
         }
 
         async protected override Task OnAfterRenderAsync(bool firstRender)

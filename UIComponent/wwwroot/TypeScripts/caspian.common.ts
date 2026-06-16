@@ -20,12 +20,13 @@ namespace caspian {
                 document.body.appendChild(odv);
             else
                 main.appendChild(odv);
+            const visibleTime = 5_500;
             setTimeout(() => {
                 odv.style.top = '30px';
             }, 5);
             this.infoTimer = setTimeout(() => {
                 this.hideMessage();
-            }, 5_500);
+            }, visibleTime);
             if (this.intervalId)
                 clearInterval(this.intervalId);
             let value = 250;
@@ -33,7 +34,10 @@ namespace caspian {
                 let progress = odv.lastElementChild as HTMLDivElement;
                 progress.style.width = value + 'px';
                 value -= 0.5;
-            }, 11);
+                if (value <= 0) {
+                    clearInterval(this.intervalId);
+                }
+            }, visibleTime / 500);
         }
 
         public static getPixelsPerCentimetre() {
@@ -48,9 +52,11 @@ namespace caspian {
         public static hideMessage() {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);
+            if (this.intervalId)
+                clearInterval(this.intervalId);
             setTimeout(() => {
                 document.getElementById('outMessage').remove();
-            }, 300);
+            }, 10);
         }
 
         public static BindWindowClickForMainLayout(dotnet) {

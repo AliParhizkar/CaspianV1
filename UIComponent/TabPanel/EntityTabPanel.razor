@@ -15,6 +15,7 @@
 
 @code
 {
+    MasterDetailsCrudServiceData serviceData;
     TabPanel tabPanel;
     IList<IEntityTabPanelItem> tabpanelItems;
 
@@ -44,6 +45,11 @@
 
     protected override void OnInitialized()
     {
+        serviceData = new MasterDetailsCrudServiceData()
+        {
+            MasterId = (Service as UIService<TEntity>).CrudId ?? 0,
+            MasterType = typeof(TEntity)
+        };
         (Service as IInternalUIService<TEntity>).TabPanelInitializer(this);
         base.OnInitialized();
     }
@@ -69,15 +75,22 @@
         tabpanelItems.Add(panelItem);
     }
 
+    internal MasterDetailsCrudServiceData ServiceData
+    {
+        get { return serviceData; }
+    }
+
     public void ChangeState()
     {
         var index = 1;
+        var masterId = (Service as UIService<TEntity>).CrudId;
         foreach (var item in tabpanelItems)
         {
             if (item.IsChildrenTabPanelItem())
-                tabPanel.DisableItem(index, (Service as UIService<TEntity>).CrudId == 0);
+                tabPanel.DisableItem(index, masterId == 0);
             index++;
         }
+        serviceData.MasterId = masterId ?? 0;
         StateHasChanged();
     }
 }

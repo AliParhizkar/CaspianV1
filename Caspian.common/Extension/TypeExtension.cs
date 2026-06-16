@@ -54,7 +54,7 @@ namespace Caspian.Common.Extension
             var index = path.IndexOf("\\bin\\");
             if (index > 0)
                 return path.Substring(0, index);
-            return path.Substring(0, path.IndexOf("\\Common.dll"));
+            return path.Substring(0, path.IndexOf("\\Caspian.common.dll"));
         }
 
         public static bool IsEnumType(this Type type)

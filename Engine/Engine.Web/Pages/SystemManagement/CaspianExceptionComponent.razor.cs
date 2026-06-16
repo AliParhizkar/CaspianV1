@@ -12,18 +12,14 @@ namespace Caspian.Engine.Shared
 {
     public partial class CaspianExceptionComponent: ErrorBoundary
     {
-        string fileName;
-        short? fileLineNumber;
-        string errorMessage;
-        string stackTraceMessage;
         bool isDevelopment;
         bool showDetail;
         string saveErrorMessage;
+        Exception exception;
 
         protected override void OnInitialized()
         {
             isDevelopment = host.IsDevelopment();
-
             base.OnInitialized();
         }
 
@@ -39,32 +35,35 @@ namespace Caspian.Engine.Shared
             showDetail = true;
         }
 
+        (string fileName, int? lineNumber) GetExceptionData(Exception exception)
+        {
+            var frame = GetFrame(exception);
+            if (frame != null)
+            {
+                 var fileName = Path.GetFileName(frame.GetFileName());
+                var fileLineNumber = frame.GetFileLineNumber();
+                return (fileName, fileLineNumber);
+            }
+            return (null, null);
+        }
+
         protected override async Task OnErrorAsync(Exception exception)
         {
             saveErrorMessage = null;
-            while (exception.InnerException != null)
-                exception = exception.InnerException;
             try
             {
-                errorMessage = exception.Message;
-                stackTraceMessage = exception.StackTrace;
                 if (isDevelopment)
-                {
-                    var frame = GetFrame(exception);
-                    if (frame != null)
-                    {
-                        fileName = Path.GetFileName(frame.GetFileName());
-                        fileLineNumber = (short)frame.GetFileLineNumber();
-                    }
-                }
-                else
+                    this.exception = exception;
+                else 
                     await SaveError(exception);
             }
             catch (Exception ex)
             {
-                while (ex.InnerException != null)
+                while (ex != null)
+                {
+                    saveErrorMessage += ex.Message + "</br>";
                     ex = ex.InnerException;
-                saveErrorMessage = ex.Message;
+                }
                 StateHasChanged();
             }
             await base.OnErrorAsync(exception);
@@ -86,32 +85,32 @@ namespace Caspian.Engine.Shared
         {
             if (IsWebAssembly)
                 return;
-            var ex = exception;
-            while (ex.InnerException != null)
-                ex = ex.InnerException;
-            var frame = GetFrame(ex);
+            
             using var scope = factory.CreateScope();
             if (PageData != null)
                 scope.GetService<CaspianDataService>().UserId = PageData.UserId;
             var service = scope.GetService<ExceptionDataService>();
             var detailService = scope.GetService<ExceptionDetailService>();
+            var ex = exception;
+            while (ex.InnerException != null)
+                ex = ex.InnerException;
+            var exceptionData =  GetExceptionData(ex);
             ExceptionData old = null;
-            if (frame != null)
+            if (exceptionData.fileName != null)
             {
-                fileName = Path.GetFileName(frame.GetFileName());
-                fileLineNumber = (short)frame.GetFileLineNumber();
-                old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == fileName &&
-                    t.LineNumber == fileLineNumber);
+                old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == exceptionData.fileName &&
+                    t.LineNumber == exceptionData.lineNumber);
             }
             if (old == null)
             {
                 old = new ExceptionData()
                 {
-                    LineNumber = fileLineNumber,
+                    LineNumber = (short)exceptionData.lineNumber,
                     ErrorFileName = Path.GetRandomFileName(),
+                    RegisterDate = DateTime.Now,
                     RepetitionTimes = 1,
                     SubSystemKind = SystemKind,
-                    SourceCodeFileName = fileName,
+                    SourceCodeFileName = exceptionData.fileName,
                     Version = "1.1.1.1"
                 };
                 var transaction = await service.Context.Database.BeginTransactionAsync();
@@ -122,7 +121,8 @@ namespace Caspian.Engine.Shared
                     var detail = new ExceptionDetail()
                     {
                         ExceptionDataId = old.Id,
-                        UserId = UserId.Value
+                        UserId = UserId.Value,
+                        RegisterDate = DateTime.Now
                     };
                     await detailService.AddAsync(detail);
                     await service.SaveChangesAsync();
@@ -137,25 +137,24 @@ namespace Caspian.Engine.Shared
                     var detail = new ExceptionDetail()
                     {
                         ExceptionDataId = old.Id,
-                        UserId = UserId.Value
+                        UserId = UserId.Value,
+                        RegisterDate = DateTime.Now
                     };
                     await detailService.AddAsync(detail);
                 }
                 await service.SaveChangesAsync();
             }
             var path = host.ContentRootPath + "\\Errors\\" + old.ErrorFileName + ".xml";
-            if (!File.Exists(path))
+            ex = exception;
+            var doc = new XElement("Errors");
+            while (ex != null)
             {
-                ex = exception;
-                var doc = new XElement("Errors");
-                while (ex != null)
-                {
-                    var xElement = new XElement("Error").AddElement("Message", exception.Message).AddElement("StackTrace", exception.StackTrace);
-                    doc.AddElement(xElement);
-                    ex = ex.InnerException;
-                }
-                doc.Save(path);
+                var xElement = new XElement("Error").AddElement("Message", exception.Message).AddElement("StackTrace", exception.StackTrace);
+                doc.AddElement(xElement);
+                ex = ex.InnerException;
             }
+            saveErrorMessage = path;
+            doc.Save(path);
         }
 
         [Parameter]

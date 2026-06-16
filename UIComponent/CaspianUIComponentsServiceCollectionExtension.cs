@@ -1,8 +1,7 @@
-﻿using Caspian.UI;
-using Caspian.Common;
+﻿using Caspian.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace UIComponent
+namespace Caspian.UI
 {
     public static class CaspianUIComponentsServiceCollectionExtension
     {

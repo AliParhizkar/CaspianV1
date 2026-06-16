@@ -112,13 +112,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Control size</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DropdownList @bind-Value="controlSize" />
-                            </div>
-                            <div class="col-md-12">
+                            <DropdownList @bind-Value="controlSize" ColSpan="8" TotalSpan="12" Title="Control size" />
+                            <div class="col-md-12 ps-2 pe-2">
                                 <DatePicker Style="@GetStyle()" @bind-Value="date" />
                             </div>
                         </div>
@@ -131,13 +126,8 @@
                     <div class="col-md-6">
                         <hr />
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-4">
-                                <label>Enable/Disable</label>
-                            </div>
-                            <div class="col-md-8">
-                                <CheckBox @bind-Value="disable" />
-                            </div>
-                            <div class="col-md-12">
+                            <CheckBox @bind-Value="disable" ColSpan="8" TotalSpan="12" Title="Enable/Disable" />
+                            <div class="col-md-12 ps-2 pe-2">
                                 <DatePicker @bind-Value="date" Disabled="disable" />
                             </div>
                         </div>
@@ -165,21 +155,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row c-controls c-demo-control">
-                            <div class="col-md-12">
+                            <div class="col-md-12 p-2">
                                 <DatePicker @bind-Value="rangeDate" FromDate="fromDate" ToDate="toDate" />
                             </div>
-                            <div class="col-md-4">
-                                <label>From Date</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DatePicker @bind-Value="fromDate" />
-                            </div>
-                            <div class="col-md-4">
-                                <label>To Date</label>
-                            </div>
-                            <div class="col-md-8">
-                                <DatePicker @bind-Value="toDate" />
-                            </div>
+                            <DatePicker @bind-Value="fromDate" ColSpan="8" TotalSpan="12" Title="From Date" />
+                            <DatePicker @bind-Value="toDate" ColSpan="8" TotalSpan="12" Title="To Date" />
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@
 <TabPanelItem Title="@title" Disable="(TabPanel.Service as UIService<TEntity>).CrudId.GetValueOrDefault() == 0">
     @if (ChildContent != null)
     {
-        <CascadingValue Value="serviceData">
+        <CascadingValue Value="TabPanel.ServiceData">
             @ChildContent
         </CascadingValue>
     }
@@ -16,17 +16,10 @@
 
 @code
 {
-    MasterDetailsCrudServiceData serviceData;
     string title;
 
     protected override void OnInitialized()
     {
-        serviceData = new MasterDetailsCrudServiceData()
-        {
-            MasterId = (TabPanel.Service as UIService<TEntity>).CrudId ?? 0,
-            MasterType = typeof(TEntity),
-            DetailType = typeof(TDetail)
-        };
         TabPanel.AddTabpanelItem(this);
         if (Children.Body.NodeType == ExpressionType.MemberAccess)
         {
@@ -34,6 +27,7 @@
             title = info.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName;
         }
         base.OnInitialized();
+        
     }
 
     Type IEntityTabPanelItem.GetEntityType() => ((Children.Body as MemberExpression).Member as PropertyInfo).PropertyType;
@@ -55,7 +49,6 @@
         if (Title != null)
             title = Title;
         var masterId = (TabPanel.Service as  UIService<TEntity>).CrudId ?? 0;
-        serviceData.MasterId = masterId;
         base.OnParametersSet();
     }
 

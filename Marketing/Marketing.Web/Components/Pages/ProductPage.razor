@@ -35,7 +35,7 @@
             {
                 case CategoryType.Single:
                     <ComboBox @bind-Value="categoryId" TValue="int?" TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
-                              ColSpan="8" TotalSpan="12" />
+                              ColSpan="8" TotalSpan="12" Title="گروه محصول" />
                     break;
                 case CategoryType.Couple:
                     <ComboBox @bind-Value="parentCategoryId" TValue="int?" Validate='() => parentCategoryId == 0 ? "لطفا گروه اصلی را مشخص نمایید" : null' TEntity="ProductCategory" TextExpression="t => t.Name" ConditionExpression="t => t.CategoryId == null"
@@ -44,7 +44,8 @@
                               ColSpan="4" TotalSpan="6" Title="گروه فرعی" />
                     break;
                 case CategoryType.Multiple:
-                    <LookupTree @bind-Value="categoryId" ColSpan="8" TotalSpan="12">
+                    <div class="col-md-2"></div>
+                    <LookupTree @bind-Value="categoryId" ColSpan="5" TotalSpan="6" Title="گروه محصول">
                         <ChildContent Context="search">
                             <TreeView TEntity="ProductCategory" TextFunc="t => t.Name"
                                       ParentNodeFilterFunc="t => t.Category == null"

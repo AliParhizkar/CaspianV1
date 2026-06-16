@@ -19,7 +19,6 @@ namespace Caspian.Engine.Model
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime RegisterDate { get; set; }
     }
 }

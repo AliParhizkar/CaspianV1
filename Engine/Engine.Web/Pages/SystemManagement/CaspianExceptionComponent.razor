@@ -1,40 +1,52 @@
 ﻿@namespace Caspian.Engine.Shared
-@inject IServiceScopeFactory factory 
+@inject IServiceScopeFactory factory
 @inherits ErrorBoundary
 @inject IHostEnvironment host
+@inject ILogger<int> Logger
 @{
     base.BuildRenderTree(__builder);
 }
 @if (CurrentException != null)
 {
-    Console.WriteLine(isDevelopment || showDetail || IsWebAssembly);
     if (isDevelopment || showDetail || IsWebAssembly)
     {
-        <div class="c-error-develop">
-            <div class="c-message">
-                @errorMessage
-            </div>
-            <div class="c-file-detail row p-2">
-                <div class="col-md-1">
-                    <label>File name: </label>
+        if (showDetail)
+        {
+            exception = CurrentException;
+        }
+        if (exception != null)
+        {
+            var ex = exception;
+            while (ex != null)
+            {
+                var exceptionData = GetExceptionData(ex);
+                <div class="c-error-develop">
+                    <div class="c-message">@ex.Message</div>
+                    <div class="c-file-detail row p-2">
+                        <div class="col-md-1">
+                            <label>File name: </label>
+                        </div>
+                        <div class="col-md-4">
+                            <span>@exceptionData.fileName</span>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Line number</label>
+                        </div>
+                        <div class="col-md-2">
+                            <span>@exceptionData.lineNumber</span>
+                        </div>
+                        <div class="col-md-3 ">
+                            <span @onclick="Recover" class="c-copy-clipboard">Recover</span>
+                        </div>
+                    </div>
+                    <div class="c-content">
+                        @((MarkupString)exception.StackTrace.Replace("at ", "<br>at "))
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <span>@fileName</span>
-                </div>
-                <div class="col-md-2">
-                    <label>Line number</label>
-                </div>
-                <div class="col-md-2">
-                    <span>@fileLineNumber</span>
-                </div>
-                <div class="col-md-3 ">
-                    <span @onclick="Recover" class="c-copy-clipboard">Recover</span>
-                </div>
-            </div>
-            <div class="c-content">
-                @((MarkupString)stackTraceMessage.Replace("at ", "<br>at "))
-            </div>
-        </div>
+                ex = exception.InnerException;
+            }
+        }
+
     }
     else
     {

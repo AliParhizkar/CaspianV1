@@ -20,18 +20,6 @@ namespace Main
                 }
             }
         }
-
-        public static ILoggingBuilder AddCaspianConsoleLogger(this ILoggingBuilder builder, WebApplicationBuilder web)
-        {
-            builder.AddConfiguration();
-            
-            builder.Services.TryAddEnumerable(
-                ServiceDescriptor.Singleton<ILoggerProvider, CaspianConsoleLoggerProvider>(t => 
-                {
-                    return new CaspianConsoleLoggerProvider(web);
-                }));
-            return builder;
-        }
     }
 
     public class CaspianConsoleLoggerProvider : ILoggerProvider
@@ -40,11 +28,13 @@ namespace Main
 
         public CaspianConsoleLoggerProvider(WebApplicationBuilder builder)
         {
+            File.WriteAllText("D:\\Test\\c.txt", "Step1");
             this.builder = builder;
         }
 
         public ILogger CreateLogger(string categoryName)
         {
+            File.WriteAllText("D:\\Test\\b.txt", "Step2");
             return new CaspianConsoleLogger(builder);
         }
 
@@ -70,18 +60,21 @@ namespace Main
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            var value = builder.Configuration.GetSection("DetailedErrors").Value?.ToLower();
-            if (value == null) 
-                return false;
-            if (Boolean.TryParse(value, out _))
-                return Convert.ToBoolean(value);
-            return false;
+            File.WriteAllText("D:\\Test\\c.txt", "Step3");
+            //var value = builder.Configuration.GetSection("DetailedErrors").Value?.ToLower();
+            //if (value == null) 
+            //    return false;
+            //if (Boolean.TryParse(value, out _))
+            //    return Convert.ToBoolean(value);
+            return true;
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
+            File.WriteAllText("D:\\Test\\d.txt", "Message");
             if (IsEnabled(logLevel) && logLevel == LogLevel.Error)
             {
+                File.WriteAllText("D:\\Test\\a.txt", "Message");
                 string message = exception?.Message?.ToString() ?? state?.ToString();
                 if (message!= null)
                 {
@@ -101,7 +94,7 @@ namespace Main
                             error = new XElement("Error");
                         }
                     }
-                    doc.Save(path);
+                    doc.Save("D:\\Test");
                 }
 
             }

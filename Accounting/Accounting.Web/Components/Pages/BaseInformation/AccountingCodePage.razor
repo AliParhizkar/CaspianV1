@@ -47,8 +47,8 @@
         </div>
     </div>
 
-    <Window Service="Service"  Style="width:750px" OnOpen="OpenWindow" Title="تعریف کدینگ حساب">
-        <CaspianForm Service="Service" TEntity="AccountingCode" ColumnsCount="2" OnSubmit="() => FillDataOnformSubmit()">
+    <Window Service="Service"  Style="width:400px" OnOpen="OpenWindow" Title="تعریف کدینگ حساب">
+        <CaspianForm Service="Service" TEntity="AccountingCode" ColumnsCount="0" OnSubmit="() => FillDataOnformSubmit()">
             @{
                 string maskedText = null;
                 var curentCodedefination = codes.ElementAt(searchLevelType.ConvertToInt().Value);
@@ -61,20 +61,20 @@
                     {
                         maskedText += '_';
                     }
-                    <StringTextBox Value="@(Service.Search.Code)" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + title)" Disabled />
-                    <StringTextBox Value="@parentCode.Name" ColSpan="6" TotalSpan="8" Title="@("نام " + title)" Disabled />
+                    <StringTextBox Value="@(Service.Search.Code)" Style="direction:ltr" ColSpan="8"  Title="@("کد " + title)" Disabled />
+                    <StringTextBox Value="@parentCode.Name" ColSpan="8"  Title="@("نام " + title)" Disabled />
                     <div class="col-md-12 p-3 pb-1 pt-2">
                         <span style="color: #710000;font-size:12px;">@(parentCode.Code.Length) رقم اول کد قابل تغییر نیست لطفا فقط @(curentCodedefination.Length) رقم آخر را وارد کنید </span>
                     </div>
                 }
             }
 
-            <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="2" TotalSpan="4" Title="@("کد " + curentCodedefination.Name)" />
-            <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="6" TotalSpan="8" />
-            <DropdownList @bind-Value="context.NatureType" ColSpan="2" TotalSpan="4" />
-            <DropdownList @bind-Value="context.AccountType" ColSpan="6" TotalSpan="8" />
-            <CheckBox @bind-Value="context.IsActive" ColSpan="3" TotalSpan="5" />
-            <FormCommandButton ColSpan="6" TotalSpan="7" />
+            <StringTextBox @bind-Value="context.Code" MaskedText="@(maskedText)" Style="direction:ltr" ColSpan="8"  Title="@("کد " + curentCodedefination.Name)" />
+            <StringTextBox @bind-Value="context.Name" Title="@("نام " + curentCodedefination.Name)" ColSpan="8" />
+            <DropdownList @bind-Value="context.NatureType" ColSpan="8" />
+            <DropdownList @bind-Value="context.AccountType" ColSpan="8"  />
+            <CheckBox @bind-Value="context.IsActive" ColSpan="8"  />
+            <FormCommandButton ColSpan="8"  />
         </CaspianForm>
     </Window>
 }
