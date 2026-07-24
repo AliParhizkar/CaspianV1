@@ -18,6 +18,7 @@ namespace Demo.Service
             RuleFor(t => t.Gender).Required(t => t.CustomerType == CustomerType.Real);
             RuleFor(t => t.FName).Custom(t => t.CustomerType == CustomerType.Legal && t.FName.HasValue(), "First Name is invalid");
             RuleFor(t => t.LName).Required(t => t.CustomerType == CustomerType.Real);
+            RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal).UniqueAsync("Company name should be unique");
             RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqueAsync("There is a customer with this mobile number");
             RuleFor(t => t.Tel).TelNumber();
             RuleFor(t => t.CustomerGroupMemberships).Custom(t => Details.Count() == 0, "Customer should be member of a group");

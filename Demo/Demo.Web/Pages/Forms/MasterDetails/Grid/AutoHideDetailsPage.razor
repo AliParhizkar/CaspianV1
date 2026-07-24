@@ -297,14 +297,15 @@
 
     async Task UpdateMaterialReceipt(ReceiptDetail detail)
     {
-        if (detail.MaterialId > 0)
-        {
-            using var service = CreateScope().GetService<MaterialService>();
-            detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(detail.MaterialId);
-            if (detail.Material.SubunitId == null)
-                detail.QuantitySub = null;
-            await txtMainUnit.FocusAsync();
-        }
+        await Service.DetailDataView.UpdateEntityAsync();
+        //if (detail.MaterialId > 0)
+        //{
+        //    using var service = CreateScope().GetService<MaterialService>();
+        //    detail.Material = await service.GetAll().Include(t => t.MainUnit).Include(t => t.Subunit).SingleAsync(detail.MaterialId);
+        //    if (detail.Material.SubunitId == null)
+        //        detail.QuantitySub = null;
+        //    await txtMainUnit.FocusAsync();
+        //}
     }
 
     [Parameter]

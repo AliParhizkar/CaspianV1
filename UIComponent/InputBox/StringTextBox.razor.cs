@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace Caspian.UI
 {
@@ -34,6 +35,7 @@ namespace Caspian.UI
                 attributes["masked-text"] = MaskedText;
             return attributes;
         }
+        int? maxLength;
 
         IDictionary<string, object> GetInputAttributes() 
         {
@@ -48,8 +50,7 @@ namespace Caspian.UI
                 InputAttributes["autocomplete"] = "off";
             if (Style.HasValue())
                 InputAttributes["style"] = Style;
-            if (MaxLength.HasValue)
-                InputAttributes["maxlength"] = MaxLength;
+            InputAttributes["maxlength"] = maxLength;
             if (disabled)
                 InputAttributes["disabled"] = "disabled";
             else
@@ -141,6 +142,23 @@ namespace Caspian.UI
         {
             if (search)
                 BindingType = BindingType.OnInput;
+            if (MaxLength.HasValue)
+                maxLength = MaxLength.Value;
+            else if (ValueExpression != null)
+            {
+                var expr = ValueExpression.Body;
+                while(expr.NodeType == ExpressionType.MemberAccess)
+                {
+                    var property = (expr as MemberExpression).Member as PropertyInfo;
+                    if (property?.GetCustomAttribute<MaxLengthAttribute>()?.Length != null)
+                    {
+                        maxLength = property.GetCustomAttribute<MaxLengthAttribute>().Length;
+                        break;
+                    }
+                    expr = (expr as MemberExpression).Expression;
+                }
+            }
+            maxLength = MaxLength ?? 50;
             base.OnParametersSet();
         }
 

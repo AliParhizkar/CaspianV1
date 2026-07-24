@@ -1,11 +1,12 @@
 ﻿@page "/Marketing/UserManagement/RoleAccess/{RoleId:int}"
+@attribute [Source(9, "دستیابی نقش ها")]
 
 <div class="p-3">
     <RoleAccessComponent RoleId="RoleId" SubSystem="SubsystemKind.Marketing" />
 </div>
 
 
-@code 
+@code
 {
     [Parameter]
     public int RoleId { get; set; }

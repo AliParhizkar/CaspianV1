@@ -1,0 +1,128 @@
+﻿@page "/MigrationManagement"
+@using System.Reflection
+@using Caspian.Common
+@using Microsoft.EntityFrameworkCore.Infrastructure;
+@using Microsoft.EntityFrameworkCore.Migrations;
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="text-center mi-title">
+    <h4>Migration Management</h4>
+</div>
+<div style="width:600px;margin: 10px auto">
+    <div class="row mi-head">
+        <div class="col-md-6">Subsystem Name</div>
+        <div class="col-md-2">Upgrade</div>
+        <div class="col-md-2">Downgrade</div>
+        <div class="col-md-2">Deatls</div>
+    </div>
+    <div class="row mi-body">
+        @foreach (var subsystem in subsystems)
+        {
+            <div class="col-md-6">@subsystem.Value</div>
+            <div class="col-md-2">
+                <IconButton @onclick="() => UpdateDatabase(subsystem.Key)" IconType="IconType.LevelUp" />
+            </div>
+            <div class="col-md-2">
+                <IconButton IconType="IconType.LevelDown" />
+            </div>
+            <div class="col-md-2">
+                <IconButton @onclick="() => ShowDetails(subsystem.Key)" IconType="IconType.ExternalLink" />
+            </div>
+        }
+    </div>
+</div>
+<Window @bind-Status="status" Title="@(detailsWindow ? "Migration Details" : "Error Details")" Style="width:600px;">
+    @if (detailsWindow)
+    {
+        <div>
+            <div class="text-center mi-title">
+                <h4>@systemName</h4>
+            </div>
+            <div class="row mi-head">
+                <div class="col-md-5">Migration Name</div>
+                <div class="col-md-5">Migration Id</div>
+                <div class="col-md-2">Status</div>
+            </div>
+            <div class="row mi-body">
+                @for (var index = 0; index < migrationsName.Count(); index++)
+                {
+                    <div class="col-md-5"> @migrationsName.ElementAt(index)</div>
+                    <div class="col-md-5"> @migrationsVersion.ElementAt(index)</div>
+                    <div class="col-md-2">
+                        @if (index < appendedMigration.Count())
+                        {
+                            <span class="fa fa-check"></span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="text-center">
+                <h3>@systemName</h3>
+            </div>
+            <StringTextBox Value="@errorMessage" ColSpan="10" TotalSpan="12" Title="Error" MultiLine Rows="3" />
+            <StringTextBox Value="@sqlCommand" ColSpan="10" TotalSpan="12" Title="Sql Command" MultiLine Rows="18" />
+        </div>
+    }
+
+</Window>
+
+@code
+{
+    bool detailsWindow;
+    WindowStatus status;
+    string errorMessage, sqlCommand, windowTitle;
+    IDictionary<SubsystemKind, string> subsystems;
+    string systemName;
+    IEnumerable<string> migrationsName, migrationsVersion, appendedMigration;
+
+    protected override void OnInitialized()
+    {
+        subsystems = new Dictionary<SubsystemKind, string>();
+        var fields = typeof(SubsystemKind).GetFields().Where(t => !t.IsSpecialName);
+        foreach (var field in fields)
+        {
+            var name = field.GetCustomAttribute<SubsystemMetaDataAttribute>().Name;
+            var value = (SubsystemKind)field.GetValue(null);
+            if (value != SubsystemKind.Main)
+                subsystems.Add(value, name);
+        }
+        base.OnInitialized();
+    }
+
+    void ShowDetails(SubsystemKind subsystem)
+    {
+        detailsWindow = true;
+        systemName = typeof(SubsystemKind).GetField(subsystem.ToString()).GetCustomAttribute<SubsystemMetaDataAttribute>().Name;
+        var temp = subsystem.GetMigrationData();
+        migrationsName = temp.migrationsName;
+        migrationsVersion = temp.migrationsVersion;
+        appendedMigration = temp.appendedMigrations;
+        status = WindowStatus.Open;
+    }
+
+    void UpdateDatabase(SubsystemKind subsystem)
+    {
+        detailsWindow = false;
+        var type = subsystem.GetEntityAssembly().GetTypes().Single(t => t.BaseType == typeof(CaspianContext));
+        using CaspianContext context = Activator.CreateInstance(type) as CaspianContext;
+        try
+        {
+            context.Database.Migrate();
+            ShowMessage("بروزرسانی با موفقیت انجام شد");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            sqlCommand = ex.Data["SqlCommandText"].ToString();
+            systemName = typeof(SubsystemKind).GetField(subsystem.ToString()).GetCustomAttribute<SubsystemMetaDataAttribute>().Name;
+            status = WindowStatus.Open;
+        }
+    }
+}

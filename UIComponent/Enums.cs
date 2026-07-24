@@ -38,6 +38,12 @@ namespace Caspian.UI
         [Display(Name = "Refresh")]
         Refresh,
 
+        [Display(Name = "level-up")]
+        LevelUp,
+
+        [Display(Name = "level-down")]
+        LevelDown, 
+
         [Display(Name = "external-link")]
         ExternalLink,
 

@@ -17,7 +17,7 @@ namespace Caspian.UI
         WindowStatus status;
         bool shouldRender = true;
 
-        public async Task OpenPopupWindow()
+        internal async Task OpenPopupWindow()
         {
             status = WindowStatus.Open;
             await CreateInsert();
@@ -63,7 +63,7 @@ namespace Caspian.UI
             return query;
         }
 
-        public override async Task DataBind()
+        internal override async Task DataBind()
         {
             if (fieldsExpression != null && shouldFetchData)
             {

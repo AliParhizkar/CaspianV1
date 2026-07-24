@@ -7,7 +7,7 @@ namespace Demo.Model
     public enum CustomerType: byte
     {
         [Display(Name = "Real person")]
-        Real = 1,
+        Real,
 
         [Display(Name = "Legal person")]
         Legal

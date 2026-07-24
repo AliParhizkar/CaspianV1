@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

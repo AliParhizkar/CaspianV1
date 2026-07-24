@@ -3,12 +3,7 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div>
-    <RadioList @bind-Value="displayType" DefaultLayout="DefaultLayout.FlexStart">
-        <RadioItem IconType="IconType.Tree" Value="true" />
-        <RadioItem IconType="IconType.Outdent" Value="false" />
-    </RadioList>
-</div>
+
 @if (displayType)
 {
     <UserAccessTreeComponent AccessUserId="UserId" SubSystem="SubSystem" />

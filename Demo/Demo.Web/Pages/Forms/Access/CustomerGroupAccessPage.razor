@@ -88,16 +88,16 @@
                         <CaspianForm Service="Service">
                             <div class="d-btn-container">
                                 <div>
-                                    <IconButton @onclick="AddSelectedCustomersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
-                                </div>
-                                <div>
-                                    <IconButton IconType="IconType.AngleRight" />
+                                    <IconButton type="button" @onclick="DeleteSelectedCustomersFromGroup" IconType="IconType.AngleDoubleLeft" />
                                 </div>
                                 <div>
                                     <IconButton type="button" @onclick="async () => await Service.RemoveAsync()" IconType="IconType.AngleLeft" />
                                 </div>
                                 <div>
-                                    <IconButton type="button" @onclick="DeleteSelectedCustomersFromGroup" IconType="IconType.AngleDoubleLeft" />
+                                    <IconButton IconType="IconType.AngleRight" />
+                                </div>
+                                <div>
+                                    <IconButton @onclick="AddSelectedCustomersToGroup" type="button" IconType="IconType.AngleDoubleRight" />
                                 </div>
                             </div>
                         </CaspianForm>

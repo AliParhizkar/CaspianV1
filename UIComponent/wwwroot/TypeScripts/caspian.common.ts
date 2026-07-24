@@ -2,6 +2,8 @@
 
 namespace caspian {
     export class common {
+        static index = 1;
+
         public static showMessage(message: string) {
             if (this.infoTimer)
                 clearTimeout(this.infoTimer);
@@ -308,8 +310,24 @@ namespace caspian {
             new DataGrid(grid);
         }
 
-        public static bindBox() {
-
+        public static async bindBox() {
+            var message = document.getElementsByClassName('c-message');
+            if (message?.length == 1) {
+                let items = message[0].getElementsByTagName("span");
+                
+                //items[this.index].style.color = '#02b9ff';
+                //items[this.index].style.fontWeight = 'bold';
+                //let preIndex = this.index - 1;
+                //if (preIndex == 0)
+                //    preIndex = 8;
+                //items[preIndex].style.color = '';
+                //items[preIndex].style.fontWeight = '';
+                //this.index++; 
+                //if (this.index == 9)
+                //    this.index = 1;
+                //await waite(500);
+                //this.bindBox();
+            }
         }
 
         public static bindWindow(win: HTMLElement) {

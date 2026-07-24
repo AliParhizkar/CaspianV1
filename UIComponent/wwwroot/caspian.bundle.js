@@ -1785,6 +1785,24 @@ var caspian;
             new caspian.DataGrid(grid);
         }
         static bindBox() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var message = document.getElementsByClassName('c-message');
+                if ((message === null || message === void 0 ? void 0 : message.length) == 1) {
+                    let items = message[0].getElementsByTagName("span");
+                    //items[this.index].style.color = '#02b9ff';
+                    //items[this.index].style.fontWeight = 'bold';
+                    //let preIndex = this.index - 1;
+                    //if (preIndex == 0)
+                    //    preIndex = 8;
+                    //items[preIndex].style.color = '';
+                    //items[preIndex].style.fontWeight = '';
+                    //this.index++; 
+                    //if (this.index == 9)
+                    //    this.index = 1;
+                    //await waite(500);
+                    //this.bindBox();
+                }
+            });
         }
         static bindWindow(win) {
             new caspian.Window(win);
@@ -1958,6 +1976,7 @@ var caspian;
             });
         }
     }
+    common.index = 1;
     caspian.common = common;
 })(caspian || (caspian = {}));
 function waite(delay) {

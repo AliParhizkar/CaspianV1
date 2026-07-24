@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using Caspian.common.Migrations;
 using Caspian.Common.Extension;
 using Caspian.Common.JsonValue;
-using Caspian.Common.RowNumber;
 using Caspian.Common.Migrations;
+using Caspian.Common.RowNumber;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace Caspian.Common
 {
@@ -22,7 +23,8 @@ namespace Caspian.Common
                 t.AddRowNumberSupport();
                 t.MigrationsHistoryTable("__EFMigrationsHistory", schema);
             }).ReplaceService<IMigrationsSqlGenerator, CaspianMigrationsSqlGenerator>()
-                .EnableSensitiveDataLogging();
+            .EnableSensitiveDataLogging()
+            .AddInterceptors(new CaspianDbCommandInterceptor());
             optionsBuilder.UseLazyLoadingProxies(false);
 
             base.OnConfiguring(optionsBuilder);

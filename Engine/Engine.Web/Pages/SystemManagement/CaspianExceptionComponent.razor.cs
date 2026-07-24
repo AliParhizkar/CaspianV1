@@ -92,59 +92,74 @@ namespace Caspian.Engine.Shared
             var service = scope.GetService<ExceptionDataService>();
             var detailService = scope.GetService<ExceptionDetailService>();
             var ex = exception;
-            while (ex.InnerException != null)
+            (string fileName, int? lineNumber) exceptionData = default;
+            while (ex != null)
+            {
+                var temp =  GetExceptionData(ex);
+                if (temp.lineNumber.HasValue)
+                    exceptionData = temp;
                 ex = ex.InnerException;
-            var exceptionData =  GetExceptionData(ex);
-            ExceptionData old = null;
-            if (exceptionData.fileName != null)
-            {
-                old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == exceptionData.fileName &&
-                    t.LineNumber == exceptionData.lineNumber);
             }
-            if (old == null)
+            var path = $"{host.ContentRootPath}\\Errors";
+            string errorFileName;
+            if (exceptionData.lineNumber.HasValue)
             {
-                old = new ExceptionData()
+                var old = await service.GetAll().SingleOrDefaultAsync(t => t.SourceCodeFileName == exceptionData.fileName &&
+                    t.LineNumber == exceptionData.lineNumber);
+                if (old == null)
                 {
-                    LineNumber = (short)exceptionData.lineNumber,
-                    ErrorFileName = Path.GetRandomFileName(),
-                    RegisterDate = DateTime.Now,
-                    RepetitionTimes = 1,
-                    SubSystemKind = SystemKind,
-                    SourceCodeFileName = exceptionData.fileName,
-                    Version = "1.1.1.1"
-                };
-                var transaction = await service.Context.Database.BeginTransactionAsync();
-                await service.AddAsync(old);
-                await service.SaveChangesAsync();
-                if (UserId.HasValue)
-                {
-                    var detail = new ExceptionDetail()
+                    old = new ExceptionData()
                     {
-                        ExceptionDataId = old.Id,
-                        UserId = UserId.Value,
-                        RegisterDate = DateTime.Now
+                        LineNumber = (short)exceptionData.lineNumber,
+                        ErrorFileName = Path.GetRandomFileName(),
+                        RegisterDate = DateTime.Now,
+                        RepetitionTimes = 1,
+                        SubSystemKind = SystemKind,
+                        SourceCodeFileName = exceptionData.fileName,
+                        Version = "1.1.1.1"
                     };
-                    await detailService.AddAsync(detail);
+                    var transaction = await service.Context.Database.BeginTransactionAsync();
+                    await service.AddAsync(old);
+                    await service.SaveChangesAsync();
+                    if (UserId.HasValue)
+                    {
+                        var detail = new ExceptionDetail()
+                        {
+                            ExceptionDataId = old.Id,
+                            UserId = UserId.Value,
+                            RegisterDate = DateTime.Now
+                        };
+                        await detailService.AddAsync(detail);
+                        await service.SaveChangesAsync();
+                    }
+                    await transaction.CommitAsync();
+                }
+                else
+                {
+                    old.RepetitionTimes = Convert.ToInt16(old.RepetitionTimes + 1);
+                    if (UserId.HasValue)
+                    {
+                        var detail = new ExceptionDetail()
+                        {
+                            ExceptionDataId = old.Id,
+                            UserId = UserId.Value,
+                            RegisterDate = DateTime.Now
+                        };
+                        await detailService.AddAsync(detail);
+                    }
                     await service.SaveChangesAsync();
                 }
-                await transaction.CommitAsync();
+                errorFileName = old.ErrorFileName;
             }
             else
             {
-                old.RepetitionTimes = Convert.ToInt16(old.RepetitionTimes + 1);
-                if (UserId.HasValue)
-                {
-                    var detail = new ExceptionDetail()
-                    {
-                        ExceptionDataId = old.Id,
-                        UserId = UserId.Value,
-                        RegisterDate = DateTime.Now
-                    };
-                    await detailService.AddAsync(detail);
-                }
-                await service.SaveChangesAsync();
+                path = $"{path}\\Public";
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                errorFileName = Path.GetRandomFileName();
             }
-            var path = host.ContentRootPath + "\\Errors\\" + old.ErrorFileName + ".xml";
+
+            path += $"\\{errorFileName}.xml";
             ex = exception;
             var doc = new XElement("Errors");
             while (ex != null)
@@ -153,7 +168,6 @@ namespace Caspian.Engine.Shared
                 doc.AddElement(xElement);
                 ex = ex.InnerException;
             }
-            saveErrorMessage = path;
             doc.Save(path);
         }
 

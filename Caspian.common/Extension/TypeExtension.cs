@@ -22,6 +22,7 @@ namespace Caspian.Common.Extension
             return NumericTypes.Contains(type);
         }
 
+
         public static bool Is1To1Relation(this PropertyInfo info)
         {
             var type = info.PropertyType;
@@ -201,7 +202,6 @@ namespace Caspian.Common.Extension
         public static bool IsCollectionType(this Type type, Type collectionType)
         {
             return (type.IsCollectionType() && type.IsGenericType && type.GenericTypeArguments[0] == collectionType) ;
-
         }
     }
 }

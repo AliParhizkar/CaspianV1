@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Investment.Model
 {
+    [Table("OrganPosts", Schema = "ivm")]
     public class OrganPost
     {
         [Key]

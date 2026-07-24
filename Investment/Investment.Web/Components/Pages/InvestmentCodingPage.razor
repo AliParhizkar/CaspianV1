@@ -62,7 +62,7 @@
                     }
 
                     <StringTextBox @bind-Value="context.Code" ColSpan="8" MaskedText="@maskedText" Style="direction:ltr" />
-                    <Lookup TValue="int" TEntity="DepreciationLaw" @bind-Value="context.DepreciationLawId" TextExpression="t => t.Name" ColSpan="8">
+                    <Lookup TValue="int" TEntity="DepreciationLaw" @bind-Value="context.DepreciationLawId" TextExpression="t => t.Name" ColSpan="8" AutoHide>
                         <DepreciationLawLookupWindow />
                     </Lookup>
                     <StringTextBox @bind-Value="context.Name" ColSpan="8" />

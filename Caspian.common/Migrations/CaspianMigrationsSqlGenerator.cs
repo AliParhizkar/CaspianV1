@@ -7,12 +7,13 @@ namespace Caspian.Common.Migrations
 {
     public class CaspianMigrationsSqlGenerator : SqlServerMigrationsSqlGenerator
     {
+        TableOperationKind tableOperationKind;
+        
         public CaspianMigrationsSqlGenerator(MigrationsSqlGeneratorDependencies dependencies, ICommandBatchPreparer commandBatchPreparer)
             : base(dependencies, commandBatchPreparer)
         {
 
         }
-        TableOperationKind tableOperationKind;
 
         protected override void Generate(AlterColumnOperation operation, IModel model, MigrationCommandListBuilder builder)
         {

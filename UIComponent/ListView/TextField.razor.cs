@@ -5,14 +5,20 @@ namespace Caspian.UI
 {
     public partial class TextField<TEntity> where TEntity : class
     {
-        [Parameter, EditorRequired]
-        public Expression<Func<TEntity, string>> Field { get; set; }
-
         [CascadingParameter(Name = "DataView")]
-        public IListViewer<TEntity> DataView { get; set; }
+        internal IListViewer<TEntity> DataView { get; set; }
 
         [CascadingParameter(Name = "RowData")]
-        public RowData<TEntity> RowData { get; set; }
+        internal RowData<TEntity> RowData { get; set; }
+
+        protected override void OnInitialized()
+        {
+            DataView?.AddDataField(Field.Body);
+            base.OnInitialized();
+        }
+
+        [Parameter, EditorRequired]
+        public Expression<Func<TEntity, string>> Field { get; set; }
 
         [Parameter]
         public RenderFragment<string> Template { get; set; }
@@ -25,11 +31,5 @@ namespace Caspian.UI
 
         [Parameter]
         public bool DataField { get; set; }
-
-        protected override void OnInitialized()
-        {
-            DataView?.AddDataField(Field.Body);
-            base.OnInitialized();
-        }
     }
 }

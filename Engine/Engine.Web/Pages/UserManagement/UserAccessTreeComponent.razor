@@ -4,17 +4,17 @@
 @if (user != null)
 {
     <div class="c-data-containner row c-controls">
+        @*<div>
+            <RadioList @bind-Value="displayType" DefaultLayout="DefaultLayout.FlexStart">
+                <RadioItem IconType="IconType.Tree" Value="true" />
+                <RadioItem IconType="IconType.Outdent" Value="false" />
+            </RadioList>
+        </div>*@
         <div class="col-md-1">
-            <label>First name</label>
+            <label>Name</label>
         </div>
-        <div class="col-md-2">
-            <span>@user.FName</span>
-        </div>
-        <div class="col-md-1">
-            <label>Last name</label>
-        </div>
-        <div class="col-md-2">
-            <span>@user.LName</span>
+        <div class="col-md-3">
+            <span>@(user.FName + ' ' + user.LName)</span>
         </div>
         <div class="col-md-1">
             <label>Username</label>

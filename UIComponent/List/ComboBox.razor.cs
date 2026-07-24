@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.CompilerServices;
 
 namespace Caspian.UI
 {
@@ -81,7 +82,7 @@ namespace Caspian.UI
             }
         }
 
-        public EventCallback<object> OnInternalValueChanged { get; set; }
+        EventCallback<object> IComboBox<TEntity>.OnInternalValueChanged { get; set; }
 
         public async Task SetValueAndClose(object item)
         {
@@ -99,8 +100,8 @@ namespace Caspian.UI
                     await SetValue(value);
                     text = TextExpression.Compile().Invoke(item as TEntity);
                 }
-                if (OnInternalValueChanged.HasDelegate)
-                    await OnInternalValueChanged.InvokeAsync(Value);
+                if ((this as IComboBox<TEntity>).OnInternalValueChanged.HasDelegate)
+                    await (this as IComboBox<TEntity>).OnInternalValueChanged.InvokeAsync(Value);
             }
             Status = WindowStatus.Close;
         }
@@ -196,7 +197,7 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-        public void AddDataField(Expression expression)
+        void IListViewer<TEntity>.AddDataField(Expression expression)
         {
             fieldsAdd = true;
             fieldsExpression.Add(expression);

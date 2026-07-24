@@ -190,6 +190,8 @@ namespace Caspian.UI
         /// </summary>
         protected virtual void InitializeBeforeValidation(TEntity entity)
         {
+            if (entity is BaseEntity baseEntity)
+                baseEntity.UpsertDate = DateTime.Now;
             var data = Form.CrudServiceData;
             if (data != null)
             {

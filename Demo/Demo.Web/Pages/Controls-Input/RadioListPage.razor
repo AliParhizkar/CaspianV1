@@ -1,6 +1,7 @@
 ﻿@page "/Demo/RadioList"
 @namespace Demo.Web.Pages
 @attribute [Source(13, "Radio List")]
+@inherits BasePage
 <h2>Radiobutton list</h2>
 <h3>Binding</h3>
 <p>
@@ -76,6 +77,9 @@
         </TabPanelItem>
         <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
             <Document FolderName="RadioList" FileName="Binding" />
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Enum">
+            <Document Page="this" FolderName="Enums" FileName="OrderType" />
         </TabPanelItem>
     </Tabs>
 </TabPanel>

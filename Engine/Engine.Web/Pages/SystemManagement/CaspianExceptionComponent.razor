@@ -17,10 +17,10 @@
         if (exception != null)
         {
             var ex = exception;
-            while (ex != null)
-            {
-                var exceptionData = GetExceptionData(ex);
-                <div class="c-error-develop">
+            <div class="c-error-develop">
+                @while (ex != null)
+                {
+                    var exceptionData = GetExceptionData(ex);
                     <div class="c-message">@ex.Message</div>
                     <div class="c-file-detail row p-2">
                         <div class="col-md-1">
@@ -40,13 +40,15 @@
                         </div>
                     </div>
                     <div class="c-content">
-                        @((MarkupString)exception.StackTrace.Replace("at ", "<br>at "))
+                        @if (exception.StackTrace != null)
+                        {
+                            @((MarkupString)exception.StackTrace.Replace("at ", "<br>at "))
+                        }
                     </div>
-                </div>
-                ex = exception.InnerException;
-            }
+                    ex = ex.InnerException;
+                }
+            </div>
         }
-
     }
     else
     {

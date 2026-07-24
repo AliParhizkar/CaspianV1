@@ -34,20 +34,18 @@
                         <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                     </EntitySearch>
                     <div class="ps-1 pe-1 pb-4">
-                        <GridStateProvider>
-                            <DataGrid TEntity="Country" PersistState Service="Service">
-                                <Columns>
-                                    <GridColumn Field="t => t.Title" />
-                                    <GridColumn Field="t => t.ActiveType.EnumText()" />
-                                    <GridColumn Title="Cities" style="width:50px">
-                                        <Template>
-                                            <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.WpfForms" />
-                                        </Template>
-                                    </GridColumn>
-                                    <GridCommandColumns />
-                                </Columns>
-                            </DataGrid>
-                        </GridStateProvider>
+                        <DataGrid TEntity="Country" Service="Service">
+                            <Columns>
+                                <GridColumn Field="t => t.Title" />
+                                <GridColumn Field="t => t.ActiveType.EnumText()" />
+                                <GridColumn Title="Cities" style="width:50px">
+                                    <Template>
+                                        <IconButton Href='@($"/Demo/City/{context.Data.Id}")' IconType="IconType.WpfForms" />
+                                    </Template>
+                                </GridColumn>
+                                <GridCommandColumns />
+                            </Columns>
+                        </DataGrid>
                     </div>
                     <Window Service="Service" Title="Country" Style="width:450px">
                         <CaspianForm Service="Service">

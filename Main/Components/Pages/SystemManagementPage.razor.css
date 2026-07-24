@@ -1,0 +1,38 @@
+﻿.mi-title {
+    color: firebrick
+}
+.mi-head {
+    background-color: #dae2f9;
+    border-right: 1px solid #b5b5b5;
+    border-bottom: 1px solid #b5b5b5;
+    border-top: 1px solid #b5b5b5;
+    overflow-y: scroll;
+}
+    .mi-head div {
+        border-left: 1px solid #b5b5b5;
+        text-align: center;
+        font-weight: bold;
+        font-size:13px;
+        padding: 3px 0;
+    }
+
+.mi-body {
+    text-align: center;
+    border-right: 1px solid #b5b5b5;
+    border-bottom: 1px solid #b5b5b5;
+    overflow-y: scroll;
+    max-height: calc(100vh - 159px);
+}
+    .mi-body div {
+        border-left: 1px solid #b5b5b5;
+        padding:3px 0;
+        border-bottom: 1px solid #b5b5b5;
+    }
+
+.fa-check {
+    color:aqua;
+}
+
+.mi-body div:nth-child(6n + 4), .mi-body div:nth-child(6n + 5), .mi-body div:nth-child(6n) {
+    background-color: #f6f8ff;
+}

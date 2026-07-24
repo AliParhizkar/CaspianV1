@@ -1,10 +1,11 @@
 ﻿@page "/Marketing/UserManagement/UserAccess/{UserId:int}"
+@attribute [Source(11, "دستیابی کاربران")]
 
 <div class="p-3">
     <UserAccessComponent SelectedUserId="UserId" SubSystem="SubsystemKind.Marketing" />
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public int UserId { get; set; }

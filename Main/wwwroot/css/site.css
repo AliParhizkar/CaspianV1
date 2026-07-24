@@ -558,17 +558,21 @@ html, body {
 }
 .c-hero .c-message {
     text-align: center;
-    font-size: 35px;
+    font-size: 25px;
     color: white;
-    background-color: #4141416e;
-    width: 512px;
+    background-color: #2f2f2fa1;
+    width: fit-content;
     margin: 0 auto;
-    border-radius: 10px;
+    padding: 0 5px;
 }
-.s-footer{
-    background-color:black;
-    height:200px;
-}
+    .c-hero .c-message span:first-child {
+        color: #00ff87c7;
+        font-size:28px;
+    }
+    .s-footer {
+        background-color: black;
+        height: 200px;
+    }
 .s-btn {
     background-color: transparent;
     border: none;

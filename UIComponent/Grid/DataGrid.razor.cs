@@ -58,7 +58,7 @@ namespace Caspian.UI
             }
         }
 
-        public override async Task DataBind()
+        internal override async Task DataBind()
         {
             if (columnsData.Count > 0 && shouldFetchData)
             {
@@ -160,7 +160,6 @@ namespace Caspian.UI
 
                 if (OnLoaded != null)
                     OnLoaded();
-                await SetStateGridData();
             }
         }
 
