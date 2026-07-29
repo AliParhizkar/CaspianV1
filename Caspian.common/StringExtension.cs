@@ -12,7 +12,6 @@ namespace Caspian.Common
               (?<=[A-Za-z])(?=[0-9])|
               (?<=[0-9])(?=[A-Za-z])",
             RegexOptions.IgnorePatternWhitespace);
-
             return regex.Replace(str, " ");
         }
 

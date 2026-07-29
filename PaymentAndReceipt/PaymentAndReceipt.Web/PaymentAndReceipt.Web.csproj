@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.27" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Caspian.common\Caspian.common.csproj" />
+    <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
+	  <ProjectReference Include="..\..\Engine\Engine.Model\Engine.Model.csproj" />
+	  <ProjectReference Include="..\..\Engine\Engine.Service\Engine.Service.csproj" />
+	  <ProjectReference Include="..\..\Engine\Engine.Web\Engine.Web.csproj" />
+    <ProjectReference Include="..\PaymentAndReceipt.Model\PaymentAndReceipt.Model.csproj" />
+    <ProjectReference Include="..\PaymentAndReceipt.Service\PaymentAndReceipt.Service.csproj" />
+  </ItemGroup>
+
+</Project>

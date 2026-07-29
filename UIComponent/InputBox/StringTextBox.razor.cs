@@ -105,7 +105,30 @@ namespace Caspian.UI
             if (InputAttributes.ContainsKey("readonly"))
                 readOnly = Convert.ToBoolean(InputAttributes["readonly"]);
             if (!readOnly)
-                await base.SetValue(arg.Value);
+            {
+                var value = arg.Value?.ToString();
+                if (value != null && MaskedText.HasValue())
+                {
+                    if (value.IndexOf('_') >= 0)
+                    {
+                        value = null;
+                        await SetValueOnClientAsync(value);
+                    }
+                    else
+                    {
+                        var temp = "";
+                        for (var index = 0; index < MaskedText.Length; index++)
+                        {
+                            if (MaskedText[index] == '_')
+                                temp += value[index];
+                        }
+                        value = temp;
+                    }
+                }
+                else
+                    await SetValueOnClientAsync(value);
+                await base.SetValue(value);
+            }
         }
 
         protected override void OnInitialized()
@@ -136,6 +159,27 @@ namespace Caspian.UI
                 }
             }
             base.OnInitialized();
+        }
+
+        string GetText()
+        {
+            if (MaskedText.HasValue() && Value != null)
+            {
+                var temp = "";
+                int index = 0;
+                for (var index1 = 0; index1 < MaskedText.Length; index1++)
+                {
+                    if (MaskedText[index1] == '_')
+                    {
+                        temp += Value[index];
+                        index++;
+                    }
+                    else
+                        temp += MaskedText[index1];
+                }
+                return temp;
+            }
+            return Value;
         }
 
         protected override void OnParametersSet()

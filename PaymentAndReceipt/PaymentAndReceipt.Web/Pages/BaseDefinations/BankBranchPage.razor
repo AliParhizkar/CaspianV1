@@ -1,0 +1,41 @@
+﻿@page "/PaymentAndReceipt/BankBranch"
+@attribute [Source(14, "تعریف شعبه")]
+@inject IUIService<BankBranch> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <ComboBox TValue="int" TEntity="Bank" @bind-Value="context.BankId" TextExpression="t => t.Name" ColSpan="4" />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="BankBranch" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Bank.Name" Title="بانک" />
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Tel" />
+            <GridColumn Field="t => t.Website" />
+            <GridColumn Field="t => t.City.Name" Title="شهر" />
+            <GridColumn Field="t => t.City.Province.Name" Title="استان" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="شعب بانک ها" Style="width:450px">
+    <CaspianForm TEntity="BankBranch" Service="Service">
+        <ComboBox TValue="int" TEntity="Bank" @bind-Value="context.BankId" TextExpression="t => t.Name" ColSpan="8" />
+        <Lookup TValue="int?" TEntity="City" @bind-Value="context.CityId" TextExpression="t => t.Name" ColSpan="8"  >
+            <PaymentAndReceipt.Web.CityLookup />
+        </Lookup>
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Tel" ColSpan="8" Style="direction:ltr" MaxLength="11" />
+        <StringTextBox @bind-Value="context.Website" ColSpan="8" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Address" ColSpan="8" MultiLine Rows="3" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>

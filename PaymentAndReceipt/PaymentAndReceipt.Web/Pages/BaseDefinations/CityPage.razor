@@ -1,0 +1,35 @@
+﻿@page "/PaymentAndReceipt/City"
+@attribute [Source(13, "شهرها")]
+@inject IUIService<City> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <ComboBox TValue="int" TEntity="Province" @bind-Value="context.ProvinceId" TextExpression="t => t.Name" ColSpan="4"  />
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="City" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Province.Name" Title="استان" />
+            <GridColumn Field="t => t.Name" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="شهر" Style="width:450px">
+    <CaspianForm TEntity="City" Service="Service">
+        <ComboBox TValue="int" TEntity="Province" @bind-Value="context.ProvinceId" TextExpression="t => t.Name" ColSpan="8"  />
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

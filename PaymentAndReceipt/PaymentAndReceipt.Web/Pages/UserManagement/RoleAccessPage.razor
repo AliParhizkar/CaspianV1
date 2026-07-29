@@ -1,0 +1,12 @@
+﻿@page "/PaymentAndReceipt/UserManagement/RoleAccess/{RoleId:int}"
+@attribute [Source(2, "دستیابی نقش به منوها")]
+<div class="p-3">
+    <RoleAccessComponent SubSystem="SubsystemKind.PaymentAndReceipt" />
+</div>
+
+
+@code
+{
+    [Parameter]
+    public int RoleId { get; set; }
+}

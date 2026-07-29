@@ -39,7 +39,7 @@ else
                 {
                     @if (base.BindingType == BindingType.OnChange)
                     {
-                        <input value="@Value" @onchange="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
+                        <input value="@GetText()" @onchange="async e => await ChangeValue(e)" @ref="InputElement" @attributes="GetInputAttributes()" />
                     }
                     else
                     {

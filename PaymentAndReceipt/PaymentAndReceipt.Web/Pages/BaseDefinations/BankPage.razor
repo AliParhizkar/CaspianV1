@@ -1,0 +1,36 @@
+﻿@page "/PaymentAndReceipt/Bank"
+@attribute [Source(12, "تعریف بانک")]
+@inject IUIService<Bank> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <DropdownList @bind-Value="context.BankType" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="Bank" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.BankType.EnumText()" />
+            <GridColumn Field="t => t.Code" />
+            <GridColumn Field="t => t.Tell" />
+            <GridColumn Field="t => t.WebSite" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="بانک" Style="width:450px">
+    <CaspianForm TEntity="Bank" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <DropdownList @bind-Value="context.BankType" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Code" ColSpan="8" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Tell" ColSpan="8" Style="direction:ltr" MaxLength="11" />
+        <StringTextBox @bind-Value="context.WebSite" ColSpan="8" Style="direction:ltr" />
+        <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="3" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>

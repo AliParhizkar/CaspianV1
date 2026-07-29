@@ -1,15 +1,17 @@
-﻿using FluentValidation;
-using System.Reflection;
-using System.ComponentModel;
-using Caspian.Common.Service;
-using System.Linq.Expressions;
+﻿using Caspian.Common.Attributes;
 using Caspian.Common.Extension;
-using System.Linq.Dynamic.Core;
-using Caspian.Common.Attributes;
+using Caspian.Common.Service;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using System.Net.Mail;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Caspian.Common
 {
@@ -285,6 +287,45 @@ namespace Caspian.Common
                 {
                     if (!idCard.CheckIdCard(delimiterChar))
                         context.AddFailure("شماره کارت ملی نامعتبر است");
+                }
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, string> CheckRegularExpressions<TModel>(this IRuleBuilder<TModel, string> ruleBuilder, string regularExpression, string errorMessage)
+        {
+            return ruleBuilder.Custom((value, context) =>
+            {
+                if (value.HasValue())
+                {
+                    var reg = new Regex(regularExpression);
+                    if (!reg.IsMatch(value))
+                        context.AddFailure(errorMessage);
+                }
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, string> CheckEmail<TModel>(this IRuleBuilder<TModel, string> ruleBuilder, string errorMessage = "آدرس الکترونیکی نامعتبر است")
+        {
+            return ruleBuilder.Custom((email, context) =>
+            {
+                if (email.HasValue())
+                {
+                    var address = new MailAddress(email);
+                    if (address.Address.Equals(email, StringComparison.OrdinalIgnoreCase) )
+                        context.AddFailure(errorMessage);
+                }
+            });
+        }
+
+        public static IRuleBuilderOptionsConditions<TModel, string> CheckUrl<TModel>(this IRuleBuilder<TModel, string> ruleBuilder, string errorMessage = "آدرس نامعتبر است")
+        {
+            return ruleBuilder.Custom((url, context) =>
+            {
+                if (url.HasValue())
+                {
+                    var result = Uri.TryCreate(url, UriKind.Absolute, out var uri);
+                    if (!result || uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+                        context.AddFailure(errorMessage);
                 }
             });
         }

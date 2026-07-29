@@ -108,6 +108,7 @@ namespace Main
             typeof(Warehouse.Service.BranchService).Assembly.InjectServices(builder.Services);
             typeof(Accounting.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
             typeof(Procurement.Service.PurchasingSpecialistService).Assembly.InjectServices(builder.Services);
+            typeof(PaymentAndReceipt.Service.CurrencyService).Assembly.InjectServices(builder.Services);
             #endregion
             builder.Services.AddControllers();
             #region Inject Context For each entity model
@@ -118,6 +119,7 @@ namespace Main
             builder.Services.AddScoped<Marketing.Model.MarketingContext>();
             builder.Services.AddScoped<Warehouse.Model.Context>();
             builder.Services.AddScoped<Procurement.Model.Context>();
+            builder.Services.AddScoped<PaymentAndReceipt.Model.Context>();
             #endregion
             builder.Services.AddScoped<BaseComponentService>();
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(CS.Con));
@@ -171,6 +173,8 @@ namespace Main
                 httpContext.Request.Path.StartsWithSegments("/Warehouse"));
             app.MapCaspianProjectWhen<Procurement.Web.App>(httpContext =>
                 httpContext.Request.Path.StartsWithSegments("/Procurement"));
+            app.MapCaspianProjectWhen<PaymentAndReceipt.Web.App>(httpContext =>
+                httpContext.Request.Path.StartsWithSegments("/PaymentAndReceipt"));
             #endregion
             app.MapAdditionalIdentityEndpoints();
             app.MapControllers();

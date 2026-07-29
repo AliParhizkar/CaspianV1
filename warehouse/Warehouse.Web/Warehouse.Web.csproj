@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Pages\Lookups\**" />
+    <Compile Remove="wwwroot\**" />
     <Content Remove="Pages\Lookups\**" />
+    <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="Pages\Lookups\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="Pages\Lookups\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +34,6 @@
     <ProjectReference Include="..\..\UIComponent\UIComponent.csproj" />
     <ProjectReference Include="..\Warehouse.Model\Warehouse.Model.csproj" />
     <ProjectReference Include="..\Warehouse.Service\Warehouse.Service.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

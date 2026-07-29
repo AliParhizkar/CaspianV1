@@ -33,7 +33,10 @@ namespace Caspian.Common
         Investment,
 
         [SubsystemMetaData("تدارکات", Schema = "pcm")]
-        Procurement
+        Procurement,
+
+        [SubsystemMetaData("دریافت و پرداخت", Schema = "par")]
+        PaymentAndReceipt
     }
 
     public static class SubsystemExtension

@@ -1,0 +1,67 @@
+﻿@page "/PaymentAndReceipt/BankAccount"
+@attribute [Source(16, "حساب بانکی")]
+@inject IUIService<BankAccount> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.AccountNumber" ColSpan="4" Style="direction:ltr" SearchType="SearchType.StartWith" />
+        <ComboBox TValue="int" TEntity="BankBranch" @bind-Value="context.BankBranchId" TextExpression="t => t.Name" ColSpan="4"  />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="BankAccount" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.BankBranch.Bank.Name" Title="بانک" />
+            <GridColumn Field="t => t.BankBranch.Name" Title="شعبه بانک" />
+            <GridColumn Field="t => t.Currency.Title" Title="ارز" />
+            <GridColumn Field="t => t.BankAccountType.Title" Title="نوع حساب" />
+            <GridColumn Field="t => t.AccountNumber" />
+            <GridColumn Field="t => t.Shaba" />
+            <GridColumn Field="t => t.ReserveBalance" />
+            <GridColumn Field="t => t.CreditLimit" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="حساب بانکی" Style="width:450px" OnOpen="async () => await LoadDataAsync() ">
+    <CaspianForm TEntity="BankAccount" Service="Service" OnSubmit="OnSubmit">
+        <ComboBox TValue="int" TEntity="Branch" @bind-Value="context.BranchId" TextExpression="t => t.Name" ColSpan="8" />
+        <ComboBox TValue="int" TEntity="BankAccountType" @bind-Value="context.BankAccountTypeId" TextExpression="t => t.Title" ColSpan="8" />
+        <ComboBox TValue="int?" TEntity="Bank" @bind-Value="bankId" TextExpression="t => t.Name" ColSpan="8" Title="بانک" CascadeService="cascadeService" />
+        <ComboBox TValue="int" TEntity="BankBranch" @bind-Value="context.BankBranchId" TextExpression="t => t.Name" ColSpan="8" CascadeService="cascadeService" />
+        <StringTextBox @bind-Value="context.AccountNumber" ColSpan="8" Style="direction:ltr" />
+        <ComboBox TValue="int" TEntity="Currency" @bind-Value="context.CurrencyId" TextExpression="t => t.Title" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Shaba" ColSpan="8" MaskedText="IR__-____-____-____-____-____-____" Style="direction:ltr" />
+        <NumericTextBox @bind-Value="context.ReserveBalance" DigitGrouping ColSpan="8" />
+        <NumericTextBox @bind-Value="context.CreditLimit" DigitGrouping ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+    CascadeService<Bank, BankBranch> cascadeService = new CascadeService<Bank, BankBranch>();
+    int? bankId;
+
+    void OnSubmit(CancelableEvent<BankAccount> bankAccount)
+    {
+        var sheba = bankAccount.Entity.Shaba;
+    }
+
+    async Task LoadDataAsync()
+    {
+        var id = Service.UpsertData.BankBranchId;
+        if (id > 0)
+        {
+            using var service = CreateScope().GetService<BankAccountService>();
+            var old = await service.GetAll().Include(t => t.BankBranch).SingleAsync(t => t.BankBranchId == id);
+            bankId = old.BankBranchId;
+        }
+        else
+            bankId = null;
+    }
+}

@@ -1,0 +1,33 @@
+﻿@page "/PaymentAndReceipt/Branch"
+@attribute [Source(11, "شعبه")]
+@inject IUIService<Branch> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Name" ColSpan="4" />
+        <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="Branch" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Name" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="شعبه" Style="width:450px">
+    <CaspianForm TEntity="Branch" Service="Service">
+        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+        <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+        <StringTextBox @bind-Value="context.Address" ColSpan="8" MultiLine Rows="3" />
+        <StringTextBox @bind-Value="context.Description" ColSpan="8" MultiLine Rows="3" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>

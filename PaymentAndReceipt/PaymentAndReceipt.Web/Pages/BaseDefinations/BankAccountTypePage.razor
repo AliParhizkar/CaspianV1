@@ -1,0 +1,35 @@
+﻿@page "/PaymentAndReceipt/BankAccountType"
+@attribute [Source(15, "نوع حساب بانکی")]
+@inject IUIService<BankAccountType> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <CheckBox @bind-Value="context.HasCheckbook" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="BankAccountType" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.HasCheckbook" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="نوع حساب بانکی" Style="width:450px">
+    <CaspianForm TEntity="BankAccountType" Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <CheckBox @bind-Value="context.HasCheckbook" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
+
+@code
+{
+
+}

@@ -1,0 +1,31 @@
+﻿@page "/PaymentAndReceipt/Currency"
+@attribute [Source(10, "تعریف ارز")]
+@inject IUIService<Currency> Service
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+
+
+<div class="p-4 pb-0">
+    <EntitySearch Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.Title" ColSpan="4" />
+        <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
+    </EntitySearch>
+</div>
+<div class="p-4 pt-1">
+    <DataGrid TEntity="Currency" Service="Service" ContentHeight="350">
+        <Columns>
+            <GridColumn Field="t => t.Title" />
+            <GridColumn Field="t => t.ActiveType.EnumText()" />
+            <GridCommandColumns />
+        </Columns>
+    </DataGrid>
+</div>
+<Window Service="Service" Title="تعریف ارز" Style="width:450px">
+    <CaspianForm TEntity="Currency" Service="Service">
+        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+        <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+        <FormCommandButton ColSpan="8" />
+    </CaspianForm>
+</Window>
