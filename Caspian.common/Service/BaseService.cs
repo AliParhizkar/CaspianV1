@@ -178,7 +178,6 @@ namespace Caspian.Common.Service
 
         #region For CRUD Operation For Entity
         #region For Add Entity 
-
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
             if (CheckValidation)

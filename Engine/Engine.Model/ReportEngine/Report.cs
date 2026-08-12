@@ -44,6 +44,7 @@ namespace Caspian.Engine.Model
         [CheckOnDelete("گزارش دارای پارامتر تجمعی می باشد و امکان حذف آن وجود ندارد.")]
         public IList<AggregateReportParameter> AggregateReportParameters { get; set; }
 
+        [CheckOnDelete("گزارش دارای پنل می باشد و امکان حذف آن وجود ندارد")]
         public ICollection<TabPanel> TabPanels { get; set; }
     }
 }

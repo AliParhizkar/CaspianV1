@@ -5,7 +5,7 @@
     <DataGrid Service="Service" TEntity="Customer" ContentHeight="250">
         <Columns Context="customer">
             <GridColumn Field="t => t.CustomerType" Title="Customer type" />
-            <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName' Title="Customer Name" />
+            <GridColumn Field='t => t.CustomerType == Model.CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName'  />
             <GridColumn Field="t => t.Gender" style="width:100px" Title="Gender">
                 <Template>
                     @if (customer.Data.Gender == Model.Gender.Male)
@@ -27,6 +27,7 @@
 {
     protected override void OnInitialized()
     {
+        /// برای جستجوی ساده براساس نام، نام خانوادگی و شماره همراه
         InitialSearchExpression(t => LookupStringSearchValue == null || t.FName.Contains(LookupStringSearchValue) || t.LName.Contains(LookupStringSearchValue) || t.MobileNumber.Contains(LookupStringSearchValue));
         base.OnInitialized();
     }

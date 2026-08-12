@@ -12,13 +12,18 @@ using Microsoft.EntityFrameworkCore;
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderService : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
+    public class OrderService
+        : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
     {
         public OrderService(IServiceProvider provider)
             :base(provider)
         {
             RuleFor(t => t.Date).CustomValue(t => t == default, "Please specify the order date");
-            RuleFor(t => t.TotalAmount).Custom(t => Details.Sum(t => t.Quantity * t.Price) != t.TotalAmount, "Total amount is incorect");
+            RuleFor(t => t.TotalAmount).Custom(t => 
+            {
+                var sum = Details.Sum(t => t.Quantity * t.Price);
+                return sum != t.TotalAmount;
+            }, "Total amount is incorrect");
             RuleFor(t => t.OrderDetails).Custom(t => 
             {
                 return Details.Count() == 0;
