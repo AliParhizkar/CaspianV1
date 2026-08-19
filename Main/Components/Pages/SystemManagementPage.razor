@@ -85,6 +85,7 @@
     protected override void OnInitialized()
     {
         subsystems = new Dictionary<SubsystemKind, string>();
+        
         var fields = typeof(SubsystemKind).GetFields().Where(t => !t.IsSpecialName);
         foreach (var field in fields)
         {

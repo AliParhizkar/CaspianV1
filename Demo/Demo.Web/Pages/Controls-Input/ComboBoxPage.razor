@@ -150,7 +150,7 @@
                         <div class="row c-controls ps-5 pe-2">
                             <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" Title="Real customer" ColSpan="8" TotalSpan="12"
                                       TextExpression='t => t.FName + " " + t.LName' ConditionExpression="t => t.CustomerType == CustomerType.Real" />
-                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" Title="legal customer" ColSpan="8" TotalSpan="12"
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="customerId" Title="legal customer" 
                                       TextExpression="t => t.CompanyName" ConditionExpression="t => t.CustomerType == CustomerType.Legal" />
                         </div>
                     </div>

@@ -133,9 +133,7 @@
                         <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
                     </div>
                     <div class="col-md-6">
-                        <EntitySearch TEntity="Product" Service="ProductService">
-                            <NumericTextBox @bind-Value="context.Price" ColSpan="9" />
-                        </EntitySearch>
+ 
                         <DataGrid TEntity="Product" Service="ProductService" ShowInsertIcon="false">
                             <Columns>
                                 <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />

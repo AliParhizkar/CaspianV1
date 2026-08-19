@@ -36,7 +36,7 @@ namespace Demo.Model
         [Display(Name = "سالن")]
         Salon = 1,
 
-        [Display(Name = "Take out")]
+        [Display(Name = "بیرون بر")]
         Takeout,
 
         [Display(Name = "Tel")]

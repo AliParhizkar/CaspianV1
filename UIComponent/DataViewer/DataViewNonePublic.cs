@@ -132,6 +132,10 @@ namespace Caspian.UI
             base.OnParametersSet();
         }
 
+        /// <summary>
+        /// این متد در حالت ثبت براساس Expression های ستونهای گرید مقادیر کلاسهای مرتبط با کلاس اصلی را پیدا می کند
+        /// </summary>
+        /// <param name="list"></param>
         protected void ManageExpressionForUpsert(IList<MemberExpression> list)
         {
             deletedEntities = new List<TEntity>();
@@ -225,6 +229,11 @@ namespace Caspian.UI
             }
         }
 
+        /// <summary>
+        /// بعد از ثبت Detail در Master-Details فرمها براساس Expression ستونهای گرید اگر داده هایی از جداول دیگر در گرید استفاده شده باشند این داده ها باید واکشی شوند
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         async Task UpdateEntityForForeignKey(TEntity entity)
         {
             var type = typeof(TEntity);

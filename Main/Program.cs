@@ -83,6 +83,7 @@ namespace Main
             }).AddIdentityCookies();
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<Caspian.Common.Client.CaspianDataService>();
+            builder.Services.AddScoped<BatchServiceData>();
             builder.Services.AddScoped<Caspian.UI.Client.BasePageService>();
             builder.Services.AddScoped<CaspianDataService>();
             builder.Services.AddScoped<IdentityUserAccessor>();
@@ -148,6 +149,7 @@ namespace Main
             }
             // Configure the HTTP request pipeline.
             //app.UseHttpsRedirection();
+            var context1 = new Demo.Model.Context();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();

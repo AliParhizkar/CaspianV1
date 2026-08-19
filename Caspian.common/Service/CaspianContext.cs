@@ -6,6 +6,8 @@ using Caspian.Common.RowNumber;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.Extensions.Options;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
@@ -26,7 +28,8 @@ namespace Caspian.Common
             .EnableSensitiveDataLogging()
             .AddInterceptors(new CaspianDbCommandInterceptor());
             optionsBuilder.UseLazyLoadingProxies(false);
-
+            //if (environment.IsDevelopment())
+            //    options.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -155,7 +158,7 @@ namespace Caspian.Common
                         var maxLength = property.GetCustomAttribute<MaxLengthAttribute>();
                         if (maxLength == null)
                         {
-                            var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                            var columnAttribute = property.GetCustomAttribute<ColumnAttribute>();
                             if (columnAttribute?.TypeName == null)
                                 modelBuilder.Entity(type).Property(property.Name).HasMaxLength(50);
                         }
@@ -171,14 +174,14 @@ namespace Caspian.Common
                             var precisionAttribute = property.GetCustomAttribute<PrecisionAttribute>();
                             if (precisionAttribute == null)
                             {
-                                var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                                var columnAttribute = property.GetCustomAttribute<ColumnAttribute>();
                                 if (columnAttribute?.TypeName == null)
                                     modelBuilder.Entity(type).Property(property.Name).HasPrecision(10, 2);
                             }
                         }
                         else if (propertyType == typeof(DateTime))
                         {
-                            var columnAttribute = type.GetCustomAttribute<ColumnAttribute>();
+                            var columnAttribute = property.GetCustomAttribute<ColumnAttribute>();
                             if (columnAttribute?.TypeName == null)
                                 modelBuilder.Entity(type).Property(property.Name).HasColumnType("datetime2").HasPrecision(2);
                         }

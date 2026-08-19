@@ -17,7 +17,7 @@ namespace Caspian.Common.Service
         void SetChangedEntities(IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
     }
 
-    public interface IBaseService<TEntity>: IEntity, IValidator<TEntity>, IDisposable
+    public interface IBaseService<TEntity>: IEntity, FluentValidation.IValidator<TEntity>, IDisposable
     {
         IQueryable<TEntity> GetAll();
 

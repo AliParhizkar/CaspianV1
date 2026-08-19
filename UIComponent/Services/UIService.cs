@@ -438,7 +438,6 @@ namespace Caspian.UI
             return lookup != null;
         }
 
-
         /// <summary>
         /// This Method Call form Lookup-window (In lookup-window we Hide Insert-Icon)
         /// </summary>
@@ -519,7 +518,6 @@ namespace Caspian.UI
             
             return await baseComponentService.MessageBox.Confirm(message);
         }
-
         IDictionary<string, ICollection> IInternalSearchService<TEntity>.EnumFields { get; set; }
     }
 }

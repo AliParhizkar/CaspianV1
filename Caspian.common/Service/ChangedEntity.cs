@@ -7,7 +7,7 @@
         public ChangeStatus ChangeStatus { get; set; }
     }
 
-    public enum ChangeStatus
+    public enum ChangeStatus 
     {
         Added = 1,
 

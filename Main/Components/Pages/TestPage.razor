@@ -3,6 +3,31 @@
 @{
     base.BuildRenderTree(__builder);
 }
+@inject IUIService<Customer> Service
+
+<div style="width:800px;margin: 0 auto">
+    <EntitySearch TEntity="Customer" Service="Service" ColumnsCount="2">
+        <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+        <StringTextBox @bind-Value="context.LName" ColSpan="4" />
+    </EntitySearch>
+    <DataGrid TEntity="Customer" Service="Service">
+        <Columns>
+            <GridColumn Field="t => t.CustomerType.EnumText()" />
+            <GridColumn Field="t => t.FName + ' ' + t.LName" Title="مشتری حقیقی" />
+            <GridColumn Field="t => t.CompanyName" />
+        </Columns>
+    </DataGrid>
+    <Window Service="Service" Title="مشتری" Style="width:500px;">
+        <CaspianForm Service="Service">
+            <DropdownList @bind-Value="context.CustomerType" ColSpan="8" />
+            <StringTextBox @bind-Value="context.FName" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
+            <StringTextBox @bind-Value="context.LName" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
+            <DropdownList @bind-Value="context.Gender" Disabled="context.CustomerType == CustomerType.Legal" ColSpan="8" />
+            <StringTextBox @bind-Value="context.CompanyName" Disabled="context.CustomerType == CustomerType.Real" ColSpan="8" />
+        </CaspianForm>
+    </Window>
+</div>
+
 
 
 @code
