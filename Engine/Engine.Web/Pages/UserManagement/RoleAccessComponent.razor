@@ -19,7 +19,7 @@ else
 {
     <div class="row">
         <div class="col-md-5">
-            <EntitySearch TEntity="Menu" Service="Service">
+            <EntitySearch TEntity="Menu" @*Service="Service"*@>
                 <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" ColSpan="8"
                           ConditionExpression="t => t.SubsystemKind == SubSystem" TextExpression="t => t.Title" />
                 <StringTextBox @bind-Value="context.Title" ColSpan="8" />
@@ -28,7 +28,7 @@ else
                 <hr class="m-0 mt-3" />
                 <span class="d-membership">Inaccessible menus</span>
             </div>
-            <DataGrid TEntity="Menu" Service="Service" ConditionExpr="t => t.SubsystemKind == SubSystem && t.Title != null" ContentHeight="330">
+            <DataGrid TEntity="Menu" @*Service="Service"*@ ConditionExpr="t => t.SubsystemKind == SubSystem && t.Title != null" ContentHeight="330">
                 <Columns>
                     <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                     <GridColumn Field="t => t.Title" style="width:150px" />
@@ -73,7 +73,7 @@ else
 {
     bool displayType = true;
 
-    MembershipService<Role, MenuAccessibility, Menu> Service;
+    IMembershipService<Role, MenuAccessibility, Menu> Service;
 
     [Parameter]
     public SubsystemKind SubSystem { get; set; }
@@ -83,7 +83,7 @@ else
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<Role, MenuAccessibility, Menu>(base.ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<Role, MenuAccessibility, Menu>(base.ServiceProvider);
         Service.MasterId = RoleId;
         base.OnInitialized();
     }

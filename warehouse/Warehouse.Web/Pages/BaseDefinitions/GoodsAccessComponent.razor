@@ -5,11 +5,11 @@
 
 @code 
 {
-    MembershipService<TMaster, TAccess, Goods> Service;
+    IMembershipService<TMaster, TAccess, Goods> Service;
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<TMaster, TAccess, Goods>(Page.ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<TMaster, TAccess, Goods>(Page.ServiceProvider);
         Service.MasterId = MasterId;
         base.OnInitialized();
     }

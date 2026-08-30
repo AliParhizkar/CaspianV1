@@ -7,7 +7,7 @@
 <div class="row p-3">
     <div class="col-md-5">
         <div>
-            <EntitySearch TEntity="Goods" Service="Service">
+            <EntitySearch TEntity="Goods" @*Service="Service"*@>
                 <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
                 <StringTextBox @bind-Value="context.Name" ColSpan="8" />
             </EntitySearch>
@@ -16,7 +16,7 @@
                 <span class="d-membership">لیست کالاها</span>
             </div>
         </div>
-        <DataGrid TEntity="Goods" ContentHeight="250" Service="Service">
+        <DataGrid TEntity="Goods" ContentHeight="250" @*Service="Service"*@>
             <Columns>
                 <GridColumn Field="t => t.Name" />
                 <GridColumn Field="t => t.Code" />
@@ -36,7 +36,7 @@
     </div>
     <div class="col-md-6">
         <div>
-            <EntitySearch TEntity="Goods" Service="Service">
+            <EntitySearch TEntity="Goods" @*Service="Service"*@>
                 <StringTextBox @bind-Value="context.Code" ColSpan="8" SearchType="SearchType.StartWith" Style="direction:ltr" />
                 <StringTextBox @bind-Value="context.Name" ColSpan="8" />
             </EntitySearch>
@@ -69,11 +69,11 @@
 {
     [Parameter]
     public int ProductId { get; set; }
-    MembershipService<Goods, SubstituteProduct, Goods> Service;
+    IMembershipService<Goods, SubstituteProduct, Goods> Service;
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<Goods, SubstituteProduct, Goods>(base.ServiceProvider, t => t.Goods);
+        Service = UIServiceFactory.CreateAccessService<Goods, SubstituteProduct, Goods>(base.ServiceProvider);
         Service.MasterId = ProductId; /// Set Product Id for service
         base.OnInitialized();
     }

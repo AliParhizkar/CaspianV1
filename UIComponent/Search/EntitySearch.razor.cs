@@ -20,6 +20,7 @@ namespace Caspian.UI
             valueTypeValues = new List<ValueTypeContainer>();
             if (Service == null)
                 throw new CaspianException($"خطا:EntitySearch Component should have a service of type ISearchService<{typeof(TEntity)}>");
+            
             (Service as IInternalSearchService<TEntity>).SearchData = searchTypes;
             base.OnInitialized();
         }

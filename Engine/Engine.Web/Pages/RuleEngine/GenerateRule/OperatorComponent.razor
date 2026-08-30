@@ -1,4 +1,4 @@
-﻿@namespace Caspian.Engine.RuleGenerator
+﻿@namespace Caspian.Engine
 @inherits BasePage
 @{
     MathButtonAttrs.Remove("disabled");
@@ -135,19 +135,10 @@
 
     async Task ClearAsync()
     {
-        if (RuleId.HasValue)
+        if (Tokens.Count > 0)
         {
-            using var scope = CreateScope();
-            await new TokenService(scope.ServiceProvider).RemoveAsync1(RuleId.Value);
-            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId.Value).ToListAsync();
-        }
-        else
-        {
-            if (Tokens.Count > 0)
-            {
-                Tokens.RemoveAt(Tokens.Count - 1);
-                tokentsCount = Tokens.Count;
-            }
+            Tokens.RemoveAt(Tokens.Count - 1);
+            tokentsCount = Tokens.Count;
         }
         new RuleEngine().UpdateTokens(Tokens);
         validTokensKind = new Parser(Tokens).ValidTokenKinds();
@@ -156,14 +147,11 @@
 
     protected override void OnParametersSet()
     {
-        if (Tokens != null)
+        if (Tokens != null && Tokens.Count != tokentsCount)
         {
-            if (Tokens.Count != tokentsCount)
-            {
-                new RuleEngine().UpdateTokens(Tokens);
-                validTokensKind = new Parser(Tokens).ValidTokenKinds();
-                tokentsCount = Tokens.Count;
-            }
+            new RuleEngine().UpdateTokens(Tokens);
+            validTokensKind = new Parser(Tokens).ValidTokenKinds();
+            tokentsCount = Tokens.Count;
         }
         base.OnParametersSet();
     }
@@ -171,11 +159,11 @@
     async Task AddOperator(string enTitle)
     {
         var token = new Token()
-            {
-                TokenType = TokenType.Oprator,
-                EnTitle = enTitle,
-                RuleId = RuleId
-            };
+        {
+            TokenType = TokenType.Oprator,
+            EnTitle = enTitle,
+            RuleId = RuleId
+        };
         switch (token.EnTitle)
         {
             case "*":
@@ -209,16 +197,7 @@
                 token.FaTitle = enTitle;
                 break;
         };
-        @if (RuleId.HasValue)
-        {
-            using var scope = CreateScope();
-            var tokenService = new TokenService(scope.ServiceProvider);
-            await tokenService.AddAsync(token);
-            await tokenService.SaveChangesAsync();
-            Tokens = await new TokenService(scope.ServiceProvider).GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
-        }
-        else
-            Tokens.Add(token);
+        Tokens.Add(token);
         Tokens = new RuleEngine().UpdateTokens(Tokens);
         validTokensKind = new Parser(Tokens).ValidTokenKinds();
         await OnChanged.InvokeAsync();
@@ -229,8 +208,8 @@
     public IList<Token> Tokens { get; set; }
 
     [Parameter]
-    public EventCallback OnChanged { get; set; }
+    public int RuleId { get; set; }
 
     [Parameter]
-    public int? RuleId { get; set; }
+    public EventCallback OnChanged { get; set; }
 }

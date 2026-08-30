@@ -8,7 +8,7 @@
 <div class="row p-3">
     <div class="col-md-5">
         <div>
-            <EntitySearch TEntity="ProcurementItem" Service="Service">
+            <EntitySearch TEntity="ProcurementItem" @*Service="Service"*@>
                 <DropdownList @bind-Value="context.ProcurementItemType" ColSpan="8" SingleSelect />
                 @if (context.ProcurementItemType == ProcurementItemType.Goods)
                 {
@@ -31,7 +31,7 @@
                 <span class="d-membership">سایر اقلام خریدنی</span>
             </div>
         </div>
-        <DataGrid TEntity="ProcurementItem" ContentHeight="250" Service="Service">
+        <DataGrid TEntity="ProcurementItem" ContentHeight="250" @*Service="Service"*@>
             <Columns>
                 <GridColumn Field="t => t.ProcurementItemType.EnumText()" />
                 <GridColumn Field="t => t.ProcurementItemType == ProcurementItemType.Goods ? t.Goods.Code : t.Service.Code" Title="کد" />
@@ -98,11 +98,11 @@
 </div>
 @code
 {
-    MembershipService<ProcurementItemGroup, ProcurementItemGrouping, ProcurementItem> Service;
+    IMembershipService<ProcurementItemGroup, ProcurementItemGrouping, ProcurementItem> Service;
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<ProcurementItemGroup, ProcurementItemGrouping, ProcurementItem>(base.ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<ProcurementItemGroup, ProcurementItemGrouping, ProcurementItem>(base.ServiceProvider);
         Service.MasterId = GroupId;
         base.OnInitialized();
     }

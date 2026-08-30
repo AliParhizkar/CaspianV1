@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Caspian.Engine
@@ -11,7 +12,7 @@ namespace Caspian.Engine
 
         public TokenType TokenType { get; set; }
 
-        [StringLength(100)]
+        [StringLength(100), DisplayName("پارارمتر اصلی")]
         public string EnTitle { get; set; }
 
         [StringLength(50)]

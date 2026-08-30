@@ -1,5 +1,6 @@
 ﻿using Caspian.Common;
 using Caspian.Common.Service;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,9 @@ namespace Caspian.Engine.Service
             RuleFor(t => t.constValue).Required(t => t.TokenType == TokenType.ConstValue);
             RuleFor(t => t.ConstValueType).Required(t => t.TokenType == TokenType.ConstValue);
             RuleFor(t => t.parameterType).Required(t => t.TokenType == TokenType.Oprand);
+            RuleFor(t => t.EnTitle).Required(t => t.TokenType == TokenType.Oprand);
+            RuleFor(t => t.FaTitle).Required();
+            RuleFor(t => t.RuleId).Required().GreaterThan(0);
         }
 
         public async override Task<Token> AddAsync(Token item)

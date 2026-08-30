@@ -12,7 +12,7 @@ else
 {
     <div class="row">
         <div class="col-md-5">
-            <EntitySearch TEntity="Menu" Service="Service">
+            <EntitySearch TEntity="Menu" @*Service="Service"*@>
                 <ComboBox TEntity="MenuCategory" TValue="int?" @bind-Value="context.MenuCategoryId" TextExpression="t => t.Title"
                           ColSpan="8" ConditionExpression="t => t.SubsystemKind == SubSystem" />
                 <StringTextBox @bind-Value="context.Title" ColSpan="8" />
@@ -21,7 +21,7 @@ else
                 <hr class="mb-0" />
                 <span class="d-membership">Accessible menus</span>
             </div>
-            <DataGrid TEntity="Menu" ConditionExpr="t => t.SubsystemKind == SubSystem" Service="Service" ContentHeight="330">
+            <DataGrid TEntity="Menu" ConditionExpr="t => t.SubsystemKind == SubSystem" @*Service="Service"*@ ContentHeight="330">
                 <Columns>
                     <GridColumn Field="@(t => t.MenuCategory.Title)" Title="Menu category" />
                     <GridColumn Field="t => t.Title" style="width:150px" />
@@ -67,7 +67,7 @@ else
 {
     bool displayType = true;
 
-    MembershipService<User, MenuAccessibility, Menu> Service;
+    IMembershipService<User, MenuAccessibility, Menu> Service;
 
     [Parameter]
     public SubsystemKind SubSystem { get; set; }
@@ -77,7 +77,7 @@ else
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<User, MenuAccessibility, Menu>(ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<User, MenuAccessibility, Menu>(ServiceProvider);
         Service.MasterId = SelectedUserId;
         base.OnInitialized();
     }

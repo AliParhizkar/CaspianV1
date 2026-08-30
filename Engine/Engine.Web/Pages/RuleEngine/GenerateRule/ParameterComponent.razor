@@ -1,0 +1,58 @@
+﻿@namespace Caspian.Engine
+@inherits BasePage
+<CaspianForm TEntity="Token" Model="token" OnSubmit="InitializeTokenData" OnValidSubmit="AddParameter">
+    <ComboBox TEntity="SelectListItem" TValue="string" @bind-Value="token.EnTitle" ColSpan="9" TotalSpan="12"
+              Source="RuleItems.Select(t => new SelectListItem(t.Key, t.Value))" />
+    <WindowCommandButtons ColSpan="9" TotalSpan="12" />
+</CaspianForm>
+@code 
+{
+    Token token = new Token();
+    string message;
+
+    [Parameter]
+    public WindowStatus Status { get; set; }
+
+    [Parameter]
+    public EventCallback<WindowStatus> StatusChanged { get; set; }
+
+    [Parameter]
+    public Type Type { get; set; }
+
+    [Parameter]
+    public int RuleId { get; set; }
+
+    [Parameter]
+    public IDictionary<string, string> RuleItems { get; set; }
+
+    void InitializeTokenData(CancelableEvent<Token> e)
+    {
+        var token = e.Entity;
+        token.TokenType = TokenType.Oprand;
+        token.parameterType = ParameterType.MainParameter;
+        if (token.EnTitle.HasValue())
+            token.FaTitle = RuleItems[token.EnTitle];
+        token.RuleId = RuleId;
+    }
+
+    async void AddParameter(Token token)
+    {
+        Tokens.Add(token);
+        await StatusChanged.InvokeAsync(WindowStatus.Close);
+    }
+
+    async Task UnFinalState()
+    {
+        using var scope = ServiceScopeFactory.CreateScope();
+        var ruleService = new RuleService(scope.ServiceProvider);
+        var rule = await ruleService.SingleAsync(RuleId);
+        rule.Priority = null;
+        await ruleService.SaveChangesAsync();
+    }
+
+    [Parameter]
+    public IList<Token> Tokens{ get; set; }
+
+    [Parameter]
+    public EventCallback<IList<TokenKind>> OnAfterAdd { get; set; }
+}

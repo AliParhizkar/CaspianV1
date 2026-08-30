@@ -1,46 +1,37 @@
-﻿@namespace Caspian.Engine.RuleGenerator
+﻿@using Caspian.Engine.Extension
+@namespace Caspian.Engine
 @inherits BasePage
-<table style="width:95%;margin:5px auto">
-    <tr>
-        <td style="width:85px;">
-            <label>مقدار ثابت</label>
-        </td>
-        <td>
-            @switch (valueTypeKind)
+<div class="row c-controls">
+
+    @switch (valueTypeKind)
+    {
+        case ValueTypeKind.Enum:
+            if (enumType == null)
             {
-                case ValueTypeKind.Enum:
-                    if (enumType == null)
-                    {
-                        <DropdownList @bind-Value="decimalConstValue" Source="dynamicOptions" />
-                    }
-                    else
-                    {
-                        <DropdownList @bind-Value="enumConstValue" DynamicType="enumType" />
-                    }
-                    break;
-                case ValueTypeKind.Bool:
-                    <CheckBox @bind-Value="boolConstValue"  />
-                    break;
-                case ValueTypeKind.Int:
-                case ValueTypeKind.Double:
-                    <NumericTextBox @bind-Value="decimalConstValue" />
-                    break;
+                <DropdownList @bind-Value="decimalConstValue" Source="dynamicOptions" ColSpan="9" TotalSpan="12" Title="مقدار ثابت" />
             }
-        </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td style="text-align:center;height:50px;padding-top:5px;">
-            <button @onclick="async () => await AddConstValue()" class="c-btn c-primary">ثبت</button>
-            <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">انصراف</button>
-        </td>
-    </tr>
-</table>
+            else
+            {
+                <DropdownList @bind-Value="enumConstValue" DynamicType="enumType" ColSpan="9" TotalSpan="12"  Title="مقدار ثابت" />
+            }
+            break;
+        case ValueTypeKind.Bool:
+            <CheckBox @bind-Value="boolConstValue" ColSpan="9" TotalSpan="12"  Title="مقدار ثابت" />
+            break;
+        case ValueTypeKind.Int:
+        case ValueTypeKind.Double:
+            <NumericTextBox @bind-Value="decimalConstValue" ColSpan="9" TotalSpan="12"  Title="مقدار ثابت" />
+            break;
+    }
+    <div class="col-md-3"></div>
+    <div class="col-md-9 text-center">
+        <button @onclick="async () => await AddConstValue()" class="c-btn c-primary ps-4 pe-4">ثبت</button>
+        <button @onclick="async () => await StatusChanged.InvokeAsync(WindowStatus.Close)" class="c-btn c-danger">انصراف</button>
+    </div>
+</div>
 
 @code 
 {
-    string message;
-    ///Const Value Fields
     ValueTypeKind? valueTypeKind;
     bool? boolConstValue;
     DateTime? dateConstValue;
@@ -71,6 +62,7 @@
     {
         object constValue = null;
         string faTitle = null;
+        string message = null;
         switch (valueTypeKind.Value)
         {
             case ValueTypeKind.Bool:
@@ -144,16 +136,11 @@
                 TokenType = TokenType.ConstValue,
                 FaTitle = faTitle
             };
-            var scope = CreateScope();
-            var tokenService = new TokenService(scope.ServiceProvider);
-            await tokenService.AddAsync(tempToken);
-            await tokenService.SaveChangesAsync();
-            Tokens = await tokenService.GetAll().Where(t => t.RuleId == RuleId).ToListAsync();
-            Tokens = new RuleEngine().UpdateTokens(Tokens);
-            var result = new Parser(Tokens).ValidTokenKinds();
-            await OnAfterAdd.InvokeAsync(result);
+            Tokens.Add(tempToken);
             await StatusChanged.InvokeAsync(WindowStatus.Close);
         }
+        if (message != null)
+            ShowMessage(message);
     }
 
     [Parameter]
@@ -174,7 +161,7 @@
                 switch(beforeLastToken.parameterType.Value)
                 {
                     case ParameterType.MainParameter:
-                        var info = Type.GetProperty(beforeLastToken.EnTitle);
+                        var info = Type.GetMyProperty(beforeLastToken.EnTitle);
                         if (info.PropertyType.GetUnderlyingType().IsEnum)
                         {
                             enumType = info.PropertyType;
@@ -203,9 +190,8 @@
                 {
                     case ParameterType.MainParameter:
                         var info = Type.GetProperty(beforeLastToken.EnTitle);
-                        if (info.PropertyType.GetUnderlyingType().IsEnum)
-                            valueTypeKind = ValueTypeKind.Int;
-                        break;
+                        valueTypeKind = info.PropertyType.GetUnderlyingType().GetValueTypeKind();
+                            break;
                     case ParameterType.RuleParameter:
                         var rule = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleId.Value);
                         valueTypeKind = rule.ResultType;

@@ -5,7 +5,7 @@
 }
 <div class="row">
     <div class="col-md-5">
-        <EntitySearch TEntity="User" Service="Service">
+        <EntitySearch TEntity="User" @*Service="Service"*@>
             <StringTextBox @bind-Value="context.LName" ColSpan="8" Title="نام خانوادگی" />
             <StringTextBox @bind-Value="context.UserName" ColSpan="8" Title="نام کاربری" />
         </EntitySearch>
@@ -13,7 +13,7 @@
             <hr class="mb-0" />
             <span class="d-membership">Other users</span>
         </div>
-        <DataGrid Service="Service" TEntity="User" ContentHeight="335">
+        <DataGrid @*Service="Service"*@ TEntity="User" ContentHeight="335">
             <Columns>
                 <GridColumn Field="@(t => t.FName + " " + t.LName )" Title="User" />
                 <GridColumn Field="t => t.UserName" style="width:100px" />
@@ -57,11 +57,11 @@
 
 @code
 {
-    MembershipService<Role, UserMembership, User> Service;
+    IMembershipService<Role, UserMembership, User> Service;
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<Role, UserMembership, User>(ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<Role, UserMembership, User>(ServiceProvider);
         Service.MasterId = RoleId;
         base.OnInitialized();
     }

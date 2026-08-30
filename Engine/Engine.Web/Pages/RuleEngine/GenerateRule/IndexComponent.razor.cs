@@ -5,7 +5,7 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 
-namespace Caspian.Engine.RuleGenerator
+namespace Caspian.Engine
 {
     public partial class IndexComponent
     {

@@ -8,7 +8,7 @@
 <div class="row p-3">
     <div class="col-md-5">
         <div>
-            <EntitySearch TEntity="PurchasingSpecialist" Service="Service">
+            <EntitySearch TEntity="PurchasingSpecialist" @*Service="Service"*@>
                 @{
                     context.User = context.User ?? new User();
                 }
@@ -21,7 +21,7 @@
                 <span class="d-membership">سایر کارشناسان خرید</span>
             </div>
         </div>
-        <DataGrid TEntity="PurchasingSpecialist" ContentHeight="250" Service="Service">
+        <DataGrid TEntity="PurchasingSpecialist" ContentHeight="250" @*Service="Service"*@>
             <Columns>
                 <GridColumn Field="@(t => t.Code)" />
                 <GridColumn Field="@(t => t.User.Name)" Title="نام" />
@@ -79,11 +79,11 @@
 </div>
 @code
 {
-    MembershipService<SupplyingUnit, SupplyingUnitMembership, PurchasingSpecialist> Service;
+    IMembershipService<SupplyingUnit, SupplyingUnitMembership, PurchasingSpecialist> Service;
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<SupplyingUnit, SupplyingUnitMembership, PurchasingSpecialist>(base.ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<SupplyingUnit, SupplyingUnitMembership, PurchasingSpecialist>(base.ServiceProvider);
         Service.MasterId = UnitId;
         base.OnInitialized();
     }

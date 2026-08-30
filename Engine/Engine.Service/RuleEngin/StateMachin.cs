@@ -10,7 +10,7 @@ namespace Caspian.Engine
     public class StateMachin
     {
         /// <summary>
-        /// Satets of State machine
+        /// States of State machine
         /// </summary>
         private State[] States = new State[]
         {
@@ -25,7 +25,7 @@ namespace Caspian.Engine
         };
 
         /// <summary>
-        /// Relations between satets
+        /// Relations between States
         /// </summary>
         private Relation[] Relations = new Relation[]
         {
@@ -65,43 +65,31 @@ namespace Caspian.Engine
         /// <summary>
         /// مشخصات Stateجاری
         /// </summary>
-        public State CurentState { get; private set; }
+        public State CurrentState { get; private set; }
 
         public StateMachin()
         {
             ///State جاری برابر State شروع می شود
-            CurentState = States.Single(t => t.Status == StateStatus.Start);
+            CurrentState = States.Single(t => t.Status == StateStatus.Start);
         }
 
         public State Move(TokenKind tokenKind)
         {
-            if (CurentState == null)
-            {
-
-            }
-            else
-            {
-                var count = Relations.Count(t => t.TokenKind == tokenKind && t.FromStateId == CurentState.Id);
-                if (count > 1)
-                {
-
-                }
-            }
-            var relation = Relations.SingleOrDefault(t => t.TokenKind == tokenKind && t.FromStateId == CurentState.Id);
+            var relation = Relations.SingleOrDefault(t => t.TokenKind == tokenKind && t.FromStateId == CurrentState.Id);
             if (relation == null)
                 throw new Exception("وضعیت نامعتبر", null);
-            CurentState = States.Single(t => t.Id == relation.ToStateId);
-            return CurentState;
+            CurrentState = States.Single(t => t.Id == relation.ToStateId);
+            return CurrentState;
         }
 
         public IList<TokenKind> ValidTokenKinds()
         {
-            return Relations.Where(t => t.FromStateId == CurentState.Id).Select(t => t.TokenKind).ToList();
+            return Relations.Where(t => t.FromStateId == CurrentState.Id).Select(t => t.TokenKind).ToList();
         }
 
         public bool IsFinalState()
         {
-            return CurentState.Status == StateStatus.Final;
+            return CurrentState.Status == StateStatus.Final;
         }
     }
 

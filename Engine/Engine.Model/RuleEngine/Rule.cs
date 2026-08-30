@@ -39,6 +39,11 @@ namespace Caspian.Engine
         [DisplayName("نوع")]
         public ValueTypeKind ResultType { get; set; }
 
+        /// <summary>
+        /// Use This id for report identify in programitical create
+        /// </summary>
+        public string UniqueId { get; set; }
+
         [DisplayName("نوع شمارشی خروجی")]
         public string EnumTypeName { get; set; }
 
@@ -48,9 +53,8 @@ namespace Caspian.Engine
         public SubsystemKind SystemKind { get; set; }
 
         /// <summary>
-        /// نوعی که برای آن قانون تعریف شده است
+        /// The Type We Declare a Rule for it
         /// </summary>
-        [DisplayName("انتخاب نوع")]
         public string TypeName { get; set; }
 
         /// <summary>

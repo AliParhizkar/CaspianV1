@@ -4,7 +4,7 @@
 <div class="row p-3">
     <div class="col-md-5">
         <div>
-            <EntitySearch TEntity="User" Service="Service">
+            <EntitySearch TEntity="User" @*Service="Service"*@>
                 <StringTextBox @bind-Value="name1" placeholder="نام کاربری | نام خانوادگی" ColSpan="8" Title="کاربر" />
                 <StringTextBox @bind-Value="context.MobileNumber" ColSpan="8" SearchType="SearchType.StartWith" />
             </EntitySearch>
@@ -13,7 +13,7 @@
                 <span class="d-membership">مشخصات کاربران</span>
             </div>
         </div>
-        <DataGrid TEntity="User" ContentHeight="250" Service="Service"
+        <DataGrid TEntity="User" ContentHeight="250" @*Service="Service"*@
                   ConditionExpr="t => name1 == null || t.UserName.StartsWith(name1) || t.LName.Contains(name1)">
             <Columns>
                 <GridColumn Field="t => t.FName + ' ' + t.LName" Title="نام کاربر" />
@@ -68,11 +68,11 @@
 @code
 {
     string name1, name2;
-    MembershipService<InvestmentUnit, InvestmentUnitAccess, User> Service;
+    IMembershipService<InvestmentUnit, InvestmentUnitAccess, User> Service;
 
     protected override void OnInitialized()
     {
-        Service = new MembershipService<InvestmentUnit, InvestmentUnitAccess, User>(base.ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<InvestmentUnit, InvestmentUnitAccess, User>(base.ServiceProvider);
         Service.MasterId = InvestmentUnitId;
         base.OnInitialized();
     }

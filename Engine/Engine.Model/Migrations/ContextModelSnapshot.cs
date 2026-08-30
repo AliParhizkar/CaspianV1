@@ -486,7 +486,6 @@ namespace Engine.Model.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("RegisterDate")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasPrecision(2)
                         .HasColumnType("datetime2");
 
@@ -521,7 +520,6 @@ namespace Engine.Model.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RegisterDate")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasPrecision(2)
                         .HasColumnType("datetime2");
 
@@ -1147,6 +1145,10 @@ namespace Engine.Model.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TypeName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UniqueId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

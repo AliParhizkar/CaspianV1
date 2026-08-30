@@ -16,7 +16,7 @@ namespace Caspian.Engine
             StateMachin stateMachin = new StateMachin();
             foreach (var token in _Tokens)
                 stateMachin.Move(token.TokenKind);
-            if (checkForFinal && stateMachin.CurentState.Status != StateStatus.Final)
+            if (checkForFinal && stateMachin.CurrentState.Status != StateStatus.Final)
                 throw new CaspianException("فرمول ناتمام است");
             IfElse(checkForFinal);
             BraketIfThen();
@@ -33,6 +33,7 @@ namespace Caspian.Engine
                 return list;
             foreach (var token in _Tokens)
                 stateMachin.Move(token.TokenKind);
+            list = stateMachin.ValidTokenKinds();
             if (_Tokens.Count(t => t.TokenKind == TokenKind.If) == 0)
                 list.Remove(TokenKind.Colon);
             var ifToken = _Tokens.LastOrDefault(t => t.TokenKind == TokenKind.If);

@@ -1,0 +1,28 @@
+﻿@namespace Caspian.Engine
+<div>
+    <IconButton IconType="IconType.Save" @onclick="async () => await SaveAsync()" />
+</div>
+
+@code
+{
+    [Parameter]
+    public BasePage Page { get; set; }
+
+    [Parameter]
+    public IList<Token> Tokens { get; set; }
+
+    [Parameter]
+    public int RuleId { get; set; }
+
+    async Task SaveAsync()
+    {
+        var maxId = Tokens.Max(t => (int?)t.Id) ?? 0;
+        using var service = Page.CreateScope().GetService<TokenService>();
+        var deletedTokens = await service.GetAll().Where(t => t.RuleId == RuleId && t.Id > maxId).ToListAsync();
+        await service.RemoveRange(deletedTokens);
+        var newTokens = Tokens.Where(t => t.Id == 0);
+        await service.AddRangeAsync(newTokens);
+        await service.SaveChangesAsync();
+        Page.ShowMessage("ثبت با موفقیت انجام شد");
+    }
+}

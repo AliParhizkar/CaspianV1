@@ -81,7 +81,10 @@ namespace Caspian.UI
         Check,
 
         [Display(Name = "bars")]
-        Bar 
+        Bar,
+
+        [Display(Name = "save")]
+        Save 
     }
 
     public enum BindingType

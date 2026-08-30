@@ -143,12 +143,12 @@ html, body {
     .c-rule-title label {
         color: #299191 !important;
     }
-    .formola-content {
-        padding: 5px;
-        width: 100%;
-        height: 554px;
-        overflow: auto;
-    }
+.formola-content {
+    padding: 5px;
+    width: 100%;
+    height: calc(100vh - 85px);
+    overflow: auto;
+}
     .formola-content span {
         font-size: 15px;
         font-weight: bold;

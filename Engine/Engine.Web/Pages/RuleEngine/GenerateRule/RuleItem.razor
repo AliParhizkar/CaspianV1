@@ -1,0 +1,39 @@
+﻿@using System.Linq.Expressions
+@namespace Caspian.Engine 
+@typeparam TEntity 
+
+@code 
+{
+    protected override void OnInitialized()
+    {
+        var expr = Field.Body;
+        string fieldPath = "";
+        while(expr.NodeType != ExpressionType.Parameter)
+        {
+            if (expr.NodeType == ExpressionType.MemberAccess)
+            {
+                if (fieldPath.HasValue())
+                    fieldPath = $".{fieldPath}";
+                var memberExpr = expr as MemberExpression;
+                fieldPath = memberExpr.Member.Name + fieldPath;
+                expr = memberExpr.Expression;
+            }
+            else if (expr.NodeType == ExpressionType.Convert)
+                expr = (expr as UnaryExpression).Operand;
+            else
+                throw new NotImplementedException("خطای عدم پیاده سازی");
+
+        }
+        RuleBuilder.AddRuleData(fieldPath, Title);
+        base.OnInitialized();
+    }
+
+    [CascadingParameter]
+    internal IRuleBuilder<TEntity> RuleBuilder { get; set; }
+
+    [Parameter]
+    public Expression<Func<TEntity, object>> Field { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+}

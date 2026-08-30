@@ -46,11 +46,11 @@
                 </div>
                 <div class="col-md-7">
                     <EntitySearch TEntity="Country" Service="CountryService">
-                        <StringTextBox @bind-Value="context.Title" />
+                        <StringTextBox @bind-Value="context.Title" ColSpan="8" />
                     </EntitySearch>
                     <DataGrid TEntity="Country" Service="CountryService">
                         <Columns>
-                            <GridColumn Field="t => t.Title" />
+                            <GridColumn Field="t => t.Title"  />
                             <GridColumn Field="t => t.UpsertUser.LName" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" style="width:60px" />
                             <GridCommandColumns />
@@ -58,8 +58,8 @@
                     </DataGrid>
                     <Window Service="CountryService" Title="Country" Style="width:450px;">
                         <CaspianForm TEntity="Country" Service="CountryService">
-                            <StringTextBox @bind-Value="context.Title" />
-                            <DropdownList @bind-Value="context.ActiveType"/>
+                            <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                            <DropdownList @bind-Value="context.ActiveType" ColSpan="8"/>
                             <WindowCommandButtons ColSpan="8" />
                         </CaspianForm>
                     </Window>

@@ -8,7 +8,7 @@
 {
     <div class="row pt-3 ps-2 pe-2">
         <div style="width:calc(50% - 25px)">
-            <EntitySearch Service="Service" TEntity="Goods" ColumnsCount="2">
+            <EntitySearch @*Service="Service"*@ TEntity="Goods" ColumnsCount="2">
                 <StringTextBox @bind-Value="context.Code" ColSpan="4" Style="direction:ltr" />
                 <StringTextBox @bind-Value="context.Name" ColSpan="4" />
                 <DropdownList @bind-Value="context.GoodsType" ColSpan="4" />
@@ -18,7 +18,7 @@
                 <hr class="mt-0" />
                 <span class="d-membership">کالاهای غیرموجود در @(materialLocation.Title)</span>
             </div>
-            <DataGrid Service="Service" TEntity="Goods">
+            <DataGrid @*Service="Service"*@ TEntity="Goods">
                 <Columns>
                     <GridColumn Field="t => t.Code" />
                     <GridColumn Field="t => t.Name" />
@@ -73,11 +73,11 @@
 @code
 {
     MaterialLocation materialLocation;
-    MembershipService<MaterialLocation, GoodsPlacement, Goods> Service;
+    IMembershipService<MaterialLocation, GoodsPlacement, Goods> Service;
 
     protected override void OnInitialized()
     {
-        Service =new MembershipService<MaterialLocation, GoodsPlacement, Goods>(base.ServiceProvider);
+        Service = UIServiceFactory.CreateAccessService<MaterialLocation, GoodsPlacement, Goods>(base.ServiceProvider);
         Service.MasterId = MaterialLocationId;
         base.OnInitialized();
     }
