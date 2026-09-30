@@ -66,16 +66,16 @@
         ///Insert or update parameters
         list = group.ReportGroupParameters.Select(t => new ChangedEntity<ReportGroupParameter>()
         {
-            ChangeStatus = t.Id == 0 ? ChangeStatus.Added : ChangeStatus.Updated,
+            ChangeType = t.Id == 0 ? ChangeType.Added : ChangeType.Updated,
             Entity = t
         }).ToList();
         /// Remove parameters
         list.AddRange(removedParamters.Where(t => t.Id > 0).Select(t => new ChangedEntity<ReportGroupParameter>()
         {
-            ChangeStatus = ChangeStatus.Deleted,
+            ChangeType = ChangeType.Deleted,
             Entity = t
         }));
-        service.SetChangedEntities(list);
+        //service.SetChangedEntities(list);
         await service.UpdateAsync(group);
         await service.SaveChangesAsync();
         ShowMessage("Parameters updated successfully");
@@ -90,10 +90,10 @@
             if (old == null)
             {
                 old = new ReportGroupParameter()
-                    {
-                        ReportGroupId = GroupId,
-                        PropertyPath = data.TitleEn,
-                    };
+                {
+                    ReportGroupId = GroupId,
+                    PropertyPath = data.TitleEn,
+                };
             }
             else
                 removedParamters.Remove(old);
@@ -112,15 +112,15 @@
         var data = System.Text.Json.JsonSerializer.Deserialize<ReportNode>(node.Value);
         var tempItems = (await new ReportTree().CreateTreeForSelect(type, data, new List<ReportParam>()));
         node.Children = tempItems.Select(t => new NodeView()
-            {
-                Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = group.ReportGroupParameters.Any(u => u.PropertyPath == t.TitleEn),
-                Selectable = !t.Grouping,
-                Expanded = false,
-                Collabsable = t.Grouping,
-                Text = t.TitleEn,
-                Disabled = t.Selected
-            }).ToList();
+        {
+            Value = System.Text.Json.JsonSerializer.Serialize(t),
+            Selected = group.ReportGroupParameters.Any(u => u.PropertyPath == t.TitleEn),
+            Selectable = !t.Grouping,
+            Expanded = false,
+            Collabsable = t.Grouping,
+            Text = t.TitleEn,
+            Disabled = t.Selected
+        }).ToList();
     }
 
     protected async override Task OnInitializedAsync()
@@ -134,14 +134,14 @@
         type = new AssemblyInfo().GetReturnType(group);
         var nodes1 = await new ReportTree().CreateTreeForSelect(type, null, new List<ReportParam>());
         nodes = nodes1.Select(t => new NodeView()
-            {
-                Value = System.Text.Json.JsonSerializer.Serialize(t),
-                Selected = group.ReportGroupParameters.Any(u => u.PropertyPath == t.TitleEn),
-                Selectable = !t.Grouping,
-                Expanded = false,
-                Collabsable = t.Grouping,
-                Text = t.TitleEn
-            }).ToList();
+        {
+            Value = System.Text.Json.JsonSerializer.Serialize(t),
+            Selected = group.ReportGroupParameters.Any(u => u.PropertyPath == t.TitleEn),
+            Selectable = !t.Grouping,
+            Expanded = false,
+            Collabsable = t.Grouping,
+            Text = t.TitleEn
+        }).ToList();
         await base.OnInitializedAsync();
     }
 

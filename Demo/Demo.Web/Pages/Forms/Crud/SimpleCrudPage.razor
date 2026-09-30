@@ -133,9 +133,10 @@
                             </Fileupload>
                         </div>
                         <MultiSelectBox @bind-Value="context.Meal" ColSpan="10" />
-                        <DropdownList @bind-Value="context.ActiveType" ColSpan="5" TotalSpan="7" />
-                        <CheckBox @bind-Value="context.Discountable" ColSpan="3" TotalSpan="5" />
-                        <WindowCommandButtons ColSpan="8" />
+                        <DropdownList @bind-Value="context.ActiveType" ColSpan="4" TotalSpan="6" />
+                        <StringTextBox @bind-Value="context.Code" Style="direction:ltr" ColSpan="4" TotalSpan="6" />
+                        <CheckBox @bind-Value="context.Discountable" ColSpan="3" TotalSpan="6" />
+                        <WindowCommandButtons ColSpan="4" TotalSpan="6" />
                     </CaspianForm>
                 </Window>
             </div>

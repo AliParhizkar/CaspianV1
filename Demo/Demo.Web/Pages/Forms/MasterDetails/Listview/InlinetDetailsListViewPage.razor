@@ -3,7 +3,7 @@
 @attribute [Source(84, "Inline Listview Details", MasterPage = typeof(InlineMasterPage))]
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject UIService<Order, OrderDetail> Service
+@inject IUIService<Order, OrderDetail> Service
 
 <TabPanel>
     <Tabs>
@@ -43,7 +43,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <ListView TEntity="OrderDetail" DetailsService="Service" ContentHeight="250" Inline PageSize="8"
+                        <ListView TEntity="OrderDetail" DetailsService="Service.DetailService" ContentHeight="250" Inline PageSize="8"
                                   OnCancel="HideDescription" OnOpen="HideDescription" OnSave="HideDescription">
                             <HeaderTempalte>
                                 <div class="d-listview-col-1">Product</div>
@@ -128,7 +128,7 @@
 
     protected override void OnInitialized()
     {
-        Service.MasterId = OrderId;
+        Service.DetailService.MasterId = OrderId;
         Service.OnCreate = t => t.Date = DateTime.Now.ToDateOnly();
         base.OnInitialized();
     }
@@ -177,7 +177,7 @@
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(mode);
+            await Service.DetailService.DataView.ValidateAndUpsert(mode);
     }
 
     [CascadingParameter]

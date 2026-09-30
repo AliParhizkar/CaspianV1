@@ -1,5 +1,5 @@
 ﻿@page "/Demo/CustomerAndGroupsAndAddresses"
-@inject UIService<Customer, CustomerGroupMembership, CustomerAddress> Service
+@inject IUIService<Customer, CustomerGroupMembership, CustomerAddress> Service
 @attribute [Source(55, "Tow Details")]
 @inherits BasePage
 @{
@@ -37,7 +37,7 @@
                             <Tabs>
                                 <TabPanelItem Title="Customer Addresses">
                                     <div class="p-2 ps-3 pe-3">
-                                        <DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="185" Inline AutoHide>
+                                        <DataGrid TEntity="CustomerAddress" DetailsService="Service.Detail2Service" ContentHeight="185" Inline AutoHide>
                                             <Columns Context="con">
                                                 <GridColumn style="width:220px;" Field="t => t.AddressType.Title" Title="Address Type">
                                                     <EditTemplate>
@@ -61,7 +61,7 @@
                                 </TabPanelItem>
                                 <TabPanelItem Title="Groups Membership">
                                     <div class="p-3 pt-2 pb-2" style="width:600px;margin:0 auto">
-                                        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:247px;"
+                                        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service.DetailService" Style="height:247px;"
                                                         TextExpression="t => t.Title" />
                                     </div>
                                 </TabPanelItem>

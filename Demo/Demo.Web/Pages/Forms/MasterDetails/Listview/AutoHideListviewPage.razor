@@ -4,7 +4,7 @@
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject UIService<WarehouseReceipt, ReceiptDetail> Service
+@inject IUIService<WarehouseReceipt, ReceiptDetail> Service
 
 <div style="margin:0 -20px" class="d-content p-2">
     <div class="row">
@@ -55,7 +55,7 @@
             </CaspianForm>
         </div>
         <div class="col-md-9 ps-3">
-            <ListView TEntity="ReceiptDetail" DetailsService="Service" ContentHeight="250" Inline AutoHide PageSize="8"
+            <ListView TEntity="ReceiptDetail" DetailsService="Service.DetailService" ContentHeight="250" Inline AutoHide PageSize="8"
                       OnCancel="HideDescription" OnSave="HideDescription">
                 <HeaderTempalte>
                     <div class="d-lst-1">Material</div>
@@ -146,7 +146,7 @@
 
     protected override void OnInitialized()
     {
-        Service.MasterId = ReceiptId;
+        Service.DetailService.MasterId = ReceiptId;
         Service.OnCreate = t =>
         {
             if (t.Id == 0)
@@ -189,14 +189,14 @@
             if (detail?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
-                await Service.DetailDataView.ValidateAndUpsert(mode);
+                await Service.DetailService.DataView.ValidateAndUpsert(mode);
         }
     }
 
     async Task SubUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(mode);
+            await Service.DetailService.DataView.ValidateAndUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(ReceiptDetail detail)

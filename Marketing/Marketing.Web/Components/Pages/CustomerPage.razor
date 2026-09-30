@@ -1,9 +1,9 @@
 ﻿@page "/Marketing/Customer"
 @attribute [Source(14, "مشتری")]
 @inject IUIService<Customer> CustomerService
-@inject UIService<Customer, CustomerAddress> CustomerAddressService
-@inject UIService<Customer, CustomerGroupMembership> CustomerGroupService
-@inject UIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
+@inject IUIService<Customer, CustomerAddress> CustomerAddressService
+@inject IUIService<Customer, CustomerGroupMembership> CustomerGroupService
+@inject IUIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
 
 @namespace Marketing.Web
 
@@ -50,7 +50,7 @@
 
     async Task<bool> ConfirmForAddress(IServiceProvider provider, Customer customer)
     {
-        var dataView = CustomerAddressGroupsService.DetailDataView ?? CustomerAddressService.DetailDataView;
+        var dataView = CustomerAddressGroupsService.Detail2Service.DataView ?? CustomerAddressService.DetailService.DataView;
         if (!dataView.GetBatchEntities().Any())
             return await Confirm("برای مشتری آدرس تعریف نشده است آیا با ثبت موافقید؟");
         if (!dataView.GetBatchEntities().Any(t => t.IsDefault))

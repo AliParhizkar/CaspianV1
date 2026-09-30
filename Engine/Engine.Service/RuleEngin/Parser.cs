@@ -46,7 +46,7 @@ namespace Caspian.Engine
             else
             {
                 var thenToken = _Tokens.LastOrDefault(t => t.TokenKind == TokenKind.QuestionMark);
-                if (thenToken == null)
+                if (thenToken.IfCount == 0)
                 {
                     startToken = ifToken;
                     endToken = _Tokens.LastOrDefault();
@@ -54,7 +54,7 @@ namespace Caspian.Engine
                 else
                 {
                     var elseToken = _Tokens.LastOrDefault(t => t.TokenKind == TokenKind.Colon);
-                    if (elseToken == null)
+                    if (elseToken.IfCount == 0)
                     {
                         startToken = thenToken;
                         endToken = _Tokens.LastOrDefault();
@@ -68,7 +68,9 @@ namespace Caspian.Engine
             }
             if (startToken != null)
             {
-                var tempList = _Tokens.Where(t => t.Id >= startToken.Id && t.Id <= endToken.Id);
+                var tempList = _Tokens.SkipWhile(t => t != startToken).TakeWhile(t => t != endToken).ToList();
+                if (endToken != null)
+                    tempList.Add(endToken);
                 if (tempList.Count(t => t.OperatorKind == OperatorType.OpenBracket) - tempList.Count(t => t.OperatorKind == OperatorType.CloseBracket) == 0)
                     list.Remove(TokenKind.CloseBracket);
             }

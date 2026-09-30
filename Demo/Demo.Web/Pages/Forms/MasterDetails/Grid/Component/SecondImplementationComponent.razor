@@ -15,7 +15,7 @@
     </div>
     <div class="col-md-5 ps-3 mb-3">
         <label style="justify-content:space-evenly">Customer Groups</label>
-        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:250px;flex-wrap:nowrap"
+        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service.DetailService" Style="height:250px;flex-wrap:nowrap"
                         TextExpression="t => t.Title" />
     </div>
     <FormCommandButton ColSpan="8" />
@@ -24,5 +24,5 @@
 @code
 {
     [Parameter]
-    public UIService<Customer, CustomerGroupMembership> Service { get; set; }
+    public IUIService<Customer, CustomerGroupMembership> Service { get; set; }
 }

@@ -2,10 +2,10 @@
 @using Marketing.Web.OrderComponents
 @attribute [Source(8, "سفارش")]
 @inject IUIService<Customer> CustomerService
-@inject UIService<Customer, CustomerAddress> CustomerAddressService
-@inject UIService<Customer, CustomerGroupMembership> CustomerGroupService
-@inject UIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
-@inject UIService<Order, OrderDetail> OrderService
+@inject IUIService<Customer, CustomerAddress> CustomerAddressService
+@inject IUIService<Customer, CustomerGroupMembership> CustomerGroupService
+@inject IUIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService
+@inject IUIService<Order, OrderDetail> OrderService
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);

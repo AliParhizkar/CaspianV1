@@ -114,13 +114,13 @@
     }
 
     enum HorizontalAnchor {
-        Left = 1,
+        Left,
         Center,
         Right
     }
 
     enum VerticalAnchor {
-        Top = 1,
+        Top,
         Middle,
         Bottom
     }

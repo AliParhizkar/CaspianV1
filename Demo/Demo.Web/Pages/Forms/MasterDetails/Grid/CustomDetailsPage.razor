@@ -1,7 +1,7 @@
 ﻿@page "/Demo/Batch/Custom/Details"
 @page "/Demo/Batch/Custom/Details/{OrderId:int}"
 @attribute [Source(51, "Batch Custom Details", MasterPage = typeof(CustomMasterPage))]
-@inject UIService<Order, OrderDetail> Service
+@inject IUIService<Order, OrderDetail> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);
@@ -111,7 +111,7 @@
                             </div>
                         }
                         <div class="pt-4">
-                            <DataGrid TEntity="OrderDetail" DetailsService="Service" PageSize="20" ContentHeight="200" ShowInsertIcon="false" Batch>
+                            <DataGrid TEntity="OrderDetail" DetailsService="Service.DetailService" PageSize="20" ContentHeight="200" ShowInsertIcon="false" Batch>
                                 <Columns>
                                     <GridColumn Field="t => t.Product.ProductCategory.Title" Title="Product category" />
                                     <GridColumn Field="t => t.Product.Title" Title="Product" />
@@ -185,18 +185,18 @@
         if (newValue < 0)
             ShowMessage("تعداد نمی تواند منفی باشد");
         else if (newValue == 0)
-            await Service.DetailDataView.RemoveAsync(orderDetail);
+            await Service.DetailService.DataView.RemoveAsync(orderDetail);
         else
         {
             orderDetail.Quantity = newValue;
-            await Service.DetailDataView.UpdateAsync(orderDetail);
+            await Service.DetailService.DataView.UpdateAsync(orderDetail);
         }
         CalculateOrderParameters();
     }
 
     protected override void OnInitialized()
     {
-        Service.MasterId = OrderId;
+        Service.DetailService.MasterId = OrderId;
         Service.OnCreate = t => t.Date = DateTime.Now.ToDateOnly();
         base.OnInitialized();
     }
@@ -208,7 +208,7 @@
         foreach (var product in products)
             product.Image = null;
         btnAttr = new Dictionary<string, object>();
-        if (Service.MasterId == 0)
+        if (Service.DetailService.MasterId == 0)
             btnAttr.Add("disabled", "disabled");
         await base.OnInitializedAsync();
     }
@@ -216,12 +216,12 @@
     void CalculateOrderParameters()
     {
         var order = Service.UpsertData;
-        order.TotalAmount = Service.DetailDataView.GetBatchEntities().Sum(t => t.Quantity * t.Price);
+        order.TotalAmount = Service.DetailService.DataView.GetBatchEntities().Sum(t => t.Quantity * t.Price);
     }
 
     async Task UpdatedProducts()
     {
-        var products = Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Updated).Select(t => t.Entity);
+        var products = Service.DetailService.ChangedEntities.Where(t => t.ChangeType == ChangeType.Updated).Select(t => t.Entity);
         if (products.Count() == 0)
             await Alert("No products have been updated");
         else
@@ -241,7 +241,7 @@
 
     async Task DeletedProducts()
     {
-        var products = Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Deleted).Select(t => t.Entity);
+        var products = Service.DetailService.ChangedEntities.Where(t => t.ChangeType == ChangeType.Deleted).Select(t => t.Entity);
         if (products.Count() == 0)
             await Alert("No products have been deleted");
         else
@@ -261,7 +261,7 @@
 
     async Task InsertedProducts()
     {
-        var products = Service.ChangedEntities.Where(t => t.ChangeStatus == ChangeStatus.Added).Select(t => t.Entity);
+        var products = Service.DetailService.ChangedEntities.Where(t => t.ChangeType == ChangeType.Added).Select(t => t.Entity);
         if (products.Count() == 0)
             await Alert("No products have been added");
         else
@@ -281,8 +281,8 @@
 
     async Task AddUpsertProduct(Product product)
     {
-        var old = Service.ChangedEntities.SingleOrDefault(t => t.Entity.ProductId == product.Id)?.Entity;
-        var grid = Service.DetailDataView;
+        var old = Service.DetailService.ChangedEntities.SingleOrDefault(t => t.Entity.ProductId == product.Id)?.Entity;
+        var grid = Service.DetailService.DataView;
         if (old == null)
         {
             await grid.InsertAsync(new OrderDetail()
@@ -290,7 +290,7 @@
                 Quantity = 1,
                 Price = product.Price,
                 ProductId = product.Id,
-                OrderId = Service.MasterId
+                OrderId = Service.DetailService.MasterId
             });
         }
         else
@@ -305,7 +305,7 @@
     async Task IncQuantity(OrderDetail detail)
     {
         detail.Quantity++;
-        await Service.DetailDataView.UpdateAsync(detail);
+        await Service.DetailService.DataView.UpdateAsync(detail);
         CalculateOrderParameters();
     }
 
@@ -313,9 +313,9 @@
     {
         detail.Quantity--;
         if (detail.Quantity == 0)
-            await Service.DetailDataView.RemoveAsync(detail);
+            await Service.DetailService.DataView.RemoveAsync(detail);
         else
-            await Service.DetailDataView.UpdateAsync(detail);
+            await Service.DetailService.DataView.UpdateAsync(detail);
         CalculateOrderParameters();
     }
 }

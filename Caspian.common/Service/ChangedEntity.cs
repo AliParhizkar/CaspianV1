@@ -4,10 +4,10 @@
     {
         public TEntity Entity { get; set; }
 
-        public ChangeStatus ChangeStatus { get; set; }
+        public ChangeType ChangeType { get; set; }
     }
 
-    public enum ChangeStatus 
+    public enum ChangeType
     {
         Added = 1,
 

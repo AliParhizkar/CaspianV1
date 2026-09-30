@@ -1,7 +1,7 @@
 ﻿@page "/Demo/CustomerAndCustomerAddress"
 @namespace Demo.Web.Pages
 @attribute [Source(53, "Customer & Addresses")]
-@inject UIService<Customer, CustomerAddress> Service
+@inject IUIService<Customer, CustomerAddress> Service
 @inherits BasePage
 @{
     base.BuildRenderTree(__builder);

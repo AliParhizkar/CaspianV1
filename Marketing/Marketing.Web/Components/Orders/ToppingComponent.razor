@@ -38,7 +38,7 @@
     int selectedToppingId;
 
     [Parameter]
-    public UIService<OrderDetail, OrderDetailTopping> Service { get; set; }
+    public IUIService<OrderDetail, OrderDetailTopping> Service { get; set; }
 
     [Parameter]
     public int ProductId { get; set; }

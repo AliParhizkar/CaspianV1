@@ -146,28 +146,28 @@ namespace Caspian.UI
 
     public enum VerticalAlign
     {
-        Top = 1,
+        Top,
         Middle,
         Bottom,
     }
 
     public enum HorizontalAlign
     {
-        Left = 1,
+        Left,
         Center,
         Right,
     }
 
     public enum VerticalAnchor
     {
-        Top = 1,
+        Top,
         Middle,
         Bottom,
     }
 
     public enum HorizontalAnchor
     {
-        Left = 1,
+        Left,
         Center,
         Right,
     }

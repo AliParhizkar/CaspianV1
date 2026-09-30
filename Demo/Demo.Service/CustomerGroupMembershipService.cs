@@ -2,15 +2,27 @@
 using Demo.Model;
 using Caspian.Common;
 using Caspian.Common.Service;
+using System.Threading.Tasks;
 
 namespace Demo.Service
 {
-    public class CustomerGroupMembershipService : BaseService<CustomerGroupMembership>
+    public class CustomerGroupMembershipService : DetailService<CustomerGroupMembership>
     {
         public CustomerGroupMembershipService(IServiceProvider provider)
             :base(provider)
         {
             RuleFor(t => t.CustomerId).UniqueAsync(t => t.CustomerGroupId, "مشتری در حال حاضر عضو این گروه می باشد.");
+        }
+
+        public override Task<CustomerGroupMembership> AddAsync(CustomerGroupMembership entity)
+        {
+
+            return base.AddAsync(entity);
+        }
+
+        public override Task RemoveAsync(int id)
+        {
+            return base.RemoveAsync(id);
         }
     }
 }

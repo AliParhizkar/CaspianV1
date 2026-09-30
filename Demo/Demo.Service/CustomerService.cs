@@ -6,6 +6,7 @@ using Caspian.Engine;
 using FluentValidation;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Demo.Service
 {
@@ -21,7 +22,7 @@ namespace Demo.Service
             RuleFor(t => t.CompanyName).Required(t => t.CustomerType == CustomerType.Legal).UniqueAsync("Company name should be unique");
             RuleFor(t => t.MobileNumber).Required().MobileNumber().UniqueAsync("There is a customer with this mobile number");
             RuleFor(t => t.Tel).TelNumber();
-            RuleFor(t => t.CustomerGroupMemberships).Custom(t => Details.Count() == 0, "Customer should be member of a group");
+            //RuleFor(t => t.CustomerGroupMemberships).Custom(t => Details.Count() == 0, "Customer should be member of a group");
             RuleForEach(t => t.CustomerGroupMemberships).SetValidator(new CustomerGroupMembershipService(provider));
         }
 

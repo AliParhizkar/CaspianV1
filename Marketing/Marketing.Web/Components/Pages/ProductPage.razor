@@ -1,6 +1,6 @@
 ﻿@page  "/Marketing/Product/{CategoryId:int?}"
 @attribute [Source(7, "محصول")]
-@inject UIService<Product, ProductTopping, ProductDescription> Service
+@inject IUIService<Product, ProductTopping, ProductDescription> Service
 @inherits BasePage
 @{
         base.BuildRenderTree(__builder);

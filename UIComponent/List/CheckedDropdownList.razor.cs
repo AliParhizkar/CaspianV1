@@ -120,7 +120,7 @@ namespace Caspian.UI
                     foreach (var detail in Service.ChangedEntities)
                     {
                         var otherId = detailIdInfo.GetValue(detail.Entity);
-                        if (detail.ChangeStatus == ChangeStatus.Deleted)
+                        if (detail.ChangeType == ChangeType.Deleted)
                             selectedIds.Remove(otherId);
                         else
                             selectedIds.Add(otherId);

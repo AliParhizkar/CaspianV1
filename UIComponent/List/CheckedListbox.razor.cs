@@ -15,6 +15,13 @@ namespace Caspian.UI
         IList<object> SelectedIds;
         string filterText;
 
+        [CascadingParameter]
+        internal PageData PageData { get; set; }
+
+        [Parameter]
+        public EventCallback<ChangedEntity<TDetails>> OnChange { get; set; }
+
+
         async Task UpdateSelectedIds(bool flag, object value)
         {
             if (flag)
@@ -35,13 +42,16 @@ namespace Caspian.UI
                     var data = new ChangedEntity<TDetails>()
                     {
                         Entity = (TDetails)value,
-                        ChangeStatus = flag ? ChangeStatus.Added : ChangeStatus.Deleted
+                        ChangeType = flag ? ChangeType.Added : ChangeType.Deleted
                     };
                     await OnChange.InvokeAsync(data);
                 }
             }
             else
-                await UpdateChangedEntities();
+            {
+                var status = flag ? ChangeType.Added : ChangeType.Deleted;
+                Service.UpdateDetailsByChangedEntity(typeof(TEntity), value, status);
+            }
         }
 
         internal string SelectedItemsText()
@@ -74,7 +84,7 @@ namespace Caspian.UI
                     list.Add(new ChangedEntity<TDetails>()
                     {
                         Entity = entity,
-                        ChangeStatus = ChangeStatus.Added
+                        ChangeType = ChangeType.Added
                     });
                 }
             }
@@ -92,20 +102,14 @@ namespace Caspian.UI
                     list.Add(new ChangedEntity<TDetails>()
                     {
                         Entity = entity,
-                        ChangeStatus = ChangeStatus.Deleted
+                        ChangeType = ChangeType.Deleted
                     });
                 }
             }
-            Service.ChangedEntities = list;
+            //Service.ChangedEntities = list;
             if (ValuesChanged.HasDelegate)
                 await ValuesChanged.InvokeAsync();
         }
-
-        [Parameter]
-        public EventCallback<ChangedEntity<TDetails>> OnChange {  get; set; }
-
-        [CascadingParameter]
-        internal PageData PageData { get; set; }
 
         async Task DataBinding()
         {
@@ -163,7 +167,7 @@ namespace Caspian.UI
             if (Service != null)
             {
                 var detailIdInfo = typeof(TDetails).GetForeignKey(typeof(TEntity));
-                if (Service?.MasterId > 0)
+                if (Service.MasterId > 0)
                 {
                     var masterType = Service.GetType().GetGenericArguments()[0];
                     var masterIdInfo = typeof(TDetails).GetForeignKey(masterType);
@@ -171,7 +175,8 @@ namespace Caspian.UI
                     Expression expr = Expression.Property(param, masterIdInfo);
                     expr = Expression.Equal(expr, Expression.Constant(Service.MasterId));
                     var lambda = Expression.Lambda(expr, param);
-                    using var service = Provider.CreateScope().GetService<IBaseService<TDetails>>();
+                    using var scope = Provider.CreateScope();
+                    using var service = scope.GetService<IBaseService<TDetails>>();
                     var query = service.GetAll().Where(lambda);
                     var exprDetailId = Expression.Property(param, detailIdInfo);
                     var exprPKey = Expression.Property(param, typeof(TDetails).GetPrimaryKey());
@@ -181,6 +186,7 @@ namespace Caspian.UI
                         var otherId = detailIdInfo.GetValue(detail);
                         SelectedIds.Add(otherId);
                     }
+                    Service.SetDetailsProperty(details);
                 }
                 else
                     details = new List<TDetails>();
@@ -189,7 +195,7 @@ namespace Caspian.UI
                     foreach (var detail in Service.ChangedEntities) 
                     {
                         var otherId = detailIdInfo.GetValue(detail.Entity);
-                        if (detail.ChangeStatus == ChangeStatus.Deleted)
+                        if (detail.ChangeType == ChangeType.Deleted)
                             SelectedIds.Remove(otherId);
                         else
                             SelectedIds.Add(otherId);

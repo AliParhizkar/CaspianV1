@@ -69,6 +69,8 @@ namespace Caspian.UI
     {
         CaspianForm<TEntity> Form { get;}
 
+        Action<TEntity> OnCreate { get; set; }
+
         TEntity UpsertData { get; }
 
         IEntityTabPanel EntityTabPanel { get; }

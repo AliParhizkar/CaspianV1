@@ -48,7 +48,7 @@ namespace Caspian.Engine.ReportGenerator
                 {
                     changedEntities.Add(new ChangedEntity<AggregateReportParameter>()
                     {
-                        ChangeStatus = ChangeStatus.Added,
+                        ChangeType = ChangeType.Added,
                         Entity = item
                     });
                 }
@@ -59,7 +59,7 @@ namespace Caspian.Engine.ReportGenerator
                 {
                     changedEntities.Add(new ChangedEntity<AggregateReportParameter>()
                     {
-                        ChangeStatus = ChangeStatus.Deleted,
+                        ChangeType = ChangeType.Deleted,
                         Entity = item
                     });
                 }

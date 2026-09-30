@@ -23,7 +23,7 @@
                 </TabPanelItem>
                 <TabPanelItem Title="Groups">
                     <div class="ps-4 pe-4 pt-2 pb-2" style="height:260px">
-                        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service"
+                        <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service.DetailService"
                                         TextExpression="t => t.Title" Style="height:220px;" />
                     </div>
                 </TabPanelItem>
@@ -38,5 +38,5 @@
 @code
 {
     [Parameter]
-    public UIService<Customer, CustomerGroupMembership> Service { get; set; }
+    public IUIService<Customer, CustomerGroupMembership> Service { get; set; }
 }

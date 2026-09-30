@@ -1,11 +1,11 @@
 ﻿@namespace Demo.Web.Pages
 
-@inject UIService<Scope, Evaluation> Service
+@inject IUIService<Scope, Evaluation> Service
 
 <div style="margin-bottom:-20px;" class="p-3 pb-0 text-center">
     <span class="d-membership">Evaluations Of Scope</span>
 </div>
-<DataGrid TEntity="Evaluation" DetailsService="Service" PageSize="5" ContentHeight="200">
+<DataGrid TEntity="Evaluation" DetailsService="Service.DetailService" PageSize="5" ContentHeight="200">
     <Columns>
         <GridColumn Field="t => t.Title" />
         <GridColumn Field="t => t.Year" />
@@ -14,7 +14,7 @@
         <GridCommandColumns />
     </Columns>
 </DataGrid>
-<TypeWindow TEntity="Evaluation" Service="Service" Title="Evaluation" Style="width:650px" OnOpen="InitializeOnEvaluationCreate">
+<TypeWindow TEntity="Evaluation" Service="Service.DetailService" Title="Evaluation" Style="width:650px" OnOpen="InitializeOnEvaluationCreate">
     <StringTextBox @bind-Value="context.Title" ColSpan="6" TotalSpan="9" />
     <div class="col-md-3 text-center">
         <button class="c-btn c-primary" type="submit">Save</button>

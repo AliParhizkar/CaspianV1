@@ -18,7 +18,7 @@ namespace Caspian.Common.Service
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
-            Source = new List<TEntity>();
+            
         }
 
         public bool CheckValidation { get; set; } = true;
@@ -39,12 +39,12 @@ namespace Caspian.Common.Service
             return entity;
         }
 
-        internal protected IReadOnlyCollection<TEntity> Source { get; set; }
+        //internal protected IReadOnlyCollection<TEntity> Source { get; set; }
 
-        public void SetSource(IReadOnlyCollection<TEntity> source)
-        {
-            Source = source;
-        }
+        //public void SetSource(IReadOnlyCollection<TEntity> source)
+        //{
+        //    Source = source;
+        //}
 
         public Type OtherTypeIn1To1Relationship
         {

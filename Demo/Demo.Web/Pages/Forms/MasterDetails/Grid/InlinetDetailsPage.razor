@@ -3,7 +3,7 @@
 @attribute [Source(84, "Batch Inline Details", MasterPage = typeof(InlineMasterPage))]
 @namespace Demo.Web.Pages
 @inherits BasePage
-@inject UIService<Order, OrderDetail> Service
+@inject IUIService<Order, OrderDetail> Service
 <h2>Batch operation</h2>
 <h3>Order</h3>
 <p>
@@ -119,7 +119,7 @@
                         <div class="pb-3">
                             <CheckBox @bind-Value="editablePrice" Title="Editable Price" />
                         </div>
-                        <DataGrid DetailsService="Service" TEntity="OrderDetail" ContentHeight="250" Inline OnSave="CalCulateOrderParameters">
+                        <DataGrid DetailsService="Service.DetailService" TEntity="OrderDetail" ContentHeight="250" Inline OnSave="CalCulateOrderParameters" Batch>
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Product.Discount" DataField />
                                 <GridColumn Field="t => t.Product.Title + '(' + t.Product.Code + ')'" Title="Product">
@@ -262,7 +262,7 @@
     void CalCulateOrderParameters()
     {
         var order = Service.UpsertData;
-        order.TotalAmount = Service.DetailDataView.GetBatchEntities().Sum(t => t.Quantity * t.Price);
+        order.TotalAmount = Service.DetailService.DataView.GetBatchEntities().Sum(t => t.Quantity * t.Price);
     }
 
     async Task AddText(string text)
@@ -312,7 +312,7 @@
 
     protected override void OnInitialized()
     {
-        Service.MasterId = OrderId;
+        Service.DetailService.MasterId = OrderId;
         Service.OnCreate = t => t.Date = DateTime.Now.ToDateOnly();
         base.OnInitialized();
     }
@@ -320,7 +320,7 @@
     async Task UpsertOnEnter(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(mode);
+            await Service.DetailService.DataView.ValidateAndUpsert(mode);
     }
 
 

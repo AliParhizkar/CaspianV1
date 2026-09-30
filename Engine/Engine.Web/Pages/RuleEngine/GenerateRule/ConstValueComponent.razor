@@ -1,6 +1,8 @@
 ﻿@using Caspian.Engine.Extension
 @namespace Caspian.Engine
 @inherits BasePage
+
+
 <div class="row c-controls">
 
     @switch (valueTypeKind)
@@ -37,7 +39,6 @@
     DateTime? dateConstValue;
     TimeSpan? timeConstValue;
     decimal? decimalConstValue;
-
 
     Enum enumConstValue;
     Type enumType;
@@ -146,6 +147,9 @@
     [Parameter]
     public EventCallback<IList<TokenKind>> OnAfterAdd{ get; set; }
 
+    [Parameter]
+    public ValueTypeKind ReturnType { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
         if (Tokens.Count > 1)
@@ -184,21 +188,23 @@
                         break;
                 }
             }
-            else if (lastToken.TokenKind == TokenKind.Math)
-            {
-                switch (beforeLastToken.parameterType.Value)
-                {
-                    case ParameterType.MainParameter:
-                        var info = Type.GetProperty(beforeLastToken.EnTitle);
-                        valueTypeKind = info.PropertyType.GetUnderlyingType().GetValueTypeKind();
-                            break;
-                    case ParameterType.RuleParameter:
-                        var rule = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleId.Value);
-                        valueTypeKind = rule.ResultType;
-                        break;
-                }
-            }
+            //else if (lastToken.TokenKind == TokenKind.Math)
+            //{
+            //    switch (beforeLastToken.parameterType.Value)
+            //    {
+            //        case ParameterType.MainParameter:
+            //            var info = Type.GetProperty(beforeLastToken.EnTitle);
+            //            valueTypeKind = info.PropertyType.GetUnderlyingType().GetValueTypeKind();
+            //            break;
+            //        case ParameterType.RuleParameter:
+            //            var rule = await new RuleService(scope.ServiceProvider).SingleAsync(beforeLastToken.RuleId.Value);
+            //            valueTypeKind = rule.ResultType;
+            //            break;
+            //    }
+            //}
         }
+
+        valueTypeKind = valueTypeKind ?? ReturnType;
         await base.OnParametersSetAsync();
     }
 }

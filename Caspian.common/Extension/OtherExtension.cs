@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("UIComponent")]
 [assembly: InternalsVisibleTo("Engine.Service")]
+[assembly: InternalsVisibleTo("Engine.Web")]
 namespace Caspian.Common.Extension
 {
     public static class OtherExtension
@@ -82,6 +83,24 @@ namespace Caspian.Common.Extension
                 var type = info.PropertyType;
                 if (type.IsValueType || type == typeof(string) || type == typeof(byte[])) 
                     info.SetValue(entity, value);
+            }
+        }
+
+        internal static void SetMyValue(this object obj, string strName, object value)
+        {
+            object result = obj;
+            var type = result.GetType();
+            var array = strName.Split('.');
+            for(var index = 0; index < array.Length; index++)
+            {
+                var property = type.GetProperty(array[index]);
+                if (index == array.Length - 1)
+                    property.SetValue(result, value);
+                else
+                {
+                    result = property.GetValue(result);
+                    type = property.PropertyType;
+                }
             }
         }
 

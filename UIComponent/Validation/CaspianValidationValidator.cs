@@ -30,9 +30,6 @@ namespace Caspian.UI
         [Inject]
         public CaspianDataService CaspianDataService { get; set; }
 
-        [Parameter]
-        public IList<TModel> Source { get; set; }
-
         [CascadingParameter]
         private EditContext EditContext { get; set; }
 
@@ -86,7 +83,8 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             var validator = (CaspianValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
-            
+            if (validator is DetailService<TModel> detailService)
+                detailService.SetDetails(DetailsService.Details);
             var validationResult = validator.ValidateAsync(EditContext.Model as TModel, option => 
             {
                 option.IncludeProperties(args.FieldIdentifier.FieldName);
@@ -123,12 +121,12 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            if (Validator is IDetailService<TModel> service)
+                service.SetDetails(DetailsService.Details);
             if (OnInternalValidate.HasDelegate)
                 await OnInternalValidate.InvokeAsync(Validator);
             if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)
                 await CaspianForm.OnBeforeValidate.InvokeAsync();
-            if (Source != null && Source.Count() > 0)
-                Validator.SetSource(Source.AsReadOnly());
             Task<ValidationResult> asyncValidationTask;
             if (EditContext.Properties.TryGetValue("DetailType", out var objDetail) && objDetail != null)
                 asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objDetail);

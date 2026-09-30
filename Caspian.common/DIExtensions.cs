@@ -11,6 +11,8 @@ namespace Caspian.Common
             return scope.ServiceProvider.GetCaspianService<TService>();
         }
 
+
+
         public static TService GetCaspianService<TService>(this IServiceProvider serviceProvider) where TService : class
         {
             var type = typeof(TService);

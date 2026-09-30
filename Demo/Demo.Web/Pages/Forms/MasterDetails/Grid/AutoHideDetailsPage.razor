@@ -9,7 +9,7 @@
 </style>
 @using Caspian.Common.Extension
 @namespace Demo.Web.Pages
-@inject UIService<WarehouseReceipt, ReceiptDetail> Service
+@inject IUIService<WarehouseReceipt, ReceiptDetail> Service
 @inherits BasePage
 <h2>Batch operation</h2>
 <h3>Warehouse receipt</h3>
@@ -109,7 +109,7 @@
                         </CaspianForm>
                     </div>
                     <div class="col-md-9 ps-4">
-                        <DataGrid TEntity="ReceiptDetail" DetailsService="Service" Inline AutoHide Batch ContentHeight="200">
+                        <DataGrid TEntity="ReceiptDetail" DetailsService="Service.DetailService" Inline AutoHide Batch ContentHeight="200">
                             <Columns Context="con">
                                 <GridColumn Field="t => t.Material.Title" Title="Material" style="min-width:180px">
                                     <EditTemplate>
@@ -221,7 +221,7 @@
     IList<WarehouseReceipt> receipts;
     async Task OpenInsert()
     {
-        await Service.DetailDataView.OpenForInsert(new ReceiptDetail()
+        await Service.DetailService.DataView.OpenForInsert(new ReceiptDetail()
         {
             QuantityMain = 5
         });
@@ -256,7 +256,7 @@
 
     protected override void OnInitialized()
     {
-        Service.MasterId = ReceiptId;
+        Service.DetailService.MasterId = ReceiptId;
         Service.OnCreate = t =>
         {
             t.Date = DateTime.Now.ToDateOnly();
@@ -285,19 +285,19 @@
             if (detail?.Material.SubunitId != null)
                 await txtSubunit.FocusAsync();
             else
-                await Service.DetailDataView.ValidateAndUpsert(mode);
+                await Service.DetailService.DataView.ValidateAndUpsert(mode);
         }
     }
 
     async Task SubUnitChanged(KeyboardEventArgs e, ReceiptDetail detail, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(mode);
+            await Service.DetailService.DataView.ValidateAndUpsert(mode);
     }
 
     async Task UpdateMaterialReceipt(ReceiptDetail detail)
     {
-        await Service.DetailDataView.UpdateEntityAsync();
+        await Service.DetailService.DataView.UpdateEntityAsync();
         //if (detail.MaterialId > 0)
         //{
         //    using var service = CreateScope().GetService<MaterialService>();

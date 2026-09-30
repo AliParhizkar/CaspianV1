@@ -2,7 +2,7 @@
 @page "/Procurement/SupplierEvaluationDetail/{ReceiptId:int}"
 @inherits BasePage
 @attribute [Source(13, "ارزیابی تامین کنندگان", MasterPage = typeof(SupplierEvaluationPage))]
-@inject UIService<SupplierEvaluation, SupplierEvaluationDetail> Service
+@inject IUIService<SupplierEvaluation, SupplierEvaluationDetail> Service
 @{
     base.BuildRenderTree(__builder);
 }

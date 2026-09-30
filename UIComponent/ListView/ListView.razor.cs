@@ -98,8 +98,8 @@ namespace Caspian.UI
                 }
                 if (Batch)
                 {
-                    source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
-                    (DetailsService as IInternalBatchService<TEntity>).SetDetailsProperty(source);
+                    var source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
+                    BatchService.SetDetailsProperty(source);
                     if (pageNumber == 1)
                         items = source.Take(PageSize).ToList();
                     else

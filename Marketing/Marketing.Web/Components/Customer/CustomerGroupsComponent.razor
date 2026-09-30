@@ -35,7 +35,7 @@
         </div>
         <div class="col-md-4 pe-3">
             <label style="justify-content:space-evenly">گروههای مشتری</label>
-            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:280px;flex-wrap:nowrap"
+            <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service.DetailService" Style="height:280px;flex-wrap:nowrap"
                             TextExpression="t => t.Name" />
         </div>
     </CaspianForm>
@@ -45,7 +45,7 @@
 {
     string customerNumber;
     [Parameter]
-    public UIService<Customer, CustomerGroupMembership> Service { get; set; }
+    public IUIService<Customer, CustomerGroupMembership> Service { get; set; }
 
     async Task SetCustomerNumber()
     {

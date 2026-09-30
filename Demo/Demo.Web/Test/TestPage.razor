@@ -1,21 +1,22 @@
 ﻿@page "/Demo/Test"
-@inject IHostEnvironment host
+@using Caspian.Engine
 @attribute [Source(81, "Test")]
 @inherits BasePage
-@inject ISearchService<Customer> Service
 @namespace Demo.Web.Pages
 @{
     base.BuildRenderTree(__builder);
 }
+<div style="background-color:white;padding:5px;">
+    <RuleBuilder TEntity="OrderDetail" TValue="double" UniqueId="OrderDetail-1">
+        <RuleItem Field="t => t.Order.OrderType" Title="نوع سفارش" />
+        <RuleItem Field="t => t.Price" Title="قیمت محصول" />
+        <RuleItem Field="t => t.Quantity" Title="تعداد/مقدار" />
+    </RuleBuilder>
+</div>
 
-<div class="row p-5 c-controls" style="width:400px;margin:5px auto;background-color:white">
-    <CheckBox @bind-Value="flag" Title="برای تست" ColSpan="4" TotalSpan="12" />
-</div>
-<div style="width:400px;margin:20px auto;background-color:white;padding:5px 20px">
-    <CheckBox @bind-Value="flag" Title="برای تست" ColSpan="12" TotalSpan="12" />
-</div>
+
 
 @code
 {
-    bool flag;
+    
 }

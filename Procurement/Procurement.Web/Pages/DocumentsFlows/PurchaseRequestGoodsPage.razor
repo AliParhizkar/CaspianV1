@@ -2,7 +2,7 @@
 @page "/Procurement/PurchaseRequestGoods/{RequestId:int}"
 @inherits BasePage
 @attribute [Source(30, "درخواست کالا", MasterPage = typeof(PurchaseRequestPage))]
-@inject UIService<PurchaseRequest, PurchaseRequestGoods> Service
+@inject IUIService<PurchaseRequest, PurchaseRequestGoods> Service
 @{
     base.BuildRenderTree(__builder);
 }
@@ -149,8 +149,8 @@
 </PopupWindow>
 @code
 {
-    IDictionary<int, UIService<PurchaseRequestGoods, RequestGoodsSupplier>> requestGoodsSupplierServices;
-    UIService<PurchaseRequestGoods, RequestGoodsSupplier> requestGoodsSupplierService;
+    IDictionary<int, IUIService<PurchaseRequestGoods, RequestGoodsSupplier>> requestGoodsSupplierServices;
+    IUIService<PurchaseRequestGoods, RequestGoodsSupplier> requestGoodsSupplierService;
     string comment, purchaseItemName;
     IControl txtPrivilege;
     WindowStatus status;

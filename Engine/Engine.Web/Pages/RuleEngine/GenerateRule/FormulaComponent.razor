@@ -1,5 +1,6 @@
 ﻿@namespace Caspian.Engine
-<div class="formola-content">
+@typeparam TEntity
+<div class="formola-content" style="@Style">
     @if (Tokens != null)
     {
         @foreach (var item in Tokens)
@@ -26,8 +27,17 @@
     }
 </div>
 
-@code 
-{
+@code
+{ 
     [Parameter]
     public IList<Token> Tokens { get; set; }
+
+    [Parameter]
+    public TEntity Data { get; set; }
+
+    [Parameter]
+    public IDictionary<string, string> RuleItems { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
 }

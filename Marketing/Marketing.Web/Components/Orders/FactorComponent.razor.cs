@@ -9,8 +9,8 @@ namespace Marketing.Web.OrderComponents
 {
     public partial class FactorComponent
     {
-        IDictionary<int, UIService<OrderDetail, OrderDetailTopping>> toppingServices;
-        UIService<OrderDetail, OrderDetailTopping> toppingService;
+        IDictionary<int, IUIService<OrderDetail, OrderDetailTopping>> toppingServices;
+        IUIService<OrderDetail, OrderDetailTopping> toppingService;
         WindowStatus toppingStatus, descriptStatus;
         int? selectedDetailId, toppingProductId;
         double left, top;
@@ -18,20 +18,20 @@ namespace Marketing.Web.OrderComponents
 
         async Task ChangeDescription(WindowStatus status)
         {
-            await OrderService.DetailDataView.UpdateAsync(selectedOrderDetail);
+            await OrderService.DetailService.DataView.UpdateAsync(selectedOrderDetail);
             descriptStatus = status; 
             selectedOrderDetail = null;
         }
 
         async Task ToppingChanged(decimal sum)
         {
-            var toppings = OrderService.DetailDataView.GetBatchEntities();
+            var toppings = OrderService.DetailService.DataView.GetBatchEntities();
             var old = toppings.Single(t => t.Id == selectedDetailId.Value);
             old.ToppingAmount = sum;
             /// Initialize Topping To Validate
-            old.OrderDetailToppings = toppingService.DetailDataView.GetBatchEntities().ToList();
-            await OrderService.DetailDataView.UpdateAsync(old);
-            var data = OrderService.DetailDataView.GetBatchEntities();
+            old.OrderDetailToppings = toppingService.DetailService.DataView.GetBatchEntities().ToList();
+            await OrderService.DetailService.DataView.UpdateAsync(old);
+            var data = OrderService.DetailService.DataView.GetBatchEntities();
             await OnChange.InvokeAsync(data);
         }
 
@@ -44,7 +44,7 @@ namespace Marketing.Web.OrderComponents
         {
             if (value >= 0)
             {
-                var grid = OrderService.DetailDataView;
+                var grid = OrderService.DetailService.DataView;
                 var old = grid.GetBatchEntities().SingleOrDefault(t => t.Id == orderDetail.Id);
                 if (value == 0)
                 {
@@ -60,8 +60,8 @@ namespace Marketing.Web.OrderComponents
                     if (toppingService != null)
                     {
                         /// Toppings count added
-                        toppingsCount += toppingService.ChangedEntities.Count(t => t.ChangeStatus == ChangeStatus.Added);
-                        toppingsCount -= toppingService.ChangedEntities.Count(t => t.ChangeStatus == ChangeStatus.Deleted);
+                        toppingsCount += toppingService.DetailService.ChangedEntities.Count(t => t.ChangeType == ChangeType.Added);
+                        toppingsCount -= toppingService.DetailService.ChangedEntities.Count(t => t.ChangeType == ChangeType.Deleted);
                     }
                     if (toppingsCount > 0)
                         Page.ShowMessage("محصول دارای تاپینگ می باشد لطفا ابتدا تاپینگ های محصول را حذف کنید.");
@@ -81,7 +81,7 @@ namespace Marketing.Web.OrderComponents
 
         protected override void OnInitialized()
         {
-            toppingServices = new Dictionary<int, UIService<OrderDetail, OrderDetailTopping>>();
+            toppingServices = new Dictionary<int, IUIService<OrderDetail, OrderDetailTopping>>();
             base.OnInitialized();
         }
 
@@ -90,9 +90,9 @@ namespace Marketing.Web.OrderComponents
             var list = new List<OrderDetailTopping>();
             foreach (var service in toppingServices)
             {
-                foreach (var detail in service.Value.ChangedEntities)
+                foreach (var detail in service.Value.DetailService.ChangedEntities)
                 {
-                    if (detail.ChangeStatus == ChangeStatus.Deleted)
+                    if (detail.ChangeType == ChangeType.Deleted)
                         list.Add(detail.Entity);
                 }
             }
@@ -109,9 +109,9 @@ namespace Marketing.Web.OrderComponents
             var list = new List<OrderDetailTopping>();
             foreach (var service in toppingServices)
             {
-                foreach (var detail in service.Value.ChangedEntities)
+                foreach (var detail in service.Value.DetailService.ChangedEntities)
                 {
-                    if (detail.ChangeStatus != ChangeStatus.Deleted)
+                    if (detail.ChangeType != ChangeType.Deleted)
                     {
                         detail.Entity.OrderDetailId = service.Key;
                         list.Add(detail.Entity);
@@ -123,14 +123,14 @@ namespace Marketing.Web.OrderComponents
 
         public async Task AddToOrder(Product product)
         {
-            var grid = OrderService.DetailDataView;
+            var grid = OrderService.DetailService.DataView;
             var old = grid.GetBatchEntities().SingleOrDefault(t => t.ProductId == product.Id && (t.OrderDetailToppings?.Count ?? 0) == 0);
            
             if (old == null)
             {
                 var detail = new OrderDetail()
                 {
-                    OrderId = OrderService.MasterId,
+                    OrderId = OrderService.DetailService.MasterId,
                     ProductId = product.Id,
                     Quantity = 1,
                 };
@@ -148,9 +148,9 @@ namespace Marketing.Web.OrderComponents
 
         protected override void OnParametersSet()
         {
-            if (OrderService.DetailDataView != null)
+            if (OrderService.DetailService.DataView != null)
             {
-                foreach (var detail in OrderService.DetailDataView.GetBatchEntities())
+                foreach (var detail in OrderService.DetailService.DataView.GetBatchEntities())
                     UpdatePriceAndDiscount(detail);
             }
             base.OnParametersSet();
@@ -194,8 +194,8 @@ namespace Marketing.Web.OrderComponents
             toppingService = toppingServices.SingleOrDefault(t => t.Key == detail.Id).Value;
             if (toppingService == null)
             {
-                toppingService = new UIService<OrderDetail, OrderDetailTopping>(OrderService.ServiceProvider);
-                toppingService.MasterId = detail.Id;
+                toppingService = IUIService<OrderDetail, OrderDetailTopping>(OrderService.ServiceProvider);
+                toppingService.DetailService.MasterId = detail.Id;
                 toppingServices.Add(detail.Id, toppingService);
             }
             toppingStatus = WindowStatus.Open;
@@ -218,6 +218,6 @@ namespace Marketing.Web.OrderComponents
         public BasePage Page { get; set; }
 
         [Parameter]
-        public UIService<Order, OrderDetail> OrderService { get; set; }
+        public IUIService<Order, OrderDetail> OrderService { get; set; }
     }
 }

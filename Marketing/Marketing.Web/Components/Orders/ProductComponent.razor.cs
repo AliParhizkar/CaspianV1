@@ -26,7 +26,7 @@ namespace Marketing.Web.OrderComponents
 
         async Task CallbackForChange()
         {
-            var data = OrderService.DetailDataView.GetBatchEntities();
+            var data = OrderService.DetailService.DataView.GetBatchEntities().ToList();
             await OnChange.InvokeAsync(data);
         }
 
@@ -69,7 +69,7 @@ namespace Marketing.Web.OrderComponents
 
 
         [Parameter]
-        public UIService<Order, OrderDetail> OrderService { get; set; }
+        public IUIService<Order, OrderDetail> OrderService { get; set; }
 
         [Parameter]
         public Customer Customer { get; set; }

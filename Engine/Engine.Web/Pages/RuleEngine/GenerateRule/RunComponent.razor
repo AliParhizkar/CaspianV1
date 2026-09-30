@@ -1,0 +1,80 @@
+﻿@using Caspian.Common.Extension
+@using Caspian.Engine.Extension
+@namespace Caspian.Engine
+@typeparam TEntity
+<div class="c-run" @onclick="() => RunFormula()">
+    <i class="fa fa-caret-right"></i>
+</div>
+<Window @bind-Status="runStatus" Title="اجرای فرمول" Style="width:750px;">
+    <TabPanel>
+        <Tabs>
+            <TabPanelItem Title="تست فرمول">
+                <div class="rule-result">@result</div>
+                <FormulaComponent Style="height: calc(100vh - 150px)" TEntity="TEntity" Tokens="Tokens" Data="Data" RuleItems="RuleItems" />
+            </TabPanelItem>
+            <TabPanelItem Title="مقداردهی">
+                <div class="row c-controls">
+                    @foreach (var item in RuleItems)
+                    {
+                        var type = typeof(TEntity).GetMyProperty(item.Key).PropertyType;
+                        var valueTypeKind = type.GetValueTypeKind();
+                        var value = Data.GetMyValue(item.Key);
+                        switch (valueTypeKind)
+                        {
+                            case ValueTypeKind.Enum:
+                                var enumValue = value == null ? null : (Enum)value;
+                                <DropdownList TValue="Enum" Value="enumValue" ValueChanged="value => SetValue(item.Key, value)" DynamicType="type" ColSpan="9" TotalSpan="12" Title="@item.Value" />
+                                break;
+                            case ValueTypeKind.Int:
+                            case ValueTypeKind.Double:
+                                var data = NumericData(item.Key);
+                                <NumericTextBox TValue="object" Value="value" DigitGrouping NumberDigit="data.numberDigit" Total="data.total"
+                                                ValueChanged="value => SetValue(item.Key, value)" ColSpan="9" TotalSpan="12" Title="@item.Value" />
+                                break;
+                        }
+                    }
+                </div>
+            </TabPanelItem>
+        </Tabs>
+    </TabPanel>
+</Window>
+@code
+{
+    object result;
+    WindowStatus runStatus;
+
+    (int numberDigit, int total) NumericData(string propertyPath)
+    {
+        var property = typeof(TEntity).GetMyProperty(propertyPath);
+        var type = property.PropertyType.GetUnderlyingType();
+        if (new Type[] { typeof(byte), typeof(short), typeof(int), typeof(long) }.Contains(type))
+            return (0, 10);
+        return (2, 10);
+        
+    }
+
+    void SetValue(string propertyPath, object value)
+    {
+        if (value != null)
+        {
+            var property = typeof(TEntity).GetMyProperty(propertyPath).PropertyType.GetUnderlyingType();
+            value = Convert.ChangeType(value, property);
+        }
+        Data.SetMyValue(propertyPath, value);
+    }
+
+    void RunFormula()
+    {
+        runStatus = WindowStatus.Open;
+        result = new RuleEngine().Calculate(Tokens);
+    }
+
+    [Parameter]
+    public TEntity Data { get; set; }
+
+    [Parameter]
+    public IList<Token> Tokens { get; set; }
+
+    [Parameter]
+    public IDictionary<string, string> RuleItems { get; set; }
+}

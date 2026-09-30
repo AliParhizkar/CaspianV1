@@ -28,7 +28,7 @@ else
     async Task<bool> ConfirmOnUpsert(IServiceProvider provider, Customer customer)
     {
         ///base on config DataView of a service is null
-        var dataView = CustomerAddressService.DetailDataView ?? CustomerAddressGroupsService.DetailDataView;
+        var dataView = CustomerAddressService.DetailService.DataView ?? CustomerAddressGroupsService.Detail2Service.DataView;
         /// If Customer has address
         if (dataView.GetBatchEntities().Any())
         {
@@ -56,7 +56,7 @@ else
 
     protected override void OnParametersSet()
     {
-        CustomerGroupService.MasterId = CustomerAddressService.MasterId = CustomerAddressGroupsService.MasterId = CustomerId ?? 0;
+        CustomerGroupService.DetailService.MasterId = CustomerAddressService.DetailService.MasterId = CustomerAddressGroupsService.Detail2Service.MasterId = CustomerId ?? 0;
         base.OnParametersSet();
     }
 
@@ -70,13 +70,13 @@ else
     public IUIService<Customer> CustomerService { get; set; }
 
     [Parameter]
-    public UIService<Customer, CustomerAddress> CustomerAddressService { get; set; }
+    public IUIService<Customer, CustomerAddress> CustomerAddressService { get; set; }
 
     [Parameter]
-    public UIService<Customer, CustomerGroupMembership> CustomerGroupService { get; set; }
+    public IUIService<Customer, CustomerGroupMembership> CustomerGroupService { get; set; }
 
     [Parameter]
-    public UIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService { get; set; }
+    public IUIService<Customer, CustomerGroupMembership, CustomerAddress> CustomerAddressGroupsService { get; set; }
 
     public async Task OpenWindowAsync()
     {

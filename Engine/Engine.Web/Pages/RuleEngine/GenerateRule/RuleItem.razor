@@ -1,6 +1,7 @@
 ﻿@using System.Linq.Expressions
 @namespace Caspian.Engine 
 @typeparam TEntity 
+@typeparam TValue
 
 @code 
 {
@@ -29,7 +30,7 @@
     }
 
     [CascadingParameter]
-    internal IRuleBuilder<TEntity> RuleBuilder { get; set; }
+    internal RuleBuilder<TEntity, TValue> RuleBuilder { get; set; }
 
     [Parameter]
     public Expression<Func<TEntity, object>> Field { get; set; }

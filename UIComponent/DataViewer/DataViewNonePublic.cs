@@ -23,7 +23,7 @@ namespace Caspian.UI
         protected EditContext InsertContext;
         protected bool insertContainerHoldHasFocus;
         protected TEntity selectedEntity;
-        protected IList<TEntity> source;
+        //protected IList<TEntity> source;
         protected EditContext EditContext;
         protected bool shouldSetFocus;
         protected IList<TEntity> deletedEntities;
@@ -186,7 +186,7 @@ namespace Caspian.UI
             }
         }
 
-        internal IList<TEntity> GetSource() => source;
+        internal IEnumerable<TEntity> GetSource() => BatchService?.Details;
 
         internal async Task ReadyToInsert()
         {
@@ -207,7 +207,7 @@ namespace Caspian.UI
                     }
                     insertedEntity.Data = Activator.CreateInstance<TEntity>();
                     if (DetailsService.MasterId > 0)
-                        typeof(TEntity).GetForeignKey(DetailsService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
+                        typeof(TEntity).GetForeignKey(BatchService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
                     InsertContext = new EditContext(insertedEntity.Data);
                 }
             }
@@ -301,29 +301,22 @@ namespace Caspian.UI
                 await OnPageChanged.InvokeAsync();
         }
 
-        internal void ClearSource()
-        {
-            source.Clear();
-            Total = 0;
-            items.Clear();
-        }
-
         protected void ShowItemsForBatch()
         {
             if (pageNumber > 1)
             {
                 var skip = (pageNumber - 1) * PageSize;
-                items = source.Skip(skip).Take(PageSize).ToList();
+                items = BatchService.Details.Skip(skip).Take(PageSize).ToList();
             }
             else
-                items = source.Take(PageSize).ToList();
+                items = BatchService.Details.Take(PageSize).ToList();
         }
 
         protected void RollBackEntity()
         {
             if (selectedEntity != null)
             {
-                if (source == null)
+                if (BatchService.Details == null)
                 {
                     //foreach (var info in typeof(TEntity).GetProperties())
                     //{
@@ -358,7 +351,7 @@ namespace Caspian.UI
                 insertedEntity.UpsertMode = UpsertMode.Insert;
                 insertedEntity.Data = entity ?? Activator.CreateInstance<TEntity>();
                 if (DetailsService.MasterId > 0)
-                    typeof(TEntity).GetForeignKey(DetailsService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
+                    typeof(TEntity).GetForeignKey(BatchService.MasterType).SetValue(insertedEntity.Data, DetailsService.MasterId);
                 if (OnOpen.HasDelegate)
                     await OnOpen.InvokeAsync(insertedEntity.Data);
                 InsertContext = new EditContext(insertedEntity.Data);

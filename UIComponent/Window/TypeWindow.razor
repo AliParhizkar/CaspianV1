@@ -4,7 +4,7 @@
 
 <Window @bind-Status="status" @attributes="windowProperties" >
     <CaspianForm @ref="form" TEntity="TEntity" Model="newEntity" DetailsService="Service" ColumnsCount="ColumnsCount" OnSubmit="OnSubmit">
-        <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" Source="source" DetailsService="Service" />
+        <CaspianValidationValidator TModel="TEntity" ValidatorType="serviceType" DetailsService="Service" />
         @ChildContent(newEntity)
    </CaspianForm>
 </Window>

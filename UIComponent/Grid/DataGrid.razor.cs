@@ -78,7 +78,8 @@ namespace Caspian.UI
                 }
                 else
                 {
-                    Total = await query.CountAsync();
+                    if (!Batch)
+                        Total = await query.CountAsync();
                     query = GetOrderByQuery(query);
                     if (pageNumber > 1 && !Batch)
                     {
@@ -114,13 +115,13 @@ namespace Caspian.UI
                     }
                     if (Batch)
                     {
-                        source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
-                        (DetailsService as IInternalBatchService<TEntity>).SetDetailsProperty(source);
+                        var source = (await query.GetValuesAsync<TEntity>(exprList)).ToList();
+                        BatchService.SetDetailsProperty(source);
                         if (DetailsService != null)
                         {
                             foreach(var item in DetailsService.ChangedEntities)
                             {
-                                if (item.ChangeStatus == ChangeStatus.Added)
+                                if (item.ChangeType == ChangeType.Added)
                                     source.Add(item.Entity);
                                 else 
                                 {
@@ -134,9 +135,9 @@ namespace Caspian.UI
                                             break;
                                         }
                                     }
-                                    if (item.ChangeStatus == ChangeStatus.Deleted)
+                                    if (item.ChangeType == ChangeType.Deleted)
                                         source.Remove(old);
-                                    else if (item.ChangeStatus == ChangeStatus.Updated)
+                                    else if (item.ChangeType == ChangeType.Updated)
                                     {
                                         var index = source.IndexOf(old);
                                         source.RemoveAt(index);
@@ -435,35 +436,35 @@ namespace Caspian.UI
                 await DataBind();
                 if (DetailsService.ChangedEntities == null)
                     throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
-                foreach(var entity in DetailsService.ChangedEntities)
-                {
-                    if (entity.ChangeStatus == ChangeStatus.Added)
-                        source.Add(entity.Entity);
-                    else 
-                    {
-                        var id = Convert.ToInt32(pKey.GetValue(entity.Entity));
-                        if (id > 0)
-                        {
-                            foreach(var temp in source)
-                            {
-                                var newId = Convert.ToInt32(pKey.GetValue(temp));
-                                if (newId == id)
-                                {
-                                    if (entity.ChangeStatus == ChangeStatus.Deleted)
-                                        source.Remove(temp);
-                                    else
-                                    {
-                                        var index = source.IndexOf(temp);
-                                        source.Insert(index, entity.Entity);
-                                        source.Remove(temp);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                items = source.Take(PageSize).ToList();
+                //foreach(var entity in DetailsService.ChangedEntities)
+                //{
+                //    if (entity.ChangeStatus == ChangeStatus.Added)
+                //        source.Add(entity.Entity);
+                //    else 
+                //    {
+                //        var id = Convert.ToInt32(pKey.GetValue(entity.Entity));
+                //        if (id > 0)
+                //        {
+                //            foreach(var temp in source)
+                //            {
+                //                var newId = Convert.ToInt32(pKey.GetValue(temp));
+                //                if (newId == id)
+                //                {
+                //                    if (entity.ChangeStatus == ChangeStatus.Deleted)
+                //                        source.Remove(temp);
+                //                    else
+                //                    {
+                //                        var index = source.IndexOf(temp);
+                //                        source.Insert(index, entity.Entity);
+                //                        source.Remove(temp);
+                //                    }
+                //                    break;
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+                items = BatchService.Details.Take(PageSize).ToList();
             }
             await base.OnParametersSetAsync();
         }

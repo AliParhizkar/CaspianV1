@@ -34,7 +34,7 @@ namespace Demo.Model
     public enum OrderType: byte
     {
         [Display(Name = "سالن")]
-        Salon = 1,
+        Salon,
 
         [Display(Name = "بیرون بر")]
         Takeout,

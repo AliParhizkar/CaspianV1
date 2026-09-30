@@ -21,7 +21,7 @@ namespace Caspian.Engine.ReportGenerator
 
         async Task OnChange(ChangedEntity<int> parameter)
         {
-            if (parameter.ChangeStatus == ChangeStatus.Added)
+            if (parameter.ChangeType == ChangeType.Added)
             {
                 var old = removedParams.SingleOrDefault(t => t.ReportGroupParameterId == parameter.Entity);
                 if (old == null)
@@ -76,7 +76,7 @@ namespace Caspian.Engine.ReportGenerator
                 {
                     list.Add(new ChangedEntity<ReportParam>()
                     {
-                        ChangeStatus = ChangeStatus.Added,
+                        ChangeType = ChangeType.Added,
                         Entity = new ReportParam()
                         {
                             DataLevel = dataLevel,
@@ -91,7 +91,7 @@ namespace Caspian.Engine.ReportGenerator
                     list = list.Where(t => t.Entity.Id != oldKey.Id).ToList();
                     list.Add(new ChangedEntity<ReportParam>()
                     {
-                        ChangeStatus = ChangeStatus.Deleted,
+                        ChangeType = ChangeType.Deleted,
                         Entity = oldKey
                     });
                 }
@@ -106,7 +106,7 @@ namespace Caspian.Engine.ReportGenerator
             var old = await service.SingleAsync(ReportId);
             var list = report.ReportParams.Select(t => new ChangedEntity<ReportParam>
             {
-                ChangeStatus = t.Id == 0 ? ChangeStatus.Added : ChangeStatus.Updated,
+                ChangeType = t.Id == 0 ? ChangeType.Added : ChangeType.Updated,
                 Entity = t
             }).ToList();
             try
@@ -123,10 +123,10 @@ namespace Caspian.Engine.ReportGenerator
             }
             list.AddRange(removedParams.Select(t => new ChangedEntity<ReportParam>()
             {
-                ChangeStatus = ChangeStatus.Deleted,
+                ChangeType = ChangeType.Deleted,
                 Entity = t
             }));
-            service.SetChangedEntities(list);
+            //service.SetChangedEntities(list);
             await service.UpdateAsync(old);
             await service.SaveChangesAsync();
             await LoadData();

@@ -52,6 +52,8 @@ namespace Caspian.UI
         [Parameter]
         public IBatchService<TEntity> DetailsService { get; set; }
 
+        internal IInternalBatchService<TEntity> BatchService { get { return DetailsService as IInternalBatchService<TEntity>; } }
+
         [Parameter]
         public Expression<Func<TEntity, bool>> ConditionExpr { get; set; }
 
@@ -118,11 +120,9 @@ namespace Caspian.UI
         /// Return entities in batch state
         /// </summary>
         /// <returns></returns>
-        public ICollection<TEntity> GetBatchEntities()
+        public IEnumerable<TEntity> GetBatchEntities()
         {
-            if (source == null)
-                return new List<TEntity>();
-            return source;
+            return BatchService.Details;
         }
 
         public int PageNumber { get { return pageNumber; } }
@@ -154,7 +154,7 @@ namespace Caspian.UI
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)
                 {
-                    if (source == null)
+                    if (DetailsService.Details == null)
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
                         var service =  scope.GetService<BaseService<TEntity>>();
@@ -224,35 +224,12 @@ namespace Caspian.UI
 
         public async Task InsertAsync(TEntity entity)
         {
-            var pKey = typeof(TEntity).GetPrimaryKey();
-            pKey.SetValue(entity, 0);
-            using var scope = ServiceScopeFactory.CreateScope();
-            var services = scope.ServiceProvider.GetServices(typeof(IBaseService<TEntity>));
-            BaseService<TEntity> service = null;
-            if (services.Count() == 1)
-                service = services.Single() as BaseService<TEntity>;
-            else
-                service = services.Single(t => t.GetType().BaseType.GetGenericArguments().Count() == 1) as BaseService<TEntity>;
-            service.SetBatchServiceData(DetailsService.MasterId, DetailsService.MasterType);
-            await service.AddAsync(entity);
-            DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() 
-            { 
-                Entity = entity, 
-                ChangeStatus = ChangeStatus.Added 
-            });
+
+            BatchService.UpdateDetailsByChangedEntity(entity, ChangeType.Added);
             await UpdateEntityForForeignKey(entity);
-            var minId = 0;
-            foreach(var item in source)
-            {
-                var minValue = Convert.ToInt32(pKey.GetValue(item));
-                if (minValue < minId)
-                    minId = minValue;
-            }
-            pKey.SetValue(entity, minId - 1);
-            source.Add(entity);
-            Total = source.Count;
+            Total = BatchService.Details.Count();
             var index = 1;
-            foreach (var item in source)
+            foreach (var item in BatchService.Details)
             {
                 if (item == entity)
                 {
@@ -267,39 +244,14 @@ namespace Caspian.UI
 
         public async Task UpdateAsync(TEntity entity)
         {
-            var key = typeof(TEntity).GetPrimaryKey();
-            var id = Convert.ToInt32(key.GetValue(entity));
-            TEntity old = null;
-            foreach (var item in DetailsService.ChangedEntities.Where(t => t.ChangeStatus != ChangeStatus.Deleted))
-            {
-                var newId = Convert.ToInt32(key.GetValue(item.Entity));
-                if (id == newId)
-                {
-                    old = item.Entity;
-                    break;
-                }
-            }
-            if (old != null)
-            {
-                ///Entity add already and only should updated on memory
-                old.CopyEntity(entity);
-            }
-            else if (id > 0)
-            {
-                ///Entity exist in database and should be updated on database
-                DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>()
-                {
-                    ChangeStatus = ChangeStatus.Updated,
-                    Entity = entity
-                });
-            }
-
+            BatchService.UpdateDetailsByChangedEntity(entity, ChangeType.Updated);
             await UpdateEntityForForeignKey(entity);
-            for (var index = 0; index < source.Count; index++)
+            
+            foreach (var detail in BatchService.Details)
             {
-                if (key.GetValue(source[index]).Equals(id))
+                if (detail == entity)
                 {
-                    source[index] = entity;
+                    var index = BatchService.Details.ToList().IndexOf(detail);
                     var pageNumber = index / PageSize + 1;
                     SelectedRowIndex = index % PageSize;
                     await ChangePageNumber(pageNumber);
@@ -314,20 +266,22 @@ namespace Caspian.UI
             var id = Convert.ToInt32(pKey.GetValue(entity));
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
-            if (DetailsService != null && (DetailsService as IInternalBatchService<TEntity>).ThirdLevelProperty != null)
-                service.BatchServiceData.DetailPropertiesInfo.Add((DetailsService as IInternalBatchService<TEntity>).ThirdLevelProperty);
+            if (BatchService?.ThirdLevelProperty != null)
+                service.BatchServiceData.DetailPropertiesInfo.Add(BatchService.ThirdLevelProperty);
             var result = await service.ValidateRemoveAsync(entity);
             if (result.IsValid)
             {
                 var index = 1;
-                foreach (var item in source)
+                foreach (var item in BatchService.Details)
                 {
                     if (item == entity)
                         break;
                     index++;
                 }
-                source.Remove(entity);
-                Total = source.Count;
+
+                BatchService.UpdateDetailsByChangedEntity(entity, ChangeType.Deleted);
+
+                Total = BatchService.Details.Count();
                 if (index > Total)
                     index = Total;
                 var pageNumber = (index - 1) / PageSize + 1;
@@ -344,7 +298,7 @@ namespace Caspian.UI
                 }
                 if (id > 0)
                 {
-                    DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeStatus = ChangeStatus.Deleted });
+                    DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeType = ChangeType.Deleted });
                     deletedEntities.Add(entity);
                 }
             }
@@ -362,7 +316,7 @@ namespace Caspian.UI
         {
             var list = new List<TEntity>();
             var pKey = typeof(TEntity).GetPrimaryKey();
-            foreach (var item in source)
+            foreach (var item in BatchService.Details)
             {
                 var id = pKey.GetValue(item);
                 if (id.Equals(0))

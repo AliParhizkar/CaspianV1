@@ -1,0 +1,45 @@
+﻿::deep .tools-bar{
+    display:flex;
+}
+::deep .rules-container {
+    padding: 5px;
+    border-bottom: 1px solid #d5d5d5;
+    padding-bottom: 15px;
+}
+::deep .rule {
+    display: flex;
+    padding: 5px;
+    width: 100%;
+}
+    ::deep .icon {
+        padding: 0 10px 0 5px;
+        cursor:pointer;
+    }
+
+::deep .rule-add {
+    display: flex;
+    padding: 10px 5px;
+    background-color:#fafafa
+}
+
+::deep .fa {
+    color: #423d96;
+}
+
+::deep .c-rule-box {
+    border: 1px solid #d5d5d5;
+    height: 30px;
+    width: 215px;
+    border-radius: 8px;
+    color: #2c2c2c;
+    padding: 0 4px;
+    background-color: #f7fbff;
+}
+::deep .c-run{
+    padding:0 10px;
+}
+::deep .fa-caret-right {
+    font-size: 28px !important;
+    color: #1D7F1D;
+    cursor:pointer;
+}

@@ -43,7 +43,7 @@
         <div class="col-md-9 text-center ps-2">
             <span class="d-membership">آدرسهای مشتری</span>
             <div class="text-end">
-                <DataGrid TEntity="CustomerAddress" DetailsService="Service" ContentHeight="250" Inline AutoHide OnOpen="SetAddressAsDefault"
+                <DataGrid TEntity="CustomerAddress" DetailsService="Service.Detail2Service" ContentHeight="250" Inline AutoHide OnOpen="SetAddressAsDefault"
                           OnUpsertAsync="OnAddressInserted">
                     <Columns Context="address">
                         <GridColumn Field="t => t.Address" Title="آدرس">
@@ -65,7 +65,7 @@
         <div class="col-md-3 text-center pe-2">
             <span class="d-membership">گروههای مشتری</span>
             <div class="text-end">
-                <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service" Style="height:324px;"
+                <CheckedListbox TEntity="CustomerGroup" TDetails="CustomerGroupMembership" Service="Service.DetailService" Style="height:324px;"
                                 TextExpression="t => t.Name" />
             </div>
         </div>
@@ -77,7 +77,7 @@
     string customerNumber;
     async Task SetCustomerNumber()
     {
-        if (SimpleMode && Service.MasterId == 0 || Service.UpsertData.Id == 0)
+        if (SimpleMode && Service.DetailService.MasterId == 0 || Service.UpsertData.Id == 0)
         {
             using var service = Page.CreateScope().GetService<CustomerService>();
             var max = (await service.GetAll().MaxAsync(t => (int?)t.CustomerNumber)).GetValueOrDefault() + 1;
@@ -89,30 +89,30 @@
     {
         if (address.Id == 0)
         {
-            address.IsDefault = !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault);
+            address.IsDefault = !Service.DataView.GetBatchEntities().Any();
         }
     }
 
     async Task<bool> OnAddressInserted(CustomerAddress address)
     {
-        if (!address.IsDefault || !Service.DetailDataView.GetBatchEntities().Any(t => t.IsDefault))
+        if (!address.IsDefault || !Service.Detail2Service.DataView.GetBatchEntities().Any(t => t.IsDefault))
             return true;
         switch (ConfigService.Config.DefaultAddressManagement)
         {
             case DefaultAddressManagement.User:
                 return true;
             case DefaultAddressManagement.System:
-                var defaultAddress = Service.DetailDataView.GetBatchEntities().Single(t => t.IsDefault);
+                var defaultAddress = Service.Detail2Service.DataView.GetBatchEntities().Single(t => t.IsDefault);
                 defaultAddress.IsDefault = false;
-                await Service.DetailDataView.UpdateAsync(defaultAddress);
+                await Service.Detail2Service.DataView.UpdateAsync(defaultAddress);
                 Page.ShowMessage("آدرس جاری بعنوان آدرس پیشفرض انتخاب شد.");
                 return true;
             case DefaultAddressManagement.Confirm:
                 if (await Page.Confirm("آیا می خواهید آدرس جاری بعنوان آدرس پیشفرض انتخاب شود"))
                 {
-                    defaultAddress = Service.DetailDataView.GetBatchEntities().Single(t => t.IsDefault);
+                    defaultAddress = Service.Detail2Service.DataView.GetBatchEntities().Single(t => t.IsDefault);
                     defaultAddress.IsDefault = false;
-                    await Service.DetailDataView.UpdateAsync(defaultAddress);
+                    await Service.Detail2Service.DataView.UpdateAsync(defaultAddress);
                     return true;
                 }
                 break;
@@ -121,7 +121,7 @@
     }
 
     [Parameter]
-    public UIService<Customer, CustomerGroupMembership, CustomerAddress> Service { get; set; }
+    public IUIService<Customer, CustomerGroupMembership, CustomerAddress> Service { get; set; }
 
     [Parameter]
     public BasePage Page { get; set; }

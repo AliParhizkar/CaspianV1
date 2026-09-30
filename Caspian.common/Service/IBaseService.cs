@@ -3,18 +3,29 @@ using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
-    public interface IMasterDetailsService<TMaster, TDetails>: IBaseService<TMaster>
+    public interface IMasterDetailsService<TMaster, TDetail>: IBaseService<TMaster>
     {
-        void SetChangedEntitiesAsync(TMaster master, IList<ChangedEntity<TDetails>> changedEntities);
+        IDetailService<TDetail> DetailService { get; }
 
-        void SetChangedEntities(IList<ChangedEntity<TDetails>> changedEntities);
+        //void SetChangedEntitiesAsync(TMaster master, IList<ChangedEntity<TDetail>> changedEntities);
+
+        //void SetChangedEntities(IList<ChangedEntity<TDetail>> changedEntities);
+    }
+
+    public interface IDetailService<TDetail>
+    {
+        void SetChangedEntities(IList<ChangedEntity<TDetail>> changedEntities);
+        void SetDetails(IEnumerable<TDetail> details);
+
+        Task SaveChangeAsync();
     }
 
     public interface IMasterDetailsService<TMaster, TDetails, TDetails1>: IBaseService<TMaster>
     {
-        Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
 
-        void SetChangedEntities(IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
+        //Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
+
+        //void SetChangedEntities(IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
     }
 
     public interface IBaseService<TEntity>: IEntity, FluentValidation.IValidator<TEntity>, IDisposable
@@ -35,7 +46,7 @@ namespace Caspian.Common.Service
 
         Task<TEntity> SingleOrDefaultAsync(int id);
 
-        void SetSource(IReadOnlyCollection<TEntity> source);
+        //void SetSource(IReadOnlyCollection<TEntity> source);
 
         Task<ValidationResult> ValidateRemoveAsync(TEntity entity);
 

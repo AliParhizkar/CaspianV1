@@ -74,17 +74,17 @@ namespace Caspian.Engine.ReportGenerator
                     {
                         list = param.Parameters.Select(t => new ChangedEntity<AggregateReportGroupParameter>()
                         {
-                            ChangeStatus = t.Id == 0 ? ChangeStatus.Added : ChangeStatus.Updated,
+                            ChangeType = t.Id == 0 ? ChangeType.Added : ChangeType.Updated,
                             Entity = t
                         }).ToList();
                     }
 
                     list.AddRange(removedParameters.Where(t => t.ParentParameterId == param.Id).Select(t => new ChangedEntity<AggregateReportGroupParameter>() 
                     {
-                        ChangeStatus = ChangeStatus.Deleted,
+                        ChangeType = ChangeType.Deleted,
                         Entity = t
                     }));
-                    service.SetChangedEntities(list);
+                    //service.SetChangedEntities(list);
                     await service.UpdateAsync(param);
                 }
                 await service.SaveChangesAsync();

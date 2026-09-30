@@ -1251,15 +1251,15 @@ var caspian;
     caspian.PopupWindow = PopupWindow;
     let HorizontalAnchor;
     (function (HorizontalAnchor) {
-        HorizontalAnchor[HorizontalAnchor["Left"] = 1] = "Left";
-        HorizontalAnchor[HorizontalAnchor["Center"] = 2] = "Center";
-        HorizontalAnchor[HorizontalAnchor["Right"] = 3] = "Right";
+        HorizontalAnchor[HorizontalAnchor["Left"] = 0] = "Left";
+        HorizontalAnchor[HorizontalAnchor["Center"] = 1] = "Center";
+        HorizontalAnchor[HorizontalAnchor["Right"] = 2] = "Right";
     })(HorizontalAnchor || (HorizontalAnchor = {}));
     let VerticalAnchor;
     (function (VerticalAnchor) {
-        VerticalAnchor[VerticalAnchor["Top"] = 1] = "Top";
-        VerticalAnchor[VerticalAnchor["Middle"] = 2] = "Middle";
-        VerticalAnchor[VerticalAnchor["Bottom"] = 3] = "Bottom";
+        VerticalAnchor[VerticalAnchor["Top"] = 0] = "Top";
+        VerticalAnchor[VerticalAnchor["Middle"] = 1] = "Middle";
+        VerticalAnchor[VerticalAnchor["Bottom"] = 2] = "Bottom";
     })(VerticalAnchor || (VerticalAnchor = {}));
 })(caspian || (caspian = {}));
 var caspian;

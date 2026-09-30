@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Caspian.common.Migrations
+namespace Caspian.Common.Migrations
 {
     internal class CaspianDbCommandInterceptor: DbCommandInterceptor
     {

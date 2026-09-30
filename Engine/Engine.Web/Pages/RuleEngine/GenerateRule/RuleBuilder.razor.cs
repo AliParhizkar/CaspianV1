@@ -3,6 +3,7 @@ using Caspian.Common;
 using Caspian.Engine;
 using Syncfusion.Blazor.Data;
 using Caspian.Engine.Service;
+using Caspian.Common.Extension;
 using Caspian.Engine.Extension;
 using Caspian.Engine.RuleGenerator;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace Caspian.Engine
         TokenType TokenType;
         WindowStatus newStatus;
         Caspian.Engine.Service.RuleEngine ruleEngine;
-        ValueTypeKind? RuleTypeKind;
+        ValueTypeKind? ruleTypeKind;
 
         [Parameter]
         public RenderFragment<TEntity> ChildContent { get; set; }
@@ -28,11 +29,18 @@ namespace Caspian.Engine
         [Parameter]
         public string UniqueId { get; set; }
 
-        public void AddRuleData(string ruleItemPath, string title)
+        internal void AddRuleData(string ruleItemPath, string title)
         {
             if (ruleItems.ContainsKey(ruleItemPath))
                 throw new CaspianException($"آیتم :{ruleItemPath} قیلا اضافه شده است");
             ruleItems.Add(ruleItemPath, title);
+        }
+
+        async Task LoadRule(Rule rule)
+        {
+            using var service = CreateScope().GetService<RuleService>();
+            var old = await service.GetAll().Include(t => t.Tokens).SingleAsync(rule.Id);
+            tokens = old.Tokens;
         }
 
         void TokenChanged() => StateHasChanged();
@@ -49,12 +57,6 @@ namespace Caspian.Engine
             newStatus = WindowStatus.Open;
         }
 
-        void OperatorAdded()
-        {
-            newStatus = WindowStatus.Close;
-            StateHasChanged();
-        }
-
         void AfterParameterAdded(IEnumerable<TokenKind> tokens, TokenType tokenType)
         {
             newStatus = WindowStatus.Close;
@@ -66,6 +68,7 @@ namespace Caspian.Engine
             token = new Token();
             ruleEngine = new Caspian.Engine.Service.RuleEngine();
             ruleItems = new Dictionary<string, string>();
+            ruleTypeKind = typeof(TValue).GetValueTypeKind();
             base.OnInitialized();
         }
 
@@ -78,26 +81,10 @@ namespace Caspian.Engine
 
         protected override async Task OnInitializedAsync()
         {
-            //using var service = CreateScope().GetService<RuleService>();
-            //var old = await service.GetAll().Include(t => t.Tokens).SingleOrDefaultAsync(t => t.UniqueId == UniqueId);
-            //tokens = old.Tokens;
-            //old = old ?? new Rule();
-            //old.Title = Title;
-            //old.TypeName = typeof(TEntity).Name;
-            //old.ResultType = typeof(TValue).GetValueTypeKind();
-            //old.UniqueId = UniqueId;
-            //var result = await service.ValidateAsync(old);
-            //if (result.IsValid)
-            //{
-            //    if (old.Id == 0)
-            //        await service.AddAsync(old);
-            //    else
-            //        await service.UpdateAsync(old);
-            //    await service.SaveChangesAsync();
-            //    ruleId = old.Id;
-            //}   
-            //else
-            //    ShowMessage(result.Errors[0].ErrorMessage);
+            using var service = CreateScope().GetService<RuleService>();
+            var old = await service.GetAll().Include(t => t.Tokens).SingleOrDefaultAsync(2);
+            tokens = old.Tokens;
+
             await base.OnInitializedAsync();
         }
     }

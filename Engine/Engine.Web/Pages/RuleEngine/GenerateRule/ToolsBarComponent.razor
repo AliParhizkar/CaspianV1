@@ -1,10 +1,99 @@
 ﻿@namespace Caspian.Engine
-<div>
+@typeparam TEntity 
+<div class="tools-bar">
     <IconButton IconType="IconType.Save" @onclick="async () => await SaveAsync()" />
+    <button @ref="reference" class="c-icon-button c-simple" @onclick="() => rulesStatus = WindowStatus.Open" style="height:180px;">
+        <i class="fa fa-bars"></i>
+    </button>
+    <div class="c-rule-box">@selectedRule?.Title</div>
+    <RunComponent TEntity="TEntity" RuleItems="RuleItems" Tokens="Tokens" Data="data" />
 </div>
+<PopupWindow @bind-Status="rulesStatus" Style="width:250px;" TargetElement="reference"
+             TargetHorizontalAnchor="HorizontalAnchor.Left" HorizontalAnchor="HorizontalAnchor.Left" HorizontalAlign="HorizontalAlign.Left"
+             TargetVerticalAnchor="VerticalAnchor.Bottom" VerticalAnchor="VerticalAnchor.Top">
+    <div class="rules-container">
+        @foreach (var rule in rules)
+        {
+            <div class="rule">
+                <div class="icon">
+                    <i class="fa fa-pencil" @onclick="async () => await UpsertRuleWindow(rule.Id)"></i>
+                </div>
+                <div @onclick="async async => await SelectRule(rule)">@rule.Title</div>
+            </div>
+        }
+    </div>
+    <div class="rule-add" @onclick="async () => await UpsertRuleWindow(0)">
+        <div class="icon">
+            <i class="fa fa-plus"></i>
+        </div>
+        <div>افزودن قانون جدید</div>
+    </div>
+</PopupWindow>
+<Window @bind-Status="windowStatus" Title="قانون" Style="width:400px;">
+    <CaspianForm TEntity="Rule" Model="entityRule" OnValidSubmit="SaveRule">
+        <StringTextBox Value="@context.UniqueId" Title="شناسه یکتا" ColSpan="9" />
+        <StringTextBox Value="@context.ResultType.EnumText()" Title="نوع خروجی" ColSpan="9" />
+        <StringTextBox @bind-Value="context.Title" ColSpan="9" />
+        <StringTextBox @bind-Value="@context.Descript" ColSpan="9" MultiLine Rows="3" />
+        <WindowCommandButtons ColSpan="9" />
+    </CaspianForm>
+</Window>
+
 
 @code
 {
+    ElementReference reference;
+    WindowStatus rulesStatus, windowStatus, runStatus;
+    Rule selectedRule, entityRule;
+    IList<Rule> rules;
+    object result;
+    TEntity data;
+
+    async Task SelectRule(Rule rule)
+    {
+        rulesStatus = WindowStatus.Close;
+        selectedRule = rule;
+        data = default;
+        await OnRuleSelected.InvokeAsync(rule);
+    }
+
+    async Task UpsertRuleWindow(int ruleId)
+    {
+        using var service = Page.CreateScope().GetService<RuleService>();
+        if (ruleId > 0)
+            entityRule = await service.SingleAsync(ruleId);
+        else
+        {
+            entityRule = new Rule();
+            entityRule.UniqueId = UniqueId;
+            entityRule.TypeName = typeof(TEntity).Name;
+            entityRule.ResultType = ReturnType;
+        }
+        windowStatus = WindowStatus.Open;
+        rulesStatus = WindowStatus.Close;
+    }
+
+    async Task SaveRule(Rule rule)
+    {
+        using var service = Page.CreateScope().GetService<RuleService>();
+        if (rule.Id == 0)
+            await service.AddAsync(rule);
+        else
+            await service.UpdateAsync(rule);
+        await service.SaveChangesAsync();
+        windowStatus = WindowStatus.Close;
+        Page.ShowMessage("ثبت با موفقیت انجام شد");
+    }
+
+    [Parameter]
+    public IDictionary<string, string> RuleItems { get; set; }
+
+    [Parameter]
+    public EventCallback<Rule> OnRuleSelected { get; set; }
+
+    [Parameter]
+    public ValueTypeKind ReturnType { get; set; }
+
     [Parameter]
     public BasePage Page { get; set; }
 
@@ -12,15 +101,45 @@
     public IList<Token> Tokens { get; set; }
 
     [Parameter]
-    public int RuleId { get; set; }
+    public string UniqueId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = Page.CreateScope().GetService<RuleService>();
+        rules = await service.GetAll().Where(t => t.UniqueId == UniqueId).ToListAsync();
+        if (data == null)
+        {
+            data = Activator.CreateInstance<TEntity>();
+            foreach (var rule in RuleItems)
+            {
+                var type = typeof(TEntity);
+                foreach (var section in rule.Key.Split('.'))
+                {
+                    var property = type.GetProperty(section);
+                    type = property.PropertyType.GetUnderlyingType();
+                    if (!type.IsValueType && type != typeof(string))
+                    {
+                        if (property.GetValue(data) == null)
+                        {
+                            var value = Activator.CreateInstance(type);
+                            property.SetValue(data, value);
+                        }
+                    }
+                }
+            }
+        }
+        await base.OnInitializedAsync();
+    }
 
     async Task SaveAsync()
     {
         var maxId = Tokens.Max(t => (int?)t.Id) ?? 0;
         using var service = Page.CreateScope().GetService<TokenService>();
-        var deletedTokens = await service.GetAll().Where(t => t.RuleId == RuleId && t.Id > maxId).ToListAsync();
+        var deletedTokens = await service.GetAll().Where(t => t.RuleId == selectedRule.Id && t.Id > maxId).ToListAsync();
         await service.RemoveRange(deletedTokens);
         var newTokens = Tokens.Where(t => t.Id == 0);
+        foreach (var token in newTokens)
+            token.RuleId = selectedRule.Id;
         await service.AddRangeAsync(newTokens);
         await service.SaveChangesAsync();
         Page.ShowMessage("ثبت با موفقیت انجام شد");

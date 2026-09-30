@@ -341,13 +341,13 @@ namespace Caspian.UI
         #region Methods for Initialize Components. This Methods Call from components(DataView, Form, TypeWindow, ...) For intialize
         public void ChildTabPanelItemInitialize(Type detailType) => OtherCrudServiceData.OtherType = detailType;
         
-        void IInternalUIService<TEntity>.TabPanelInitializer(IEntityTabPanel tabPanel)
+        public void TabPanelInitializer(IEntityTabPanel tabPanel)
         {
             EntityTabPanel = tabPanel;
             OtherCrudServiceData = new MasterOtherCrudService();
         }
 
-        void IInternalUIService<TEntity>.FormInitializer(CaspianForm<TEntity> form)
+        public void FormInitializer(CaspianForm<TEntity> form)
         {
             Form = form;
             
@@ -371,7 +371,7 @@ namespace Caspian.UI
             Form.OnInternalValidSubmit = EventCallback.Factory.Create<TEntity>(this, UpsertAndInitializeAfterValidate);
         }
 
-        void IInternalSearchService<TEntity>.DataViewInitializer(DataView<TEntity> dataView)
+        public void DataViewInitializer(DataView<TEntity> dataView)
         {
             DataView = dataView;
             if (DataView == null)
@@ -379,7 +379,7 @@ namespace Caspian.UI
             DataViewInitializer();
         }
 
-        void IInternalUIService.WindowInitializer(Window window)
+        public void WindowInitializer(Window window)
         {
             Window = window;
             if (window != null)
@@ -393,7 +393,7 @@ namespace Caspian.UI
             }
         }
 
-        void IUIService<TEntity>.CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator)
+        public void CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator)
         {
             validator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TEntity>>(this, InitializeValidatorService);
         }
@@ -427,27 +427,22 @@ namespace Caspian.UI
         /// <summary>
         /// This Method Call form Lookup-window (In lookup-window we hide footer of Data-View)
         /// </summary>
-        void IInternalSearchService<TEntity>.HideFooter() => hideFooter = true;
-        void IInternalSearchService<TEntity>.LookupInitializer(ILookup<TEntity> lookup)
-        {
-            this.lookup = lookup;
-        }
+        public void HideFooter() => hideFooter = true;
 
-        bool IInternalSearchService<TEntity>.IsLookup()
-        {
-            return lookup != null;
-        }
+        void IInternalSearchService<TEntity>.LookupInitializer(ILookup<TEntity> lookup) => this.lookup = lookup;
+
+        public bool IsLookup() => lookup != null;
 
         /// <summary>
         /// This Method Call form Lookup-window (In lookup-window we Hide Insert-Icon)
         /// </summary>
-        void IInternalSearchService<TEntity>.OnlyForSearch() => HideInsertIcon = true;
+        public void OnlyForSearch() => HideInsertIcon = true;
 
         /// <summary>
         /// This Method is used In One-To-One relationship to Fetch Other-Entity. 
         /// For Example fetch Address in Employee-Address relationship
         /// </summary>
-        async Task IInternalUIService<TEntity>.UpdateChildOfModelAsync(Type childType)
+        public async Task UpdateChildOfModelAsync(Type childType)
         {
             OtherCrudServiceData.OtherType = childType;
             if (childType != typeof(TEntity) && UpsertData != null && !childType.IsCollectionType()) 
@@ -469,7 +464,7 @@ namespace Caspian.UI
             }
         }
 
-        async Task IInternalUIService<TEntity>.FetchAsync()
+        public async Task FetchAsync()
         {
             if (CrudId > 0)
             {
@@ -518,6 +513,7 @@ namespace Caspian.UI
             
             return await baseComponentService.MessageBox.Confirm(message);
         }
-        IDictionary<string, ICollection> IInternalSearchService<TEntity>.EnumFields { get; set; }
+
+        public IDictionary<string, ICollection> EnumFields { get; set; }
     }
 }
