@@ -1,6 +1,6 @@
 ﻿@page "/Warehouse/GoodsProperties"
 @inherits BasePage
-@inject UIService<GoodsProperties, PropertyList> Service
+@inject IUIService<GoodsProperties, PropertyList> Service
 @attribute [Source(6, "ویژگی ها")]
 @{
     base.BuildRenderTree(__builder);
@@ -48,7 +48,7 @@
     @if (Service.UpsertData.PropertyType == PropertyType.List)
     {
         <div style="color: seagreen; font-weight: bold; text-align: center">آیتم های لیست</div>
-        <DataGrid TEntity="PropertyList" DetailsService="Service" Batch Inline ContentHeight="200">
+        <DataGrid TEntity="PropertyList" DetailsService="Service.DetailService" Batch Inline ContentHeight="200">
             <Columns>
                 <GridColumn Field="t => t.Name">
                     <EditTemplate>

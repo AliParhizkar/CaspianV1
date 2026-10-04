@@ -22,7 +22,7 @@
         <DatePicker @bind-Value="context.EndDate" ColSpan="4" />
         <FormCommandButton ColSpan="4" TotalSpan="6" />
     </CaspianForm>
-    <DataGrid DetailsService="Service" TEntity="SupplierEvaluationDetail" Inline>
+    <DataGrid DetailsService="Service.DetailService" TEntity="SupplierEvaluationDetail" Inline>
         <Columns>
             <GridColumn Field="t => t.EvaluationIndicator.Title" Title="شاخص ارزیابی">
                 <EditTemplate>
@@ -59,7 +59,7 @@
 
     protected override void OnInitialized()
     {
-        Service.MasterId = ReceiptId ?? 0;
+        Service.DetailService.MasterId = ReceiptId ?? 0;
         Service.OnCreate = t =>
         {
             t.Date = DateTime.Now.ToDateOnly();
@@ -72,7 +72,7 @@
     async Task Save(KeyboardEventArgs e, UpsertMode upsertMode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(upsertMode);
+            await Service.DetailService.DataView.ValidateAndUpsert(upsertMode);
     }
 
     async Task EvaluationIndicatorSelected(SupplierEvaluationDetail detail)

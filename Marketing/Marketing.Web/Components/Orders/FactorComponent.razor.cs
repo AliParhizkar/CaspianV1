@@ -4,6 +4,7 @@ using Marketing.Model;
 using Marketing.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Marketing.Web.OrderComponents
 {
@@ -194,7 +195,7 @@ namespace Marketing.Web.OrderComponents
             toppingService = toppingServices.SingleOrDefault(t => t.Key == detail.Id).Value;
             if (toppingService == null)
             {
-                toppingService = IUIService<OrderDetail, OrderDetailTopping>(OrderService.ServiceProvider);
+                toppingService = OrderService.ServiceProvider.GetService<IUIService<OrderDetail, OrderDetailTopping>>();
                 toppingService.DetailService.MasterId = detail.Id;
                 toppingServices.Add(detail.Id, toppingService);
             }

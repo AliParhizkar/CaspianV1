@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="col-md-4 pe-3 pb-2 text-center pt-1">
                                     <label class="d-membership">تاپینکهای محصول</label>
-                                    <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service" Style="height: 280px"
+                                    <CheckedListbox TEntity="Topping" TDetails="ProductTopping" Service="Service.DetailService" Style="height: 280px"
                                                     TextExpression="t => t.Name" />
                                 </div>
                             </div>
@@ -107,14 +107,14 @@
                     <TabPanelItem Title="شرح های پیشفرض">
                         <div class="p-3 text-center pt-0">
                             <label class="d-membership">شرح های پیش فرض</label>
-                            <DataGrid TEntity="ProductDescription" DetailsService="Service" ContentHeight="200">
+                            <DataGrid TEntity="ProductDescription" DetailsService="Service.Detail2Service" ContentHeight="200">
                                 <Columns>
                                     <GridColumn Field="t => t.Description" />
                                     <GridCommandColumns />
                                 </Columns>
                             </DataGrid>
                         </div>
-                        <TypeWindow TEntity="ProductDescription" Service="Service" Title="شرح پیش فرض" Style="width:400px;">
+                        <TypeWindow TEntity="ProductDescription" Service="Service.Detail2Service" Title="شرح پیش فرض" Style="width:400px;">
                             <StringTextBox @bind-Value="context.Description" ColSpan="9" MultiLine Rows="2" />
                             <FormCommandButton ColSpan="9" Class="pt-2" />
                         </TypeWindow>

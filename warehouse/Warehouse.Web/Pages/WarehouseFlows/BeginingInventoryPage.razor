@@ -1,6 +1,6 @@
 ﻿@page "/Warehouse/BeginingInventory"
 @attribute [Source(33, "موجودی اول دوره")]
-@inject UIService<StockFlow, GoodsFlow> Service
+@inject IUIService<StockFlow, GoodsFlow> Service
 @inject NavigationManager navigationManager
 @inherits BasePage
     <DocumentIssuanceComponent Service="Service" SelectedPattern="selectedPattern"  />

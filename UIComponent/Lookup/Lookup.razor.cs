@@ -1,12 +1,13 @@
 ﻿using Caspian.Common;
-using Microsoft.JSInterop;
-using Caspian.Common.Service;
-using System.Linq.Expressions;
-using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
-using Microsoft.EntityFrameworkCore;
+using Caspian.Common.Service;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Caspian.UI
 {
@@ -167,6 +168,8 @@ namespace Caspian.UI
 
         internal async Task<string> GetText(int value)
         {
+            if (value == 0)
+                return "";
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             var t = Expression.Parameter(typeof(TEntity), "t");
@@ -288,10 +291,11 @@ namespace Caspian.UI
                 await jsRuntime.InvokeVoidAsync("caspian.common.bindLookup", InputElement, dotnet);
             }
 
-            if (!Value.IsEqual(oldValue) && (Value == null || Value.Equals(0)))
+            if (!Value.IsEqual(oldValue))
             {
                 oldValue = Value;
-                await jsRuntime.InvokeVoidAsync("caspian.common.setValueOnClient", InputElement, "");
+                var text = await GetText(Convert.ToInt32(Value));
+                await SetTextOnClientAsync(text);
             }
             await base.OnAfterRenderAsync(firstRender);
         }

@@ -45,7 +45,7 @@
 
     decimal GetSumProductAmount()
     {
-        return OrderService.DetailDataView.GetBatchEntities().Sum(t => t.Quantity * (t.ToppingAmount + t.Price - t.Discount));
+        return OrderService.DetailService.DataView.GetBatchEntities().Sum(t => t.Quantity * (t.ToppingAmount + t.Price - t.Discount));
     }
 
     [Parameter]

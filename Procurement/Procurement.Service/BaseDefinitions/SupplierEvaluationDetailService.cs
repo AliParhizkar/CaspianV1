@@ -5,7 +5,7 @@ using Caspian.Common.Service;
 
 namespace Procurement.Service
 {
-    public class SupplierEvaluationDetailService: BaseService<SupplierEvaluationDetail>
+    public class SupplierEvaluationDetailService: DetailService<SupplierEvaluationDetail>
     {
         public SupplierEvaluationDetailService(IServiceProvider provider)
             :base(provider)

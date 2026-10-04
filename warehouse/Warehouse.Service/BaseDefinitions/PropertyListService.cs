@@ -4,13 +4,12 @@ using Caspian.Common.Service;
 
 namespace Warehouse.Service
 {
-    public class PropertyListService: BaseService<PropertyList>
+    public class PropertyListService: DetailService<PropertyList>
     {
         public PropertyListService(IServiceProvider provider)
             :base(provider)
         {
-            RuleFor(t => t.Name).Required().Custom(t => Source.Any(u => u.Name == t.Name && u.Id != t.Id), 
-                "آیتمی با این عنوان در لیست وجود دارد");
+            RuleFor(t => t.Name).Required().Custom(t => Source.Any(u => u.Name == t.Name && u.Id != t.Id), "آیتمی با این عنوان در لیست وجود دارد");
         }
     }
 }

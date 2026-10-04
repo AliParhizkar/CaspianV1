@@ -111,6 +111,7 @@ namespace Caspian.UI
 
         async void ValidationRequested(object sender, ValidationRequestedEventArgs args)
         {
+            
             ValidationMessageStore.Clear();
             var context = new ValidationContext<object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
@@ -123,6 +124,7 @@ namespace Caspian.UI
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (Validator is IDetailService<TModel> service)
                 service.SetDetails(DetailsService.Details);
+            
             if (OnInternalValidate.HasDelegate)
                 await OnInternalValidate.InvokeAsync(Validator);
             if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)

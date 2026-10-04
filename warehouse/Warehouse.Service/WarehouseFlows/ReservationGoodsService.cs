@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Warehouse.Service
 {
-    public class ReservationGoodsService: BaseService<ReservationGoods>
+    public class ReservationGoodsService: DetailService<ReservationGoods>
     {
         public ReservationGoodsService(IServiceProvider provider)
             :base(provider)

@@ -15,10 +15,10 @@ namespace Caspian.Common.Service
     {
         object otherEntityIn1To1Relationship;
         Type otherTypeIn1To1Relationship;
+
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
-            
         }
 
         public bool CheckValidation { get; set; } = true;
@@ -38,13 +38,6 @@ namespace Caspian.Common.Service
             }
             return entity;
         }
-
-        //internal protected IReadOnlyCollection<TEntity> Source { get; set; }
-
-        //public void SetSource(IReadOnlyCollection<TEntity> source)
-        //{
-        //    Source = source;
-        //}
 
         public Type OtherTypeIn1To1Relationship
         {

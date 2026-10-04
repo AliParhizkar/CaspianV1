@@ -18,18 +18,10 @@ namespace Demo.Service
             RuleFor(t => t.Quantity).CustomValue(t => t <= 0, "This must be greater than 0");
             RuleFor(t => t.ProductId).Custom(t =>
             {
-                if (Source.Any(u => u.ProductId == t.ProductId && t.Id != u.Id))
+                if (Source != null && Source.Any(u => u.ProductId == t.ProductId && t.Id != u.Id))
                     return "This product has been added to the invoice";
                 return null;
             });
-        }
-
-        public OrderDetailService(IServiceProvider provider, IList<OrderDetail> source)
-            :base(provider)
-        {
-            RuleFor(t => t.Price).CustomValue(t => t < 0, "The price cannot be negative");
-            RuleFor(t => t.Quantity).CustomValue(t => t <= 0, "This must be greater than 0");
-            RuleFor(t => t.ProductId).Custom(t => source.Any(u => u.ProductId == t.ProductId && t.Id != u.Id), "This product has been added to the invoice");
         }
 
         public IQueryable<OrderDetail> GetReportOrderDetails(OrderDetail orderDetail)

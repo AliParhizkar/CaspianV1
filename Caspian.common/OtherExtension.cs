@@ -63,12 +63,17 @@ namespace Caspian.Common
             foreach (var info in model.GetType().GetProperties())
             {
                 var type = info.PropertyType;
-                if (info.SetMethod != null)
+                if (info.CanWrite)
                 {
                     if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
                         info.SetValue(model, info.GetValue(newModel));
                     else if (type.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-                        FullCopy(info.GetValue(model), info.GetValue(newModel));
+                    {
+                        var model1 = info.GetValue(model);
+                        var newModel1 = info.GetValue(newModel);
+                        if (model1 != null && newModel1 != null)
+                            FullCopy(model1, newModel1);
+                    }
                 }
             }
         }

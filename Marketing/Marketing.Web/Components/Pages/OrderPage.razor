@@ -17,7 +17,7 @@
 <CaspianForm TEntity="Order" Service="OrderService" OnSubmit="async order => await OnSubmit(order)">
     <div class="pe-2 row">
         <div class="col-md-4">
-            @if (OrderService.DetailDataView != null)
+            @if (OrderService.DetailService.DataView != null)
             {
                 <OtherCostComponent OrderService="OrderService" Products="products" OnChange="() => { }" />
             }
@@ -130,7 +130,7 @@
 
     protected override void OnInitialized()
     {
-        OrderService.ThirdDataLevelToIgnoreOnRemove(t => t.OrderDetailToppings);
+        //OrderService.ThirdDataLevelToIgnoreOnRemove(t => t.OrderDetailToppings);
         OrderService.OnCreate = order =>
         {
             order.DiscountType = ConfigService.Config.DiscountType;
@@ -153,35 +153,35 @@
             }
             return true;
         };
-        OrderService.OnAfterUpsertAsync = async (provider, order) =>
-        {
-            var service = provider.GetCaspianService<OrderDetailToppingService>();
-            var toppingsChange = productComponent.ChangedToppings;
-            /// Updated Toppings
-            foreach (var topping in toppingsChange.Where(t => t.Id > 0))
-            {
-                await service.UpdateAsync(topping);
-                await service.SaveChangesAsync();
-            }
-            /// Insert Toppings
-            /// using Distinct is very impotant to uniqu OrderDetailId
-            var insertedItemsId = toppingsChange.Where(t => t.OrderDetailId < 0).Select(t => t.OrderDetailId).Distinct().ToList();
-            foreach (var topping in toppingsChange.Where(t => t.Id < 0))
-            {
-                topping.Id = 0;
-                /// Order-details that inserted now
-                if (topping.OrderDetailId < 0)
-                {
-                    /// In this case we should Obtain Order-detail-id after insert
-                    var index = insertedItemsId.IndexOf(topping.OrderDetailId);
-                    // Set OrderDetailId by Id that create after OrderDetail insert
-                    topping.OrderDetailId = order.OrderDetails.ElementAt(index).Id;
-                }
-                await service.AddAsync(topping);
-                await service.SaveChangesAsync();
-            }
-            await service.Context.Database.CurrentTransaction.CommitAsync();
-        };
+        //OrderService.OnAfterUpsertAsync = async (provider, order) =>
+        //{
+        //    var service = provider.GetCaspianService<OrderDetailToppingService>();
+        //    var toppingsChange = productComponent.ChangedToppings;
+        //    /// Updated Toppings
+        //    foreach (var topping in toppingsChange.Where(t => t.Id > 0))
+        //    {
+        //        await service.UpdateAsync(topping);
+        //        await service.SaveChangesAsync();
+        //    }
+        //    /// Insert Toppings
+        //    /// using Distinct is very impotant to uniqu OrderDetailId
+        //    var insertedItemsId = toppingsChange.Where(t => t.OrderDetailId < 0).Select(t => t.OrderDetailId).Distinct().ToList();
+        //    foreach (var topping in toppingsChange.Where(t => t.Id < 0))
+        //    {
+        //        topping.Id = 0;
+        //        /// Order-details that inserted now
+        //        if (topping.OrderDetailId < 0)
+        //        {
+        //            /// In this case we should Obtain Order-detail-id after insert
+        //            var index = insertedItemsId.IndexOf(topping.OrderDetailId);
+        //            // Set OrderDetailId by Id that create after OrderDetail insert
+        //            topping.OrderDetailId = order.OrderDetails.ElementAt(index).Id;
+        //        }
+        //        await service.AddAsync(topping);
+        //        await service.SaveChangesAsync();
+        //    }
+        //    await service.Context.Database.CurrentTransaction.CommitAsync();
+        //};
         base.OnInitialized();
     }
 

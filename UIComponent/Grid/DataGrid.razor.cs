@@ -402,6 +402,17 @@ namespace Caspian.UI
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
+            /// Set InternalConditionExpr to Filter DataGrid
+            if (DetailsService  != null)
+            {
+                var param = Expression.Parameter(typeof(TEntity), "t");
+                var pKey = typeof(TEntity).GetPrimaryKey();
+                Expression expr = Expression.Property(param, pKey);
+                var masterId = Convert.ChangeType(DetailsService.MasterId, pKey.PropertyType);
+                expr = Expression.Equal(expr, Expression.Constant(masterId));
+                InternalConditionExpr = (DetailsService as IInternalBatchService<TEntity>).GetDetailsFilterExpression();
+            }
+
             base.OnInitialized();
         }
 
@@ -436,34 +447,6 @@ namespace Caspian.UI
                 await DataBind();
                 if (DetailsService.ChangedEntities == null)
                     throw new CaspianException($"Caspian Exception: please specify ChangedEntities parameter in DataGrid<{typeof(TEntity).Name}>");
-                //foreach(var entity in DetailsService.ChangedEntities)
-                //{
-                //    if (entity.ChangeStatus == ChangeStatus.Added)
-                //        source.Add(entity.Entity);
-                //    else 
-                //    {
-                //        var id = Convert.ToInt32(pKey.GetValue(entity.Entity));
-                //        if (id > 0)
-                //        {
-                //            foreach(var temp in source)
-                //            {
-                //                var newId = Convert.ToInt32(pKey.GetValue(temp));
-                //                if (newId == id)
-                //                {
-                //                    if (entity.ChangeStatus == ChangeStatus.Deleted)
-                //                        source.Remove(temp);
-                //                    else
-                //                    {
-                //                        var index = source.IndexOf(temp);
-                //                        source.Insert(index, entity.Entity);
-                //                        source.Remove(temp);
-                //                    }
-                //                    break;
-                //                }
-                //            }
-                //        }
-                //    }
-                //}
                 items = BatchService.Details.Take(PageSize).ToList();
             }
             await base.OnParametersSetAsync();

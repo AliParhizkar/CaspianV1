@@ -53,6 +53,8 @@ namespace Caspian.Common.Extension
             return value.Equals(other);
         }
 
+
+
         /// <summary>
         /// This method clear all entity property(properties that are entity) and return the entity
         /// </summary>

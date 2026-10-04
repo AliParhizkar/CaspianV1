@@ -12,9 +12,9 @@ namespace Procurement.Service
             :base(provider)
         {
             RuleFor(t => t.GoodsFlowId).Required(t => t.ReferenceDocumentType == ReferenceDocumentType.PurchaseRequest)
-                .Custom(t => Source.Any(u => u.Id != t.Id && t.GoodsFlowId == u.GoodsFlowId), "این مبنا قبلا اضافه شده است");
+                .Custom(t => t.RequestGoodsSuppliers.Any(u => u.Id != t.Id && t.GoodsFlowId == u.SupplierId), "این مبنا قبلا اضافه شده است");
             RuleFor(t => t.ProcurementItemId).Required(t => t.ReferenceDocumentType == ReferenceDocumentType.WithoutReference)
-                .Custom(t => Source.Any(u => t.Id != u.Id && t.ProcurementItemId == u.ProcurementItemId), "این قلم خریدنی به لیست اضافه شده است");
+                .Custom(t => t.RequestGoodsSuppliers.Any(u => t.Id != u.Id && t.ProcurementItemId == u.PurchaseRequestGoodsId), "این قلم خریدنی به لیست اضافه شده است");
             RuleFor(t => t.Amount).CustomAsync(async t =>
             {
                 if (t.GoodsFlowId.HasValue)

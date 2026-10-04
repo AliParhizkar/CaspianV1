@@ -1,4 +1,5 @@
 ﻿using Caspian.Common;
+using Caspian.Common.Service;
 using System.Collections;
 using System.Linq.Expressions;
 
@@ -76,6 +77,9 @@ namespace Caspian.UI
         IEntityTabPanel EntityTabPanel { get; }
 
         Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
+
+        IServiceProvider ServiceProvider { get; }
+
 
         void CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator);
     }

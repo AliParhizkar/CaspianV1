@@ -35,19 +35,19 @@ namespace Marketing.Service
 
                 if (customer?.IsSpecial == true)
                 {
-                    if (Details.Any(t => products.Single(u => u.Id == t.ProductId).SpecialCustomerPrice != t.Price))
+                    if (t.OrderDetails.Any(t => products.Single(u => u.Id == t.ProductId).SpecialCustomerPrice != t.Price))
                         return "قیمت غذاهای سالن درست انتخاب نشده است";
                 }
                 else
                 {
                     if (t.OrderType == OrderType.Salon)
                     {
-                        if (Details.Any(d => products.Single(u => u.Id == d.ProductId).Price != d.Price))
+                        if (t.OrderDetails.Any(d => products.Single(u => u.Id == d.ProductId).Price != d.Price))
                             return "قیمت غذاهای سالن درست انتخاب نشده است";
                     }
                     else
                     {
-                        if (Details.Any(t => products.Single(u => u.Id == t.ProductId).TakeOutPrice != t.Price))
+                        if (t.OrderDetails.Any(t => products.Single(u => u.Id == t.ProductId).TakeOutPrice != t.Price))
                             return "قیمت غذاهای بیرون بر درست انتخاب نشده است";
                     }
                 }
@@ -110,7 +110,7 @@ namespace Marketing.Service
                         var products = await GetProductsAsync();
                         if (t.IsSpecialCustomer)
                         {
-                            if (Details.Any(u => u.Price != products.Single(v => v.Id == u.ProductId).SpecialCustomerPrice))
+                            if (t.OrderDetails.Any(u => u.Price != products.Single(v => v.Id == u.ProductId).SpecialCustomerPrice))
                                 return "مبلغ غذا برای مشتری خاص درست مقداردهی نشده است";
                         }
                     }
@@ -120,10 +120,10 @@ namespace Marketing.Service
                 return null;
             });
             RuleForEach(t => t.OrderDetails).SetValidator(t => new OrderDetailService(provider));
-            RuleFor(t => t.OrderDetails).Custom(t => !Details.Any(), "سفارش حداقل باید یک محصول داشته باشد.");
+            RuleFor(t => t.OrderDetails).Custom(t => !t.OrderDetails.Any(), "سفارش حداقل باید یک محصول داشته باشد.");
             RuleFor(t => t.ProductAmount).Custom(t =>
             {
-                var sum = Details.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount));
+                var sum = t.OrderDetails.Sum(u => u.Quantity * (u.Price - u.Discount + u.ToppingAmount));
                 return sum != t.ProductAmount;
             }, "جمع محصول درست محاسبه نشده است");
             RuleFor(t => t.DiscountAmount).Custom(t =>

@@ -12,7 +12,7 @@
         }
     </div>
     <div class="m-topping-details">
-        <DataGrid PageSize="100" ContentHeight="180" DetailsService="Service" TEntity="OrderDetailTopping" HideFooter="true" ShowInsertIcon="false" Batch>
+        <DataGrid PageSize="100" ContentHeight="180" DetailsService="Service.DetailService" TEntity="OrderDetailTopping" HideFooter="true" ShowInsertIcon="false" Batch>
             <Columns>
                 <GridColumn Field="t => t.Topping.Name" />
                 <GridColumn Field="t => t.Quantity" Title="تعداد" style="width:125px">
@@ -55,14 +55,14 @@
 
     async Task AddToOrder(Topping topping)
     {
-        var grid = Service.DetailDataView;
+        var grid = Service.DetailService.DataView;
 
         var old = grid.GetBatchEntities().SingleOrDefault(t => t.ToppingId == topping.Id);
         if (old == null)
         {
             await grid.InsertAsync(new OrderDetailTopping()
             {
-                OrderDetailId = Service.MasterId,
+                OrderDetailId = Service.DetailService.MasterId,
                 Price = topping.Price,
                 Quantity = 1,
                 ToppingId = topping.Id
@@ -81,7 +81,7 @@
     {
         if (value >= 0)
         {
-            var grid = Service.DetailDataView;
+            var grid = Service.DetailService.DataView;
             var old = grid.GetBatchEntities().SingleOrDefault(t => t.ToppingId == toppingId);
             old.Quantity = value;
             if (old.Quantity == 0)
@@ -99,7 +99,7 @@
 
     async Task CallBackForChange()
     {
-        var sum = Service.DetailDataView.GetBatchEntities().Sum(t => t.Price * t.Quantity);
+        var sum = Service.DetailService.DataView.GetBatchEntities().Sum(t => t.Price * t.Quantity);
         await OnChange.InvokeAsync(sum);
     }
 }

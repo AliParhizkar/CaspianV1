@@ -1,6 +1,6 @@
 ﻿@namespace Marketing.Web.OrderComponents
 
-<DataGrid PageSize="100" DetailsService="OrderService" TEntity="OrderDetail" HideFooter="true" ShowInsertIcon="false" Batch>
+<DataGrid PageSize="100" DetailsService="OrderService.DetailService" TEntity="OrderDetail" HideFooter="true" ShowInsertIcon="false" Batch>
     <Columns>
         <GridColumn Field="t => t.Product.Title" />
         <GridColumn Field="t => t.Quantity" Title="تعداد" style="width:125px">

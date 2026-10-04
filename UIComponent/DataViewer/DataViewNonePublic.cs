@@ -23,6 +23,7 @@ namespace Caspian.UI
         protected EditContext InsertContext;
         protected bool insertContainerHoldHasFocus;
         protected TEntity selectedEntity;
+        protected TEntity shadowEntity;
         //protected IList<TEntity> source;
         protected EditContext EditContext;
         protected bool shouldSetFocus;
@@ -213,6 +214,11 @@ namespace Caspian.UI
             }
         }
 
+        internal void ClearDataView()
+        {
+            items.Clear();
+        }
+
         internal void CancelInternalUpdate()
         {
             InsertContext = null;
@@ -314,32 +320,10 @@ namespace Caspian.UI
 
         protected void RollBackEntity()
         {
-            if (selectedEntity != null)
+            if (shadowEntity != null && selectedEntity != null)
             {
-                if (BatchService.Details == null)
-                {
-                    //foreach (var info in typeof(TEntity).GetProperties())
-                    //{
-                    //    var value = info.GetValue(unchangedEntity);
-                    //    info.SetValue(selectedEntity, value);
-                    //}
-                }
-                else
-                {
-                    //for (var i = 0; i < source.Count; i++)
-                    //{
-                    //    var sourceItem = source[i];
-                    //    if (sourceItem.Equals(selectedEntity))
-                    //    {
-                    //        foreach (var info in typeof(TEntity).GetProperties())
-                    //        {
-                    //            var value = info.GetValue(unchangedEntity);
-                    //            info.SetValue(sourceItem, value);
-                    //        }
-                    //        break;
-                    //    }
-                    //}
-                }
+                selectedEntity.FullCopy(shadowEntity);
+                shadowEntity = null;
             }
         }
 

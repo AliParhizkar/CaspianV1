@@ -1,8 +1,8 @@
 ﻿using System;
 using Demo.Model;
 using Caspian.Common;
-using Caspian.Common.Service;
 using FluentValidation;
+using Caspian.Common.Service;
 
 namespace Demo.Service
 {
@@ -12,8 +12,6 @@ namespace Demo.Service
             :base(provider)
         {
             RuleFor(t => t.Title).Required().UniqueAsync("مشتری با این عنوان در سیستم ثبت شده است");
-
-            
         }
     }
 }

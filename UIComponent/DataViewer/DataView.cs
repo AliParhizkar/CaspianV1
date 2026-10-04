@@ -87,6 +87,12 @@ namespace Caspian.UI
         [Parameter]
         public Func<TEntity, Task<bool>> OnDelete { get; set; }
 
+        /// <summary>
+        ///In master-details raise after any change on Data View list (add, update & delete)
+        /// </summary>
+        [Parameter]
+        public EventCallback<ChangedEntity<TEntity>> OnChanged { get; set; }
+
         [Parameter]
         public EventCallback OnPageChanged { get; set; }
 
@@ -154,6 +160,13 @@ namespace Caspian.UI
                 var result = await (Task<ValidationResult>)asyncValidationTask;
                 if (result.IsValid)
                 {
+                    if (OnChanged.HasDelegate)
+                    {
+                        var change = new ChangedEntity<TEntity>();
+                        change.Entity = selectedEntity;
+                        change.ChangeType = ChangeType.Updated;
+                        await OnChanged.InvokeAsync(change);
+                    }
                     if (DetailsService.Details == null)
                     {
                         using var scope = ServiceScopeFactory.CreateScope();
@@ -167,6 +180,7 @@ namespace Caspian.UI
                     selectedEntity = null;
                     if (OnSave.HasDelegate)
                         await OnSave.InvokeAsync();
+
                 }
             }
             else
@@ -224,7 +238,6 @@ namespace Caspian.UI
 
         public async Task InsertAsync(TEntity entity)
         {
-
             BatchService.UpdateDetailsByChangedEntity(entity, ChangeType.Added);
             await UpdateEntityForForeignKey(entity);
             Total = BatchService.Details.Count();
@@ -239,6 +252,15 @@ namespace Caspian.UI
                     break;
                 }
                 index++;
+            }
+            if (OnChanged.HasDelegate)
+            {
+                var change = new ChangedEntity<TEntity>()
+                {
+                    ChangeType = ChangeType.Added,
+                    Entity = entity
+                };
+                await OnChanged.InvokeAsync(change);
             }
         }
 
@@ -255,6 +277,15 @@ namespace Caspian.UI
                     var pageNumber = index / PageSize + 1;
                     SelectedRowIndex = index % PageSize;
                     await ChangePageNumber(pageNumber);
+                    if (OnChanged.HasDelegate)
+                    {
+                        var change = new ChangedEntity<TEntity>()
+                        {
+                            Entity = entity,
+                            ChangeType = ChangeType.Updated,
+                        };
+                        await OnChanged.InvokeAsync();
+                    }
                     break;
                 }
             }
@@ -298,9 +329,13 @@ namespace Caspian.UI
                 }
                 if (id > 0)
                 {
-                    DetailsService.ChangedEntities.Add(new ChangedEntity<TEntity>() { Entity = entity, ChangeType = ChangeType.Deleted });
+                    var entityChange = new ChangedEntity<TEntity>() { Entity = entity, ChangeType = ChangeType.Deleted };
+                    DetailsService.ChangedEntities.Add(entityChange);
                     deletedEntities.Add(entity);
+                    if (OnChanged.HasDelegate)
+                        await OnChanged.InvokeAsync(entityChange);
                 }
+
             }
             else
                 await jsRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors.First().ErrorMessage);
@@ -391,10 +426,10 @@ namespace Caspian.UI
         {
             disableInsertIcon = true;
             RollBackEntity();
-            selectedEntity = entity.CreateNewEntity();
+            selectedEntity = entity;//.CreateNewEntity();
             EditContext = new EditContext(selectedEntity);
             shouldSetFocus = true;
-            //unchangedEntity = entity.CreateNewEntity();
+            shadowEntity = entity.CreateNewEntity();
             StateHasChanged();
         }
 

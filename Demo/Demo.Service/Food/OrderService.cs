@@ -8,12 +8,12 @@ using Caspian.Common.Service;
 using System.Threading.Tasks;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.Service
 {
     [ReportClass]
-    public class OrderService
-        : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
+    public class OrderService : MasterDetailsService<Order, OrderDetail>, IBaseService<Order>
     {
         public OrderService(IServiceProvider provider)
             :base(provider)
@@ -30,7 +30,6 @@ namespace Demo.Service
             }, "The order must has at least products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");
-            RuleForEach(t => t.OrderDetails).SetValidator(new OrderDetailService(provider));
         }
 
         public override async Task<Order> AddAsync(Order order)

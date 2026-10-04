@@ -1,7 +1,7 @@
 ﻿@page "/Warehouse/RequestGoods"
 @inherits BasePage
 @attribute [Source(23, "درخواست کالا", MasterPage = typeof(GoodsRequestPage))]
-@inject UIService<StockFlow, GoodsFlow> Service
+@inject IUIService<StockFlow, GoodsFlow> Service
 
 <div class="p-3">
     <CaspianForm Service="Service" ColumnsCount="2">
@@ -36,7 +36,7 @@
         </div>
     </CaspianForm>
 
-    <DataGrid TEntity="GoodsFlow" DetailsService="Service" Inline>
+    <DataGrid TEntity="GoodsFlow" DetailsService="Service.DetailService" Inline>
         <Columns>
             <GridColumn Field="t => t.Goods.Name + '(' + t.Goods.Code + ')'" Title="کالا">
                 <EditTemplate>
@@ -81,6 +81,6 @@
     async Task SubmitDataAsync(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(mode);
+            await Service.DetailService.DataView.ValidateAndUpsert(mode);
     }
 }

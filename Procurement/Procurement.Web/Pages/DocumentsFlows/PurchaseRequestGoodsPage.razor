@@ -38,7 +38,7 @@
         <FormCommandButton ColSpan="6" TotalSpan="12" />
     </CaspianForm>
     
-    <DataGrid DetailsService="Service" TEntity="PurchaseRequestGoods" Inline TableWidth="1500">
+    <DataGrid DetailsService="Service.DetailService" TEntity="PurchaseRequestGoods" Inline TableWidth="1500">
         <Columns>
             <GridColumn Field="t => t.ReferenceDocumentType.EnumText()" >
                 <EditTemplate>
@@ -161,8 +161,8 @@
 
     protected override void OnInitialized()
     {
-        requestGoodsSupplierServices = new Dictionary<int, UIService<PurchaseRequestGoods, RequestGoodsSupplier>>();
-        Service.MasterId = RequestId ?? 0;
+        requestGoodsSupplierServices = new Dictionary<int, IUIService<PurchaseRequestGoods, RequestGoodsSupplier>>();
+        Service.DetailService.MasterId = RequestId ?? 0;
         Service.OnCreate = t =>
         {
             t.Date = DateTime.Now.ToDateOnly();
@@ -180,8 +180,8 @@
         requestGoodsSupplierService = requestGoodsSupplierServices.SingleOrDefault(t => t.Key == detail.Id).Value;
         if (requestGoodsSupplierService == null)
         {
-            requestGoodsSupplierService = new UIService<PurchaseRequestGoods, RequestGoodsSupplier>(Service.ServiceProvider);
-            requestGoodsSupplierService.MasterId = detail.Id;
+            requestGoodsSupplierService = Service.ServiceProvider.GetCaspianService<IUIService<PurchaseRequestGoods, RequestGoodsSupplier>>();
+            requestGoodsSupplierService.DetailService.MasterId = detail.Id;
             requestGoodsSupplierServices.Add(detail.Id, requestGoodsSupplierService);
         }
         supplierStatus = WindowStatus.Open;
@@ -235,7 +235,7 @@
     async Task Save(KeyboardEventArgs e, UpsertMode upsertMode)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(upsertMode);
+            await Service.DetailService.DataView.ValidateAndUpsert(upsertMode);
     }
 
     async Task EvaluationIndicatorSelected(SupplierEvaluationDetail detail)

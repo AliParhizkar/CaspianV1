@@ -14,7 +14,7 @@ namespace Caspian.UI
         public UIService(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            DetailService = new DetailService<TMaster, TDetail>(UpsertData);
+            DetailService = new BatchService<TMaster, TDetail>(UpsertData);
         }
 
         public IBatchService<TDetail> DetailService { get; set; }
@@ -27,6 +27,7 @@ namespace Caspian.UI
         /// <param name="masterId">The id of "TMaster"</param>
         public async Task ReloadForUpdate(int masterId)
         {
+            typeof(TMaster).GetPrimaryKey().SetValue(UpsertData, masterId);
             await BatchService.ReloadForUpdate(masterId);
             await (this as IInternalUIService<TMaster>).FetchAsync();
         }
@@ -71,7 +72,7 @@ namespace Caspian.UI
 
         protected override async Task InitializeValidatorService(IBaseService<TMaster> service)
         {
-            var masterDetailService = service as MasterDetailsService<TMaster, TDetail>;
+            var masterDetailService = service as IMasterDetailsService<TMaster, TDetail>;
             masterDetailService.DetailService.SetChangedEntities(DetailService.ChangedEntities);
             masterDetailService.DetailService.SetDetails(DetailService?.Details);
             await base.InitializeValidatorService(service);

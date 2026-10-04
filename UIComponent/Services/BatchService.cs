@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace Caspian.UI
 {
-    internal class DetailService<TMaster, TDetail>: IInternalBatchService<TDetail> where TMaster : class where TDetail : class 
+    internal class BatchService<TMaster, TDetail>: IInternalBatchService<TDetail> where TMaster : class where TDetail : class 
     {
-        public DetailService(TMaster master) 
+        public BatchService(TMaster master) 
         {
             ChangedEntities = new List<ChangedEntity<TDetail>>();
             Master = master;
@@ -124,9 +124,11 @@ namespace Caspian.UI
         public void InitializeAfterUpsert()
         {
             ChangedEntities.Clear();
+            typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(Master, null);
             if (DataView != null)
             {
                 DataView.CancelInternalUpdate();
+                DataView.ClearDataView();
             }
         }
 

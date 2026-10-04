@@ -1,20 +1,17 @@
 ﻿@page "/Test"
-@using Procurement.Model;
-@using Caspian.Common.Extension 
 @inherits BasePage
-@inject IUIService<Country> Service
-@using Investment.Model
 @{
     base.BuildRenderTree(__builder);
 }
-
-<DataGrid TEntity="Order">
-    <Columns>
-
-    </Columns>
-</DataGrid>
+<span>@id</span>
+<div style="width:500px;margin:5px auto">
+    <Lookup TValue="int?" TEntity="Customer" @bind-Value="id" 
+            TextExpression="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName ">
+        <Demo.Web.Pages.AdvanceSearchCustomerWindow />
+    </Lookup>
+</div>
 
 @code
 {    
-
+    int? id = 2;
 }

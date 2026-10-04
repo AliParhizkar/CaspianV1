@@ -1,6 +1,6 @@
 ﻿@page "/Warehouse/ReservationGoods"
 @attribute [Source(24, "رزرو کالا", MasterPage = typeof(ReservationPage))]
-@inject UIService<Reservation, ReservationGoods> Service
+@inject IUIService<Reservation, ReservationGoods> Service
 @inject NavigationManager navigationManager
 @inherits BasePage
 
@@ -28,7 +28,7 @@
         <FormCommandButton ColSpan="8" TotalSpan="12" />
     </CaspianForm>
     <div class="pt-2">
-        <DataGrid TEntity="ReservationGoods" DetailsService="Service" Inline>
+        <DataGrid TEntity="ReservationGoods" DetailsService="Service.DetailService" Inline>
             <Columns>
                 <GridColumn Field="t => t.Goods.Name + '(' + t.Goods.Code + ')'" Title="کالا">
                     <EditTemplate>
@@ -73,6 +73,6 @@
     async Task SubmitDataAsync(KeyboardEventArgs e, UpsertMode mode)
     {
         if (e.Key == "Enter" || e.Key == "NumpadEnter")
-            await Service.DetailDataView.ValidateAndUpsert(mode);
+            await Service.DetailService.DataView.ValidateAndUpsert(mode);
     }
 }

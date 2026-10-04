@@ -1,5 +1,5 @@
 ﻿<div class="p-3" style="width:750px">
-    <DataGrid PageSize="100" ContentHeight="180" DetailsService="Service" TEntity="RequestGoodsSupplier" Batch Inline >
+    <DataGrid PageSize="100" ContentHeight="180" DetailsService="Service.DetailService" TEntity="RequestGoodsSupplier" Batch Inline >
         <Columns>
             <GridColumn Field="t => t.Supplier.Code" style="width:80px">
                 <Template>
@@ -45,5 +45,5 @@
     public BasePage Page { get; set; }
 
     [Parameter]
-    public UIService<PurchaseRequestGoods, RequestGoodsSupplier> Service { get; set; }
+    public IUIService<PurchaseRequestGoods, RequestGoodsSupplier> Service { get; set; }
 }

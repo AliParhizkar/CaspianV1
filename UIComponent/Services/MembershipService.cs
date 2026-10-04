@@ -38,28 +38,25 @@ namespace Caspian.UI
 
         protected override void DataViewInitializer()
         {
-            if (MasterId > 0)
+            var param = Expression.Parameter(typeof(TAccess), "t");
+            Expression expr = null;
+            PropertyInfo otherProperty = null;
+            if (masterProperty == null)
+                otherProperty = typeof(TAccess).GetForeignKey(typeof(TMaster));
+            else
             {
-                var param = Expression.Parameter(typeof(TAccess), "t");
-                Expression expr = null;
-                PropertyInfo otherProperty = null;
-                if (masterProperty == null)
-                    otherProperty = typeof(TAccess).GetForeignKey(typeof(TMaster));
-                else
-                {
-                    var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
-                    otherProperty = typeof(TAccess).GetProperty(name);
-                }
-                expr = Expression.Property(param, otherProperty);
-                var foreignKeyType = otherProperty.PropertyType;
-                if (foreignKeyType.IsNullableType())
-                {
-                    expr = Expression.Property(expr, "Value");
-                    foreignKeyType = foreignKeyType.GetUnderlyingType();
-                }
-                expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, foreignKeyType)));
-                base.DataView.InternalConditionExpr = expr;
+                var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                otherProperty = typeof(TAccess).GetProperty(name);
             }
+            expr = Expression.Property(param, otherProperty);
+            var foreignKeyType = otherProperty.PropertyType;
+            if (foreignKeyType.IsNullableType())
+            {
+                expr = Expression.Property(expr, "Value");
+                foreignKeyType = foreignKeyType.GetUnderlyingType();
+            }
+            expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(MasterId, foreignKeyType)));
+            base.DataView.InternalConditionExpr = expr;
             base.DataViewInitializer();
         }
 

@@ -6,10 +6,6 @@ namespace Caspian.Common.Service
     public interface IMasterDetailsService<TMaster, TDetail>: IBaseService<TMaster>
     {
         IDetailService<TDetail> DetailService { get; }
-
-        //void SetChangedEntitiesAsync(TMaster master, IList<ChangedEntity<TDetail>> changedEntities);
-
-        //void SetChangedEntities(IList<ChangedEntity<TDetail>> changedEntities);
     }
 
     public interface IDetailService<TDetail>

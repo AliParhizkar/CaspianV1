@@ -4,7 +4,7 @@ using Caspian.Common.Service;
 
 namespace Marketing.Service
 {
-    public class CustomerAddressService : BaseService<CustomerAddress>, IBaseService<CustomerAddress>
+    public class CustomerAddressService : DetailService<CustomerAddress>, IBaseService<CustomerAddress>
     {
         public CustomerAddressService(IServiceProvider provider)
             : base(provider)
