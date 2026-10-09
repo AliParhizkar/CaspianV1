@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Engine.Service
 {
-    public class ReportParamService : BaseService<ReportParam>
+    public class ReportParamService : DetailService<ReportParam>
     {
         void BindRule(Report report)
         {
@@ -41,12 +41,6 @@ namespace Caspian.Engine.Service
         //{
         //    return GetAll().Where(t => t.ReportId == reportId);
         //}
-
-        public async override Task<ValidationResult> ValidateRemoveAsync(ReportParam entity)
-        {
-
-            return await base.ValidateRemoveAsync(entity);
-        }
 
         //public IQueryable<ReportParam> GetAll(int reportId, int dataLevel)
         //{

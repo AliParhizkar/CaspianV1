@@ -40,16 +40,19 @@ namespace Caspian.UI
         public Type ValidatorType { get; set; }
 
         [Parameter]
-        public bool OnlyValidateOnSubmit { get; set; } = true;
-
-        public string MasterIdName { get; set; }
+        public bool OnlyValidateOnSubmit { get; set; }
 
         internal IBaseService<TModel> Validator {  get; private set; }
+
+        internal DetailService<TModel> DetailValidator { get { return Validator as DetailService<TModel>; } }
 
 
         ValidationMessageStore ValidationMessageStore;
 
         public bool IsFirstInvalidControl { get; set; }
+
+        [Parameter]
+        public IUIService<TModel> Service { get; set; }
 
         [Parameter]
         public IBatchService<TModel> DetailsService { get; set; }
@@ -169,23 +172,16 @@ namespace Caspian.UI
                 throw new NullReferenceException($"{nameof(ValidatorType)} must be specified.");
             if (!typeof(IValidator).IsAssignableFrom(ValidatorType))
                 throw new ArgumentException($"{ValidatorType.Name} must implement {typeof(IValidator).FullName}");
-            //if (ValidatorType != previousValidatorType)
-            //    ValidatorTypeChanged();
             // If the EditForm.Model changes then we get a new EditContext
             // and need to hook it up
             if (EditContext != previousEditContext)
-            {
                 EditContextChanged();
-            }
         }
 
         protected override void OnAfterRender(bool firstRender)
         {
             if (CaspianForm != null)
-            {
                 CaspianForm.ValidationValidator = this;
-                MasterIdName = (CaspianForm as ICaspianForm).MasterIdName;
-            }
             base.OnAfterRender(firstRender);
         }
 

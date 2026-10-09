@@ -155,9 +155,7 @@ namespace Caspian.UI
             DetailValidator = validator;
             DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail>>(this, t =>
             {
-                ///Initialize Validator-Service(BaseService<TDetail>) Before validation 
-                var service = t as BaseService<TDetail>;
-                service.SetBatchServiceData(MasterId, typeof(TMaster));
+                //service.SetBatchServiceData(MasterId, typeof(TMaster));
                 //if (t is IMasterDetailsService<TMaster, TDetail> detailService)
                 //    detailService.SetChangedEntitiesAsync(Master, ChangedEntities);
             });

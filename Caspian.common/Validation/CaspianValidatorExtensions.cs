@@ -511,9 +511,9 @@ namespace Caspian.Common
         {
             ruleBuilder.CustomAsync(async (value, context, token) =>
             {
-                BatchServiceData batchService = null;
-                if (context.RootContextData.ContainsKey("__BatchServiceData"))
-                    batchService = context.RootContextData["__BatchServiceData"] as BatchServiceData;
+                PropertyInfo detailsProperty = null;
+                if (context.RootContextData.ContainsKey("__DetailsProperty"))
+                    detailsProperty = context.RootContextData["__DetailsProperty"] as PropertyInfo;
                 foreach (var info in typeof(TModel).GetProperties())
                 {
                     if (info.PropertyType.IsEnumerableType() && info.PropertyType != typeof(string) && info.PropertyType != typeof(byte[]))
@@ -523,7 +523,7 @@ namespace Caspian.Common
                             throw new CaspianException("خطا: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
                         if (!attr.Check)
                             continue;
-                        if (batchService?.DetailPropertiesInfo.Contains(info) == true)
+                        if (info == detailsProperty)
                             continue;
                         var type = info.PropertyType.GetGenericArguments()[0];
                         var key = type.GetPrimaryKey();
@@ -662,12 +662,13 @@ namespace Caspian.Common
                     if (Convert.ToInt32(value) <= 0)
                     {
                         var flag = false;
-                        if (context.RootContextData.ContainsKey("__BatchServiceData"))
+                        if (context.RootContextData.ContainsKey("__MasterId") && context.RootContextData.ContainsKey("__MasterType"))
                         {
-                            var batchData = context.RootContextData["__BatchServiceData"] as BatchServiceData;
-                            if (batchData.MasterId <= 0)
+                            var masterId = Convert.ToInt32(context.RootContextData["__MasterId"]);
+                            var masterType = context.RootContextData["__MasterType"] as Type;
+                            if (masterId <= 0)
                             {
-                                var masterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == batchData.MasterType);
+                                var masterInfo = typeof(TModel).GetProperties().SingleOrDefault(t => t.PropertyType == masterType);
                                 if (masterInfo != null && masterInfo == info)
                                     flag = true;
                             }

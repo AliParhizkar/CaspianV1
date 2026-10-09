@@ -4,10 +4,12 @@ using System.Reflection;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
-using FluentValidation.Internal;
 using FluentValidation.Results;
+using FluentValidation.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.InteropServices.Marshalling;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace Caspian.Common
 {
@@ -15,7 +17,6 @@ namespace Caspian.Common
     {
         public CaspianValidator(IServiceProvider provider)
         {
-            BatchServiceData = provider.GetService<BatchServiceData>();
             RuleLevelCascadeMode = CascadeMode.Stop;
             ServiceProvider = provider;
             
@@ -95,27 +96,30 @@ namespace Caspian.Common
             });
         }
 
-        public BatchServiceData BatchServiceData { get; private set; }
-
-        internal void SetBatchServiceData(int masterId, Type masterType)
-        {
-            BatchServiceData.MasterType = masterType;
-            BatchServiceData.MasterId = masterId;
-        }
-
         public int UserId { get; internal set; }
 
         internal PropertyInfo ThirdLevelProperty { get; set; }
 
-        public async virtual Task<ValidationResult> ValidateRemoveAsync(TModel model)
+        /// <summary>
+        /// This method override in child class to initialized Root-Context-Data of "Validation-Context"  
+        /// </summary>
+        /// <param name="context"></param>
+        protected virtual void BeforeRemoveValidation(ValidationContext<TModel> context)
         {
             
+        }
+
+        
+
+        public async Task<ValidationResult> ValidateRemoveAsync(TModel model)
+        {
             var list = new List<string>()
             {
                 "remove"
             };
-            var result = await ValidateAsync(new ValidationContext<TModel>(model, new PropertyChain(), new RulesetValidatorSelector(list)));
-            return result;
+            var context = new ValidationContext<TModel>(model, new PropertyChain(), new RulesetValidatorSelector(list));
+            BeforeRemoveValidation(context);
+            return await ValidateAsync(context);
         }
 
         public void Dispose()
@@ -125,13 +129,6 @@ namespace Caspian.Common
                 Context.Dispose();
                 Context = null;
             }
-        }
-
-        public override Task<ValidationResult> ValidateAsync(ValidationContext<TModel> context, CancellationToken cancellation = default)
-        {
-            context.RootContextData["__ServiceProvider"] = ServiceProvider;
-            context.RootContextData["__BatchServiceData"] = BatchServiceData;
-            return base.ValidateAsync(context, cancellation);
         }
 
         protected IRuleBuilderInitial<TModel, object> RuleForRemove()

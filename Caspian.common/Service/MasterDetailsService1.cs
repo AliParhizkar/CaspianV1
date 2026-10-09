@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Caspian.Common.Extension;
+using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,11 +59,12 @@ namespace Caspian.Common.Service
             base.SetAsDeleted(entity);
         }
 
-        public override Task<ValidationResult> ValidateRemoveAsync(TMaster model)
+        protected override void BeforeRemoveValidation(ValidationContext<TMaster> context)
         {
-            BatchServiceData.DetailPropertiesInfo.Add(typeof(TMaster).GetDetailsProperty(typeof(TDetail1)));
-            return base.ValidateRemoveAsync(model);
+            throw new NotImplementedException();
+            base.BeforeRemoveValidation(context);
         }
+
 
         //async Task<IList<TDetail1>> GetDetailsAfterAddChangesAsync(TMaster master)
         //{

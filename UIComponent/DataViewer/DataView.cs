@@ -298,7 +298,10 @@ namespace Caspian.UI
             using var scope = ServiceScopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService(typeof(IBaseService<TEntity>)) as BaseService<TEntity>;
             if (BatchService?.ThirdLevelProperty != null)
-                service.BatchServiceData.DetailPropertiesInfo.Add(BatchService.ThirdLevelProperty);
+            {
+                throw new InvalidOperationException("");
+                //service..DetailPropertiesInfo.Add(BatchService.ThirdLevelProperty);
+            }
             var result = await service.ValidateRemoveAsync(entity);
             if (result.IsValid)
             {
@@ -500,7 +503,7 @@ namespace Caspian.UI
         public void Dispose()
         {
             (Service as IInternalSearchService<TEntity>)?.DataViewInitializer(null); 
-            (DetailsService as IInternalBatchService<TEntity>)?.DetailDataViewInitializer(null);
+            BatchService?.DetailDataViewInitializer(null);
         }
     }
 }

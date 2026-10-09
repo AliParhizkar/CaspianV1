@@ -3,17 +3,15 @@ using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
-    public interface IMasterDetailsService<TMaster, TDetail>: IBaseService<TMaster>
+    public interface IMasterDetailsService<TMaster, TDetail>: IBaseService<TMaster> where TDetail : class
     {
-        IDetailService<TDetail> DetailService { get; }
+        DetailService<TDetail> DetailService { get; }
     }
 
     public interface IDetailService<TDetail>
     {
         void SetChangedEntities(IList<ChangedEntity<TDetail>> changedEntities);
         void SetDetails(IEnumerable<TDetail> details);
-
-        Task SaveChangeAsync();
     }
 
     public interface IMasterDetailsService<TMaster, TDetails, TDetails1>: IBaseService<TMaster>

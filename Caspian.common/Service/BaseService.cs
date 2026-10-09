@@ -8,6 +8,7 @@ using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
@@ -19,14 +20,24 @@ namespace Caspian.Common.Service
         public BaseService(IServiceProvider provider)
             :base(provider)
         {
+
         }
 
-        public bool CheckValidation { get; set; } = true;
+        /// <summary>
+        /// Use This For Master-Detail in OneToOne relation 
+        /// </summary>
+        internal int CrudId { get; set; }
 
         protected async Task<T> GetEntity<T>(Expression<Func<T, bool>> expression)
         {
             using var service = ServiceProvider.CreateScope().GetService<IBaseService<T>>();
             return await service.GetAll().SingleOrDefaultAsync(expression);
+        }
+
+        public override Task<ValidationResult> ValidateAsync(ValidationContext<TEntity> context, CancellationToken cancellation = default)
+        {
+            context.RootContextData["__ServiceProvider"] = ServiceProvider;
+            return base.ValidateAsync(context, cancellation);
         }
 
         protected async Task<T> GetEntity<T>(int id, T entity)
@@ -173,12 +184,9 @@ namespace Caspian.Common.Service
         #region For Add Entity 
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
-            if (CheckValidation)
-            {
-                var result = await ValidateAsync(entity);
-                if (!result.IsValid)
-                    throw new CaspianException(result.Errors.First().ErrorMessage);
-            }
+            var result = await ValidateAsync(entity);
+            if (!result.IsValid)
+                throw new CaspianException(result.Errors.First().ErrorMessage);
             if (OtherTypeIn1To1Relationship != null)
                 otherEntityIn1To1Relationship = typeof(TEntity).GetOneToOneProperty(OtherTypeIn1To1Relationship).GetValue(entity);
             /// All properties that are entity should be null except One-To-One relationship properties
@@ -204,12 +212,9 @@ namespace Caspian.Common.Service
         #region For Update Entity
         public virtual async Task UpdateAsync(TEntity entity)
         {
-            if (CheckValidation)
-            {
-                var result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
-                if (result.Errors.Count > 0)
-                    throw new CaspianException(result.Errors[0].ErrorMessage);
-            }
+            var result = await this.ValidateAsync(entity, OtherTypeIn1To1Relationship);
+            if (result.Errors.Count > 0)
+                throw new CaspianException(result.Errors[0].ErrorMessage);
             var query = GetQueryForUpdate(entity);
             var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
             var old = await query.SingleAsync(id);

@@ -16,7 +16,7 @@ namespace Caspian.Common.Service
         {
             //Details = new List<TDetail>();
             UserId = provider.GetService<CaspianDataService>().UserId;
-            DetailService = provider.GetService<IBaseService<TDetail>>() as IDetailService<TDetail>;
+            DetailService = provider.GetService<IBaseService<TDetail>>() as DetailService<TDetail>;
             if (DetailService == null)
                 throw new CaspianException($"There are any service that implement IDetailService<{typeof(TDetail)}>");
             var lambda = CreateRuleForEachExpression();
@@ -35,24 +35,26 @@ namespace Caspian.Common.Service
             return Expression.Lambda(body, parameter) as Expression<Func<TMaster, IEnumerable<TDetail>>>;
         }
 
-        public IDetailService<TDetail> DetailService { get; private set; }
+        public DetailService<TDetail> DetailService { get; private set; }
 
-        public override Task<ValidationResult> ValidateRemoveAsync(TMaster model)
+        protected override void BeforeRemoveValidation(ValidationContext<TMaster> context)
         {
-            BatchServiceData.DetailPropertiesInfo.Add(typeof(TMaster).GetDetailsProperty(typeof(TDetail)));
-            return base.ValidateRemoveAsync(model);
+            context.RootContextData["__DetailsProperty"] = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            base.BeforeRemoveValidation(context);
         }
 
         public override async Task UpdateAsync(TMaster entity)
         {
             await base.UpdateAsync(entity);
-            await DetailService.SaveChangeAsync();
+            var value = typeof(TMaster).GetPrimaryKey().GetValue(entity);
+            await DetailService.SubmitChangesForUpdateAsync();
         }
 
         public override async Task<TMaster> AddAsync(TMaster entity)
         {
             var result = await base.AddAsync(entity);
-            await DetailService.SaveChangeAsync();
+            var value = typeof(TMaster).GetPrimaryKey().GetValue(entity);
+            //await DetailService.SaveChangeAsync(Convert.ToInt32(value), typeof(TMaster));
             return result;
         }
     }

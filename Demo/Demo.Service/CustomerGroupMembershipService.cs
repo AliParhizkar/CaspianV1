@@ -14,12 +14,6 @@ namespace Demo.Service
             RuleFor(t => t.CustomerId).UniqueAsync(t => t.CustomerGroupId, "مشتری در حال حاضر عضو این گروه می باشد.");
         }
 
-        public override Task<CustomerGroupMembership> AddAsync(CustomerGroupMembership entity)
-        {
-
-            return base.AddAsync(entity);
-        }
-
         public override Task RemoveAsync(int id)
         {
             return base.RemoveAsync(id);

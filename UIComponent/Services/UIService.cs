@@ -105,8 +105,6 @@ namespace Caspian.UI
 
         protected virtual TEntity InitializeBeforeUpsert(IBaseService<TEntity> service)
         {
-            ///Before Calling this method Validation is done. an we don't need to do it(validation) again 
-            (service as BaseService<TEntity>).CheckValidation = false;
             
             service.OtherTypeIn1To1Relationship = OtherCrudServiceData?.OtherType;
             /// In One-To-One Relationship Before Upsert maybe we have many One-To-One Relationship data, But we save only one of them.
@@ -245,7 +243,7 @@ namespace Caspian.UI
         /// </summary>
         protected virtual Task InitializeValidatorService(IBaseService<TEntity> service)
         {
-            (service as BaseService<TEntity>).SetBatchServiceData(CrudId ?? 0, typeof(TEntity));
+            (service as BaseService<TEntity>).CrudId = CrudId ?? 0;
             return Task.CompletedTask;
         }
 

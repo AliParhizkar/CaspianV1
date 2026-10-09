@@ -74,7 +74,6 @@ namespace Caspian.Engine.Shared
                 {
                     using var scope = ServiceScopeFactory.CreateScope();
                     var service = scope.GetService<UserLoginService>();
-                    service.CheckValidation = false;
                     await service.AddAsync(new UserLogin()
                     {
                         LoginDate = DateTime.Now,
