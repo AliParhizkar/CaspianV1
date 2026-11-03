@@ -43,6 +43,8 @@ namespace Caspian.UI
             return new EnumSearch<TValue>(lambda.Body, (this as IInternalSearchService<TEntity>).EnumFields);
         }
 
+        public Action OnDataViewInitialize {  get; set; }
+
         /// <summary>
         /// For one to one relation use this data
         /// </summary>
@@ -88,7 +90,7 @@ namespace Caspian.UI
 
         public async Task CloseWindow()
         {
-            if (Window != null) 
+            if (Window != null)
                 await Window.Close();
         }
 
@@ -105,7 +107,6 @@ namespace Caspian.UI
 
         protected virtual TEntity InitializeBeforeUpsert(IBaseService<TEntity> service)
         {
-            
             service.OtherTypeIn1To1Relationship = OtherCrudServiceData?.OtherType;
             /// In One-To-One Relationship Before Upsert maybe we have many One-To-One Relationship data, But we save only one of them.
             /// We clear other One-To-One relationship data and keep this data in tempEntity object to use it to reset data after Upsert
@@ -129,8 +130,8 @@ namespace Caspian.UI
         protected virtual string GetUpsertMessage(UpsertMode upsertMode)
         {
             if (upsertMode == UpsertMode.Insert)
-                return CaspianDataService.Language == Language.En ? "Registration was done successfully" : "ثبت با موفقیت انجام شد.";
-            return CaspianDataService.Language == Language.En ? "Updating was done successfully" : "بروزرسانی با موفقیت انجام شد";
+                return "Successfully saved.";
+            return "Successfully Updated.";
         }
 
         protected virtual async Task InitializeAfterUpsert(TEntity tempEntity, UpsertMode upsertMode)
@@ -215,7 +216,6 @@ namespace Caspian.UI
                 return;
             var service = CreateService(scope);
             var tempEntity = InitializeBeforeUpsert(service);
-           
             if (id == 0)
                 await service.AddAsync(UpsertData);
             else
@@ -325,13 +325,15 @@ namespace Caspian.UI
                     {
                         await service.RemoveAsync(id);
                         await service.SaveChangesAsync();
-                        await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
+                        await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Successfully deleted.");
                         await InitializeAfterRemove(old);
                     }
                 }
                 else
                     await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", result.Errors[0].ErrorMessage);
             });
+            if (OnDataViewInitialize != null)
+                OnDataViewInitialize.Invoke();
         }
 
         #endregion

@@ -3,87 +3,112 @@
 @inherits BasePage
 @attribute [Source(40, "Meeting")]
 @inject IUIService<Meeting> Service
-
 @{
     base.BuildRenderTree(__builder);
 }
-
-
-<ListView Service="Service" TEntity="Meeting" SelectType="SelectType.None" ContentHeight="600">
-    <Fields Context="meeting">
-        @{
-            var className = "d-main";
-            if (meetingsId.Any(t => t == meeting?.Data?.Id))
-                className += " open";
-        }
-        <div class="@(className)">
-            <div class="d-number" @onmousedown="() => ToggleList(meeting.Data.Id)">
-                <TextField Field="t => t.OrderNo.ToString()" />
-            </div>
-            <div class="d-name" @onmousedown="() => ToggleList(meeting.Data.Id)">
-                <TextField Field="t => t.Name" />
-            </div>
-            <div @onmousedown="() => ToggleList(meeting.Data.Id)" class="d-icon">
-                <span class="fa fa-chevron-up"></span>
-            </div>
-            <div class="d-details">
-                <div class="d-title">جزئیات</div>
-                <hr />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="d-lecture-detail">
-                            <label>ایجاد کننده:</label>
-                            <TextField Field="t => t.User.LName" />
-                        </div>
-                        <div class="d-lecture-detail">
-                            <label>ضبط فیلم:</label>
-                            <TextField Field='t => t.RecordingVideoIs ? "فعال" : "غیرفعال"' />
-                        </div>
-                        <div class="d-lecture-detail">
-                            <label>وضعیت:</label>
-                            <TextField Field='t => t.ActiveIs ? "فعال" : "غیرفعال"' />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="d-lecture-detail">
-                            <label>حوزه آموزش:</label>
-                            <TextField Field='t => t.LearningScope.EnumText()' />
-                        </div>
-                        <div class="d-lecture-detail">
-                            <label>ضبط صدا:</label>
-                            <TextField Field='t => t.RecordingAudioIs ? "فعال" : "غیرفعال"' />
-                        </div>
-                        <div class="d-lecture-detail">
-                            <label>نوع سرویس:</label>
-                            <TextField Field='t => t.ServerType.EnumText()' />
-                        </div>
-                    </div>
-                    <div class="col-md-3"></div>
-                    <div class="col-md-9">
-                        <button @onclick='() => NavigationManager.NavigateTo($"/Demo//{meeting.Data.Id}")' class="c-btn c-secondary">
-                            Details
-                            <span class="fa fa-wpforms"></span>
-                        </button>
-                        <ListCommandButton />
-                    </div>
+<h2>Simple CRUD with List View</h2>
+<p>
+    Sometimes we need to display information using a <b>custom layout or format</b> rather than a <b>tabular view</b>. 
+    In such cases, we can use a <b>ListView</b> instead of a <b>Grid</b>.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row p-2">
+                <div class="col-md-5">
+                    The <b>HeaderTemplate</b> defines the header, while <b>Fields</b> specifies how the body content is displayed.
+                    <ul class="pt-2 d-demo-inner-list">
+                        <li><b>TextField: </b> Used to retrieve and display numeric, text, and Boolean values.</li>
+                        <li><b>ImageField: </b> Used to retrieve and display images.</li>
+                    </ul>
+                </div>
+                <div class="col-md-7">
+                    <EntitySearch Service="Service">
+                        <StringTextBox @bind-Value="context.Name" ColSpan="8" />
+                    </EntitySearch>
+                    <ListView Service="Service" TEntity="Meeting" SelectType="SelectType.None" ContentHeight="600">
+                        <HeaderTempalte>
+                            <div class="d-cource-title">
+                                Training Name
+                            </div>
+                        </HeaderTempalte>
+                        <Fields Context="meeting">
+                            @{
+                                var className = "d-main";
+                                if (meetingsId.Any(t => t == meeting?.Data?.Id))
+                                    className += " open";
+                            }
+                            <div class="@(className)">
+                                <div class="d-number" @onmousedown="() => ToggleList(meeting.Data.Id)">
+                                    <TextField Field="t => t.OrderNo.ToString()" />
+                                </div>
+                                <div class="d-name" @onmousedown="() => ToggleList(meeting.Data.Id)">
+                                    <TextField Field="t => t.Name" />
+                                </div>
+                                <div @onmousedown="() => ToggleList(meeting.Data.Id)" class="d-icon">
+                                    <span class="fa fa-chevron-up"></span>
+                                </div>
+                                <div class="d-details">
+                                    <div class="d-title">Details</div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="d-lecture-detail">
+                                                <label>Created By</label>
+                                                <TextField Field="t => t.User.LName" />
+                                            </div>
+                                            <div class="d-lecture-detail">
+                                                <label>Video Recording</label>
+                                                <TextField Field='t => t.RecordingVideoIs ? "Active" : "Inactive"' />
+                                            </div>
+                                            <div class="d-lecture-detail">
+                                                <label>Course Status</label>
+                                                <TextField Field='t => t.ActiveIs ? "Active" : "Inactive"' />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-lecture-detail">
+                                                <label>Training Category</label>
+                                                <TextField Field='t => t.LearningScope.EnumText()' />
+                                            </div>
+                                            <div class="d-lecture-detail">
+                                                <label>	Audio Recording</label>
+                                                <TextField Field='t => t.RecordingAudioIs ? "Active" : "Inactive"' />
+                                            </div>
+                                            <div class="d-lecture-detail">
+                                                <label>	Service Type</label>
+                                                <TextField Field='t => t.ServerType.EnumText()' />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-9">
+                                            <ListCommandButton />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Fields>
+                    </ListView>
                 </div>
             </div>
-        </div>
-    </Fields>
-</ListView>
-<Window Service="Service" Style="width:600px">
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document Page="this" FolderName="Crud" FileName="Meeting" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+
+<Window Service="Service" Style="width:600px" Title="Meeting">
     <CaspianForm TEntity="Meeting" Service="Service" OnSubmit="t => t.Entity.UserId = base.UserId">
         <Content Context="meeting">
             <div class="row c-controls ps-2 pe-2">
                 <StringTextBox MultiLine Rows="3" @bind-Value="meeting.Name" ColSpan="9" />
-                <CheckBox @bind-Value="meeting.RecordingVideoIs" Title="ضبط فیلم" ColSpan="9" />
-                <CheckBox @bind-Value="meeting.RecordingAudioIs" Title="ضبط صدا" ColSpan="9" />
-                <CheckBox @bind-Value="meeting.ActiveIs" Title="فعال" ColSpan="9" />
+                <CheckBox @bind-Value="meeting.RecordingVideoIs" ColSpan="9" />
+                <CheckBox @bind-Value="meeting.RecordingAudioIs" ColSpan="9" />
+                <CheckBox @bind-Value="meeting.ActiveIs" ColSpan="9" />
                 <DropdownList @bind-Value="meeting.LearningScope" ColSpan="9" />
                 <DropdownList @bind-Value="meeting.ServerType" ColSpan="9" />
-                <div class="col-md-9 pt-3">
-                    <FormCommandButton />
-                </div>
+                <FormCommandButton ColSpan="9" />
             </div>
         </Content>
     </CaspianForm>

@@ -312,6 +312,7 @@ a {
 
 button {
     outline: none !important;
+    border:none;
 }
 
 .parent-panel {

@@ -8,18 +8,9 @@ namespace Caspian.Common.Service
         DetailService<TDetail> DetailService { get; }
     }
 
-    public interface IDetailService<TDetail>
-    {
-        void SetChangedEntities(IList<ChangedEntity<TDetail>> changedEntities);
-        void SetDetails(IEnumerable<TDetail> details);
-    }
-
     public interface IMasterDetailsService<TMaster, TDetails, TDetails1>: IBaseService<TMaster>
     {
 
-        //Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
-
-        //void SetChangedEntities(IList<ChangedEntity<TDetails>> changedEntities, IList<ChangedEntity<TDetails1>> changedEntities1);
     }
 
     public interface IBaseService<TEntity>: IEntity, FluentValidation.IValidator<TEntity>, IDisposable
@@ -32,15 +23,13 @@ namespace Caspian.Common.Service
 
         Task<TEntity> AddAsync(TEntity entity);
 
-        Task RemoveAsync(int id);
+        Task<TEntity> RemoveAsync(int id);
 
         void Remove(TEntity entity);
 
         Task<TEntity> SingleAsync(int id);
 
         Task<TEntity> SingleOrDefaultAsync(int id);
-
-        //void SetSource(IReadOnlyCollection<TEntity> source);
 
         Task<ValidationResult> ValidateRemoveAsync(TEntity entity);
 

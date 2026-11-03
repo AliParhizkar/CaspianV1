@@ -43,7 +43,7 @@ namespace Demo.Model
         public IList<Order> Orders { get; set; }
 
         [CheckOnDelete("Customer is member of group and can not be removed")]
-        public IList<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
+        public IEnumerable<CustomerGroupMembership> CustomerGroupMemberships { get; set; }
 
         [CheckOnDelete("Customer has Address and can not be removed")]
         public IList<CustomerAddress> CustomerAddresses { get; set; }

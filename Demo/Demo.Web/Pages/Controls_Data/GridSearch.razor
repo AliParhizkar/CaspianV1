@@ -7,6 +7,9 @@
 @inject ISearchService<Product> ProductService
 @inject ISearchService<City> CityService
 @inject ISearchService<OrderDetail> OrderDetailService
+@inject ISearchService<Customer> enumSearchService
+@inject ISearchService<Customer> customSearchService
+@inject ISearchService<Product> ProductSearchService
 
 <p>
     We can search in the grid in the <b>three Modes</b>
@@ -133,8 +136,10 @@
                         <span class="c-demo-description">In this example, we define a variable of <b>Customer type</b> and <b>bind first name, last name and company name</b> for search. </span>
                     </div>
                     <div class="col-md-6">
- 
-                        <DataGrid TEntity="Product" Service="ProductService" ShowInsertIcon="false">
+                        <EntitySearch TEntity="Product" Service="ProductSearchService">
+                            <NumericTextBox @bind-Value="context.Price" ColSpan="9" />
+                        </EntitySearch>
+                        <DataGrid TEntity="Product" Service="ProductSearchService" ShowInsertIcon="false">
                             <Columns>
                                 <GridColumn Field="t => t.ProductCategory.Title" Title="Product category" />
                                 <GridColumn Field="t => t.Title" />
@@ -168,10 +173,10 @@
                     </div>
                     <div class="col-md-6">
                         <hr />
-                        <EntitySearch TEntity="Product" Service="ProductSearchService">
+                        <EntitySearch TEntity="Product" Service="ProductService">
                             <CheckBox @bind-Value="context.OutofStock" ColSpan="9" TotalSpan="12" />
                         </EntitySearch>
-                        <DataGrid TEntity="Product" Service="ProductSearchService" ShowInsertIcon="false">
+                        <DataGrid TEntity="Product" Service="ProductService" ShowInsertIcon="false">
                             <Columns>
                                 <GridColumn Field="t => t.Title" />
                                 <GridColumn Field="t => t.Price.DigitGrouping()" />
@@ -206,8 +211,8 @@
                         <EntitySearch TEntity="Customer" Service="customSearchService">
                             <StringTextBox @bind-Value="name" ColSpan="9" TotalSpan="12" placeholder="Name | Mobile Number" />
                         </EntitySearch>
-                        <DataGrid TEntity="Customer" Service="customSearchService" ShowInsertIcon="false" 
-                                  ConditionExpr="t => name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name) || t.MobileNumber.StartsWith(name)">
+                        <DataGrid TEntity="Customer" Service="customSearchService" ShowInsertIcon="false"
+                                    ConditionExpr="t => name == null || t.FName.Contains(name) || t.LName.Contains(name) || t.CompanyName.Contains(name) || t.MobileNumber.StartsWith(name)">
                             <Columns>
                                 <GridColumn Field="t => t.CustomerType" />
                                 <GridColumn Field="t => t.CustomerType == CustomerType.Real ? t.FName + ' ' + t.LName : t.CompanyName" />
@@ -229,28 +234,6 @@
     bool showGender;
     int genderSelectionType;
     string name;
-    City citySearch = new City();
-    ISearchService<Customer> enumSearchService;
-    ISearchService<Customer> customSearchService;
-    ISearchService<Product> ProductSearchService;
-    //
-    IServiceScope scope, scope1;
-
-    protected override void OnInitialized()
-    {
-        scope = ServiceScopeFactory.CreateScope();
-        enumSearchService = scope.GetService<ISearchService<Customer>>();
-        ProductSearchService = scope.GetService<ISearchService<Product>>();
-        scope1 = ServiceScopeFactory.CreateAsyncScope();
-        customSearchService = scope1.GetService<ISearchService<Customer>>();
-        base.OnInitialized();
-    }
-
-    public override void Dispose()
-    {
-        scope.Dispose();
-        scope1.Dispose();
-    }
 
     void SearchOnCustomerType(IEnumerable<CustomerType> customerTypes)
     {

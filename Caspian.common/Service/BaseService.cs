@@ -5,10 +5,10 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
-using FluentValidation.Results;
 
 namespace Caspian.Common.Service
 {
@@ -192,7 +192,7 @@ namespace Caspian.Common.Service
             /// All properties that are entity should be null except One-To-One relationship properties
             /// Note: One-To-One relationship properties haven't any ForeignKeyAttribute
             entity = entity.ClearEntityProperties();
-            EntityInitialize(entity);
+            await EntityInitialize(entity);
             var result1 = await Context.Set<TEntity>().AddAsync(entity);
             return result1.Entity;
         }
@@ -200,7 +200,7 @@ namespace Caspian.Common.Service
         /// <summary>
         /// This Method Initialize all Entities that have relation with this entity
         /// </summary>
-        protected virtual void EntityInitialize(TEntity entity)
+        protected virtual async Task EntityInitialize(TEntity entity)
         {
             /// Initialize One-To-One relationship 
             if (OtherTypeIn1To1Relationship != null)
@@ -279,11 +279,12 @@ namespace Caspian.Common.Service
             Context.Entry(entity).State = EntityState.Deleted;
         }
 
-        public async virtual Task RemoveAsync(int id)
+        public async virtual Task<TEntity> RemoveAsync(int id)
         {
             var old = await GetQueryForRemove().SingleOrDefaultAsync(id);
             if (old != null)
                 SetAsDeleted(old);
+            return old;
         }
 
         public void Remove(TEntity entity)

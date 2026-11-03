@@ -1,6 +1,6 @@
 ﻿<EntityTabPanel  TEntity="Employee" Service="Service" Vertical>
     <Content Context="employee">
-        <ChildTabPanelItem  Child="t => t" ColumnsCount="2" >
+        <ChildTabPanelItem  Child="t => t" ColumnsCount="2" Title="	General Information" >
             <div style="height:350px" class="row c-controls pt-3 align-content-start">
                 <div class="row col-md-7">
                     <ComboBox TValue="int" TEntity="SimpleData" TextExpression="t => t.Title" @bind-Value="employee.ScopeId"

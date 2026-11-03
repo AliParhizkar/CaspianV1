@@ -1,9 +1,9 @@
-﻿using Caspian.Common;
+﻿using System.IO;
+using Caspian.Common;
 using System.Collections;
+using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Components;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -21,18 +21,18 @@ namespace Caspian.UI
             if (Service == null)
                 throw new CaspianException($"خطا:EntitySearch Component should have a service of type ISearchService<{typeof(TEntity)}>");
             
-            (Service as IInternalSearchService<TEntity>).SearchData = searchTypes;
+            InternalService.SearchData = searchTypes;
             base.OnInitialized();
         }
 
         [CascadingParameter]
         internal ILookup<TEntity> Lookup { get; set; }
 
-        void IEntitySearch.EnableLoadData() => Service.DataView?.EnableLoading();
+        public void EnableLoadData() => Service.DataView?.EnableLoading();
 
-        async Task IEntitySearch.ReloadData() => await Service.DataView.ReloadAsync();
+        public async Task ReloadData() => await Service.DataView.ReloadAsync();
 
-        void IEntitySearch.SetFromValue(string path, object fromValue)
+        public void SetFromValue(string path, object fromValue)
         {
             var old = valueTypeValues.SingleOrDefault(t => t.PropertyPath == path);
             if (old == null)
@@ -44,10 +44,10 @@ namespace Caspian.UI
                 else
                     old.From = fromValue;
             }
-            (Service as IInternalSearchService<TEntity>).ValueTypes = valueTypeValues;
+            InternalService.ValueTypes = valueTypeValues;
         }
 
-        void IEntitySearch.SetToValue(string path, object toValue)
+        public void SetToValue(string path, object toValue)
         {
             var old = valueTypeValues.SingleOrDefault(t => t.PropertyPath == path);
             if (old == null)
@@ -59,10 +59,10 @@ namespace Caspian.UI
                 else
                     old.To = toValue;
             }
-            (Service as IInternalSearchService<TEntity>).ValueTypes = valueTypeValues;
+            InternalService.ValueTypes = valueTypeValues;
         }
 
-        void IEntitySearch.SetValue(string path, bool? value)
+        public void SetValue(string path, bool? value)
         {
             var old = valueTypeValues.SingleOrDefault(t => t.PropertyPath == path);
             if (old == null)
@@ -77,17 +77,17 @@ namespace Caspian.UI
                 else
                     old.Value = value.Value;
             }
-            (Service as IInternalSearchService<TEntity>).ValueTypes = valueTypeValues;
+            InternalService.ValueTypes = valueTypeValues;
         }
 
-        ICollection IEntitySearch.GetFieldValues(string path)
+        public ICollection GetFieldValues(string path)
         {
             if (enumValues.ContainsKey(path))
                 return enumValues[path];
             return null;
         }
 
-        bool IEntitySearch.ChangEnumValues(string path, System.Collections.ICollection values)
+        public bool ChangEnumValues(string path, System.Collections.ICollection values)
         {
             ICollection oldValues = new object[0];
             if (enumValues.ContainsKey(path))
@@ -115,34 +115,31 @@ namespace Caspian.UI
             else
                 isEqual = false;
             if (!isEqual)
-                (Service as IInternalSearchService<TEntity>).EnumFields = enumValues;
+                InternalService.EnumFields = enumValues;
             return !isEqual;
         }
 
-        async Task IEntitySearch.SearchAsync()
+        public async Task SearchAsync()
         {
             if (Service.DataView != null)
                 await Service.DataView.ReloadAsync();
         }
 
-        async Task IEntitySearch.SelectNextRow()
+        public async Task SelectNextRow()
         {
             var grid = Service.DataView as DataGrid<TEntity>;
             await grid.SelectNextRow();
             grid.ChangeState();
         }
 
-        async Task IEntitySearch.SelectPreRow()
+        public async Task SelectPreRow()
         {
             var grid = Service.DataView as DataGrid<TEntity>;
             await grid.SelectPrevRow();
             grid.ChangeState();
         }
 
-        async Task IEntitySearch.SelectRow()
-        {
-            await (Service as IInternalSearchService<TEntity>).SelectItemOnLookup();
-        }
+        public async Task SelectRow() => await InternalService.SelectItemOnLookup();
 
         [CascadingParameter]
         internal PageData PageData { get; set; }
@@ -160,15 +157,9 @@ namespace Caspian.UI
             return className;
         }
 
-        Type IEntitySearch.EntityType
-        {
-            get
-            {
-                return typeof(TEntity);
-            }
-        }
+        public Type EntityType { get { return typeof(TEntity); } }
 
-        void IEntitySearch.SetSearchKind(string path, SearchType searchType)
+        public void SetSearchKind(string path, SearchType searchType)
         {
             if (!searchTypes.ContainsKey(path))
                 searchTypes.Add(path, searchType);
@@ -177,10 +168,12 @@ namespace Caspian.UI
         [Parameter]
         public int ColumnsCount { get; set; } = 1;
 
-        bool IEntitySearch.IsLookup { get { return (Service as IInternalSearchService<TEntity>).IsLookup(); } }
+        public bool IsLookup { get { return InternalService.IsLookup(); } }
 
         [Parameter]
         public ISearchService<TEntity> Service { get; set; }
+
+        internal IInternalSearchService<TEntity> InternalService { get { return Service as IInternalSearchService<TEntity>; } }
 
         [Parameter]
         public RenderFragment<TEntity> ChildContent { get; set; }

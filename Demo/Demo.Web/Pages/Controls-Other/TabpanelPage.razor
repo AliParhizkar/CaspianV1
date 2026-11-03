@@ -1,72 +1,133 @@
 ﻿@page "/Demo/TabPanel"
 @namespace Demo.Web.Pages
 @attribute [Source(22, "Tabpanel")]
-<div class="col-md-9">
-    <div class="row">
-        <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => UpateList(t, 1, "Identity"))" Title="Identity" />
-        </div>
-        <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => UpateList(t, 2, "Job specification"))" Title="Job" />
-        </div>
-        <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => UpateList(t, 3, "Wife's profile"))" Title="Wife" />
-        </div>
-        <div class="col-md-3">
-            <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => UpateList(t, 4, "Home Address"))" Title="Home" />
-        </div>
-    </div>
-</div>
-@if (dic.Any())
-{
-    if (tabIndex > dic.Count)
-        tabIndex = dic.Count;
-    <div class="col-md-3 ps-4">
-        <label>Selected tab index</label>
-    </div>
-    <div class="col-md-8">
-        <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1">
-            @foreach (var item in dic)
-            {
-                <RadioItem Value="item.Key" Title="@(item.Value)" />
-            }
-        </RadioList>
-
-    </div>
-    <div class="col-md-12 pt-4">
-        <TabPanel @ref="dynamicPanel" TabIndex="tabIndex" TabIndexChanged="Changed">
-            <Tabs>
-                @foreach (var item in dic)
-                {
-                    <TabPanelItem @key="item.Key" Title="@(item.Value)">
-                        <div class="text-center pt-4 pb-4">
-                            <h3>@(item.Value)</h3>
+@inherits BasePage
+@{
+    base.BuildRenderTree(__builder);
+}
+<h2>Tab panel</h2>
+<p>
+    The Tab Panel can be used in two modes: <b>simple</b> mode and <b>dynamic</b> mode.
+</p>
+<h3>Simple Mode</h3>
+<p>
+    Each tab panel can contain *n* items; the item's <b>title</b> can be specified using `Title`, and its <b>content</b> using `Template`.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row p-3">
+                <div class="pe-1 col-md-6">
+                    <div>
+                        <h4>Width:</h4>
+                        <span class="c-demo-description">In terms of width, this control is proportionate to its <b>container</b>.</span>
+                    </div>
+                    <div>
+                        <h4>Height:</h4>
+                        <span class="c-demo-description">
+                            The height of this control is proportional to the height of its <b>contents</b>.
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <TabPanel>
+                        <Tabs>
+                            <TabPanelItem Title="First Item">
+                                <div class="pt-5 pb-5 text-center">
+                                    <h3>First Item Content</h3>
+                                </div>
+                            </TabPanelItem>
+                            <TabPanelItem Title="Second Item">
+                                <div class="pt-5 pb-5 text-center">
+                                    <h3>Second Item Content</h3>
+                                </div>
+                            </TabPanelItem>
+                        </Tabs>
+                    </TabPanel>
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Window" Page="this" FileName="TabPanel-1" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
+<h3 class="pt-4">DynamicTab panel</h3>
+<p>
+    We can create tab panels <b>dynamically</b> through programming. `TabIndex` represents the <b>index</b> of the currently selected panel.
+</p>
+<TabPanel>
+    <Tabs>
+        <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
+            <div class="row p-3">
+                <div class="col-md-5">
+                    <span class="c-demo-description">In this example, panels can be added and removed dynamically.</span>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <CheckBox Value="dic.ContainsKey(1)" TValue="bool" ValueChanged="@(t => UpateList(t, 1, "Identity"))" Title="Identity" />
                         </div>
-                    </TabPanelItem>
-                }
-            </Tabs>
-        </TabPanel>
-    </div>
-}
-else
-{
-    <div style="height:188px;" class="pt-5 text-center">
-        <h5 style="color:palevioletred">Please select at least one item to display</h5>
-    </div>
-}
-
+                        <div class="col-md-3">
+                            <CheckBox Value="dic.ContainsKey(2)" TValue="bool" ValueChanged="@(t => UpateList(t, 2, "Job specification"))" Title="Job" />
+                        </div>
+                        <div class="col-md-3">
+                            <CheckBox Value="dic.ContainsKey(3)" TValue="bool" ValueChanged="@(t => UpateList(t, 3, "Wife's profile"))" Title="Wife" />
+                        </div>
+                        <div class="col-md-3">
+                            <CheckBox Value="dic.ContainsKey(4)" TValue="bool" ValueChanged="@(t => UpateList(t, 4, "Home Address"))" Title="Home" />
+                        </div>
+                    </div>
+                    @if (dic.Any())
+                    {
+                        if (tabIndex > dic.Count)
+                            tabIndex = dic.Count;
+                        <div class="col-md-3 ps-4">
+                            <label>Selected tab index</label>
+                        </div>
+                        <div>
+                            <RadioList TValue="int" DefaultLayout="DefaultLayout.SpaceAround" Value="dic.ToArray()[tabIndex - 1].Key" ValueChanged="t => tabIndex = dic.Select(t => t.Key).ToList().IndexOf(t) + 1">
+                                @foreach (var item in dic)
+                                {
+                                    <RadioItem Value="item.Key" Title="@(item.Value)" />
+                                }
+                            </RadioList>
+                        </div>
+                        <div class="col-md-12 pt-4">
+                            <TabPanel @ref="dynamicPanel" TabIndex="tabIndex">
+                                <Tabs>
+                                    @foreach (var item in dic)
+                                    {
+                                        <TabPanelItem @key="item.Key" Title="@(item.Value)">
+                                            <div class="text-center pt-4 pb-4">
+                                                <h3>@(item.Value)</h3>
+                                            </div>
+                                        </TabPanelItem>
+                                    }
+                                </Tabs>
+                            </TabPanel>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="height:188px;" class="pt-5 text-center">
+                            <h5 style="color:palevioletred">Please select at least one item to display</h5>
+                        </div>
+                    }
+                </div>
+            </div>
+        </TabPanelItem>
+        <TabPanelItem Title="<i class='fa fa-code'></i>Razor">
+            <Document FolderName="Window" Page="this" FileName="TabPanel-2" />
+        </TabPanelItem>
+    </Tabs>
+</TabPanel>
 
 @code
 {
     TabPanel dynamicPanel;
-    int selectedId = 1, tabIndex = 1;
+    int tabIndex = 1;
     IDictionary<int, string> dic = new Dictionary<int, string>();
-
-    void Changed(int inde)
-    {
-        if (inde != 3)
-            tabIndex = inde;
-    }
 
     protected override void OnInitialized()
     {

@@ -14,11 +14,11 @@ namespace Demo.Service
             RuleFor(t => t.Address).Required();
         }
 
-        public override async Task AddAsync(CustomerAddress entity)
+        public override async Task<CustomerAddress> AddAsync(CustomerAddress entity)
         {
             entity.IsDefault = true;
             entity.IsActive = true;
-            await base.AddAsync(entity);
+            return await base.AddAsync(entity);
         }
     }
 }

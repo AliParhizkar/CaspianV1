@@ -208,18 +208,7 @@ html {
         width:calc(100% - 90px);
     }
 
-    .c-dataview-header > div {
-        height: 36px;
-        text-overflow: clip;
-        padding: 6px 3px;
-        overflow: hidden;
-        user-select: none;
-        background-color: #f0f0f0;
-        border-right: 1px solid #b8b8b8;
-        white-space: nowrap;
-        text-overflow: clip;
-        text-align: center;
-    }
+
 .d-list-head {
     display: flex;
 }
@@ -232,24 +221,31 @@ html {
     background-color: #f5f5f5;
 }
 .d-listview-col-1 {
-    border-right: 1px solid rgba(0,0,0,0.08);
+    border-right: 1px solid rgba(0,0,0,0.2);
     text-align: center;
-    width: calc(100% - 385px)
+    width: calc(100% - 385px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .d-listview-col-2 {
-    border-right: 1px solid rgba(0,0,0,0.08);
+    border-right: 1px solid rgba(0,0,0,0.2);
     text-align: center;
     width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .d-listview-col-3 {
-    border-right: 1px solid rgba(0,0,0,0.08);
+    border-right: 1px solid rgba(0,0,0,0.2);
     width: 100px;
     text-align: center;
 }
 .d-listview-col-4 {
     width: 85px;
-    border-right: 1px solid rgba(0,0,0,0.08);
+    border-right: 1px solid rgba(0,0,0,0.2);
     text-align: center;
+    padding:2px 0;
 }
 .d-listview-col-5 {
     width: 80px;

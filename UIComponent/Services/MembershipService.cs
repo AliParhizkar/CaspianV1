@@ -30,6 +30,7 @@ namespace Caspian.UI
             Search = Activator.CreateInstance<TOther>();
             HideInsertIcon = true;
             OtherService = provider.GetService<IUIService<TOther>>();
+            (OtherService as IInternalUIService<TOther>).OnDataViewInitialize = () => OtherDataViewInitializer();
         }
 
         public int MasterId { get; set; }
@@ -60,14 +61,14 @@ namespace Caspian.UI
             base.DataViewInitializer();
         }
 
-        public MembershipService(IServiceProvider provider, Expression<Func<TAccess, TMaster>> masterPropertyExpression)
-            :base(provider)
-        {
-            masterProperty = (masterPropertyExpression.Body as MemberExpression).Member as PropertyInfo;
-            masterProperty.SetValue(base.Search, Activator.CreateInstance<TOther>());
-            Search = Activator.CreateInstance<TOther>();
-            HideInsertIcon = true;
-        }
+        //public MembershipService(IServiceProvider provider, Expression<Func<TAccess, TMaster>> masterPropertyExpression)
+        //    :base(provider)
+        //{
+        //    masterProperty = (masterPropertyExpression.Body as MemberExpression).Member as PropertyInfo;
+        //    masterProperty.SetValue(base.Search, Activator.CreateInstance<TOther>());
+        //    Search = Activator.CreateInstance<TOther>();
+        //    HideInsertIcon = true;
+        //}
 
         /// <summary>
         /// In Membership-Service We don't want the Upsert-Message to be displayed.
@@ -121,43 +122,41 @@ namespace Caspian.UI
 
         public IQueryable<TAccess> GetFilteredAccess(IServiceScope scope) => base.DataView.GetQuery(scope);
 
-        //void IInternalSearchService<TOther>.DataViewInitializer(DataView<TOther> dataView)
-        //{
-        //    OtherDataView = dataView;
-        //    if (dataView == null)
-        //        return;
-        //    ///We don't want the Deletion-Message to be displayed.
-        //    OtherDataView.DeleteMessage = "";
-        //    OtherDataView.Search = Search;
-        //    OtherDataView.ShowInsertIcon = false;
-        //    OtherDataView.InsertIconState(!onlyForSearch);
-        //    if (typeof(TOther) == typeof(User))
-        //        return;
-        //    PropertyInfo masterIdInfo = null;
-        //    if (masterProperty == null)
-        //        masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
-        //    else
-        //    {
-        //        var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
-        //        masterIdInfo = typeof(TAccess).GetProperty(name);
-        //    }
-        //    var u = Expression.Parameter(typeof(TAccess), "u");
-        //    Expression innerExpr = Expression.Property(u, masterIdInfo);
-        //    if (innerExpr.Type.IsNullableType())
-        //        innerExpr = Expression.Property(innerExpr, "Value");
-        //    innerExpr = Expression.Equal(innerExpr, Expression.Constant(Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType())));
-        //    innerExpr = Expression.Lambda(innerExpr, u);
-        //    var accessListProperties = typeof(TOther).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
-        //    if (masterProperty != null)
-        //        accessListProperties = accessListProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property != masterProperty.Name);
-        //    if (accessListProperties.Count() == 0)
-        //        throw new CaspianException("Error: Type " + typeof(TOther).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
-        //    Expression expression = Expression.Property(Expression.Parameter(typeof(TOther), "t"), accessListProperties.Single());
-        //    var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Any").LastOrDefault().MakeGenericMethod(typeof(TAccess));
-        //    expression = Expression.Call(method, expression, innerExpr);
-        //    expression = Expression.Not(expression);
-        //    OtherDataView.InternalConditionExpr = expression;
-        //}
+        public void OtherDataViewInitializer()
+        {
+            OtherDataView = OtherService.DataView;
+            ///We don't want the Deletion-Message to be displayed.
+            OtherDataView.DeleteMessage = "";
+            OtherDataView.Search = Search;
+            OtherDataView.ShowInsertIcon = false;
+            OtherDataView.InsertIconState(!onlyForSearch);
+            if (typeof(TOther) == typeof(User))
+                return;
+            PropertyInfo masterIdInfo = null;
+            if (masterProperty == null)
+                masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
+            else
+            {
+                var name = masterProperty.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                masterIdInfo = typeof(TAccess).GetProperty(name);
+            }
+            var u = Expression.Parameter(typeof(TAccess), "u");
+            Expression innerExpr = Expression.Property(u, masterIdInfo);
+            if (innerExpr.Type.IsNullableType())
+                innerExpr = Expression.Property(innerExpr, "Value");
+            innerExpr = Expression.Equal(innerExpr, Expression.Constant(Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType())));
+            innerExpr = Expression.Lambda(innerExpr, u);
+            var accessListProperties = typeof(TOther).GetProperties().Where(t => typeof(IEnumerable<TAccess>).IsAssignableFrom(t.PropertyType));
+            if (masterProperty != null)
+                accessListProperties = accessListProperties.Where(t => t.GetCustomAttribute<InversePropertyAttribute>().Property != masterProperty.Name);
+            if (accessListProperties.Count() == 0)
+                throw new CaspianException("Error: Type " + typeof(TOther).Name + " Must has a Property of Type IEnumerable<" + typeof(TAccess).Name + ">");
+            Expression expression = Expression.Property(Expression.Parameter(typeof(TOther), "t"), accessListProperties.Single());
+            var method = typeof(Enumerable).GetMethods().Where(t => t.Name == "Any").LastOrDefault().MakeGenericMethod(typeof(TAccess));
+            expression = Expression.Call(method, expression, innerExpr);
+            expression = Expression.Not(expression);
+            OtherDataView.InternalConditionExpr = expression;
+        }
 
         #region Methods overrided from base class
         /// <summary>
@@ -207,11 +206,8 @@ namespace Caspian.UI
 
         protected override async Task UpsertAndInitializeAfterValidate(TAccess entity)
         {
-            Console.WriteLine($"{DateTime.Now.Microsecond}A");
             await base.UpsertAndInitializeAfterValidate(entity);
-            Console.WriteLine($"{DateTime.Now.Microsecond}B");
             await OtherDataView.ReloadAsync();
-            Console.WriteLine($"{DateTime.Now.Microsecond}C");
         }
 
         protected override async Task InitializeAfterRemove(TAccess entity)
@@ -244,7 +240,7 @@ namespace Caspian.UI
                 
             }
             else
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Please select a row.");
         }
 
         public async Task RemoveAsync()
@@ -260,7 +256,7 @@ namespace Caspian.UI
                 {
                     service.Remove(old);
                     await service.SaveChangesAsync();
-                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "حذف با موفقیت انجام شد.");
+                    await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Successfully deleted.");
                     await base.DataView.ReloadAsync();
                     PropertyInfo otherIdInfo;
                     if (masterProperty == null)
@@ -277,7 +273,7 @@ namespace Caspian.UI
                 }
             }
             else
-                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "لطفا یک ردیف را انتخاب نمائید.");
+                await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Please select a row.");
         }
         //IDictionary<string, SearchType> IInternalSearchService<TOther>.SearchData { get; set; }
     }

@@ -310,7 +310,9 @@ namespace Caspian.Common
         }
         public string ToShortDateString()
         {
-            return $"{Year}/{(int)Month}/{Day}";
+            if (Year == null || Month == null || Day == null)
+                return "";
+            return $"{Year.Value.ToString("D2")}/{(Convert.ToInt32(Month.Value)).ToString("D2")}/{Day.Value.ToString("D2")}";
         }
 
         public int? Year

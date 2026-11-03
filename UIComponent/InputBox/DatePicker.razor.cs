@@ -1,7 +1,7 @@
 ﻿using Caspian.Common;
+using Microsoft.JSInterop;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Caspian.UI
@@ -47,6 +47,8 @@ namespace Caspian.UI
                 var strValue = Convert.ToString(arg.Value);
                 if (strValue.HasValue())
                 {
+                    if (strValue.CompareTo("1600/") == -1)
+                        strValue = new PersianDate(strValue).ToDateOnly().ToShortDateString();
                     if (typeof(TValue).GetUnderlyingType() == typeof(DateTime))
                         Value = (TValue)Convert.ChangeType(strValue, typeof(DateTime));
                     else
@@ -54,7 +56,6 @@ namespace Caspian.UI
                         var value = (DateTime)Convert.ChangeType(strValue, typeof(DateTime));
                         Value = (TValue)(object)value.ToDateOnly();
                     }
-
                 }
                 if (DefaultMode)
                     text = strValue;

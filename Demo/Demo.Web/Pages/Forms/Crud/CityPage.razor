@@ -14,6 +14,17 @@
     <Tabs>
         <TabPanelItem Title="<i class='fa fa-bar-chart'></i>Demo">
             <div class="p-4 pb-0">
+                <div class="c-data-containner row c-controls">
+                    <div class="col-md-1 ps-2">
+                        <IconButton Small IconType="IconType.ArrowLeft" Href="/Demo/ParameterCrud" />
+                    </div>
+                    <div class="col-md-3 pe-3">
+                        <label>Country</label>
+                    </div>
+                    <div class="col-md-8">
+                        <span>@country?.Title</span>
+                    </div>
+                </div>
                 <EntitySearch Service="Service" ColumnsCount="2">
                     <StringTextBox @bind-Value="context.Title" ColSpan="4" />
                     <DropdownList @bind-Value="context.ActiveType" ColSpan="4" />
@@ -30,11 +41,9 @@
             </div>
             <Window Service="Service" Title="City" Style="width:450px">
                 <CaspianForm TEntity="City" Service="Service" OnSubmit="SetCountryId">
-                    <Content Context="city">
-                        <StringTextBox @bind-Value="city.Title" ColSpan="8" />
-                        <DropdownList @bind-Value="city.ActiveType" ColSpan="8" />
-                        <FormCommandButton ColSpan="8" />
-                    </Content>
+                    <StringTextBox @bind-Value="context.Title" ColSpan="8" />
+                    <DropdownList @bind-Value="context.ActiveType" ColSpan="8" />
+                    <FormCommandButton ColSpan="8" />
                 </CaspianForm>
             </Window>
         </TabPanelItem>
@@ -46,9 +55,17 @@
 
 @code
 {
+    Country country;
     void SetCountryId(CancelableEvent<City> e)
     {
         e.Entity.CountryId = CountryId;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var service = CreateScope().GetService<CountryService>();
+        country = await service.SingleAsync(CountryId);
+        await base.OnInitializedAsync();
     }
 
     [Parameter]

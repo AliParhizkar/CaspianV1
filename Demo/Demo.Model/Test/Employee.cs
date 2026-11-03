@@ -11,64 +11,64 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("حوزه")]
+        [DisplayName("Department")]
         public int ScopeId { get; set; }
 
         [ForeignKey(nameof(ScopeId))]
         public SimpleData Scope { get; set; }
 
-        [DisplayName("مرکز هزینه")]
+        [DisplayName("Cost Center")]
         public int? CostCenterId { get; set; }
 
         [ForeignKey(nameof(CostCenterId))] 
         public SimpleData CostCenter { get; set; }
 
-        [DisplayName("نوع استخدام")]
+        [DisplayName("Employment Type")]
         public int? EmploymentTypeId { get; set; }
 
         [ForeignKey(nameof(EmploymentTypeId))]
         public SimpleData EmploymentType { get; set; }
 
-        [DisplayName("نوع کارمندی")]
+        [DisplayName("Employee Category")]
         public int? EmployeeTypeId { get; set; }
 
         [ForeignKey(nameof(EmployeeTypeId))]
         public SimpleData EmployeeType { get; set; }
 
-        [DisplayName("نام")]
+        [DisplayName("First Name")]
         public string FName { get; set; }
 
-        [DisplayName("نام خانوادگی")]
+        [DisplayName("Last Name")]
         public string LName { get; set; }
 
-        [DisplayName("تصویر")]
+        [DisplayName("Image")]
         public byte[] Image { get; set; }
 
-        [DisplayName("جنسیت")]
+        [DisplayName("Gender")]
         public Gender Gender { get; set; }
 
-        [DisplayName("کد ملی")]
+        [DisplayName("National ID")]
         public string IdCard { get; set; }
 
-        [DisplayName("شماره پرونده")]
+        [DisplayName("Personnel File Number")]
         public string FileNo { get; set; }
 
-        [DisplayName("شماره مشتخدم")]
+        [DisplayName("Employee Number")]
         public string EmploymentNo { get; set; }
 
-        [DisplayName("مشخصات شناسنامه ای")]
+        [DisplayName("Personal Identification")]
         public IdentificationDetail IdentificationDetail { get; set; } 
 
-        [DisplayName("سوابق تحصیلی"), CheckOnDelete("کارمند دارای سابقه ی تحصیلی می باشد و امکان حذف وی وجود ندارد.")]
+        [DisplayName("Educational Background"), CheckOnDelete("The employee has educational records and cannot be deleted.")]
         public IList<CourseStudy> CourseStudies { get; set; }
 
-        [DisplayName("آدرس منزل/کار")]
+        [DisplayName("Home/Work Address")]
         public Address Address { get; set; }
 
-        [DisplayName("مشخصات خانوادگی")]
+        [DisplayName("Family Information")]
         public Family Family { get; set; }
 
-        [DisplayName("دین و مذهب")]
+        [DisplayName("Religion")]
         public ReligionAndSubReligion ReligionAndSubReligion { get; set; }
     }
 
@@ -78,13 +78,13 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("نام و نام خانوادگی همسر")]
+        [DisplayName("Spouse's Full Name")]
         public string WifeName { get; set; }
 
-        [DisplayName("تاریخ ازدواج")]
+        [DisplayName("Marriage Date")]
         public DateOnly? MariageDate { get; set; }
 
-        [DisplayName("شغل همسر")]
+        [DisplayName("Spouse's Occupation")]
         public int? WifeJobId { get; set; }
 
         [ForeignKey(nameof(WifeJobId))]
@@ -112,34 +112,34 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("نام پدر")]
+        [DisplayName("Father's Name")]
         public string FatherName { get; set; }
 
-        [DisplayName("شماره شناسنامه")]
+        [DisplayName("Birth Certificate Number")]
         public string IdentificationNo { get; set; }
 
-        [DisplayName("شماره سریال")]
+        [DisplayName("Serial Number")]
         public string IdentificationSerial { get; set; }
 
-        [DisplayName("تاریخ تولد")]
+        [DisplayName("Date of Birth")]
         public DateOnly? BirthDate { get; set; }
 
-        [DisplayName("کشور محل تولد")]
+        [DisplayName("Country of Birth")]
         public int? BirthCountryId { get; set; }
 
-        [DisplayName("استان محل تولد")]
+        [DisplayName("Province of Birth")]
         public int? BirthProvinceId { get; set; }
 
-        [DisplayName("شهر محل تولد")]
+        [DisplayName("City of Birth")]
         public int? BirthCityId { get; set; }
 
-        [DisplayName("کشور محل صدور")]
+        [DisplayName("Country of Issue")]
         public int? RegCountryId { get; set; }
 
-        [DisplayName("استان محل صدور")]
+        [DisplayName("Province of Issue")]
         public int? RegProvinceId { get; set; }
 
-        [DisplayName("شهر محل صدور")]
+        [DisplayName("City of Issue")]
         public int? RegCityId { get; set; }
 
         [ForeignKey(nameof(BirthCountryId))]
@@ -160,7 +160,7 @@ namespace Demo.Model
         [ForeignKey(nameof(RegCityId))]
         public City RegCity { get; set; }
 
-        [DisplayName("دهستان")]
+        [DisplayName("Rural District")]
         public string Village { get; set; }
 
         [ForeignKey(nameof(Id))]
@@ -173,13 +173,13 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("دین")]
+        [DisplayName("Religion")]
         public int? ReligionId { get; set; }
 
         [ForeignKey(nameof(ReligionId))]
         public SimpleData Religion { get; set; }
 
-        [DisplayName("مذهب")]
+        [DisplayName("Denomination")]
         public int? SubReligionId { get; set; }
 
         [ForeignKey(nameof(SubReligionId))]
@@ -195,10 +195,10 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("مذهب")]
+        [DisplayName("Religion")]
         public int ReligionId { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Title")]
         public string Title { get; set; }
 
         [ForeignKey(nameof(ReligionId))]

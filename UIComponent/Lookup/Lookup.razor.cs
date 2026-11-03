@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Caspian.UI
 {
@@ -63,7 +62,7 @@ namespace Caspian.UI
         IDictionary<string, object> GetMainAttribute()
         {
             var className = "t-widget c-lookup";
-            if (Disabled)
+            if (disabled)
                 className += " t-state-disabled";
             if (ErrorMessage.HasValue())
                 className += " t-state-error";
@@ -77,7 +76,7 @@ namespace Caspian.UI
 
         void OpenWindow(bool advanceSearch = false)
         {
-            if (!Disabled)
+            if (!disabled)
             {
                 if (status == WindowStatus.Close)
                     status = WindowStatus.Open;
@@ -260,6 +259,7 @@ namespace Caspian.UI
 
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
             if (AlwaysAdvanceSearch)
                 advanceSearch = true;
             inputAttrs = new Dictionary<string, object>();
@@ -275,11 +275,11 @@ namespace Caspian.UI
                     SearchStr = "";
                 }));
             }
-            if (Disabled)
+            if (disabled)
                 inputAttrs.Add("disabled", true);
             if (HideHeader)
                 AutoHide = true;
-            base.OnParametersSet();
+           
         }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
@@ -316,7 +316,7 @@ namespace Caspian.UI
 
         public async Task SetValue(long id, bool fireEvent = true)
         {
-            if (!Disabled)
+            if (!disabled)
             {
                 var type = typeof(TValue);
                 if (type.IsNullableType())

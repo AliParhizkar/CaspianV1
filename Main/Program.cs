@@ -143,7 +143,7 @@ namespace Main
             }
             if (!builder.Environment.IsDevelopment())
             {
-                using var context = new Caspian.Engine.Model.Context();
+                //using var context = new Caspian.Engine.Model.Context();
                 //context.Database.Migrate();
                 //UserService.AddFirstUser();
             }

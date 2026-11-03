@@ -2,11 +2,14 @@
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    padding:0 2px;
 }
 .fa-chevron-up {
     transition: all 0.2s ease;
 }
-
+.d-open-form{
+    height:105px;
+}
 .d-open-form .fa-chevron-up {
     transform: rotate(180deg);
 }

@@ -153,12 +153,12 @@ namespace Caspian.UI
         public void DetailCaspianValidationValidatorInitializer(CaspianValidationValidator<TDetail> validator)
         {
             DetailValidator = validator;
-            DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail>>(this, t =>
-            {
-                //service.SetBatchServiceData(MasterId, typeof(TMaster));
-                //if (t is IMasterDetailsService<TMaster, TDetail> detailService)
-                //    detailService.SetChangedEntitiesAsync(Master, ChangedEntities);
-            });
+            //DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail>>(this, t =>
+            //{
+            //    //service.SetBatchServiceData(MasterId, typeof(TMaster));
+            //    //if (t is IMasterDetailsService<TMaster, TDetail> detailService)
+            //    //    detailService.SetChangedEntitiesAsync(Master, ChangedEntities);
+            //});
         }
 
         public void DetailDataViewInitializer(DataView<TDetail> dataView)

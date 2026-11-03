@@ -106,7 +106,6 @@ namespace Caspian.UI
                 EditContext.Properties["PropertyName"] = error.PropertyName;
                 ValidationMessageStore.Clear();
                 ValidationMessageStore.Add(fieldIdentifier, error.ErrorMessage);
-                var qqq = EditContext.GetValidationMessages(fieldIdentifier).First();
             }
             EditContext.Properties["ValidationType"] = "FieldChanged";
             EditContext.NotifyValidationStateChanged();
@@ -114,7 +113,6 @@ namespace Caspian.UI
 
         async void ValidationRequested(object sender, ValidationRequestedEventArgs args)
         {
-            
             ValidationMessageStore.Clear();
             var context = new ValidationContext<object>(EditContext.Model);
             using var scope = ServiceScopeFactory.CreateScope();
@@ -125,7 +123,7 @@ namespace Caspian.UI
                 dataService.Language = CaspianDataService.Language;
             }
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
-            if (Validator is IDetailService<TModel> service)
+            if (Validator is DetailService<TModel> service && DetailsService != null)
                 service.SetDetails(DetailsService.Details);
             
             if (OnInternalValidate.HasDelegate)
@@ -136,7 +134,11 @@ namespace Caspian.UI
             if (EditContext.Properties.TryGetValue("DetailType", out var objDetail) && objDetail != null)
                 asyncValidationTask = Validator.ValidateAsync((TModel)EditContext.Model, (Type)objDetail);
             else
+            {
+                if (DetailsService != null)
+                    (Validator as DetailService<TModel>).SetMasterData(DetailsService.MasterId, DetailsService.MasterType);
                 asyncValidationTask = Validator.ValidateAsync(context);
+            }
             EditContext.Properties["AsyncValidationTask"] = asyncValidationTask;
             var result = await asyncValidationTask;
             EditContext.Properties["ValidationType"] = "FormSubmitted";

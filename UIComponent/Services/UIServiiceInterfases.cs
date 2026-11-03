@@ -57,7 +57,9 @@ namespace Caspian.UI
         Task UpdateChildOfModelAsync(Type detailType);
         
         void TabPanelInitializer(IEntityTabPanel tabPanel);
-        
+
+        Action OnDataViewInitialize { get; set; }
+
         /// <summary>
         /// Its fetch UpsertData from database by using MasterId as primary key
         /// </summary>
@@ -79,7 +81,6 @@ namespace Caspian.UI
         Func<IServiceProvider, TEntity, Task<bool>> OnUpsert { get; set; }
 
         IServiceProvider ServiceProvider { get; }
-
 
         void CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator);
     }

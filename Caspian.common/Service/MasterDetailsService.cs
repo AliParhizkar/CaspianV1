@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using System.Collections;
+using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
@@ -6,6 +8,7 @@ using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.InteropServices;
 
 namespace Caspian.Common.Service
 {
@@ -20,6 +23,7 @@ namespace Caspian.Common.Service
             if (DetailService == null)
                 throw new CaspianException($"There are any service that implement IDetailService<{typeof(TDetail)}>");
             var lambda = CreateRuleForEachExpression();
+            DetailService.SetMasterType(typeof(TMaster));
             RuleForEach(lambda).SetValidator(DetailService as IBaseService<TDetail>);
         }
 
@@ -43,6 +47,41 @@ namespace Caspian.Common.Service
             base.BeforeRemoveValidation(context);
         }
 
+        public override Task<ValidationResult> ValidateAsync(ValidationContext<TMaster> context, CancellationToken cancellation = default)
+        {
+            var masterId = typeof(TMaster).GetPrimaryKey().GetValue(context.InstanceToValidate);
+            context.RootContextData["__MasterId"] = masterId;
+            context.RootContextData["__MasterType"] = typeof(TMaster);
+            return base.ValidateAsync(context, cancellation);
+        }
+
+        protected override void SetAsDeleted(TMaster entity)
+        {
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            var details = detailsProperty.GetValue(entity) as ICollection<TDetail>;
+            foreach ( var detail in details)
+                Context.Entry(detail).State = EntityState.Deleted;
+            base.SetAsDeleted(entity);
+        }
+
+        protected override IQueryable<TMaster> GetQueryForRemove()
+        {
+            var query = base.GetQueryForRemove();
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            query = query.Include(detailsProperty.Name);
+            return query;
+        }
+
+        public override async Task<TMaster> RemoveAsync(int id)
+        {
+            var old = await base.RemoveAsync(id);
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            var details = detailsProperty.GetValue(old) as IEnumerable<TDetail>;
+            foreach (var detail in details)
+                Context.Entry(detail).State = EntityState.Deleted;
+            return old;
+        }
+
         public override async Task UpdateAsync(TMaster entity)
         {
             await base.UpdateAsync(entity);
@@ -50,12 +89,12 @@ namespace Caspian.Common.Service
             await DetailService.SubmitChangesForUpdateAsync();
         }
 
-        public override async Task<TMaster> AddAsync(TMaster entity)
+        protected override async Task EntityInitialize(TMaster entity)
         {
-            var result = await base.AddAsync(entity);
-            var value = typeof(TMaster).GetPrimaryKey().GetValue(entity);
-            //await DetailService.SaveChangeAsync(Convert.ToInt32(value), typeof(TMaster));
-            return result;
+            var details = await DetailService.GetDetailsForInsertAsync(typeof(TMaster));
+            var property = typeof(TMaster).GetDetailsProperty(typeof(TDetail));
+            property.SetValue(entity, details);
+            await base.EntityInitialize(entity);
         }
     }
 }

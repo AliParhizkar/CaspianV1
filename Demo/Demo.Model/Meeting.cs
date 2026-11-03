@@ -1,4 +1,5 @@
 ﻿using Caspian.Engine.Model;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,10 +11,12 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
+        [DisplayName("Training Name")]
         public string Name { get; set; }
 
         public int OrderNo { get; set; }
 
+        [DisplayName("Created By")]
         public int UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]

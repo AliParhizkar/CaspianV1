@@ -10,9 +10,10 @@
     int? pageId;
     protected override void OnParametersSet()
     {
-        var sourceAttribute = (Body.Target as RouteView)?.RouteData.PageType.GetCustomAttribute<SourceAttribute>();
+        var pageType = (Body.Target as RouteView)?.RouteData.PageType;
+        var sourceAttribute = pageType?.GetCustomAttribute<SourceAttribute>();
         if (sourceAttribute == null)
-            throw new CaspianException("sourceAttribute is null it should be add to any page that has PageAttribute");
+            throw new CaspianException($"In Page '{pageType}' SourceAttribute is null it should be add to any page that has PageAttribute");
         pageId = (Body.Target as RouteView)?.RouteData.PageType.GetCustomAttribute<SourceAttribute>().Id;
         base.OnParametersSet();
     }

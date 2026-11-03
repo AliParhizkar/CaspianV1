@@ -1,10 +1,17 @@
-﻿.d-main {
+﻿body{
+    color:red;
+}
+.d-cource-title {
+    text-align: center;
+    width: 100%;
+}
+
+.d-main {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     align-items: center;
     border-bottom: 1px solid darkgray;
-    direction:rtl;
 }
 
 .d-number {
@@ -21,7 +28,7 @@
     white-space:nowrap;
 }
 .d-title{
-    text-align:right;
+    text-align:left;
     padding-top:5px;
     color:forestgreen;
 }
@@ -58,15 +65,15 @@ hr {
     padding: 0 20px 0 20px;
 }
 .d-lecture-detail{
-    text-align:right;
+    text-align:left;
     height:50px;
 }
 label{
-    font-size:14px;
+    font-size:12px;
     font-weight:bold;
-    color:darkgray;
 }
-.c-dataview-field {
-    font-size: 12px !important;
-    background-color: red!important;
+.d-lecture-detail ::deep span {
+    font-size: 14px !important;
+    color: #5b7c35;
 }
+
