@@ -9,7 +9,6 @@ namespace Caspian.UI
 {
     public partial class GridColumn<TEntity>:ComponentBase where TEntity: class
     {
-        object value;
         int? AggregateIndex;
         bool isAggregate;
 
@@ -122,15 +121,13 @@ namespace Caspian.UI
             base.OnInitialized();
         }
 
-        protected override void OnParametersSet()
+        object GetValue()
         {
-            if (Id.HasValue())
-                Grid.UpdateColumnData(Id, Title);
             if (Template == null && RowData != null && RowData.UpsertMode == null && RowData.Data != null)
             {
                 if (Field != null)
-                    value = Field.Compile().Invoke(RowData.Data);
-                else if (RowData.DynamicData != null && AggregateIndex.HasValue)
+                    return Field.Compile().Invoke(RowData.Data);
+                if (RowData.DynamicData != null && AggregateIndex.HasValue)
                 {
                     var properties = RowData.DynamicData.GetType().GetProperties().Where(t => t.Name.StartsWith("Info__"));
                     var index = AggregateIndex.Value % properties.Count();
@@ -139,10 +136,17 @@ namespace Caspian.UI
                     {
                         var tempValue = info.GetValue(RowData.DynamicData);
                         if (tempValue != null)
-                            value = Convert.ToInt32(tempValue).DigitGrouping();
+                            return Convert.ToInt32(tempValue).DigitGrouping();
                     }
                 }
             }
+            throw new NotImplementedException();
+        }
+
+        protected override void OnParametersSet()
+        {
+            if (Id.HasValue())
+                Grid.UpdateColumnData(Id, Title);
             base.OnParametersSet();
         }
 

@@ -96,13 +96,13 @@ namespace Caspian.UI
         {
             var type = typeof(IBaseService<TEntity>);
             using var scope = ServiceScopeFactory.CreateScope();
-            //BatchServiceData.MasterType = (DetailsService as ISimpleBatchService)?.MasterType;
             scope.SetUserId(PageData);
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
                 throw new CaspianException($"Service of type {type} not implemented");
-            (Service as IInternalSearchService<TEntity>)?.DataViewInitializer(this);
-            (DetailsService as IInternalBatchService<TEntity>)?.DetailDataViewInitializer(this);
+            (BatchService as IInternalSearchService<TEntity>)?.DataViewInitializer(this);
+            BatchService?.DetailDataViewInitializer(this);
+            InternalConditionExpr = BatchService?.GetDetailsFilterExpression();
             base.OnInitialized();
         }
 

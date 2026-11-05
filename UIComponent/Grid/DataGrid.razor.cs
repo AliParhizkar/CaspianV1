@@ -232,7 +232,6 @@ namespace Caspian.UI
                 else
                     expr = Expression.And(expr, expression);
             }
-            //expr = UpdateExpressionForMasterForm(parameter, expr);
             if (expr != null)
             {
                 var lambda = Expression.Lambda(expr, parameter);
@@ -402,17 +401,6 @@ namespace Caspian.UI
                 selectedIds = new List<int>();
             tableAttrs = new Dictionary<string, object>();
             commandColumnAdded = false;
-            /// Set InternalConditionExpr to Filter DataGrid
-            if (DetailsService  != null)
-            {
-                var param = Expression.Parameter(typeof(TEntity), "t");
-                var pKey = typeof(TEntity).GetPrimaryKey();
-                Expression expr = Expression.Property(param, pKey);
-                var masterId = Convert.ChangeType(DetailsService.MasterId, pKey.PropertyType);
-                expr = Expression.Equal(expr, Expression.Constant(masterId));
-                InternalConditionExpr = (DetailsService as IInternalBatchService<TEntity>).GetDetailsFilterExpression();
-            }
-
             base.OnInitialized();
         }
 

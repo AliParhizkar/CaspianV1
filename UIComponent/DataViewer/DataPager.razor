@@ -86,27 +86,6 @@
     <div class="t-status-text">
         @(str)
     </div>
-@*    @if (!HidePageSize)
-    {
-        var array = new int[] { 5, 10, 25, 50, 100};
-        <div class="c-page-size">
-            <span class="fa fa-angle-up c-icon"></span>
-            <NumericTextBox TValue="int" Value="PageSize" ValueChanged="PageSizeChanged" maxlength="3" />
-            <ul>
-                @foreach(var item in array)
-                {
-                    if (item == PageSize)
-                    {
-                        <li class="c-selected">@item</li>
-                    }
-                    else
-                    {
-                        <li>@item</li>
-                    }
-                }
-            </ul>
-        </div>
-    }*@
 </div>
 @code 
 {

@@ -13,6 +13,7 @@
         }
         else if (Template == null && ValueTemplate == null && ChildContent == null)
         {
+            var value = GetValue();
             if (IsCheckBox)
             {
                 var temp = value == null ? (bool?)(null) : Convert.ToBoolean(value);
@@ -35,6 +36,7 @@
             }
             else
             {
+                var value = GetValue();
                 @ValueTemplate(value)
             }
         }

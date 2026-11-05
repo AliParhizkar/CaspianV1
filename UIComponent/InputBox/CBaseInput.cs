@@ -171,6 +171,7 @@ namespace Caspian.UI
 
         protected void BindEditContext()
         {
+            ///In reset Validation not requierd 
             if (CurrentEditContext != null && !reseting)
             {
                 var model = CurrentEditContext.Model;
@@ -216,7 +217,6 @@ namespace Caspian.UI
                     else
                         Value = (TValue)Convert.ChangeType(obj, type);
                 }
-
                 reseting = false;
                 if (ValueChanged.HasDelegate)
                     await ValueChanged.InvokeAsync(Value);
