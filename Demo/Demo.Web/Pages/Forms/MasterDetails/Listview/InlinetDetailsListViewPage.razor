@@ -24,31 +24,31 @@
                         <hr class="mt-2" />
                     </div>
                     <div class="col-md-8 row ps-3 ">
-                        <div class="col-md-12 text-center pt-2">
+                        <div class="col-md-10 text-center pt-2">
                             <h3>
                                 <span class="d-membership">Orderdetails</span>
                             </h3>
-                            <hr class="mt-2" />
                         </div>
+                        <div class="col-md-1 text-center">
+                            <span @ref="btnOrders" @onclick="ShowOrders" title="Today's Orders" class="fa fa-bars c-small-icon"></span>
+                        </div>
+                        <hr class="mt-2" />
                     </div>
                     <div class="col-md-4">
                         <CaspianForm Service="Service">
-                            <div class=" row pe-3 c-controls">
-                                <DatePicker @bind-Value="Service.UpsertData.Date" ColSpan="8" />
-                                <DropdownList @bind-Value="Service.UpsertData.OrderType" ColSpan="8" />
-                                <ComboBox TEntity="Customer" TValue="int?" @bind-Value="Service.UpsertData.CustomerId" ColSpan="8"
-                                          TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
-                                <ComboBox TEntity="Courier" TValue="int?" @bind-Value="Service.UpsertData.CourierId" ColSpan="8"
-                                          TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
-                                <div class="col-md-12">
-                                    <FormCommandButton />
-                                </div>
-                            </div>
+                            <DatePicker @bind-Value="context.Date" ColSpan="8" />
+                            <DropdownList @bind-Value="context.OrderType" ColSpan="8" />
+                            <ComboBox TEntity="Customer" TValue="int?" @bind-Value="context.CustomerId" ColSpan="8"
+                                      TextExpression="@(t => t.CustomerType == CustomerType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+                            <ComboBox TEntity="Courier" TValue="int?" @bind-Value="context.CourierId" ColSpan="8"
+                                      TextExpression="@(t => t.FName + " " + t.LName + "-" + t.Code)" />
+                            <NumericTextBox Value="context.TotalAmount" ColSpan="8" Title="Total Amount" />
+                            <FormCommandButton ColSpan="8" />
                         </CaspianForm>
                     </div>
                     <div class="col-md-8 ps-3">
-                        <ListView TEntity="OrderDetail" DetailsService="Service.DetailService" ContentHeight="250" Inline PageSize="8"
-                                  OnCancel="HideDescription" OnOpen="HideDescription" OnSave="HideDescription">
+                        <ListView TEntity="OrderDetail" DetailsService="Service.DetailService" ContentHeight="250" Inline Batch PageSize="8"
+                                  OnCancel="HideDescription" OnOpen="HideDescription" OnSave="HideDescription" OnChanged="CalCulateOrderParameters">
                             <HeaderTempalte>
                                 <div class="d-listview-col-1">Product</div>
                                 <div class="d-listview-col-2">Price</div>
@@ -77,11 +77,14 @@
                                     <div class="d-listview-col-2">
                                         <TextField Field="t => t.Price.DigitGrouping()">
                                             <Template>
-                                                @if (detail.Data.Product?.Discount > 0)
-                                                {
-                                                    <div class="d-price d-discount">@(detail.Data.Price + detail.Data.Product.Discount)</div>
-                                                }
-                                                <div class="d-price">@(detail.Data.Price.DigitGrouping())</div>
+                                                <div>
+                                                    @if (detail.Data.Product?.Discount > 0)
+                                                    {
+                                                        <div class="d-price d-discount">@(detail.Data.Price + detail.Data.Product.Discount)</div>
+                                                    }
+                                                    <div class="d-price">@(detail.Data.Price.DigitGrouping())</div>
+
+                                                </div>
                                             </Template>
                                         </TextField>
                                     </div>
@@ -122,6 +125,20 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
+
+<PopupWindow @bind-Status="ordersStatus" TargetElement="btnOrders" TargetHorizontalAnchor="HorizontalAnchor.Left" OffsetLeft="-1"
+             TargetVerticalAnchor="VerticalAnchor.Middle" HorizontalAnchor="HorizontalAnchor.Right" VerticalAnchor="VerticalAnchor.Middle">
+    <div class="d-orders">
+        @foreach (var order in orders)
+        {
+            <div class="d-order-item">
+                <span>@order.OrderNo</span>
+                <span>@order.TotalAmount.DigitGrouping()</span>
+                <span @onclick="async () => await InitializeOrder(order.Id)" class="fa fa-pencil c-small-icon"></span>
+            </div>
+        }
+    </div>
+</PopupWindow>
 @code
 {
     StringTextBox txtDescription;
@@ -129,12 +146,37 @@
     bool ShowDescriptionStatus;
     OrderDetail selectedDetail;
     UpsertMode upsertMode;
+    ElementReference? btnOrders;
+    IList<Order> orders;
+    double left;
+    WindowStatus ordersStatus;
 
     protected override void OnInitialized()
     {
         Service.DetailService.MasterId = OrderId;
         Service.OnCreate = t => t.Date = DateTime.Now.ToDateOnly();
         base.OnInitialized();
+    }
+
+    async Task InitializeOrder(int orderId)
+    {
+        await Service.ReloadForUpdate(orderId);
+        ordersStatus = WindowStatus.Close;
+    }
+
+    async Task ShowOrders(MouseEventArgs e)
+    {
+        using var service = CreateScope().GetService<OrderService>();
+        var todayDate = DateTime.Now.ToDateOnly();
+        orders = await service.GetAll().Where(t => t.Date == todayDate).ToListAsync();
+        left = e.ClientX - e.OffsetX - 200;
+        ordersStatus = WindowStatus.Open;
+    }
+
+    void CalCulateOrderParameters()
+    {
+        var order = Service.UpsertData;
+        order.TotalAmount = Service.DetailService.DataView.GetBatchEntities().Sum(t => t.Quantity * t.Price);
     }
 
     void HideDescription()
@@ -168,12 +210,13 @@
     {
         if (detail.ProductId > 0)
         {
+            if (detail.Id == 0)
+                detail.Quantity = 1;
             using var service = CreateScope().GetService<ProductService>();
             var old = await service.SingleAsync(detail.ProductId);
             detail.Price = old.Price;
+            detail.Discount = old.Discount ?? 0;
             detail.Product = old;
-            if (detail.Id == 0)
-                detail.Quantity = 1;
             await txtQuantity.FocusAsync();
         }
     }

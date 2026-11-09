@@ -23,7 +23,7 @@ namespace Caspian.Common.Service
 
         }
 
-        protected IReadOnlyCollection<TEntity> Source {  get; private set; }
+        public IReadOnlyCollection<TEntity> Source {  get; private set; }
 
         internal void SetDetails(IEnumerable<TEntity> details)
         {
@@ -96,6 +96,7 @@ namespace Caspian.Common.Service
                 switch(change.ChangeType)
                 {
                     case ChangeType.Added:
+
                         await AddAsync(change.Entity);
                         var newEntity = Activator.CreateInstance<TEntity>();
                         foreach (var info in typeof(TEntity).GetProperties())

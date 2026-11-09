@@ -21,12 +21,12 @@ namespace Demo.Service
             RuleFor(t => t.Date).CustomValue(t => t == default, "Please specify the order date");
             RuleFor(t => t.TotalAmount).Custom(t =>
             {
-                var sum = t.OrderDetails.Sum(t => t.Quantity * t.Price);
+                var sum = DetailService.Source.Sum(t => t.Quantity * t.Price);
                 return sum != t.TotalAmount;
             }, "Total amount is incorrect");
             RuleFor(t => t.OrderDetails).Custom(t =>
             {
-                return t.OrderDetails.Count() == 0;
+                return DetailService.Source.Count() == 0;
             }, "The order must has at least products");
             RuleFor(t => t.OrderStatus).Custom(t => t.CourierId.HasValue && t.OrderStatus == OrderStatus.Canceled,
                 "The order has a courier and it is not possible to cancel it.");

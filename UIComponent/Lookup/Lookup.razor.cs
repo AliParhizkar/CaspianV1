@@ -1,12 +1,12 @@
 ﻿using Caspian.Common;
-using Caspian.Common.Extension;
+using Microsoft.JSInterop;
 using Caspian.Common.Service;
+using System.Linq.Expressions;
+using System.Linq.Dynamic.Core;
+using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.JSInterop;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 
 namespace Caspian.UI
 {
@@ -30,7 +30,7 @@ namespace Caspian.UI
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string WindowTitle { get; set; } = "حستجو ...";
+        public string WindowTitle { get; set; } = "Search ...";
 
         [Parameter]
         public bool HideIcon { get; set; }
@@ -89,7 +89,7 @@ namespace Caspian.UI
         {
             OpenWindow();
             if (mustClear)
-         {
+            {
                 await SetTextOnClientAsync("");
                 SearchStr = "";
                 mustClear = false;
@@ -175,7 +175,7 @@ namespace Caspian.UI
             Expression expr = Expression.Property(t, typeof(TEntity).GetPrimaryKey());
             expr = Expression.Equal(expr, Expression.Constant(value));
             if (TextExpression == null)
-                throw new CaspianException("خطا: Please specify TextExpression parameter in lookup component");
+                throw new CaspianException("Error: Please specify TextExpression parameter in lookup component");
             var result = await service.GetAll().Where(Expression.Lambda(expr, t)).Select(TextExpression).FirstAsync();
             return result;
         }

@@ -3,25 +3,13 @@
 @{
     base.BuildRenderTree(__builder);
 }
-@if (flag)
-{
-    <div style="width:500px; margin:5px auto">
-        <StringTextBox @bind-Value="text" @ref="txt" MultiLine />
-    </div>
-}
-
-<button @onclick="FocuseAsync">Add</button>
+<div style="width:500px; margin:5px auto">
+    <Lookup TValue="int" TEntity="Product" @bind-Value="productId" TextExpression="t => t.Title">
+       <Demo.Web.Pages.ProductLookupWindow />
+    </Lookup>       
+</div>
 
 @code
 {
-    bool flag;
-    string text;
-    StringTextBox txt;
-
-    async Task FocuseAsync()
-    {
-        flag = true;
-        await Task.Delay(1);
-        await txt.FocusAsync();
-    }
+    int productId;
 }

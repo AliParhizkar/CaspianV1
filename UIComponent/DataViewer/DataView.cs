@@ -422,6 +422,8 @@ namespace Caspian.UI
             }
             else if (SelectedRowIndex != null && SelectedRowIndex.Value >= items.Count)
                 SelectedRowIndex = items.Count - 1;
+            if (InsertContext != null && DetailsService != null)
+                typeof(TEntity).GetForeignKey(DetailsService.MasterType).SetValue(InsertContext.Model, DetailsService.MasterId);
             StateHasChanged();
         }
 
@@ -507,3 +509,4 @@ namespace Caspian.UI
         }
     }
 }
+

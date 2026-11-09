@@ -6,9 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Model
 {
-    [Table("Countries ", Schema = "demo")]
+    [Table("Countries", Schema = "demo")]
     public class Country: BaseEntity
     {
+        [Key]
+        public int Id { get; set; }
+
         [DisplayName("Title")]
         public string Title { get; set; }
 

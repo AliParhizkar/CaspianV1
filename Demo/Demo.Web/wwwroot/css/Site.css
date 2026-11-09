@@ -227,6 +227,7 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 37px;
 }
 .d-listview-col-2 {
     border-right: 1px solid rgba(0,0,0,0.2);
@@ -235,34 +236,49 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 37px;
 }
 .d-listview-col-3 {
     border-right: 1px solid rgba(0,0,0,0.2);
     width: 100px;
     text-align: center;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .d-listview-col-4 {
     width: 85px;
     border-right: 1px solid rgba(0,0,0,0.2);
     text-align: center;
-    padding:2px 0;
+    padding: 2px 0;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .d-listview-col-5 {
     width: 80px;
     overflow: hidden;
     text-align: center;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .d-listview-col-6 {
     padding-left: 5px;
     border-top: 1px solid rgba(0,0,0,0.08);
-    padding-top:5px;
-    width:calc(100% - 100px);
+    padding-top: 5px;
+    width: calc(100% - 100px);
+    height: 37px;
 }
 .d-listview-col-7 {
     width: 100px;
     border-top: 1px solid rgba(0,0,0,0.08);
-    font-weight:bold;
-    color:darkslategray;
+    font-weight: bold;
+    color: darkslategray;
+    height: 37px;
 }
     .c-data-fields {
         padding: 5px;

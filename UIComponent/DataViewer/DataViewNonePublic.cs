@@ -1,18 +1,18 @@
-﻿using Caspian.Common;
-using Caspian.Common.Extension;
+﻿using System.Text;
+using System.Linq;
+using Caspian.Common;
+using System.Reflection;
+using Microsoft.JSInterop;
+using System.Threading.Tasks;
 using Caspian.Common.Service;
+using System.Linq.Expressions;
+using Caspian.Common.Extension;
+using System.Linq.Dynamic.Core;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.JSInterop;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace Caspian.UI
@@ -100,7 +100,9 @@ namespace Caspian.UI
             serviceType = scope.ServiceProvider.GetService(type)?.GetType();
             if (serviceType == null)
                 throw new CaspianException($"Service of type {type} not implemented");
-            (BatchService as IInternalSearchService<TEntity>)?.DataViewInitializer(this);
+            
+            (DetailsService as IInternalSearchService<TEntity>)?.DataViewInitializer(this);
+            (Service as IInternalSearchService<TEntity>)?.DataViewInitializer(this);
             BatchService?.DetailDataViewInitializer(this);
             InternalConditionExpr = BatchService?.GetDetailsFilterExpression();
             base.OnInitialized();

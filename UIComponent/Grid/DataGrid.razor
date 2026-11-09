@@ -53,7 +53,6 @@
                                     int index = 0;
                                     var pKey = typeof(TEntity).GetPrimaryKey();
                                     object selectId = selectedEntity != null ? pKey.GetValue(selectedEntity) : null;
-                                    Console.WriteLine($"-----{DateTime.Now.TimeOfDay.ToString()}");
                                     foreach (var item in items)
                                     {
                                         var id = Convert.ToInt32(pKey.GetValue(item));
@@ -115,8 +114,6 @@
                                                 else
                                                 {
                                                     @Columns(rowData)
-                                                    Console.Write($"id: {id}, ");
-
                                                 }
                                             </CascadingValue>
                                         </tr>

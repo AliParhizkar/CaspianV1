@@ -29,6 +29,7 @@ namespace Caspian.UI
 
         protected override void OnInitialized()
         {
+            grid = Service.DataView as DataGrid<TEntity>;
             SearchData = Activator.CreateInstance<TEntity>();
             var service = Service as IInternalSearchService<TEntity>;
             if (service != null)

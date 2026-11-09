@@ -41,7 +41,6 @@ namespace Caspian.UI
         {
             var masterDetailService = service as IMasterDetailsService<TMaster, TDetail>;
             masterDetailService.DetailService.SetChangedEntities(DetailService.ChangedEntities);
-            masterDetailService.DetailService.SetDetails(DetailService.Details);
             return base.InitializeBeforeUpsert(service);
         }
 

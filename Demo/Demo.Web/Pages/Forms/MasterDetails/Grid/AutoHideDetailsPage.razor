@@ -81,14 +81,18 @@
                             </a>
                         </div>
                         <div class="col-md-10 text-center">
-                            <span class="d-membership">Receipt</span>
+                            <h3>
+                                <span class="d-membership">Receipt</span>
+                            </h3>
                         </div>
                         <hr class="mt-2" />
                     </div>
                     <div class="col-md-9 ps-3 ">
                         <div class="text-center row">
                             <div class="col-md-11">
-                                <span class="d-membership">Receipt details</span>
+                                <h3>
+                                    <span class="d-membership">Receipt details</span>
+                                </h3>
                             </div>
                             <div class="col-md-1 text-left">
                                 <span @onclick="ShowRecipts" @ref="btnReceipts" class="fa fa-bars c-small-icon"></span>
@@ -120,7 +124,7 @@
                                         </Lookup>
                                     </EditTemplate>
                                 </GridColumn>
-                                <GridColumn Field="t => t.QuantityMain" style="width:110px;">
+                                <GridColumn Field="t => t.QuantityMain" style="width:110px;" Title="#Main Unit">
                                     <EditTemplate>
                                         <NumericTextBox @ref="txtMainUnit" @onkeyup="async e =>  await MainUnitChanged(e, con.Data, con.UpsertMode.Value)" @bind-Value="con.Data.QuantityMain" />
                                     </EditTemplate>
@@ -130,7 +134,7 @@
                                         <span>@(con.Data?.Material?.MainUnit?.Title)</span>
                                     </Template>
                                 </GridColumn>
-                                <GridColumn Field="t => t.QuantitySub" style="width:110px;">
+                                <GridColumn Field="t => t.QuantitySub" style="width:120px;" Title="#Secondary Unit" >
                                     <EditTemplate>
                                         @if (con.Data?.Material?.SubunitId != null || con.Data?.Material?.Subunit?.Title != null)
                                         {
@@ -138,7 +142,7 @@
                                         }
                                     </EditTemplate>
                                 </GridColumn>
-                                <GridColumn Field="t => t.Material.Subunit.Title" Title="Sub unit" style="width:80px">
+                                <GridColumn Field="t => t.Material.Subunit.Title" Title="Secondary Unit" style="width:110px">
                                     <Template>
                                         <span>@(con.Data?.Material?.Subunit?.Title)</span>
                                     </Template>

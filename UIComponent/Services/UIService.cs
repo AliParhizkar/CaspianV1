@@ -395,7 +395,10 @@ namespace Caspian.UI
 
         public void CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator)
         {
-            validator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TEntity>>(this, InitializeValidatorService);
+            validator.OnBeforeValidation = service =>
+            {
+                throw new NotImplementedException();
+            };
         }
         #endregion
 

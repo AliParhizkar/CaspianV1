@@ -16,7 +16,7 @@ namespace Caspian.UI
         /// <summary>
         /// It's fire after creating a instance of service. We can initialize service at this time
         /// </summary>
-        internal EventCallback<IBaseService<TModel>> OnInternalValidate { get; set; }
+        internal Action<IBaseService<TModel>> OnBeforeValidation { get; set; }
 
         [Inject]
         public IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -43,9 +43,6 @@ namespace Caspian.UI
         public bool OnlyValidateOnSubmit { get; set; }
 
         internal IBaseService<TModel> Validator {  get; private set; }
-
-        internal DetailService<TModel> DetailValidator { get { return Validator as DetailService<TModel>; } }
-
 
         ValidationMessageStore ValidationMessageStore;
 
@@ -85,9 +82,9 @@ namespace Caspian.UI
                 dataService.UserId = CaspianDataService.UserId;
                 dataService.Language = CaspianDataService.Language;
             }
-            var validator = (CaspianValidator<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
-            if (validator is DetailService<TModel> detailService)
-                detailService.SetDetails(DetailsService.Details);
+            var validator = (BaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
+            if (OnBeforeValidation != null)
+                OnBeforeValidation(validator);
             var validationResult = validator.ValidateAsync(EditContext.Model as TModel, option => 
             {
                 option.IncludeProperties(args.FieldIdentifier.FieldName);
@@ -125,9 +122,8 @@ namespace Caspian.UI
             Validator = (IBaseService<TModel>)Activator.CreateInstance(ValidatorType, scope.ServiceProvider);
             if (Validator is DetailService<TModel> service && DetailsService != null)
                 service.SetDetails(DetailsService.Details);
-            
-            if (OnInternalValidate.HasDelegate)
-                await OnInternalValidate.InvokeAsync(Validator);
+            if (OnBeforeValidation != null)
+                OnBeforeValidation(Validator);
             if (CaspianForm != null && CaspianForm.OnBeforeValidate.HasDelegate)
                 await CaspianForm.OnBeforeValidate.InvokeAsync();
             Task<ValidationResult> asyncValidationTask;

@@ -7,8 +7,8 @@ using System.Linq.Dynamic.Core;
 using FluentValidation.Results;
 using Caspian.Common.Extension;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.Common.Service
 {

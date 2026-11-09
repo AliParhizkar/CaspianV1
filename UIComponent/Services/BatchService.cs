@@ -22,6 +22,7 @@ namespace Caspian.UI
             if (DataView != null)
             {
                 DataView.InternalConditionExpr = GetDetailsFilterExpression();
+                //await DataView.ReadyToInsert();
                 await DataView.ReloadAsync();
             }
         }
@@ -132,8 +133,6 @@ namespace Caspian.UI
             }
         }
 
-        public CaspianValidationValidator<TDetail> DetailValidator { get; set; }
-
         public IList<ChangedEntity<TDetail>> ChangedEntities { get; private set; }
 
         public int MasterId { get; set; }
@@ -152,13 +151,10 @@ namespace Caspian.UI
 
         public void DetailCaspianValidationValidatorInitializer(CaspianValidationValidator<TDetail> validator)
         {
-            DetailValidator = validator;
-            //DetailValidator.OnInternalValidate = EventCallback.Factory.Create<IBaseService<TDetail>>(this, t =>
-            //{
-            //    //service.SetBatchServiceData(MasterId, typeof(TMaster));
-            //    //if (t is IMasterDetailsService<TMaster, TDetail> detailService)
-            //    //    detailService.SetChangedEntitiesAsync(Master, ChangedEntities);
-            //});
+            validator.OnBeforeValidation = service =>
+            {
+                //throw new NotImplementedException();
+            };
         }
 
         public void DetailDataViewInitializer(DataView<TDetail> dataView)
