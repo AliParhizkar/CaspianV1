@@ -61,15 +61,6 @@ namespace Caspian.UI
             base.DataViewInitializer();
         }
 
-        //public MembershipService(IServiceProvider provider, Expression<Func<TAccess, TMaster>> masterPropertyExpression)
-        //    :base(provider)
-        //{
-        //    masterProperty = (masterPropertyExpression.Body as MemberExpression).Member as PropertyInfo;
-        //    masterProperty.SetValue(base.Search, Activator.CreateInstance<TOther>());
-        //    Search = Activator.CreateInstance<TOther>();
-        //    HideInsertIcon = true;
-        //}
-
         /// <summary>
         /// In Membership-Service We don't want the Upsert-Message to be displayed.
         /// </summary>
@@ -83,40 +74,9 @@ namespace Caspian.UI
             return new EnumSearch<TValue>(lambda.Body, (this as IInternalSearchService<TOther>).EnumFields);
         }
 
-        //IDictionary<string, ICollection> IInternalSearchService<TOther>.EnumFields { get; set; }
-
-        //void IInternalSearchService<TOther>.HideFooter() 
-        //{
-        //    hideFooter = true;
-        //}
-
-        //void IInternalSearchService<TOther>.LookupInitializer(ILookup<TOther> lookup)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //bool IInternalSearchService<TOther>.IsLookup()
-        //{
-        //    return false;
-        //}
-
-        //IList<ValueTypeContainer> IInternalSearchService<TOther>.ValueTypes { get; set; }
-
-        //Task IInternalSearchService<TOther>.SelectItemOnLookup()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //DataView<TOther> ISearchService<TOther>.DataView { get { return OtherDataView; } }
-
         public DataView<TOther> OtherDataView { get; private set; }
 
         public TOther Search { get; set; }
-
-        //void IInternalSearchService<TOther>.OnlyForSearch()
-        //{
-        //    onlyForSearch = true;
-        //}
 
         public IQueryable<TOther> GetFilteredOthers(IServiceScope scope) => OtherDataView.GetQuery(scope);
 
@@ -159,24 +119,6 @@ namespace Caspian.UI
         }
 
         #region Methods overrided from base class
-        /// <summary>
-        /// This method Execute before form submit to validate. It set MasterId and OtherId (For example GroupId and CustomerId in Customers-Groups Membership)
-        /// </summary>
-        //protected override async Task InitializeBeforeValidate(TAccess entity)
-        //{
-        //    await base.InitializeBeforeValidate(entity);
-        //    var other = DataView.GetSelectedData();
-        //    if (other != null)
-        //    {
-        //        var otherKey = typeof(TAccess).GetForeignKey(typeof(TOther));
-        //        var masterIdInfo = typeof(TAccess).GetForeignKey(typeof(TMaster));
-        //        typeof(TAccess).GetPrimaryKey().SetValue(entity, 0);
-        //        var id = typeof(TOther).GetPrimaryKey().GetValue(other);
-        //        otherKey.SetValue(entity, id);
-        //        masterIdInfo.SetValue(entity, Convert.ChangeType(MasterId, masterIdInfo.PropertyType.GetUnderlyingType()));
-        //    }
-        //}
-
         protected override void InitializeBeforeValidation(TAccess entity)
         {
             var other = OtherDataView.GetSelectedData();
@@ -227,7 +169,6 @@ namespace Caspian.UI
             await OtherDataView.SelectRowById(Convert.ToInt32(otherKey));
             StateHasChanged();
         }
-
         #endregion
 
         public async Task AddAsync()
@@ -275,6 +216,5 @@ namespace Caspian.UI
             else
                 await jSRuntime.InvokeVoidAsync("caspian.common.showMessage", "Please select a row.");
         }
-        //IDictionary<string, SearchType> IInternalSearchService<TOther>.SearchData { get; set; }
     }
 }

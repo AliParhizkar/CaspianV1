@@ -66,7 +66,7 @@ namespace Caspian.Engine.ReportGenerator
             }
             using var service = CreateScope().GetService<ReportService>();
             var old = await service.SingleAsync(ReportId);
-            service.SetChangedEntities(null, changedEntities);
+            service.Detail2Service.SetChangedEntities(changedEntities);
             await service.UpdateAsync(old);
             await service.SaveChangesAsync();
         }

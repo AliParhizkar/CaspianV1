@@ -17,7 +17,6 @@ namespace Caspian.Common.Service
         public MasterDetailsService(IServiceProvider provider)
             : base(provider)
         {
-            //Details = new List<TDetail>();
             UserId = provider.GetService<CaspianDataService>().UserId;
             DetailService = provider.GetService<IBaseService<TDetail>>() as DetailService<TDetail>;
             if (DetailService == null)

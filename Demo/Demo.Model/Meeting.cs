@@ -22,14 +22,19 @@ namespace Demo.Model
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
+        [DisplayName("Recording Video")]
         public bool RecordingVideoIs {  get; set; }
 
+        [DisplayName("Recording Audio")]
         public bool RecordingAudioIs { get; set; }
 
+        [DisplayName("Is Active")]
         public bool ActiveIs {  get; set; }
 
+        [DisplayName("Training Scope")]
         public LearningScope LearningScope { get; set; }
 
+        [DisplayName("Server Type")]
         public ServerType ServerType { get; set; }
 
     }

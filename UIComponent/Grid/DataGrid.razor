@@ -28,8 +28,8 @@
             {
                 if (ToolsBar == null)
                 {
-                    <DataToolsBar TEntity="TEntity" ShowInsertIcon="(ShowInsertIcon ?? showInsertIcon) == true" DisableInsertIcon="disableInsertIcon" 
-                    OnInsertButtonClicked="CreateInsert" />
+                    <DataToolsBar TEntity="TEntity" ShowInsertIcon="ShowInsertIcon == true" DisableInsertIcon="disableInsertIcon" 
+                            OnInsertButtonClicked="CreateInsert" />
                 }
                 else
                     @ToolsBar

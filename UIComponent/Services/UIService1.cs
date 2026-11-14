@@ -14,7 +14,7 @@ namespace Caspian.UI
         public UIService(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            DetailService = new BatchService<TMaster, TDetail>(UpsertData);
+            DetailService = new BatchService<TMaster, TDetail>(serviceProvider, UpsertData);
         }
 
         public IBatchService<TDetail> DetailService { get; set; }
@@ -60,21 +60,27 @@ namespace Caspian.UI
 
         protected virtual Task SetChangedEntities()
         {
-            var masterDetailService = Form?.ValidationValidator?.Validator as IMasterDetailsService<TMaster, TDetail>;
-            if (masterDetailService != null)
-            {
-                masterDetailService.DetailService.SetChangedEntities(DetailService.ChangedEntities);
-                masterDetailService.DetailService.SetDetails(DetailService.Details);
-            }
-            return Task.CompletedTask;
+            throw new NotImplementedException();
+            //var masterDetailService = Form?.ValidationValidator?.Validator as IMasterDetailsService<TMaster, TDetail>;
+            //if (masterDetailService != null)
+            //{
+            //    masterDetailService.DetailService.SetChangedEntities(DetailService.ChangedEntities);
+            //    masterDetailService.DetailService.SetDetails(DetailService.Details);
+            //}
+            //return Task.CompletedTask;
         }
 
-        protected override async Task InitializeValidatorService(IBaseService<TMaster> service)
+        /// <summary>
+        /// This Method Initialize Validator Service Data "ChangedEntities"(All change on entity) and "Details" (All Detail entity)
+        /// </summary>
+        /// <param name="service">Validator Service(MasterDetailsService<TMaster, TDetail>) that used for validation</param>
+        /// <returns></returns>
+        protected override void InitializeValidatorService(IBaseService<TMaster> service)
         {
             var masterDetailService = service as IMasterDetailsService<TMaster, TDetail>;
             masterDetailService.DetailService.SetChangedEntities(DetailService.ChangedEntities);
-            masterDetailService.DetailService.SetDetails(DetailService?.Details);
-            await base.InitializeValidatorService(service);
+            masterDetailService.DetailService.SetDetails(DetailService.Details);
+            base.InitializeValidatorService(service);
         }
     }
 }

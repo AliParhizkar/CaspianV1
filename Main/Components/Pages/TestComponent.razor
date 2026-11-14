@@ -3,13 +3,32 @@
 @{
     base.BuildRenderTree(__builder);
 }
-<div style="width:500px; margin:5px auto">
-    <Lookup TValue="int" TEntity="Product" @bind-Value="productId" TextExpression="t => t.Title">
-       <Demo.Web.Pages.ProductLookupWindow />
-    </Lookup>       
+<div style="width:500px; margin:5px auto" class="row">
+    <StringTextBox MultiLine MaxLength="1000" @bind-Value="sqlCommand" Rows="3" />
+    <button @onclick="Conect">Run</button>
 </div>
-
+<span style="color:red">@errorMessage</span>
+<StringTextBox Value="@CS.Con"  />
 @code
 {
-    int productId;
+    string errorMessage, sqlCommand;
+    async Task Conect()
+    {
+        try
+        {
+            errorMessage = "";
+            StateHasChanged();
+            await Task.Delay(100);
+            using var context = new Demo.Model.Context();
+            context.Database.SetConnectionString(CS.Con);
+            context.Database.OpenConnection();
+
+            context.Database.ExecuteSqlRaw($@"{sqlCommand}");
+            ShowMessage("Insert was succefuly");
+        }
+        catch(Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
 }

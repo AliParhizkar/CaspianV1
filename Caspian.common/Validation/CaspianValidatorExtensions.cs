@@ -511,19 +511,21 @@ namespace Caspian.Common
         {
             ruleBuilder.CustomAsync(async (value, context, token) =>
             {
-                PropertyInfo detailsProperty = null;
+                PropertyInfo detailsProperty = null, details1Property = null;
                 if (context.RootContextData.ContainsKey("__DetailsProperty"))
                     detailsProperty = context.RootContextData["__DetailsProperty"] as PropertyInfo;
+                if (context.RootContextData.ContainsKey("__Details1Property"))
+                    details1Property = context.RootContextData["__Details1Property"] as PropertyInfo;
                 foreach (var info in typeof(TModel).GetProperties())
                 {
                     if (info.PropertyType.IsEnumerableType() && info.PropertyType != typeof(string) && info.PropertyType != typeof(byte[]))
                     {
                         var attr = info.GetCustomAttribute<CheckOnDeleteAttribute>();
                         if (attr == null)
-                            throw new CaspianException("خطا: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
+                            throw new CaspianException("Error: On type " + info.DeclaringType.Name + " property " + info.Name + " must has CheckOnDelete Attribute", 5);
                         if (!attr.Check)
                             continue;
-                        if (info == detailsProperty)
+                        if (info == detailsProperty || info == details1Property)
                             continue;
                         var type = info.PropertyType.GetGenericArguments()[0];
                         var key = type.GetPrimaryKey();

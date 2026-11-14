@@ -53,6 +53,8 @@ namespace Caspian.UI
             (Service as IInternalBatchService<TEntity>).DetailFormInitializer(null);
         }
 
+        internal void ChangeState() => StateHasChanged();
+
         protected override void OnParametersSet()
         {
             windowProperties = new Dictionary<string, object>();

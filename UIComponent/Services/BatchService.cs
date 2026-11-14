@@ -1,16 +1,20 @@
 ﻿using Caspian.Common;
 using System.Reflection;
+using System.Threading.Tasks;
 using Caspian.Common.Service;
 using System.Linq.Expressions;
 using Caspian.Common.Extension;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Caspian.UI
 {
     internal class BatchService<TMaster, TDetail>: IInternalBatchService<TDetail> where TMaster : class where TDetail : class 
     {
-        public BatchService(TMaster master) 
+        BaseComponentService baseComponentService;
+        public BatchService(IServiceProvider provider, TMaster master) 
         {
+            baseComponentService = provider.GetService<BaseComponentService>();
             ChangedEntities = new List<ChangedEntity<TDetail>>();
             Master = master;
         }
@@ -153,21 +157,14 @@ namespace Caspian.UI
         {
             validator.OnBeforeValidation = service =>
             {
-                //throw new NotImplementedException();
+                (service as DetailService<TDetail>).SetChangedEntities(ChangedEntities);
+                (service as DetailService<TDetail>).SetDetails(Details);
             };
         }
 
         public void DetailDataViewInitializer(DataView<TDetail> dataView)
         {
             DataView = dataView;
-            if (dataView != null)
-            {
-                //if (DataView.Inline)
-                //    DataView.Batch = true;
-                //var value = typeof(TMaster).GetPrimaryKey().GetValue(Master);
-                //DataView.InsertIconState(true);
-                //DataView.InternalConditionExpr = (this as IInternalBatchService<TDetail>).GetDetailsFilterExpression();
-            }
         }
 
         public void DetailTypeWindowInitialize(TypeWindow<TDetail> window)
@@ -183,8 +180,11 @@ namespace Caspian.UI
                     info.SetValue(detail, value);
                 }
                 await TypeWindow.OpenAsync(detail, DataView.GetSource().ToList());
-                (this as IInternalUIService<TMaster>).StateHasChanged();
-                await Task.Delay(100);
+                if (this is IInternalUIService<TMaster> service)
+                {
+                    service.StateHasChanged();
+                    await Task.Delay(100);
+                }
                 if (DetailForm != null)
                     await DetailForm.FocusAsync();
             });
@@ -195,17 +195,17 @@ namespace Caspian.UI
             DetailForm = form;
             if (DetailForm != null)
             {
-                DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
-                //DetailDataView.
+                //DetailForm.OnInternalReset = EventCallback.Factory.Create(this, TypeWindow.Close);
                 DetailForm.OnInternalValidSubmit = EventCallback.Factory.Create<TDetail>(this, async detail =>
                 {
-                    TypeWindow.Close();
                     var id = Convert.ToInt32(typeof(TDetail).GetPrimaryKey().GetValue(detail));
                     if (id == 0)
                         await DataView.InsertAsync(detail);
                     else
                         await DataView.UpdateAsync(detail);
-                    (this as IInternalUIService<TMaster>).StateHasChanged();
+                    DataView.ChangeState();
+                    TypeWindow.Close();
+                    TypeWindow.ChangeState();
                 });
             }
 ;

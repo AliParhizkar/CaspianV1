@@ -1,6 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿using FluentValidation;
+using System.Linq.Expressions;
 using Caspian.Common.Extension;
-using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,137 +13,75 @@ namespace Caspian.Common.Service
         public MasterDetailsService(IServiceProvider provider):
             base(provider)
         {
-            var detailsProperty = typeof(TMaster).GetProperties().Single(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
-            //ChangedEntities1 = new List<ChangedEntity<TDetail1>>();
+            UserId = provider.GetService<CaspianDataService>().UserId;
+            Detail2Service = provider.GetService<IBaseService<TDetail1>>() as DetailService<TDetail1>;
+            if (Detail2Service == null)
+                throw new CaspianException($"There are any service that implement IDetailService<{typeof(TDetail1)}>");
+            var lambda = CreateRuleForEachExpression();
+            Detail2Service.SetMasterType(typeof(TMaster));
+            RuleForEach(lambda).SetValidator(Detail2Service as IBaseService<TDetail1>);
         }
 
-        //protected bool FillDetail { get; set; } = true;
-
-        //protected IList<TDetail1> Details1 { get; private set; }
-
-        //protected IList<ChangedEntity<TDetail1>> ChangedEntities1 { get; set; }
-
-        public void SetChangedEntities(IList<ChangedEntity<TDetail>> details, IList<ChangedEntity<TDetail1>> details1)
+        Expression<Func<TMaster, IEnumerable<TDetail1>>> CreateRuleForEachExpression()
         {
-            //if (details != null)
-            //    base.SetChangedEntities(details);
-            //ChangedEntities1.Clear();
-            //ChangedEntities1.AddRange(details1.ToArray());
+            var detailsProperty = typeof(TMaster).GetProperties().SingleOrDefault(t => t.PropertyType.IsGenericType && t.PropertyType.GenericTypeArguments[0] == typeof(TDetail1));
+            if (detailsProperty == null)
+                throw new CaspianException($"In Master-Details Service({this.GetType().Name}) Type Master({typeof(TMaster)}) must have a property of  type Details(ICollection<{typeof(TDetail1)}>)");
+            var parameter = Expression.Parameter(typeof(TMaster), "t");
+            Expression expr = Expression.Property(parameter, detailsProperty);
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(typeof(TDetail1));
+            var body = detailsProperty.PropertyType == enumerableType ? expr : Expression.Convert(expr, enumerableType);
+            return Expression.Lambda(body, parameter) as Expression<Func<TMaster, IEnumerable<TDetail1>>>;
         }
 
-        //protected override void EntityInitialize(TMaster entity)
-        //{
-        //    /// Clear all entities
-        //    var details = ChangedEntities1.Select(t => t.Entity.ClearEntityProperties()).ToList();
-        //    var pKey = typeof(TDetail1).GetPrimaryKey();
-        //    var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
-        //    detailsProperty.SetValue(entity, details);
-        //    base.EntityInitialize(entity);
-        //}
+        public DetailService<TDetail1> Detail2Service { get; private set; }
 
-        protected override IQueryable<TMaster> GetQueryForRemove()
+        protected override void BeforeRemoveValidation(ValidationContext<TMaster> context)
         {
-            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
-            return base.GetQueryForRemove().Include(detailsProperty.Name);
+            context.RootContextData["__Details1Property"] = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            base.BeforeRemoveValidation(context);
         }
 
         protected override void SetAsDeleted(TMaster entity)
         {
             var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
-            var details = detailsProperty.GetValue(entity) as IEnumerable<TDetail1>;
-            if (details != null)
-            {
-                foreach (var detail in details)
-                    Context.Entry(detail).State = EntityState.Deleted;
-            }
+            var details = detailsProperty.GetValue(entity) as ICollection<TDetail1>;
+            foreach (var detail in details)
+                Context.Entry(detail).State = EntityState.Deleted;
             base.SetAsDeleted(entity);
         }
 
-        protected override void BeforeRemoveValidation(ValidationContext<TMaster> context)
+        protected override IQueryable<TMaster> GetQueryForRemove()
         {
-            throw new NotImplementedException();
-            base.BeforeRemoveValidation(context);
-        }
-
-
-        //async Task<IList<TDetail1>> GetDetailsAfterAddChangesAsync(TMaster master)
-        //{
-        //    var masterId = typeof(TMaster).GetPrimaryKey().GetValue(master);
-        //    if (masterId.Equals(0))
-        //        return ChangedEntities1.Select(t => t.Entity).ToList();
-        //    var fKey = typeof(TDetail1).GetForeignKey(typeof(TMaster));
-        //    var parameter = Expression.Parameter(typeof(TDetail1), "t");
-        //    Expression expr = Expression.Property(parameter, fKey);
-        //    if (fKey.PropertyType.IsNullableType())
-        //        expr = Expression.Property(parameter, "Value");
-        //    var constantExpr = Expression.Constant(Convert.ChangeType(masterId, fKey.PropertyType.GetUnderlyingType()));
-        //    expr = Expression.Equal(expr, constantExpr);
-        //    expr = Expression.Lambda(expr, parameter);
-        //    using var service = ServiceProvider.CreateScope().GetService<IBaseService<TDetail1>>();
-        //    var result = await service.GetAll().Where(expr).ToListAsync();
-        //    var key = typeof(TDetail1).GetPrimaryKey();
-        //    ///Remove changed Entities (updated or deleted)
-        //    foreach (var item in ChangedEntities1.Where(t => t.ChangeStatus != ChangeStatus.Added))
-        //    {
-        //        var value = key.GetValue(item.Entity);
-        //        foreach (var entity in result)
-        //        {
-        //            if (key.GetValue(entity) == value)
-        //                result.Remove(entity);
-        //        }
-        //    }
-        //    ///Add added and updated entities
-        //    foreach (var item in ChangedEntities1.Where(t => t.ChangeStatus != ChangeStatus.Deleted))
-        //        result.Add(item.Entity);
-        //    return result;
-        //}
-
-        //public async Task SetChangedEntities(TMaster master, IList<ChangedEntity<TDetail>> changedEntities, IList<ChangedEntity<TDetail1>> changedEntities1)
-        //{
-        //    base.FillDetail = FillDetail;
-        //    SetChangedEntitiesAsync(master, changedEntities);
-        //    ChangedEntities1 = changedEntities1;
-        //    if (FillDetail)
-        //    {
-        //        Details1 = await GetDetailsAfterAddChangesAsync(master);
-        //        typeof(TMaster).GetDetailsProperty(typeof(TDetail)).SetValue(master, Details);
-        //    }
-        //}
-
-        protected override IQueryable<TMaster> GetQueryForUpdate(TMaster entity)
-        {
-            var query = base.GetQueryForUpdate(entity);
+            var query = base.GetQueryForRemove();
             var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
-            return query.Include(detailsProperty.Name);
+            query = query.Include(detailsProperty.Name);
+            return query;
         }
 
-        //protected override void CopyEntityWithRelations(TMaster old, TMaster current)
-        //{
-        //    var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
-        //    var details = (detailsProperty.GetValue(old) as IEnumerable<TDetail1>).ToList();
-        //    foreach (var detail in ChangedEntities1)
-        //    {
-        //        var id = Convert.ToInt32(typeof(TDetail1).GetPrimaryKey().GetValue(detail.Entity));
-        //        var oldDetail = details.SingleById(id);
-        //        switch (detail.ChangeStatus)
-        //        {
-        //            case ChangeStatus.Added:
-        //                var newDetail = Activator.CreateInstance<TDetail1>();
-        //                newDetail.CopySimpleProperty(detail.Entity);
-        //                typeof(TDetail1).GetPrimaryKey().SetValue(newDetail, 0);
-        //                details.Add(newDetail);
-        //                break;
-        //            case ChangeStatus.Updated:
-        //                oldDetail.CopySimpleProperty(detail.Entity);
-        //                Context.Entry(oldDetail).State = EntityState.Modified;
-        //                break;
-        //            case ChangeStatus.Deleted:
-        //                Context.Entry(oldDetail).State = EntityState.Deleted;
-        //                break;
-        //        }
-        //    }
-        //    detailsProperty.SetValue(old, details);
-        //    base.CopyEntityWithRelations(old, current);
-        //}
+        public override async Task<TMaster> RemoveAsync(int id)
+        {
+            var old = await base.RemoveAsync(id);
+            var detailsProperty = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            var details = detailsProperty.GetValue(old) as IEnumerable<TDetail1>;
+            foreach (var detail in details)
+                Context.Entry(detail).State = EntityState.Deleted;
+            return old;
+        }
+
+        public override async Task UpdateAsync(TMaster entity)
+        {
+            await base.UpdateAsync(entity);
+            var value = typeof(TMaster).GetPrimaryKey().GetValue(entity);
+            await Detail2Service.SubmitChangesForUpdateAsync();
+        }
+
+        protected override async Task EntityInitialize(TMaster entity)
+        {
+            var details = await Detail2Service.GetDetailsForInsertAsync(typeof(TMaster));
+            var property = typeof(TMaster).GetDetailsProperty(typeof(TDetail1));
+            property.SetValue(entity, details);
+            await base.EntityInitialize(entity);
+        }
     }
 }

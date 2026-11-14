@@ -85,10 +85,10 @@ namespace Demo.Model
 
     public enum LearningScope: byte
     {
-        [Display(Name = "حوزه ی شخصی")]
+        [Display(Name = "Person Scope")]
         Peronality = 1,
 
-        [Display(Name = "حوزه ی آموزش")]
+        [Display(Name = "Training Scope")]
         Learning
     }
 

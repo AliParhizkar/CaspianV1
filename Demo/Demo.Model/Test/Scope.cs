@@ -11,13 +11,13 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("عنوان")]
+        [DisplayName("Scope Title")]
         public string Title { get; set; }
 
-        [DisplayName("عنوان لاتین")]
+        [DisplayName("Scope Title En")]
         public string EnTitle { get; set; }
 
-        [CheckOnDelete("حوزه دارای اعتبارسنجی می باشد و امکان حذف آن وجود ندارد")]
+        [CheckOnDelete("The scope is referenced in validation rules and cannot be deleted.")]
         public IList<Evaluation> Evaluations { get; set; }  
     }
 }

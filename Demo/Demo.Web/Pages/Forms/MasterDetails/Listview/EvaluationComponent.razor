@@ -1,11 +1,11 @@
 ﻿@namespace Demo.Web.Pages
 
-@inject IUIService<Scope, Evaluation> Service
-
 <div style="margin-bottom:-20px;" class="p-3 pb-0 text-center">
-    <span class="d-membership">Evaluations Of Scope</span>
+    <h3>
+        <span class="d-membership">Evaluations Of Scope</span>
+    </h3>
 </div>
-<DataGrid TEntity="Evaluation" DetailsService="Service.DetailService" PageSize="5" ContentHeight="200">
+<DataGrid TEntity="Evaluation" DetailsService="Service.DetailService" PageSize="5" ContentHeight="200" Batch ShowInsertIcon="true">
     <Columns>
         <GridColumn Field="t => t.Title" />
         <GridColumn Field="t => t.Year" />
@@ -40,4 +40,7 @@
         if (evaluation.Id == 0)
             evaluation.Year = DateTime.Now.ToPersianDate().Year.Value;
     }
+
+    [Parameter]
+    public IUIService<Scope, Evaluation> Service { get; set; }
 }

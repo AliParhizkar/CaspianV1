@@ -110,6 +110,8 @@ namespace Main
             typeof(Accounting.Service.SimpleDataService).Assembly.InjectServices(builder.Services);
             typeof(Procurement.Service.PurchasingSpecialistService).Assembly.InjectServices(builder.Services);
             typeof(PaymentAndReceipt.Service.CurrencyService).Assembly.InjectServices(builder.Services);
+
+            
             #endregion
             builder.Services.AddControllers();
             #region Inject Context For each entity model

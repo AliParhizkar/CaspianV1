@@ -215,6 +215,7 @@ namespace Caspian.UI
             if (!result)
                 return;
             var service = CreateService(scope);
+            InitializeValidatorService(service);
             var tempEntity = InitializeBeforeUpsert(service);
             if (id == 0)
                 await service.AddAsync(UpsertData);
@@ -241,10 +242,9 @@ namespace Caspian.UI
         /// <summary>
         /// This Method is used for Initialize Validator-Service. It can be override to initialize service in child class
         /// </summary>
-        protected virtual Task InitializeValidatorService(IBaseService<TEntity> service)
+        protected virtual void InitializeValidatorService(IBaseService<TEntity> service)
         {
             (service as BaseService<TEntity>).CrudId = CrudId ?? 0;
-            return Task.CompletedTask;
         }
 
         internal int? CrudId
@@ -395,10 +395,7 @@ namespace Caspian.UI
 
         public void CaspianValidationValidatorInitializer(CaspianValidationValidator<TEntity> validator)
         {
-            validator.OnBeforeValidation = service =>
-            {
-                throw new NotImplementedException();
-            };
+            validator.OnBeforeValidation = service => InitializeValidatorService(service);
         }
         #endregion
 
@@ -492,9 +489,6 @@ namespace Caspian.UI
             var page = baseComponentService.Target as BasePage;
             if (page == null)
                 throw new CaspianException("You must inherits from BasePage and add this code to page: base.BuildRenderTree(__builder);");
-            string guid = page.GuId;
-            //if (page.GetType() != this.GetType().DeclaringType)
-            //    logger.LogInformation("You Inject Service in the component(in this case we can't call StateHasChanged method of page). so maybe all of page not changed");
             page.ChangeState();
         }
 

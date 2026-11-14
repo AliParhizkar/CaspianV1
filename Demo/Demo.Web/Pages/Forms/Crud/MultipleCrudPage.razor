@@ -65,7 +65,7 @@
                             <GridColumn Field="t => t.TakeoutPrice.DigitGrouping()" />
                             <GridColumn Field="t => t.Code" />
                             <GridColumn Field="t => t.ActiveType.EnumText()" />
-                            <GridColumn Title="شرح پیشفرض" style="width:80px">
+                            <GridColumn Title="Default Options" style="width:80px">
                                 <Template>
                                     <button class="c-btn c-primary" @onclick="() => OpenDescriptionWindow(context.Data.Id)">...</button>
                                 </Template>
@@ -112,7 +112,7 @@
         </TabPanelItem>
     </Tabs>
 </TabPanel>
-<Window @bind-Status="status" Title="شرح های پیش فرض" Style="width:550px">
+<Window @bind-Status="status" Title="Default Options" Style="width:550px">
     <CaspianForm TEntity="ProductDescription" Service="DescriptionService" OnSubmit="t => t.Entity.ProductId = productId">
         <StringTextBox @bind-Value="context.Description" ColSpan="8" />
         <FormCommandButton ColSpan="9" />
@@ -134,7 +134,7 @@
 
     protected override void OnInitialized()
     {
-        ProductService.OnUpsert = async (provider, product) => product.Price > 0 && product.TakeoutPrice > 0 || await Confirm("آیا با ثبت محصول با مبلغ صفر موافقید؟");
+        ProductService.OnUpsert = async (provider, product) => product.Price > 0 && product.TakeoutPrice > 0 || await Confirm("Are you sure you want to register this food item with a zero price?");
         base.OnInitialized();
     }
 

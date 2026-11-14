@@ -140,7 +140,7 @@ namespace Caspian.UI
                     }
                 }
             }
-            throw new NotImplementedException();
+            return null;
         }
 
         protected override void OnParametersSet()

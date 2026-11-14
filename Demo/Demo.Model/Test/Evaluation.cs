@@ -10,61 +10,61 @@ namespace Demo.Model
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("حوزه")]
+        [DisplayName("Scope")]
         public int ScopeId { get; set; }
 
         [ForeignKey(nameof(ScopeId))]
         public Scope Scope { get; set; }
 
-        [DisplayName("عنوان سال ارزیابی")]
+        [DisplayName("Evaluation Title")]
         public string Title { get; set; }
 
-        [DisplayName("عنوان لاتین سال ارزیابی")]
+        [DisplayName("Evaluation Title En")]
         public string EnTitle { get; set; }
 
-        [DisplayName("سال ارزیابی")]
+        [DisplayName("Evaluation Year")]
         public int Year { get; set; }
 
-        [DisplayName("نوبت ارزیابی")]
+        [DisplayName("Evaluation Period")]
         public EvaluationTurn? EvaluationTurn { get; set; }
 
-        [DisplayName("تاریخ شروع سال ارزیابی")]
+        [DisplayName("Evaluation Start Date")]
         public DateOnly? StartDate { get; set; }
 
-        [DisplayName("تاریخ پایان سال ارزیابی")]
+        [DisplayName("Evaluation End Date")]
         public DateOnly? EndDate { get; set; }
 
-        [DisplayName("تاریخ گردش ارزیابی از")]
+        [DisplayName("Evaluation Process From")]
         public DateOnly? EvalDateFrom { get; set; }
 
-        [DisplayName("تاریخ گردش ارزیابی تا")]
+        [DisplayName("Evaluation Process To")]
         public DateOnly? EvalDateTo { get; set; }
 
-        [DisplayName("تاریخ اعتراض از")]
+        [DisplayName("Appeal Start Date")]
         public DateOnly? ReviewDateFrom { get; set; }
 
-        [DisplayName("تاریخ اعتراض تا")]
+        [DisplayName("Appeal End Date")]
         public DateOnly? ReviewDateTo { get;set; }
 
-        [DisplayName("تاریخ ابلاغ از")]
+        [DisplayName("Notification Start Date")]
         public DateOnly? NotificationDateFrom { get; set; }
 
-        [DisplayName("تاریخ ابلاغ تا")]
+        [DisplayName("Notification End Date")]
         public DateOnly? NotificationDateTo { get; set; }
     }
 
     public enum EvaluationTurn: byte
     {
-        [Display(Name = "دوره اول")]
+        [Display(Name = "First Period")]
         Turn1 = 1, 
 
-        [Display(Name = "دوره دوم")]
+        [Display(Name = "Second Period")]
         Turn2 = 2,
 
-        [Display(Name = "دوره سوم")]
+        [Display(Name = "Third Period")]
         Turn3 = 3,
 
-        [Display(Name = "دوره چهارم")]
+        [Display(Name = "Fourth Period")]
         Turn4 = 4,
     }
 }

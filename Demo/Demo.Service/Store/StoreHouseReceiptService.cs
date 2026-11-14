@@ -4,8 +4,8 @@ using System.Linq;
 using Caspian.Common;
 using Caspian.Common.Service;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Service
 {
@@ -16,8 +16,7 @@ namespace Demo.Service
         {
             RuleFor(t => t.Date).CustomValue(t => t == default, "Please specify the warehouse receipt date.")
                 .CustomValue(t => t > DateTime.Now.ToDateOnly(), "The warehouse receipt date cannot be a future date.");
-            //RuleFor(t => t.ReceiptDetails).Custom(t => Details.Count() == 0, "رسید باید حداقل یک آیتم داشته باشد");
-            RuleForEach(t => t.ReceiptDetails).SetValidator(new ReceiptDetailService(provider));
+            RuleFor(t => t.ReceiptDetails).Custom(t => DetailService.Source.Count() == 0, "The receipt must contain at least one item.");
         }
 
         public override async Task<WarehouseReceipt> AddAsync(WarehouseReceipt receipt)

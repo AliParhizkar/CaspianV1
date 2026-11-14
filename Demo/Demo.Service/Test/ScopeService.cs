@@ -11,7 +11,6 @@ namespace Demo.Service
             : base(provider)
         {
             RuleFor(t => t.Title).Required().UniqueAsync("حوزه ای با این عنوان در سیستم تعریف شده است");
-            RuleForEach(t => t.Evaluations).SetValidator(t => new EvaluationService(provider));
         }
     }
 }

@@ -28,13 +28,11 @@ namespace Main
 
         public CaspianConsoleLoggerProvider(WebApplicationBuilder builder)
         {
-            File.WriteAllText("D:\\Test\\c.txt", "Step1");
             this.builder = builder;
         }
 
         public ILogger CreateLogger(string categoryName)
         {
-            File.WriteAllText("D:\\Test\\b.txt", "Step2");
             return new CaspianConsoleLogger(builder);
         }
 
@@ -60,12 +58,11 @@ namespace Main
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            File.WriteAllText("D:\\Test\\c.txt", "Step3");
-            //var value = builder.Configuration.GetSection("DetailedErrors").Value?.ToLower();
-            //if (value == null) 
-            //    return false;
-            //if (Boolean.TryParse(value, out _))
-            //    return Convert.ToBoolean(value);
+            var value = builder.Configuration.GetSection("DetailedErrors").Value?.ToLower();
+            if (value == null)
+                return false;
+            if (Boolean.TryParse(value, out _))
+                return Convert.ToBoolean(value);
             return true;
         }
 
